@@ -5,6 +5,10 @@ Frontend của dự án **Edu Nexus** — nền tảng học tập (FPT Universi
 > **Dev FE mới?** Đọc [`ARCHITECTURE.md`](./ARCHITECTURE.md) trước — giải thích kiến trúc kèm ví dụ thực tế.
 >
 > **AI agent / cần chi tiết quy ước?** Đọc [`AGENTS.md`](./AGENTS.md) — tài liệu chi tiết về kiến trúc, quy ước, recipe và DO/DON'T.
+>
+> **Chuẩn AI theo tool:**  
+> - Claude: [`./.claude/CLAUDE.md`](./.claude/CLAUDE.md)  
+> - Codex: [`./.codex/CODEX.md`](./.codex/CODEX.md)
 
 ---
 

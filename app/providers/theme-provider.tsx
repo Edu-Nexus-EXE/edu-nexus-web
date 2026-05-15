@@ -1,74 +1,97 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { STORAGE_KEYS } from '~/shared/config/site'
-import { readStorage, writeStorage } from '~/shared/lib/storage'
+import { STORAGE_KEYS } from "~/shared/config/site";
+import { readStorage, writeStorage } from "~/shared/lib/storage";
 
-export type Theme = 'light' | 'dark'
+export type Theme = "light" | "dark";
 
 type ThemeContextValue = {
-  theme: Theme
-  setTheme: (t: Theme) => void
-  toggleTheme: () => void
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+};
+
+const ThemeContext = createContext<ThemeContextValue | null>(null);
+
+function isTheme(value: string | null | undefined): value is Theme {
+  return value === "light" || value === "dark";
 }
 
-const ThemeContext = createContext<ThemeContextValue | null>(null)
+function resolveInitialTheme(defaultTheme: Theme): Theme {
+  const storedTheme = readStorage(STORAGE_KEYS.theme);
+  if (isTheme(storedTheme)) return storedTheme;
+
+  if (typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    return "dark";
+  }
+
+  return defaultTheme;
+}
 
 function applyThemeClass(theme: Theme) {
-  document.documentElement.classList.toggle('dark', theme === 'dark')
+  document.documentElement.classList.toggle("dark", theme === "dark");
 }
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'light'
+  defaultTheme = "light",
 }: {
-  children: React.ReactNode
-  defaultTheme?: Theme
+  children: React.ReactNode;
+  defaultTheme?: Theme;
 }) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme)
+  const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [hydrated, setHydrated] = useState(false);
 
-  // Đồng bộ với localStorage / class trên <html> sau khi hydrate.
-  // setState trong effect ở đây là CHỦ Ý: server render với defaultTheme,
-  // client mount xong mới đọc được localStorage / matchMedia và update.
-  // Không thể đưa lên useState lazy init vì sẽ gây hydration mismatch.
   useEffect(() => {
-    const stored = readStorage(STORAGE_KEYS.theme) as Theme | null
-    const initial: Theme = stored ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setThemeState(initial)
-    applyThemeClass(initial)
-  }, [])
+    const initialTheme = resolveInitialTheme(defaultTheme);
+    setThemeState(initialTheme);
+    setHydrated(true);
+  }, [defaultTheme]);
 
-  const setTheme = useCallback((next: Theme) => {
-    setThemeState(next)
-    applyThemeClass(next)
-    writeStorage(STORAGE_KEYS.theme, next)
-  }, [])
+  useEffect(() => {
+    if (!hydrated) return;
+
+    applyThemeClass(theme);
+    writeStorage(STORAGE_KEYS.theme, theme);
+  }, [hydrated, theme]);
+
+  const setTheme = useCallback((nextTheme: Theme) => {
+    setThemeState(nextTheme);
+  }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
-  }, [theme, setTheme])
+    setThemeState((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  }, []);
 
-  return <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>{children}</ThemeContext.Provider>
+  const value = useMemo<ThemeContextValue>(
+    () => ({
+      theme,
+      setTheme,
+      toggleTheme,
+    }),
+    [setTheme, theme, toggleTheme],
+  );
+
+  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider')
-  return ctx
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used within ThemeProvider");
+  }
+
+  return context;
 }
 
-/**
- * Script chạy đồng bộ trong <head> để áp class `dark` TRƯỚC khi React
- * hydrate. Mục đích: tránh flash màu sai (FOUC).
- */
 export const themeInitScript = `
 (function () {
   try {
-    var key='${STORAGE_KEYS.theme}';
+    var key = "${STORAGE_KEYS.theme}";
     var stored = localStorage.getItem(key);
-    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var theme = stored ? stored : (prefersDark ? 'dark' : 'light');
-    if (theme === 'dark') document.documentElement.classList.add('dark');
+    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    var theme = stored === "light" || stored === "dark" ? stored : (prefersDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", theme === "dark");
   } catch (_) {}
 })();
-`
+`;
