@@ -1,0 +1,12 @@
+{
+  "appName": "Edu Nexus",
+  "language": "Language",
+  "theme": "Theme",
+  "light": "Light",
+  "dark": "Dark",
+  "loading": "Loading...",
+  "errors": {
+    "unknown": "An unexpected error occurred.",
+    "notFound": "The requested page could not be found."
+  }
+}

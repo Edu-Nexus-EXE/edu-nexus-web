@@ -1,13 +1,14 @@
+import { WelcomePage } from "~/features/welcome";
+
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Edu Nexus" },
+    { name: "description", content: "Welcome to Edu Nexus" },
   ];
 }
 
 export default function Home() {
-  return <Welcome />;
+  return <WelcomePage />;
 }

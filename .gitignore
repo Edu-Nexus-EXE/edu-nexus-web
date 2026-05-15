@@ -1,7 +1,13 @@
 .DS_Store
-.env
 /node_modules/
 
 # React Router
 /.react-router/
 /build/
+
+# Environment variables
+.env.*
+.env.development.local
+# Whitelist template — commit cho dev mới biết cần env vars gì
+!.env.example
+Note
