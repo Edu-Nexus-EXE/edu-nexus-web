@@ -6,8 +6,6 @@
 /build/
 
 # Environment variables
-.env.*
-.env.development.local
+.env.local
 # Whitelist template — commit cho dev mới biết cần env vars gì
-!.env.example
 Note
