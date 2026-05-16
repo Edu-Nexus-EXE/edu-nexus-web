@@ -44,6 +44,9 @@ export function ThemeProvider({
 
   useEffect(() => {
     const initialTheme = resolveInitialTheme(defaultTheme);
+    // Hydration gate: client-only values (localStorage + media query) must be
+    // applied after mount to avoid SSR/client mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeState(initialTheme);
     setHydrated(true);
   }, [defaultTheme]);

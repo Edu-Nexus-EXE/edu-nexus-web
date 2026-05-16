@@ -1,3 +1,6 @@
-export { LandingPage } from "./landing-page";
-export { CheckoutPage } from "./checkout-page";
-export { CheckoutSuccessPage } from "./checkout-success-page";
+export { MarketingLayout } from './components/landing/marketing-layout'
+export { LandingFooter } from './components/landing/landing-footer'
+export { LandingNavbar } from './components/landing/landing-navbar'
+export { LandingPage } from './pages/landing-page'
+export { CheckoutPage } from './pages/checkout-page'
+export { CheckoutSuccessPage } from './pages/checkout-success-page'

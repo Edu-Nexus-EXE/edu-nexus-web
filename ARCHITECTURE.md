@@ -45,6 +45,7 @@ Hãy xem dự án như **một toà nhà**:
 | `shared/ui/`         | **Đồ nội thất tiêu chuẩn** — ghế, bàn ai cũng dùng được  | Button, Input, Card (generic)                |
 | `shared/components/` | **Đồ đã ráp** — bộ bàn ăn = bàn + ghế gắn liền           | ThemeToggle, LanguageSwitcher (đã ráp)       |
 | `shared/lib/`        | **Dụng cụ** — kéo, búa, thước                            | `cn()`, `storage`, i18n init                 |
+| `features/<x>/lib/`  | **Ngăn phụ trong từng phòng** — đồ chỉ phòng đó dùng     | visual mapping, helper nội bộ của feature    |
 | `shared/config/`     | **Bảng địa chỉ, danh bạ**                                | `SITE.name`, `STORAGE_KEYS`, env vars        |
 | `providers/`         | **Hệ thống điện/nước cấp toàn nhà**                      | Theme, i18n, sau này: Auth, Toast, Query     |
 | `styles/`            | **Bảng màu sơn** của cả toà nhà                          | `theme.css` — đổi 1 chỗ áp cả nhà            |
@@ -80,6 +81,29 @@ Hãy xem dự án như **một toà nhà**:
 - ❌ `features/` và `shared/` **không** import từ `mocks/` — mock chỉ tồn tại trong `mocks/` và `entry.client.tsx`.
 - ❌ `api/operations/*` chỉ được gọi từ **route loader/action** (hoặc feature hook nếu cần client-side fetch). Không gọi trực tiếp trong component render.
 - ✅ `routes/` và `features/` được dùng `shared/` thoải mái.
+
+Khi feature lớn dần, đừng để mọi file nằm phẳng ở root của feature. Ưu tiên pattern:
+
+```text
+app/features/<feature>/
+├── pages/                  # entry page của feature
+├── components/
+│   ├── layout/             # layout/shared within feature
+│   ├── <screen-a>/         # component riêng cho màn A
+│   └── <screen-b>/         # component riêng cho màn B
+├── hooks/
+├── lib/
+└── index.ts
+```
+
+Tương tự với `app/routes/`, khi route nhiều nên nhóm theo domain:
+
+```text
+app/routes/
+├── marketing/
+├── auth/
+└── dashboard/
+```
 
 ---
 
@@ -462,6 +486,8 @@ Khi phân vân "đặt file này ở đâu?", hỏi 2 câu:
 
 - Cái này có **business meaning** không? (có → `features/` hoặc `shared/components/`; không → `shared/ui/` hoặc `shared/lib/`)
 - Có **2+ feature** sẽ dùng không? (có → `shared/`; chỉ 1 → `features/<x>/components/`)
+
+Nếu là helper/mapping chỉ phục vụ 1 feature nhưng không phải UI component, đặt cạnh feature đó (ví dụ `features/dashboard/dashboard-tone.ts` hoặc `features/<x>/lib/`).
 
 ---
 

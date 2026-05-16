@@ -180,9 +180,16 @@ routes ─┬─► features ─┐
 | `--color-border`               | `#e7e5e4`              | `#1e293b`          |
 | `--color-ring`                 | `#f97316`              | `#38bdf8`          |
 | `--color-accent` / `…-foreground`| `#fed7aa` / `#7c2d12` | `#1e3a8a` / `#dbeafe` |
+| `--color-success` / `…-foreground`| `#16a34a` / `#ffffff` | `#22c55e` / `#052e16` |
+| `--color-warning` / `…-foreground`| `#d97706` / `#ffffff` | `#f59e0b` / `#172554` |
+| `--color-info` / `…-foreground`| `#2563eb` / `#ffffff` | `#60a5fa` / `#082f49` |
 | `--color-destructive` / `…-foreground` | `#dc2626` / `#fff` | `#ef4444` / `#fff` |
 
 Radius tokens: `--radius-sm/md/lg/xl` (sửa cùng chỗ trong `theme.css`).
+
+Brand tokens cho payment UI:
+- `--color-brand-momo` / `--color-brand-momo-foreground`
+- `--color-brand-zalo` / `--color-brand-zalo-foreground`
 
 ### 4.3 Class Tailwind tự sinh
 Sau `@theme inline { ... }` ở `app/styles/app.css`, có sẵn:
@@ -228,7 +235,7 @@ File `app/shared/lib/i18n/index.ts`:
 - Detector order: `localStorage` → `navigator`
 - Storage key: `STORAGE_KEYS.language` = `"edu-nexus-lang"`
 - Default namespace: `"common"`
-- Namespaces hiện có: `["common", "welcome"]`
+- Namespaces hiện có: `["common", "welcome", "landing", "pricing", "auth", "dashboard"]`
 
 ### 5.3 Cấu trúc locale (theo namespace)
 Mỗi feature 1 namespace, mỗi namespace 1 file. Tránh đè key giữa feature và sẵn sàng cho lazy-load sau này.
@@ -283,6 +290,7 @@ i18n.changeLanguage("en");
 ## 6. Routing (React Router 7)
 
 - Khai báo route: `app/routes.ts` (KHÔNG dùng folder convention auto-discovery).
+- Route module nên nhóm theo domain trong `app/routes/` khi số lượng route tăng lên, ví dụ `routes/marketing/*`, `routes/auth/*`, `routes/dashboard/*`.
   ```ts
   import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
@@ -311,9 +319,12 @@ i18n.changeLanguage("en");
 - Function declaration + named export. Default export chỉ ở entry route.
 - Props interface cùng file, tên `XxxProps`.
 - Một component / một file. Khi file > ~150 dòng cân nhắc tách.
+- Feature entry page đặt trong `app/features/<feature>/pages/`. `index.ts` chỉ re-export public pages/API từ đây.
 
 ### 7.3 Tổ chức code (ranh giới)
 - **Khi một component chỉ một feature dùng** → đặt trong `app/features/<feature>/components/`.
+- Nếu feature có nhiều màn hình/section lớn, nhóm component theo miền con: `components/layout/`, `components/<page-name>/`, ...
+- **Khi helper / visual mapping chỉ một feature dùng** → đặt trong `app/features/<feature>/` hoặc `app/features/<feature>/lib/`.
 - **Khi cần dùng ở 2+ feature** → kéo lên `app/shared/components/` (đã ráp, có business meaning) hoặc `app/shared/ui/` (primitive headless).
 - **Helper function** thuần → `app/shared/lib/<topic>.ts`.
 - **Hằng số / config** → `app/shared/config/`.
@@ -385,7 +396,7 @@ Theo thứ tự ưu tiên:
 ## 10. DO / DON'T
 
 ### ✅ DO
-- Dùng class semantic (`bg-primary`, `text-foreground`...) cho **mọi màu**. Khi thiếu token, **mở rộng `app/styles/theme.css` trước**, rồi dùng class mới.
+- Dùng class semantic (`bg-primary`, `text-foreground`, `bg-success`, `text-warning`, `bg-brand-momo`...) cho **mọi màu**. Khi thiếu token, **mở rộng `app/styles/theme.css` trước**, rồi dùng class mới.
 - Thêm string **vào CẢ EN và VI** cùng lúc, đúng namespace.
 - Đặt component chỉ-1-feature-dùng trong `app/features/<feature>/components/`. Kéo lên `shared/` chỉ khi 2+ feature dùng.
 - Mỗi feature export qua `index.ts` (barrel).
