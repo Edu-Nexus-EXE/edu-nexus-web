@@ -1,0 +1,50 @@
+{
+  "hero": {
+    "badge": "Shape your future",
+    "title": "Edu-Nexus Service Pricing",
+    "subtitle": "Choose the right plan to optimize your learning journey and career with cutting-edge AI technology."
+  },
+  "plans": {
+    "perMonth": "/month",
+    "free": {
+      "name": "Basic",
+      "price": "Free",
+      "description": "For individuals just starting to explore their career path.",
+      "button": "Get started for free",
+      "f1": "Basic CV analysis",
+      "f2": "Sample learning path",
+      "f3": "Community access",
+      "disabled1": "AI Advisor 24/7"
+    },
+    "pro": {
+      "name": "Professional",
+      "badge": "Most popular",
+      "price": "$2",
+      "description": "The optimal solution to accelerate your career.",
+      "button": "Upgrade now",
+      "f1": "Advanced CV analysis (AI)",
+      "f2": "In-depth custom learning path",
+      "f3": "Unlimited 24/7 AI Advisor",
+      "f4": "Smart scholarship matching"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "price": "Contact us",
+      "description": "For large-scale educational and training organizations.",
+      "button": "Contact us",
+      "f1": "Centralized training management",
+      "f2": "System integration API",
+      "f3": "In-depth analytics reports",
+      "f4": "Priority 1:1 technical support"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "q1": "Can I cancel my subscription at any time?",
+    "a1": "Absolutely. You can cancel your subscription right from your account settings with no additional charges. You'll still have access to premium features until the end of your current billing cycle.",
+    "q2": "What payment methods does Edu-Nexus support?",
+    "a2": "We support a variety of payment methods including: Credit/debit cards (Visa, Mastercard), E-wallets (Momo, ZaloPay), and Domestic bank transfers.",
+    "q3": "Is my CV data secure?",
+    "a3": "Security is our top priority. All your data is encrypted to banking standards and we are committed to not sharing your personal information with any third party without your consent."
+  }
+}

@@ -1,0 +1,246 @@
+{
+  "sidebar": {
+    "brand": "Edu-Nexus",
+    "overview": "Overview",
+    "skills": "Analyzed Skills",
+    "skillsCv": "CV Analysis",
+    "skillsTest": "Test Analysis",
+    "jobs": "Jobs",
+    "certificates": "Certificates",
+    "analysisHistory": "Analysis History",
+    "market": "Market",
+    "learningPath": "Learning Path",
+    "setting": "Setting",
+    "membershipLabel": "Membership",
+    "upgrade": "Upgrade now"
+  },
+  "header": {
+    "title": "Journey Overview",
+    "welcome": "Welcome back, {{name}} 👋",
+    "logout": "Log out"
+  },
+  "stats": {
+    "certificates": "Certificates",
+    "certificatesNew": "+2 new",
+    "studyHours": "Study Hours",
+    "studyHoursMonth": "This month",
+    "readiness": "Readiness Score",
+    "classRank": "Class Rank",
+    "rank": "Rank"
+  },
+  "radar": {
+    "title": "Core Competency Matrix",
+    "subtitle": "Based on 5 key competency groups",
+    "detail": "Details",
+    "technical": "TECHNICAL SKILLS",
+    "language": "FOREIGN LANGUAGE",
+    "leadership": "LEADERSHIP",
+    "creativity": "CREATIVE THINKING",
+    "softSkills": "SOFT SKILLS"
+  },
+  "readiness": {
+    "title": "Job Readiness",
+    "subtitle": "Match with current job market",
+    "good": "GOOD",
+    "experience": "Practical Experience",
+    "profile": "Personal Profile",
+    "analyzeGap": "Analyze Gap"
+  },
+  "skills": {
+    "title": "Trending Skills",
+    "subtitle": "Suggestions from Vietnam IT market data 2024",
+    "s1Name": "AI & Machine Learning",
+    "s1Desc": "420 new jobs this week",
+    "s2Name": "Big Data Analysis",
+    "s2Desc": "156 open positions",
+    "s3Name": "Java Spring Boot",
+    "s3Desc": "High priority in Banking",
+    "s3Badge": "Stable",
+    "s4Name": "AWS / Cloud Computing",
+    "s4Desc": "Average salary $1.2k+",
+    "s5Name": "Cyber Security",
+    "s5Desc": "Demand surging"
+  },
+  "roadmap": {
+    "title": "Personalized Learning Path",
+    "description": "Based on your current assessment, we've prepared an optimized learning path to help you reach 90% readiness in the next 3 months.",
+    "explore": "Explore Path",
+    "progress": "View Progress",
+    "journeyTitle": "Junior Developer Journey v1.2"
+  },
+  "footer": {
+    "copyright": "© 2026 Edu-Nexus. Building your career future.",
+    "support": "Support",
+    "security": "Security",
+    "terms": "Terms"
+  },
+  "analysisHistory": {
+    "title": "Skill Analysis History",
+    "subtitle": "Review your past skill gap assessments for each job role.",
+    "newAnalysis": "New Analysis",
+    "table": {
+      "job": "Job Role",
+      "company": "Company",
+      "date": "Analysis Date",
+      "match": "Match %",
+      "actions": "Actions",
+      "detail": "Details"
+    },
+    "pagination": {
+      "info": "Showing 1-5 of 12 analyses"
+    },
+    "insights": {
+      "progress": "Progress",
+      "progressDesc": "You have significantly improved your React and Node.js skills compared to last month.",
+      "bestMatch": "Best Match",
+      "bestMatchDesc": "Frontend role at VNG is the best match for your current skill set.",
+      "aiAdvice": "AI Advice",
+      "aiAdviceDesc": "Based on analysis history, you should add an AWS certification to increase FPT match rate to 95%.",
+      "viewCourse": "View suggested course"
+    }
+  },
+  "learningPath": {
+    "title": "Learning Path History",
+    "subtitle": "Track your skill development and milestones achieved.",
+    "newPath": "Create New Path",
+    "stats": {
+      "total": "Total Paths",
+      "totalSub": "+2 this month",
+      "completed": "Completed",
+      "certificates": "Certificates Earned",
+      "hours": "Study Hours",
+      "hoursSub": "Top 5% students"
+    },
+    "table": {
+      "title": "Roadmap List",
+      "all": "All",
+      "learning": "Learning",
+      "completed": "Completed",
+      "name": "Path Name",
+      "startDate": "Start Date",
+      "progress": "Progress",
+      "status": "Status",
+      "actions": "Actions",
+      "viewMap": "View Map",
+      "continue": "Continue"
+    },
+    "recommendations": {
+      "title": "Next Recommendations",
+      "forYou": "Recommended for you",
+      "microservicesTitle": "Mastering Microservices with Spring Cloud",
+      "microservicesDesc": "Take your Java Backend path to the next level.",
+      "startNow": "Start Now",
+      "testTime": "15 MINS",
+      "testTitle": "SQL Skill Assessment",
+      "testDesc": "Complete the test to unlock the next Data Science chapter.",
+      "certificatesTitle": "Latest Certificates",
+      "issued": "ISSUED OCT 2023",
+      "pending": "PENDING...",
+      "viewAllCertificates": "View all certificates"
+    }
+  },
+  "market": {
+    "title": "Recommended for you",
+    "sortBy": "Sort by:",
+    "sortOptions": {
+      "highestMatch": "Highest Match",
+      "deadline": "Deadline",
+      "value": "Scholarship Value"
+    },
+    "filters": {
+      "field": "Field of Study",
+      "location": "Location",
+      "match": "Match Level",
+      "over70": "Over 70%"
+    },
+    "card": {
+      "endsIn": "Ends in:",
+      "match": "Match",
+      "strengths": "Strengths",
+      "missing": "Missing",
+      "aiSuggestion": "AI Suggestion:",
+      "remind": "Remind me 7 days before",
+      "remindOn": "Reminder ON (7 days before)",
+      "apply": "Apply Now",
+      "details": "Details"
+    }
+  },
+  "settings": {
+    "title": "Personal Profile Settings",
+    "subtitle": "Manage your profile information and account security.",
+    "avatar": {
+      "title": "Profile Picture",
+      "change": "Change picture",
+      "remove": "Remove"
+    },
+    "personal": {
+      "title": "Personal Information",
+      "edit": "Edit",
+      "fullname": "Full Name",
+      "studentId": "Student ID",
+      "university": "University",
+      "major": "Major",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "save": "Save changes"
+    },
+    "security": {
+      "title": "Account Security",
+      "password": "Password",
+      "passwordDesc": "Change your password regularly to protect your account",
+      "changePassword": "Change password",
+      "2fa": "Two-Factor Authentication (2FA)",
+      "2faDesc": "Add an extra layer of security to your account",
+      "setup": "Set up"
+    },
+    "advanced": {
+      "disable": "Disable Account",
+      "disableDesc": "Your account will be temporarily locked and can be recovered within 30 days.",
+      "execute": "Execute"
+    }
+  },
+  "certificates": {
+    "title": "Digital Capability Profile",
+    "profile": {
+      "verified": "Verified Candidate",
+      "status": "Employment Status",
+      "lookingForJob": "Looking for Job",
+      "center": "Blockchain Certificate Center",
+      "centerDesc": "All skill badges are cryptographically signed and stored on ledger to ensure authenticity for potential employers.",
+      "secured": "Secured Identity",
+      "hash": "HASH: 8F2A...3B9D"
+    },
+    "badges": {
+      "title": "Verified Skill Badges",
+      "total": "Total verified: 12"
+    },
+    "projects": {
+      "title": "Verified Thesis Projects",
+      "sourceCode": "Source Code",
+      "liveDemo": "Live Demo",
+      "caseStudy": "Case Study"
+    }
+  },
+  "skillsCv": {
+    "badge": "AI CAREER GUIDANCE",
+    "title": "Analyze your career gap",
+    "subtitle": "Upload your CV and paste the job description. Our AI will analyze the requirements and pinpoint exactly what is missing.",
+    "jd": {
+      "title": "Job Description",
+      "subtitle": "Paste URL or plain text requirements",
+      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
+      "fetchBtn": "Fetch JD",
+      "textareaPlaceholder": "Or paste the full job description here...",
+      "ready": "Ready to analyze"
+    },
+    "cv": {
+      "title": "Your CV",
+      "subtitle": "Upload your latest CV (PDF format only)",
+      "dropzone": "Drag and drop your file here",
+      "limit": "5MB limit • PDF, DOCX",
+      "browseBtn": "Browse file"
+    },
+    "analyzeBtn": "Analyze Gap",
+    "secure": "Your data is encrypted and used only for analysis purposes"
+  }
+}

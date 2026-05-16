@@ -1,0 +1,246 @@
+{
+  "sidebar": {
+    "brand": "Edu-Nexus",
+    "overview": "Tổng quan",
+    "skills": "Phân Tích Kỹ Năng",
+    "skillsCv": "Phân tích bằng CV",
+    "skillsTest": "Phân tích bằng bài test",
+    "jobs": "Việc làm",
+    "certificates": "Chứng chỉ",
+    "analysisHistory": "Lịch sử phân tích",
+    "market": "Thị trường",
+    "learningPath": "Lộ trình học tập",
+    "setting": "Cài đặt",
+    "membershipLabel": "Gói thành viên",
+    "upgrade": "Nâng cấp ngay"
+  },
+  "header": {
+    "title": "Tổng quan hành trình",
+    "welcome": "Chào mừng trở lại, {{name}} 👋",
+    "logout": "Đăng xuất"
+  },
+  "stats": {
+    "certificates": "Chứng chỉ",
+    "certificatesNew": "+2 mới",
+    "studyHours": "Giờ học tập",
+    "studyHoursMonth": "Tháng này",
+    "readiness": "Chỉ số sẵn sàng",
+    "classRank": "Xếp hạng lớp",
+    "rank": "Hạng"
+  },
+  "radar": {
+    "title": "Ma trận năng lực cốt lõi",
+    "subtitle": "Đánh giá dựa trên 5 nhóm năng lực chính",
+    "detail": "Chi tiết",
+    "technical": "KỸ NĂNG CHUYÊN MÔN",
+    "language": "NGOẠI NGỮ",
+    "leadership": "LÃNH ĐẠO",
+    "creativity": "TƯ DUY SÁNG TẠO",
+    "softSkills": "KỸ NĂNG MỀM"
+  },
+  "readiness": {
+    "title": "Sẵn sàng việc làm",
+    "subtitle": "Mức độ phù hợp với thị trường hiện tại",
+    "good": "TỐT",
+    "experience": "Kinh nghiệm thực tế",
+    "profile": "Hồ sơ cá nhân",
+    "analyzeGap": "Phân tích khoảng cách"
+  },
+  "skills": {
+    "title": "Kỹ năng đang thịnh hành",
+    "subtitle": "Gợi ý từ dữ liệu thị trường IT Việt Nam 2024",
+    "s1Name": "AI & Machine Learning",
+    "s1Desc": "420 việc làm mới tuần này",
+    "s2Name": "Big Data Analysis",
+    "s2Desc": "156 yêu cầu tuyển dụng",
+    "s3Name": "Java Spring Boot",
+    "s3Desc": "Ưu tiên cao tại Banking",
+    "s3Badge": "Bền vững",
+    "s4Name": "AWS / Cloud Computing",
+    "s4Desc": "Lương trung bình $1.2k+",
+    "s5Name": "Cyber Security",
+    "s5Desc": "Nhu cầu tăng đột biến"
+  },
+  "roadmap": {
+    "title": "Lộ trình học tập cá nhân hóa",
+    "description": "Dựa trên kết quả đánh giá hiện tại, chúng tôi đã chuẩn bị một lộ trình học tập tối ưu để giúp bạn đạt mức sẵn sàng 90% trong 3 tháng tới.",
+    "explore": "Khám phá lộ trình",
+    "progress": "Xem tiến độ",
+    "journeyTitle": "Hành trình Junior Developer v1.2"
+  },
+  "footer": {
+    "copyright": "© 2026 Edu-Nexus. Kiến tạo tương lai nghề nghiệp.",
+    "support": "Hỗ trợ",
+    "security": "Bảo mật",
+    "terms": "Điều khoản"
+  },
+  "analysisHistory": {
+    "title": "Lịch sử Phân tích Kỹ năng",
+    "subtitle": "Xem lại các bản đánh giá khoảng cách kỹ năng trước đây của bạn cho từng vị trí công việc.",
+    "newAnalysis": "Phân tích mới",
+    "table": {
+      "job": "Vị trí công việc",
+      "company": "Công ty",
+      "date": "Ngày phân tích",
+      "match": "Mức độ phù hợp",
+      "actions": "Thao tác",
+      "detail": "Chi tiết"
+    },
+    "pagination": {
+      "info": "Hiển thị 1-5 của 12 bản phân tích"
+    },
+    "insights": {
+      "progress": "Tiến triển",
+      "progressDesc": "Bạn đã cải thiện đáng kể kỹ năng React và Node.js so với tháng trước.",
+      "bestMatch": "Phù hợp nhất",
+      "bestMatchDesc": "Vị trí Frontend tại VNG là mục tiêu phù hợp nhất với bộ kỹ năng hiện tại của bạn.",
+      "aiAdvice": "Lời khuyên AI",
+      "aiAdviceDesc": "Dựa trên lịch sử phân tích, bạn nên bổ sung chứng chỉ AWS để nâng tỷ lệ phù hợp tại FPT lên 95%.",
+      "viewCourse": "Xem khóa học gợi ý"
+    }
+  },
+  "learningPath": {
+    "title": "Lịch sử lộ trình học tập",
+    "subtitle": "Theo dõi quá trình phát triển kỹ năng và các cột mốc đã đạt được.",
+    "newPath": "Tạo lộ trình mới",
+    "stats": {
+      "total": "Tổng lộ trình",
+      "totalSub": "+2 tháng này",
+      "completed": "Đã hoàn thành",
+      "certificates": "Chứng chỉ đạt được",
+      "hours": "Giờ học tích lũy",
+      "hoursSub": "Top 5% học viên"
+    },
+    "table": {
+      "title": "Danh sách lộ trình",
+      "all": "Tất cả",
+      "learning": "Đang học",
+      "completed": "Hoàn thành",
+      "name": "Tên lộ trình",
+      "startDate": "Ngày bắt đầu",
+      "progress": "Tiến độ",
+      "status": "Trạng thái",
+      "actions": "Hành động",
+      "viewMap": "Xem lại bản đồ",
+      "continue": "Tiếp tục"
+    },
+    "recommendations": {
+      "title": "Đề xuất tiếp theo",
+      "forYou": "Đề xuất cho bạn",
+      "microservicesTitle": "Chinh phục Microservices với Spring Cloud",
+      "microservicesDesc": "Mở rộng lộ trình Java Backend của bạn lên một tầm cao mới.",
+      "startNow": "Bắt đầu ngay",
+      "testTime": "15 PHÚT",
+      "testTitle": "Kiểm tra kỹ năng SQL",
+      "testDesc": "Hoàn thành bài test để mở khóa chương tiếp theo của Data Science.",
+      "certificatesTitle": "Chứng chỉ mới nhất",
+      "issued": "ISSUED OCT 2023",
+      "pending": "PENDING...",
+      "viewAllCertificates": "Xem tất cả chứng chỉ"
+    }
+  },
+  "market": {
+    "title": "Gợi ý dành cho bạn",
+    "sortBy": "Sắp xếp theo:",
+    "sortOptions": {
+      "highestMatch": "Độ phù hợp cao nhất",
+      "deadline": "Hạn nộp hồ sơ",
+      "value": "Giá trị học bổng"
+    },
+    "filters": {
+      "field": "Lĩnh vực",
+      "location": "Địa điểm",
+      "match": "Mức độ phù hợp",
+      "over70": "Trên 70%"
+    },
+    "card": {
+      "endsIn": "Ends in:",
+      "match": "Match",
+      "strengths": "Điểm mạnh",
+      "missing": "Còn thiếu",
+      "aiSuggestion": "AI Gợi ý:",
+      "remind": "Nhắc tôi trước 7 ngày",
+      "remindOn": "Đã bật nhắc nhở (7 ngày trước hạn)",
+      "apply": "Apply Now",
+      "details": "Chi tiết"
+    }
+  },
+  "settings": {
+    "title": "Cài đặt thông tin cá nhân",
+    "subtitle": "Quản lý thông tin hồ sơ và bảo mật tài khoản của bạn.",
+    "avatar": {
+      "title": "Ảnh đại diện",
+      "change": "Thay đổi ảnh",
+      "remove": "Gỡ bỏ"
+    },
+    "personal": {
+      "title": "Thông tin cá nhân",
+      "edit": "Chỉnh sửa",
+      "fullname": "Họ và tên",
+      "studentId": "Mã số sinh viên",
+      "university": "Trường đại học",
+      "major": "Chuyên ngành",
+      "email": "Email liên hệ",
+      "phone": "Số điện thoại",
+      "save": "Lưu thay đổi"
+    },
+    "security": {
+      "title": "Bảo mật tài khoản",
+      "password": "Mật khẩu",
+      "passwordDesc": "Thay đổi mật khẩu định kỳ để bảo vệ tài khoản",
+      "changePassword": "Đổi mật khẩu",
+      "2fa": "Xác thực 2 yếu tố (2FA)",
+      "2faDesc": "Tăng thêm một lớp bảo mật cho tài khoản của bạn",
+      "setup": "Thiết lập"
+    },
+    "advanced": {
+      "disable": "Vô hiệu hóa tài khoản",
+      "disableDesc": "Tài khoản sẽ bị tạm khóa và có thể khôi phục trong 30 ngày.",
+      "execute": "Thực hiện"
+    }
+  },
+  "certificates": {
+    "title": "Hồ sơ năng lực số",
+    "profile": {
+      "verified": "Ứng viên đã xác thực",
+      "status": "Trạng thái tuyển dụng",
+      "lookingForJob": "Đang tìm việc",
+      "center": "Trung tâm chứng chỉ Blockchain",
+      "centerDesc": "Tất cả các huy hiệu kỹ năng đều được ký bằng mật mã và được lưu trữ trên sổ cái để đảm bảo tính xác thực cho các nhà tuyển dụng tiềm năng.",
+      "secured": "Danh tính được bảo mật",
+      "hash": "HASH: 8F2A...3B9D"
+    },
+    "badges": {
+      "title": "Huy hiệu kỹ năng đã xác minh",
+      "total": "Tổng số đã xác minh: 12"
+    },
+    "projects": {
+      "title": "Dự án khóa luận đã xác thực",
+      "sourceCode": "Mã nguồn",
+      "liveDemo": "Bản demo trực tiếp",
+      "caseStudy": "Nghiên cứu tình huống"
+    }
+  },
+  "skillsCv": {
+    "badge": "ĐỊNH HƯỚNG NGHỀ NGHIỆP BẰNG AI",
+    "title": "Phân tích khoảng cách sự nghiệp của bạn",
+    "subtitle": "Tải lên CV của bạn và dán mô tả công việc. AI của chúng tôi sẽ phân tích các yêu cầu và chỉ chính xác những gì còn thiếu.",
+    "jd": {
+      "title": "Mô tả công việc",
+      "subtitle": "Dán URL hoặc yêu cầu bằng văn bản thuần túy",
+      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
+      "fetchBtn": "Lấy JD",
+      "textareaPlaceholder": "Hoặc dán toàn bộ mô tả công việc vào đây...",
+      "ready": "Sẵn sàng phân tích"
+    },
+    "cv": {
+      "title": "CV của bạn",
+      "subtitle": "Tải lên CV mới nhất của bạn (chỉ định dạng PDF)",
+      "dropzone": "Kéo và thả tệp của bạn vào đây",
+      "limit": "Giới hạn 5MB • PDF, DOCX",
+      "browseBtn": "Duyệt tệp"
+    },
+    "analyzeBtn": "Phân tích Gap",
+    "secure": "Dữ liệu của bạn được mã hóa và chỉ sử dụng cho mục đích phân tích"
+  }
+}

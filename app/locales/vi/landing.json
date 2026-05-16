@@ -1,0 +1,143 @@
+{
+  "nav": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "prices": "Giá cả",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "getStarted": "Bắt đầu"
+  },
+  "hero": {
+    "badge": "Phân tích nghề nghiệp AI trực tiếp V2.0",
+    "titleStart": "Định hướng Tương lai với",
+    "titleHighlight": "Sự chính xác của AI",
+    "subtitle": "Edu-Bridge ánh xạ các kỹ năng tư duy độc đáo của bạn vào các ngành nghề của tương lai bằng cách sử dụng máy học tiên tiến, loại bỏ mọi sự phỏng đoán trên hành trình nghề nghiệp của bạn.",
+    "ctaPrimary": "Bắt đầu Phân tích",
+    "ctaSecondary": "Cách hoạt động",
+    "mockupTooltipLabel": "Mục tiêu Phù hợp",
+    "mockupTooltipValue": "Khoa học Dữ liệu"
+  },
+  "socialProof": {
+    "title": "Được tin dùng bởi các tổ chức dựa trên dữ liệu"
+  },
+  "featureAnalysis": {
+    "title": "Phân tích Khoảng cách Thông minh",
+    "description": "Các thuật toán của chúng tôi không chỉ đánh giá những gì bạn biết; chúng xác định chính xác những gì bạn còn thiếu cho vị trí mục tiêu. Hình ảnh hóa lỗ hổng kỹ năng của bạn trong thời gian thực và nhận các thông tin hữu ích.",
+    "check1": "So sánh tức thì với hơn 50.000 hồ sơ công việc",
+    "check2": "Phân tích ngữ nghĩa các dự án đã thực hiện của bạn",
+    "check3": "Chấm điểm năng lực theo tiêu chuẩn ngành",
+    "demoLink": "Xem Bản trình diễn Phân tích",
+    "cardTitle": "Lỗ hổng Kỹ năng: Senior Dev",
+    "skillSystemDesign": "Thiết kế Hệ thống",
+    "skillCloud": "Kiến trúc Đám mây",
+    "required": "Yêu cầu: {{percent}}%"
+  },
+  "featureRoadmap": {
+    "title": "Lộ trình Học tập Cá nhân hóa",
+    "description": "Đừng lãng phí thời gian vào các khóa học đại trà. Edu-Bridge tạo ra một chương trình giảng dạy năng động được thiết kế riêng để lấp đầy các lỗ hổng kỹ năng độc đáo của bạn, tự động điều chỉnh khi bạn tiến bộ.",
+    "stat1Value": "40%",
+    "stat1Label": "Tiếp thu kỹ năng nhanh hơn",
+    "stat2Value": "98%",
+    "stat2Label": "Tỷ lệ ứng tuyển thành công",
+    "step1": "Thuật toán Nâng cao",
+    "step1Detail": "Ước tính: 3 tuần • Ưu tiên cao",
+    "step2": "Vận hành Máy học (MLOps)",
+    "step2Detail": "Ước tính: 5 tuần",
+    "step3": "Triển khai Đám mây",
+    "step3Locked": "Đã khóa"
+  },
+  "cta": {
+    "title": "Sẵn sàng kiến tạo sự nghiệp của bạn?",
+    "subtitle": "Tham gia cùng hơn 15.000 sinh viên sử dụng AI để đạt được công việc mơ ước. Không cần thẻ tín dụng cho phân tích ban đầu.",
+    "placeholder": "Nhập email trường đại học của bạn",
+    "button": "Bắt đầu Miễn phí",
+    "terms": "Bằng cách đăng ký, bạn đồng ý với Điều khoản Dịch vụ của chúng tôi."
+  },
+  "footer": {
+    "tagline": "Trao quyền cho thế hệ chuyên gia tiếp theo bằng trí tuệ sự nghiệp dựa trên AI.",
+    "aiStatus": "Trạng thái AI: Trực tuyến",
+    "platform": "Nền tảng",
+    "platformMethodology": "Phương pháp",
+    "platformSkillMapping": "Ánh xạ Kỹ năng",
+    "platformPricing": "Bảng giá",
+    "platformSuccess": "Câu chuyện Thành công",
+    "company": "Công ty",
+    "companyAbout": "Về chúng tôi",
+    "companyCareers": "Tuyển dụng",
+    "companyPartners": "Đối tác",
+    "companyContact": "Liên hệ",
+    "legal": "Pháp lý",
+    "legalPrivacy": "Chính sách Bảo mật",
+    "legalTerms": "Điều khoản Sử dụng",
+    "legalCookies": "Chính sách Cookie",
+    "copyright": "© 2026 Edu-Nexus. Bảo lưu mọi quyền."
+  },
+  "checkout": {
+    "header": {
+      "backToPricing": "Quay lại bảng giá",
+      "breadcrumbPricing": "Bảng giá",
+      "breadcrumbCheckout": "Thanh toán"
+    },
+    "paymentMethods": {
+      "title": "Phương thức thanh toán",
+      "creditCard": "Thẻ tín dụng (Visa/Mastercard)",
+      "creditCardDesc": "Thanh toán qua cổng bảo mật Stripe",
+      "momo": "Ví MoMo",
+      "momoDesc": "Giảm thêm 5% khi quét mã MoMo",
+      "zalo": "Ví ZaloPay",
+      "zaloDesc": "Tiện lợi qua ứng dụng Zalo",
+      "bank": "Chuyển khoản ngân hàng",
+      "bankDesc": "Xác nhận thủ công trong vòng 24h"
+    },
+    "cardInfo": {
+      "title": "Thông tin thẻ",
+      "cardNumber": "Số thẻ",
+      "expiry": "Ngày hết hạn",
+      "cvc": "CVC / CVV"
+    },
+    "summary": {
+      "title": "Tóm tắt đơn hàng",
+      "planName": "Gói Chuyên nghiệp",
+      "planDesc": "Đăng ký theo tháng",
+      "price": "50.000đ",
+      "features": ["Truy cập không giới hạn khóa học", "Cấp chứng chỉ sau mỗi khóa", "Hỗ trợ 24/7 từ chuyên gia"],
+      "subtotal": "Tạm tính",
+      "discount": "Giảm giá",
+      "discountValue": "- 0đ",
+      "total": "Tổng thanh toán",
+      "checkoutBtn": "Thanh toán ngay",
+      "securePayment": "Thanh toán an toàn với mã hóa SSL 256-bit",
+      "terms1": "Bằng cách hoàn tất thanh toán, bạn đồng ý với ",
+      "termsLink1": "Điều khoản dịch vụ",
+      "terms2": " và ",
+      "termsLink2": "Chính sách bảo mật",
+      "terms3": " của Edu-Bridge. Gói đăng ký sẽ tự động gia hạn mỗi tháng."
+    }
+  },
+  "checkoutSuccess": {
+    "title": "Thanh toán thành công!",
+    "subtitle": "Chào mừng bạn đến với Gói Chuyên nghiệp",
+    "transaction": {
+      "title": "Chi tiết giao dịch",
+      "orderId": "Mã đơn hàng",
+      "amount": "Số tiền",
+      "method": "Phương thức",
+      "date": "Ngày giao dịch",
+      "amountValue": "50.000đ",
+      "methodValue": "Ví MoMo"
+    },
+    "features": {
+      "title": "Quyền lợi đã mở khóa:",
+      "list": [
+        { "name": "AI Gap Analysis:", "desc": " Phân tích lỗ hổng kiến thức thông minh." },
+        { "name": "Custom Roadmap:", "desc": " Lộ trình học tập cá nhân hóa 1:1." },
+        { "name": "Priority Support:", "desc": " Hỗ trợ giải đáp thắc mắc ưu tiên 24/7." }
+      ]
+    },
+    "actions": {
+      "dashboard": "Vào Dashboard ngay",
+      "invoice": "Tải hóa đơn",
+      "support": "Mọi thắc mắc vui lòng liên hệ hotro@edubridge.vn"
+    }
+  }
+}

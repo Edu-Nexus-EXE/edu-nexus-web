@@ -1,6 +1,14 @@
+import enAuth from "~/locales/en/auth.json";
 import enCommon from "~/locales/en/common.json";
+import enDashboard from "~/locales/en/dashboard.json";
+import enLanding from "~/locales/en/landing.json";
+import enPricing from "~/locales/en/pricing.json";
 import enWelcome from "~/locales/en/welcome.json";
+import viAuth from "~/locales/vi/auth.json";
 import viCommon from "~/locales/vi/common.json";
+import viDashboard from "~/locales/vi/dashboard.json";
+import viLanding from "~/locales/vi/landing.json";
+import viPricing from "~/locales/vi/pricing.json";
 import viWelcome from "~/locales/vi/welcome.json";
 
 /**
@@ -14,7 +22,7 @@ import viWelcome from "~/locales/vi/welcome.json";
  *   3. Thêm tên namespace vào NAMESPACES
  */
 
-export const NAMESPACES = ["common", "welcome"] as const;
+export const NAMESPACES = ["common", "welcome", "landing", "pricing", "auth", "dashboard"] as const;
 export type Namespace = (typeof NAMESPACES)[number];
 
 export const DEFAULT_NAMESPACE: Namespace = "common";
@@ -23,10 +31,18 @@ export const resources = {
   en: {
     common: enCommon,
     welcome: enWelcome,
+    landing: enLanding,
+    pricing: enPricing,
+    auth: enAuth,
+    dashboard: enDashboard,
   },
   vi: {
     common: viCommon,
     welcome: viWelcome,
+    landing: viLanding,
+    pricing: viPricing,
+    auth: viAuth,
+    dashboard: viDashboard,
   },
 } as const;
 

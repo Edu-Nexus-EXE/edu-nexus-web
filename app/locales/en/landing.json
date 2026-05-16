@@ -1,0 +1,143 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "prices": "Prices",
+    "contact": "Contact",
+    "login": "Log in",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "badge": "Live AI Career Analytics V2.0",
+    "titleStart": "Navigate Your Future with",
+    "titleHighlight": "AI Precision",
+    "subtitle": "Edu-Bridge maps your unique cognitive skills to the careers of tomorrow using advanced machine learning, removing all guesswork from your career journey.",
+    "ctaPrimary": "Start Analysis",
+    "ctaSecondary": "How It Works",
+    "mockupTooltipLabel": "Target Match",
+    "mockupTooltipValue": "Data Science"
+  },
+  "socialProof": {
+    "title": "Trusted by data-driven organizations"
+  },
+  "featureAnalysis": {
+    "title": "Smart Gap Analysis",
+    "description": "Our algorithms don't just assess what you know; they pinpoint exactly what you're missing for your target position. Visualize your skill gaps in real-time and receive actionable insights.",
+    "check1": "Instant comparison against 50,000+ job profiles",
+    "check2": "Semantic analysis of your completed projects",
+    "check3": "Competency scoring by industry standards",
+    "demoLink": "View Analysis Demo",
+    "cardTitle": "Skill Gap: Senior Dev",
+    "skillSystemDesign": "System Design",
+    "skillCloud": "Cloud Architecture",
+    "required": "Required: {{percent}}%"
+  },
+  "featureRoadmap": {
+    "title": "Personalized Learning Paths",
+    "description": "Don't waste time on generic courses. Edu-Bridge creates a dynamic curriculum specifically designed to fill your unique skill gaps, automatically adjusting as you progress.",
+    "stat1Value": "40%",
+    "stat1Label": "Faster skill acquisition",
+    "stat2Value": "98%",
+    "stat2Label": "Successful placement rate",
+    "step1": "Advanced Algorithms",
+    "step1Detail": "Estimated: 3 weeks • High priority",
+    "step2": "Machine Learning Ops (MLOps)",
+    "step2Detail": "Estimated: 5 weeks",
+    "step3": "Cloud Deployment",
+    "step3Locked": "Locked"
+  },
+  "cta": {
+    "title": "Ready to build your career?",
+    "subtitle": "Join over 15,000 students using AI to land their dream jobs. No credit card required for the initial analysis.",
+    "placeholder": "Enter your university email",
+    "button": "Start for Free",
+    "terms": "By signing up, you agree to our Terms of Service."
+  },
+  "footer": {
+    "tagline": "Empowering the next generation of professionals with AI-driven career intelligence.",
+    "aiStatus": "AI Status: Online",
+    "platform": "Platform",
+    "platformMethodology": "Methodology",
+    "platformSkillMapping": "Skill Mapping",
+    "platformPricing": "Pricing",
+    "platformSuccess": "Success Stories",
+    "company": "Company",
+    "companyAbout": "About Us",
+    "companyCareers": "Careers",
+    "companyPartners": "Partners",
+    "companyContact": "Contact",
+    "legal": "Legal",
+    "legalPrivacy": "Privacy Policy",
+    "legalTerms": "Terms of Use",
+    "legalCookies": "Cookie Policy",
+    "copyright": "© 2026 Edu-Nexus. All rights reserved."
+  },
+  "checkout": {
+    "header": {
+      "backToPricing": "Back to Pricing",
+      "breadcrumbPricing": "Pricing",
+      "breadcrumbCheckout": "Checkout"
+    },
+    "paymentMethods": {
+      "title": "Payment Methods",
+      "creditCard": "Credit Card (Visa/Mastercard)",
+      "creditCardDesc": "Secure payment via Stripe",
+      "momo": "MoMo Wallet",
+      "momoDesc": "Extra 5% off when scanning MoMo QR",
+      "zalo": "ZaloPay Wallet",
+      "zaloDesc": "Convenient via Zalo app",
+      "bank": "Bank Transfer",
+      "bankDesc": "Manual verification within 24h"
+    },
+    "cardInfo": {
+      "title": "Card Information",
+      "cardNumber": "Card Number",
+      "expiry": "Expiry Date",
+      "cvc": "CVC / CVV"
+    },
+    "summary": {
+      "title": "Order Summary",
+      "planName": "Pro Plan",
+      "planDesc": "Monthly subscription",
+      "price": "50.000đ",
+      "features": ["Unlimited course access", "Certificate upon completion", "24/7 Expert support"],
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "discountValue": "- 0đ",
+      "total": "Total",
+      "checkoutBtn": "Pay Now",
+      "securePayment": "Secure payment with 256-bit SSL encryption",
+      "terms1": "By completing this payment, you agree to Edu-Bridge's ",
+      "termsLink1": "Terms of Service",
+      "terms2": " and ",
+      "termsLink2": "Privacy Policy",
+      "terms3": ". Subscription renews automatically each month."
+    }
+  },
+  "checkoutSuccess": {
+    "title": "Payment Successful!",
+    "subtitle": "Welcome to the Pro Plan",
+    "transaction": {
+      "title": "Transaction Details",
+      "orderId": "Order ID",
+      "amount": "Amount",
+      "method": "Method",
+      "date": "Transaction Date",
+      "amountValue": "50.000đ",
+      "methodValue": "MoMo Wallet"
+    },
+    "features": {
+      "title": "Unlocked Benefits:",
+      "list": [
+        { "name": "AI Gap Analysis:", "desc": " Intelligent knowledge gap analysis." },
+        { "name": "Custom Roadmap:", "desc": " 1:1 personalized learning roadmap." },
+        { "name": "Priority Support:", "desc": " 24/7 priority support." }
+      ]
+    },
+    "actions": {
+      "dashboard": "Go to Dashboard",
+      "invoice": "Download Invoice",
+      "support": "For any questions, please contact support@edubridge.vn"
+    }
+  }
+}
