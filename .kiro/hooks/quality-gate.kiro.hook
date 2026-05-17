@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "enabled": true,
+  "name": "quality-gate",
+  "description": "Run Edu Nexus typecheck, lint, and optional build from the Agent Hooks panel.",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "node .kiro/scripts/quality-gate.mjs"
+  }
+}

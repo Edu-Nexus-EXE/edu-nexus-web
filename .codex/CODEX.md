@@ -1,28 +1,60 @@
 # Codex Setup - edu-nexus-web
 
-Muc tieu: tao standard workflow cho Codex de team code nhat quan, de review, de maintain.
+Purpose: give Codex a short, repo-specific operating guide so future sessions can
+understand Edu Nexus quickly without rereading every long document.
 
-## 0) Required context first
-- Doc `AGENTS.md` truoc khi de xuat hoac sua code.
-- Khi thay doi lon, doc them `ARCHITECTURE.md`.
+## Read Order
 
-## 1) Default operating workflow (Superpowers-inspired)
-1. **Clarify**: xac dinh dung problem, constraints, acceptance criteria.
-2. **Plan**: liet ke files, impact, rollback-safe approach.
-3. **Implement**: thay doi nho, theo boundaries, uu tien typing ro rang.
-4. **Review**: tu check logic, regression risk, maintainability.
-5. **Finalize**: cap nhat tai lieu lien quan neu co thay doi convention/flow.
+1. `AGENTS.md` - source of truth for architecture and conventions.
+2. `ARCHITECTURE.md` - practical map of layers and feature placement.
+3. `.codex/skills/*/SKILL.md` - task-specific instructions, loaded only when relevant.
 
-## 2) Repo-specific engineering constraints
-- Respect layers: `routes -> features -> shared`; `providers -> shared`.
-- No cross-feature imports; can share thi move len `shared`.
-- Keep routes thin; business logic nam trong feature modules.
-- Khong hard-code mau trong components; dung token + semantic utility classes.
-- i18n key moi phai update ca `app/locales/en` va `app/locales/vi`.
-- Khong edit hand-written vao file codegen cua Orval (`app/api/model`, `app/api/operations`).
-- Uu tien path alias `~/...`.
+When documents disagree, follow `AGENTS.md`.
 
-## 3) Definition of done
-- Dung yeu cau.
-- Dung conventions cua repo.
-- Code ro rang, de maintain, khong tang debt khong can thiet.
+## Codex Skill Discovery
+
+This repo stores local Codex skills in `.codex/skills/`.
+
+Codex native skills are discovered from `~/.agents/skills/` at startup. To make
+these repo skills available globally in Codex, follow `.codex/INSTALL.md`.
+
+Use these skills when relevant:
+
+- `edu-nexus-search-first` - inspect existing patterns and official docs before new integrations.
+- `edu-nexus-workflow` - starting or modifying work in this repo.
+- `edu-nexus-feature` - adding routes, features, components, or providers.
+- `edu-nexus-i18n-theme` - changing user-facing copy, colors, theme, or UI tokens.
+- `edu-nexus-mock-api-orval` - adding mock endpoints, factories, API calls, or Orval.
+- `edu-nexus-review-verify` - reviewing code or finishing a task.
+
+## Default Workflow
+
+1. Clarify the goal and acceptance criteria.
+2. Search first: inspect existing code with `rg` and nearby examples before inventing new patterns.
+3. Plan the smallest safe change.
+4. Implement inside the correct layer.
+5. Review for architecture, i18n, theme, SSR, generated-code, and regression risk.
+6. Verify with the narrowest useful command before saying done.
+
+## Hard Rules
+
+- Respect layers: `routes -> features -> shared`, `providers -> shared`.
+- No cross-feature imports. Move shared behavior to `shared/` only when 2+ features need it.
+- Keep route files thin; feature UI and logic live in `app/features/<feature>/`.
+- Use `~/...` aliases instead of long relative imports.
+- Do not hard-code colors in components. Use semantic Tailwind token classes.
+- User-facing strings require both EN and VI locale keys.
+- Do not hand-edit Orval output in `app/api/model/` or `app/api/operations/`.
+- Do not add `tailwind.config.*` or `react-router-dom`.
+- Do not install packages or commit unless the user explicitly asks.
+
+## Verification
+
+Use one or more:
+
+- `npm run typecheck`
+- `npm run lint`
+- `npm run prettier`
+- `npm run build` for routing, SSR, or build-sensitive changes
+
+If a check cannot run, report the exact blocker.

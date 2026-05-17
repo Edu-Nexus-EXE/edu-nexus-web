@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "enabled": true,
+  "name": "typecheck-on-edit",
+  "description": "Ask the agent to consider TypeScript errors after TS/TSX edits.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["*.ts", "*.tsx"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A TypeScript file changed in edu-nexus-web. Check whether npm run typecheck is warranted. Also verify route thinness, SSR safety, import type usage, and layer boundaries."
+  }
+}
