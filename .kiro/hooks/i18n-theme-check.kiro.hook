@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "enabled": true,
+  "name": "i18n-theme-check",
+  "description": "Ask the agent to review translation parity and theme token usage after UI edits.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["*.tsx", "*.css", "*.json"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review this UI-related edit for Edu Nexus i18n EN/VI parity, semantic theme token usage, dark/light behavior, and hard-coded colors."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "build-error-resolver",
+  "description": "Fixes TypeScript, lint, and build errors with minimal Edu Nexus diffs.",
+  "tools": ["read", "shell", "write"],
+  "instructions": "Fix only the error at hand. Do not refactor architecture unless required. Preserve user changes and repo conventions. Prefer npm run typecheck, npm run lint, and npm run build outputs as evidence."
+}

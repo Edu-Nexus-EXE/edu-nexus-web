@@ -7,5 +7,12 @@
 
 # Environment variables
 .env.local
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/conversations/
+.claude/context/
+.claude/cache/
+.claude/state.db
+.kiro/.local/
 # Whitelist template — commit cho dev mới biết cần env vars gì
 Note
