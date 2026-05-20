@@ -139,5 +139,17 @@
       "invoice": "Tải hóa đơn",
       "support": "Mọi thắc mắc vui lòng liên hệ hotro@edubridge.vn"
     }
+  },
+  "contact": {
+    "students": "Học viên kết nối",
+    "title": "Kết nối cộng đồng",
+    "subtitle": "Tham gia cùng Edu-Bridge trên các nền tảng mạng xã hội để cập nhật kiến thức mới nhất và chia sẻ trải nghiệm học tập.",
+    "facebook": "Cộng đồng Facebook",
+    "facebookSub": "@edubridge.vn",
+    "tiktok": "TikTok Creative",
+    "tiktokSub": "@edubridge_insights",
+    "email": "Email Hỗ trợ",
+    "emailSub": "hello@edu-bridge.vn",
+    "response": "Chúng tôi sẽ phản hồi cho bạn trong thời gian sớm nhất"
   }
 }

@@ -1,9 +1,22 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
 import { DashboardLayout } from '../components/layout/dashboard-layout'
 
 export function SkillsCvPage() {
   const { t } = useTranslation('dashboard')
+  const navigate = useNavigate()
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+
+  const handleAnalyzeGap = () => {
+    setIsAnalyzing(true)
+    setTimeout(() => {
+      setIsAnalyzing(false)
+      navigate('/dashboard/gap-analysis')
+    }, 1500)
+  }
 
   return (
     <DashboardLayout>
@@ -11,6 +24,22 @@ export function SkillsCvPage() {
         {/* Background Decorative Blobs */}
         <div className='absolute top-0 right-0 -z-10 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none opacity-40' />
         <div className='absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-success/5 rounded-full blur-[100px] pointer-events-none opacity-40' />
+
+        {/* Dynamic Glow */}
+        <style>{`
+          .ai-glow {
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.4);
+            animation: pulse-glow 3s infinite;
+          }
+          .dark .ai-glow {
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+          }
+          @keyframes pulse-glow {
+            0% { opacity: 0.95; }
+            50% { opacity: 1; transform: scale(1.01); }
+            100% { opacity: 0.95; }
+          }
+        `}</style>
 
         <div className='text-center mb-16'>
           <span className='inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary rounded-full border border-primary/30 shadow-sm'>
@@ -26,7 +55,7 @@ export function SkillsCvPage() {
           {/* JD Section */}
           <div className='bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors flex flex-col group'>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20'>
+              <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0'>
                 <span className='material-symbols-outlined'>description</span>
               </div>
               <div>
@@ -40,9 +69,9 @@ export function SkillsCvPage() {
                 <input 
                   type='text' 
                   placeholder={t('skillsCv.jd.urlPlaceholder')}
-                  className='w-full px-4 py-3 rounded-lg border border-border bg-muted/50 text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none text-sm placeholder:text-muted-foreground/50' 
+                  className='w-full px-4 pr-24 py-3 rounded-lg border border-border bg-muted/50 text-foreground focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none text-sm placeholder:text-muted-foreground/50' 
                 />
-                <button type='button' className='absolute right-2 top-2 px-4 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold rounded-md hover:brightness-110 transition-all shadow-md shadow-primary/20'>
+                <button type='button' className='absolute right-2 top-2 px-4 py-1.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground text-xs font-bold rounded-md hover:brightness-110 transition-all shadow-md shadow-primary/20 cursor-pointer'>
                   {t('skillsCv.jd.fetchBtn')}
                 </button>
               </div>
@@ -64,7 +93,7 @@ export function SkillsCvPage() {
           {/* CV Section */}
           <div className='bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors flex flex-col group'>
             <div className='flex items-center gap-3 mb-6'>
-              <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20'>
+              <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0'>
                 <span className='material-symbols-outlined'>upload_file</span>
               </div>
               <div>
@@ -79,7 +108,7 @@ export function SkillsCvPage() {
               </div>
               <p className='text-sm font-medium mb-1 text-foreground'>{t('skillsCv.cv.dropzone')}</p>
               <p className='text-xs text-muted-foreground mb-4'>{t('skillsCv.cv.limit')}</p>
-              <button type='button' className='px-6 py-2 bg-card text-primary text-sm font-semibold rounded-lg shadow-sm border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all'>
+              <button type='button' className='px-6 py-2 bg-card text-primary text-sm font-semibold rounded-lg shadow-sm border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer'>
                 {t('skillsCv.cv.browseBtn')}
               </button>
             </div>
@@ -100,9 +129,14 @@ export function SkillsCvPage() {
         </div>
 
         <div className='flex flex-col items-center pb-10'>
-          <button type='button' className='group relative px-12 py-4 bg-gradient-to-r from-primary via-primary/80 to-primary text-primary-foreground font-bold text-lg rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-primary/30'>
+          <button 
+            type='button' 
+            onClick={handleAnalyzeGap}
+            disabled={isAnalyzing}
+            className='ai-glow group relative px-12 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-primary/30 cursor-pointer disabled:opacity-50 disabled:pointer-events-none'
+          >
             <span className='material-symbols-outlined font-bold group-hover:rotate-12 transition-transform'>auto_awesome</span> 
-            {t('skillsCv.analyzeBtn')}
+            {isAnalyzing ? '...' : t('skillsCv.analyzeBtn')}
           </button>
           <p className='mt-4 text-sm text-muted-foreground flex items-center gap-2'>
             <span className='material-symbols-outlined text-sm'>lock</span> 

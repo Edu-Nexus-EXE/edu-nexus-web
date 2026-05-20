@@ -1,0 +1,347 @@
+{
+  "brand": "EduNexus",
+  "sidebar": {
+    "adminControl": "Admin Control",
+    "dashboard": "Dashboard",
+    "userManagement": "User Management",
+    "resourceManagement": "Resource Management",
+    "revenue": "Revenue",
+    "aiCosts": "AI Costs",
+    "affiliateStats": "Affiliate Stats",
+    "ragDocuments": "RAG Documents",
+    "subscriptions": "Subscription Config",
+    "jdLogs": "JD Logs",
+    "generateReport": "Generate Report",
+    "support": "Support",
+    "logout": "Logout"
+  },
+  "header": {
+    "title": "System Overview",
+    "subtitle": "Real-time statistics.",
+    "searchPlaceholder": "Search system...",
+    "defaultUser": "Admin Manager",
+    "defaultPlan": "System Controller"
+  },
+  "stats": {
+    "totalUsers": "Total users",
+    "usersByTier": "Users by tier",
+    "totalJdSubmitted": "Total JD submitted",
+    "weeklyIncrease": "+5% THIS WEEK",
+    "conversionRate": "35% CONVERSION",
+    "monthlyIncrease": "+12% THIS MONTH",
+    "free": "Free",
+    "std": "Std"
+  },
+  "revenue": {
+    "title": "Revenue",
+    "subtitle": "Income source and payment efficiency analysis",
+    "reportDetail": "Report Details",
+    "thisMonth": "Revenue this month",
+    "allTime": "All-time revenue",
+    "paymentSources": "Payment Sources",
+    "recentTransactions": "Recent Transactions",
+    "email": "Email",
+    "amount": "Amount",
+    "method": "Method",
+    "viewAll": "View all transactions",
+    "orders": {
+      "title": "Payment Orders",
+      "subtitle": "Manage and track payment transactions in the system.",
+      "exportCsv": "Export CSV",
+      "totalSuccess": "Total successful transactions",
+      "totalRevenue": "Total revenue",
+      "filter": {
+        "status": "Status",
+        "provider": "Provider",
+        "fromDate": "From date",
+        "toDate": "To date",
+        "searchEmail": "Search email"
+      },
+      "table": {
+        "date": "Date",
+        "user": "User",
+        "amount": "Amount",
+        "provider": "Provider",
+        "code": "Code",
+        "status": "Status"
+      },
+      "pagination": "Showing <1>{{start}} - {{end}}</1> out of <2>{{total}}</2> transactions"
+    }
+  },
+  "aiCost": {
+    "title": "AI Cost by Pipeline",
+    "monthLabel": "Month",
+    "totalLabel": "Total",
+    "pipelineA": "Pipeline A",
+    "pipelineB": "Pipeline B",
+    "currentMonth": "Current month",
+    "allTime": "All time",
+    "netProfitTitle": "Net Profit",
+    "totalRevenue": "Total Revenue",
+    "totalAiCost": "AI Cost (Total)",
+    "netProfit": "Profit (Net)",
+    "financialReport": "View financial report"
+  },
+  "affiliate": {
+    "title": "Affiliate Stats",
+    "phase": "(Phase 1)",
+    "subtitle": "Partner program affiliate data",
+    "totalClicks": "Total Clicks",
+    "conversions": "Conversions",
+    "revenue": "Revenue",
+    "noData": "No statistical data yet"
+  },
+  "resources": {
+    "title": "Resource Management",
+    "breadcrumb": "Academic Resources",
+    "addResource": "Add Resource",
+    "filter": {
+      "search": "Search by title, author...",
+      "type": "Resource Type",
+      "types": {
+        "course": "Course",
+        "document": "Document",
+        "video": "Video Lecture",
+        "exam": "Sample Exam"
+      },
+      "needsReview": "Needs Review",
+      "clearFilters": "Clear Filters"
+    },
+    "table": {
+      "titleAndProvider": "Title & Provider",
+      "type": "Type",
+      "copyright": "Copyright",
+      "status": "Status",
+      "actions": "Actions",
+      "free": "Free",
+      "paid": "Paid",
+      "tbc": "TBC",
+      "approved": "Approved",
+      "pending": "Needs Review",
+      "draft": "Draft"
+    },
+    "pagination": "Showing 1 - 4 of 156 resources",
+    "stats": {
+      "total": "Total Resources",
+      "totalIncrease": "+12% this month",
+      "pending": "Pending Review",
+      "pendingDesc": "New requests to process",
+      "freeRatio": "Free Resource Ratio"
+    },
+    "banner": {
+      "title": "Optimized System",
+      "subtitle": "Edu-Bridge is committed to providing authentic academic resources, strictly reviewed by a team of experts."
+    }
+  },
+  "rag": {
+    "title": "RAG Documents Management",
+    "description": "Manage the system's knowledge base by uploading PDF documents to extract information via RAG.",
+    "uploadButton": "Upload Document",
+    "table": {
+      "title": "Title",
+      "sourceType": "Source Type",
+      "chunks": "Chunks",
+      "status": "Status",
+      "actions": "Actions",
+      "uploadedAt": "Uploaded: ",
+      "statusCompleted": "completed",
+      "statusProcessing": "processing",
+      "statusPending": "pending"
+    },
+    "form": {
+      "title": "Add New Document",
+      "fileLabel": "Document File (PDF)",
+      "dragDrop": "Drag and drop file here",
+      "orClick": "or click to select from computer",
+      "docTitle": "Document Title",
+      "docTitlePlaceholder": "Enter title...",
+      "sourceType": "Source Type",
+      "sourceTypes": {
+        "textbook": "Textbook",
+        "research": "Research Report",
+        "slide": "Lecture Slide",
+        "other": "Other"
+      },
+      "skills": "Related Skill IDs",
+      "skillsPlaceholder": "Type to find skill...",
+      "submit": "Complete Upload"
+    },
+    "summary": {
+      "title": "System Summary",
+      "totalDocs": "Total Documents",
+      "totalChunks": "Total Chunks"
+    }
+  },
+  "users": {
+    "title": "User Management",
+    "description": "Administrators can view, filter, and adjust user account status here.",
+    "exportExcel": "Export Excel",
+    "addNew": "Add New",
+    "filter": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Email or name...",
+      "tierLabel": "Tier",
+      "tiers": {
+        "all": "All tiers",
+        "free": "Free",
+        "pro": "Pro",
+        "enterprise": "Enterprise"
+      },
+      "statusLabel": "Lock Status",
+      "statuses": {
+        "all": "All statuses",
+        "active": "Active",
+        "banned": "Banned"
+      },
+      "apply": "Apply filters"
+    },
+    "table": {
+      "user": "User",
+      "tier": "Tier",
+      "registered": "Registered",
+      "expired": "Expired",
+      "jdCount": "JD Count",
+      "status": "Status",
+      "actions": "Actions",
+      "active": "Active",
+      "expiredStatus": "Expired",
+      "indefinite": "Indefinite",
+      "normal": "Normal",
+      "banned": "Banned",
+      "banAction": "Ban Account",
+      "unbanAction": "Unban",
+      "viewAction": "View Details"
+    },
+    "pagination": "Showing <1>{{start}}</1> out of <2>{{total}}</2> users"
+  },
+  "subscriptions": {
+    "title": "Subscription Config",
+    "subtitle": "Set limits and benefits for each user account tier. These changes will take effect immediately for new subscriptions.",
+    "default": "Default",
+    "popular": "Most Popular",
+    "quota": "JD Quota",
+    "roadmap": "Learning Roadmap",
+    "assessment": "Assessment Limit",
+    "tracking": "Career Tracking",
+    "save": "Save Changes",
+    "unlimited": "(-1 = Unlimited)",
+    "alertTitle": "Infrastructure Change Notice",
+    "alertDesc": "When limits change, active accounts will receive a benefit update notice in the next billing cycle. For immediate effect, please check 'Force Sync' in advanced configuration.",
+    "advanced": "Advanced Config",
+    "changelog": "Changelog"
+  },
+  "jdLogs": {
+    "title": "JD Logs",
+    "subtitle": "Monitor and manage Job Description parsing status and logs.",
+    "newAnalysis": "New Analysis",
+    "breadcrumb": {
+      "system": "System",
+      "current": "JD Logs"
+    },
+    "filter": {
+      "searchPlaceholder": "Search JD, Email...",
+      "statusAll": "Status: All"
+    },
+    "table": {
+      "date": "Date",
+      "email": "User Email",
+      "jdTitle": "JD Title",
+      "source": "Source",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "actions": {
+      "view": "View Details",
+      "retry": "Retry",
+      "delete": "Delete"
+    },
+    "pagination": "Showing {{start}}-{{end}} of {{total}} logs",
+    "stats": {
+      "totalProcessed": "Total JD Processed",
+      "success24h": "Success (24h)",
+      "systemErrors": "System Errors"
+    }
+  },
+  "jdLogDetail": {
+    "breadcrumb": {
+      "admin": "Admin",
+      "failedLogs": "JD Failed Logs",
+      "detail": "Error Detail #{{id}}"
+    },
+    "back": "Back",
+    "status": {
+      "failed": "Failed"
+    },
+    "recordedAt": "System recorded at {{time}}",
+    "userInfo": {
+      "title": "User Information",
+      "email": "User Email",
+      "logId": "Log ID",
+      "creationDate": "Creation Date"
+    },
+    "diagnosis": {
+      "title": "Error Diagnosis",
+      "errorType": "Error Type",
+      "technicalMessage": "Technical Message",
+      "retryCount": "Retry Count"
+    },
+    "rawSource": {
+      "title": "Input Data (Raw Source)",
+      "copy": "Copy",
+      "copied": "Copied!"
+    },
+    "actions": {
+      "retry": "Retry Analysis",
+      "edit": "Edit Data",
+      "delete": "Delete Log"
+    }
+  },
+  "userDetail": {
+    "breadcrumb": {
+      "admin": "Admin",
+      "userManagement": "User Management",
+      "detail": "User Detail: {{name}}"
+    },
+    "back": "Back",
+    "info": {
+      "title": "User Information",
+      "createdDate": "Created at: {{date}}",
+      "lastLogin": "Last login: {{date}}",
+      "ban": "Ban User",
+      "unban": "Unban User"
+    },
+    "subscription": {
+      "title": "Subscription Info",
+      "status": "Active",
+      "currentPlan": "Current Plan",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "autoRenew": "Auto-renew",
+      "yes": "Yes",
+      "no": "No",
+      "activate": "Activate Student",
+      "revoke": "Revoke Plan"
+    },
+    "usage": {
+      "title": "Usage Limits",
+      "growthMsg": "User is in a good growth state"
+    },
+    "paymentHistory": {
+      "title": "Payment History",
+      "exportCsv": "Export CSV Data",
+      "table": {
+        "date": "Date",
+        "amount": "Amount",
+        "provider": "Provider",
+        "code": "TX Code",
+        "status": "Status"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 Edu-Nexus Admin. System control panel.",
+    "support": "Support",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  }
+}

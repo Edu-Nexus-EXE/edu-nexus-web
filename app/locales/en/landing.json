@@ -139,5 +139,17 @@
       "invoice": "Download Invoice",
       "support": "For any questions, please contact support@edubridge.vn"
     }
+  },
+  "contact": {
+    "students": "Connected Students",
+    "title": "Community Connection",
+    "subtitle": "Join Edu-Bridge on social platforms to stay updated with the latest knowledge and share learning experiences.",
+    "facebook": "Facebook Community",
+    "facebookSub": "@edubridge.vn",
+    "tiktok": "TikTok Creative",
+    "tiktokSub": "@edubridge_insights",
+    "email": "Email Support",
+    "emailSub": "hello@edu-bridge.vn",
+    "response": "We will respond to you as soon as possible"
   }
 }

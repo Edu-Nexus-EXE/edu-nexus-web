@@ -29,7 +29,7 @@ export function LandingNavbar() {
             <a href='/pricing' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
               {t('nav.prices')}
             </a>
-            <a href='#' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
+            <a href='/contact' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
               {t('nav.contact')}
             </a>
 

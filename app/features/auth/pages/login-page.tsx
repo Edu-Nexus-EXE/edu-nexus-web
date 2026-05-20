@@ -1,8 +1,19 @@
+import { Link } from 'react-router'
 import { LoginForm } from '../components/login-form'
 
 export function LoginPage() {
   return (
     <div className='bg-background text-foreground font-display min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-primary selection:text-primary-foreground'>
+      <div className='absolute top-6 left-6 z-50'>
+        <Link 
+          to='/'
+          className='flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border shadow-sm'
+        >
+          <span className='material-symbols-outlined text-sm'>arrow_back</span>
+          Về trang chủ
+        </Link>
+      </div>
+
       {/* Decorative background */}
       <div className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0'>
         <div className='absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] opacity-40 animate-pulse' />

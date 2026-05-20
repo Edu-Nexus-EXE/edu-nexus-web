@@ -34,7 +34,11 @@ export function LoginForm() {
 
     const user = mockLogin(email, password)
     if (user) {
-      navigate('/dashboard')
+      if (user.role === 'admin') {
+        navigate('/admin')
+      } else {
+        navigate('/dashboard')
+      }
     } else {
       setError(t('login.errorInvalid'))
     }
@@ -54,10 +58,17 @@ export function LoginForm() {
       </div>
 
       {/* Demo credentials hint */}
-      <div className='mb-6 p-3 rounded-lg bg-primary/5 border border-primary/15 text-sm'>
-        <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Demo Account</p>
-        <p className='text-muted-foreground text-xs'>Email: <code className='font-mono text-foreground'>demo@edunexus.com</code></p>
-        <p className='text-muted-foreground text-xs'>Password: <code className='font-mono text-foreground'>demo123</code></p>
+      <div className='mb-6 p-4 rounded-lg bg-primary/5 border border-primary/15 text-sm grid grid-cols-2 gap-4'>
+        <div>
+          <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Student</p>
+          <p className='text-muted-foreground text-xs'>Email: <code className='font-mono text-foreground'>demo@edunexus.com</code></p>
+          <p className='text-muted-foreground text-xs'>Pass: <code className='font-mono text-foreground'>demo123</code></p>
+        </div>
+        <div>
+          <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Admin</p>
+          <p className='text-muted-foreground text-xs'>Email: <code className='font-mono text-foreground'>admin@edunexus.com</code></p>
+          <p className='text-muted-foreground text-xs'>Pass: <code className='font-mono text-foreground'>admin</code></p>
+        </div>
       </div>
 
       {/* Error */}

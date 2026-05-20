@@ -242,5 +242,101 @@
     },
     "analyzeBtn": "Analyze Gap",
     "secure": "Your data is encrypted and used only for analysis purposes"
+  },
+  "skillsTest": {
+    "badge": "AI CAREER GUIDANCE",
+    "title": "Analyze your career gap",
+    "subtitle": "Upload your CV and paste the job description. Our AI will analyze the requirements and pinpoint exactly what is missing.",
+    "jd": {
+      "title": "Job Description",
+      "subtitle": "Paste URL or plain text requirements",
+      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
+      "fetchBtn": "Fetch JD",
+      "textareaPlaceholder": "Or paste the full job description here...",
+      "ready": "Ready to analyze"
+    },
+    "test": {
+      "title": "Select Assessment",
+      "subtitle": "Choose an assessment to start skill gap analysis.",
+      "startBtn": "Start test",
+      "t1Name": "AI CV Analysis Proficiency",
+      "t1Time": "20 MINS",
+      "t2Name": "JD Keyword Matching Challenge",
+      "t2Time": "15 MINS",
+      "t3Name": "Industry Skill Gap Assessment",
+      "t3Time": "25 MINS"
+    },
+    "analyzeBtn": "Analyze Gap",
+    "secure": "Your data is encrypted and used only for analysis purposes"
+  },
+  "gapAnalysis": {
+    "title": "Gap Analysis — Backend Java Developer",
+    "updated": "Updated: {{date}}",
+    "source": "Source: Skill Assessment ({{percent}}%)",
+    "version": "Version {{version}}",
+    "exportPdf": "Export PDF",
+    "createRoadmap": "Create Learning Roadmap",
+    "back": "Back",
+    "summaryTitle": "Summary Action Plan",
+    "summaryDesc": "User is missing <1>4 critical skills</1> to match this position's requirements. Prioritize fixing these to boost your match rate.",
+    "tableTitle": "Detailed Skill Analysis",
+    "status": {
+      "missing": "Missing",
+      "upgrade": "Upgrade",
+      "have": "Have"
+    },
+    "headers": {
+      "skill": "Skill",
+      "status": "Status",
+      "current": "Current",
+      "required": "Required",
+      "priority": "Priority"
+    },
+    "reasoning": "Reasoning Analysis",
+    "dockerDesc": "JD requires intermediate Docker but the user has no experience. This is a core skill for modern backend development, prioritize acquiring it.",
+    "none": "None",
+    "viewRoadmap": "View Roadmap",
+    "historyTitle": "Version History",
+    "currentBadge": "CURRENT",
+    "viewing": "Viewing",
+    "viewBtn": "View",
+    "tier": "Student Tier",
+    "tierDesc": "All historical versions are stored here.",
+    "mentorTitle": "Mentor Recommendation",
+    "mentorDesc": "\"The Docker for Backend Java course at RMIT will help you fill the 8/10 Gap fastest.\"",
+    "exploreNow": "Explore Now"
+  },
+  "roadmap": {
+    "badge": "BACKEND DEVELOPER ROADMAP",
+    "title": "Your Learning Progress",
+    "progressText": "You have completed {{percent}}% of the roadmap. Keep going!",
+    "backBtn": "Go Back",
+    "completed": "Completed",
+    "learning": "LEARNING",
+    "upcoming": "Upcoming",
+    "popular": "Popular",
+    "duration": "About {{hours}} hours",
+    "level": "Level {{level}}",
+    "description": "Build REST APIs with Spring Boot, learn to connect databases with Spring Data JPA and manage security with Spring Security.",
+    "prerequisites": "Prerequisites",
+    "resources": "Learning Resources:",
+    "youtubeTitle": "YouTube Tutorial",
+    "youtubeDesc": "Comprehensive Spring Boot 3 full series tutorial",
+    "docsTitle": "Official Documentation",
+    "docsDesc": "Official documentation from the Spring.io team",
+    "udemyTitle": "Udemy Premium",
+    "udemyDesc": "Master Spring Boot with Real World Projects",
+    "sponsored": "SPONSORED",
+    "markComplete": "MARK AS COMPLETE",
+    "closePanel": "Close",
+    "upgradePro": "Upgrade Pro",
+    "upgradeDesc": "Unlock all premium roadmaps.",
+    "nodes": {
+      "javaCore": "Java Core",
+      "sqlDb": "SQL & Database",
+      "springBoot": "Spring Boot",
+      "springBootSub": "Start building APIs",
+      "microservices": "Microservices"
+    }
   }
 }

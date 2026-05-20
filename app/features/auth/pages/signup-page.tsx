@@ -1,8 +1,19 @@
+import { Link } from 'react-router'
 import { SignupForm } from '../components/signup-form'
 
 export function SignupPage() {
   return (
     <div className='bg-background text-foreground font-display min-h-screen flex items-center justify-center relative overflow-hidden'>
+      <div className='absolute top-6 left-6 z-50'>
+        <Link 
+          to='/'
+          className='flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border shadow-sm'
+        >
+          <span className='material-symbols-outlined text-sm'>arrow_back</span>
+          Về trang chủ
+        </Link>
+      </div>
+
       {/* Decorative blobs */}
       <div className='absolute inset-0 z-0 pointer-events-none opacity-20'>
         <div className='absolute top-0 left-0 w-96 h-96 bg-primary/30 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2' />

@@ -1,0 +1,347 @@
+{
+  "brand": "Edu-Nexus",
+  "sidebar": {
+    "adminControl": "Admin Control",
+    "dashboard": "Dashboard",
+    "userManagement": "User Management",
+    "resourceManagement": "Quản lý Tài nguyên",
+    "revenue": "Revenue",
+    "aiCosts": "AI Costs",
+    "affiliateStats": "Affiliate Stats",
+    "ragDocuments": "RAG Documents",
+    "subscriptions": "Cấu hình gói dịch vụ",
+    "jdLogs": "JD Logs",
+    "generateReport": "Generate Report",
+    "support": "Support",
+    "logout": "Logout"
+  },
+  "header": {
+    "title": "Tổng quan hệ thống",
+    "subtitle": "Số liệu thống kê theo thời gian thực.",
+    "searchPlaceholder": "Tìm kiếm hệ thống...",
+    "defaultUser": "Admin Manager",
+    "defaultPlan": "System Controller"
+  },
+  "stats": {
+    "totalUsers": "Total users",
+    "usersByTier": "Users by tier",
+    "totalJdSubmitted": "Total JD submitted",
+    "weeklyIncrease": "+5% TUẦN NÀY",
+    "conversionRate": "35% CHUYỂN ĐỔI",
+    "monthlyIncrease": "+12% THÁNG NÀY",
+    "free": "Free",
+    "std": "Std"
+  },
+  "revenue": {
+    "title": "Doanh thu",
+    "subtitle": "Phân tích nguồn thu và hiệu quả thanh toán",
+    "reportDetail": "Chi tiết báo cáo",
+    "thisMonth": "Doanh thu tháng này",
+    "allTime": "Doanh thu tất cả",
+    "paymentSources": "Nguồn thanh toán",
+    "recentTransactions": "Giao dịch gần đây",
+    "email": "Email",
+    "amount": "Amount",
+    "method": "Method",
+    "viewAll": "Xem tất cả giao dịch",
+    "orders": {
+      "title": "Payment Orders",
+      "subtitle": "Quản lý và theo dõi các giao dịch thanh toán trong hệ thống.",
+      "exportCsv": "Xuất CSV",
+      "totalSuccess": "Tổng giao dịch thành công",
+      "totalRevenue": "Tổng doanh thu",
+      "filter": {
+        "status": "Trạng thái",
+        "provider": "Provider",
+        "fromDate": "Từ ngày",
+        "toDate": "Đến ngày",
+        "searchEmail": "Tìm kiếm email"
+      },
+      "table": {
+        "date": "Ngày",
+        "user": "User",
+        "amount": "Số tiền",
+        "provider": "Provider",
+        "code": "Mã",
+        "status": "Trạng thái"
+      },
+      "pagination": "Hiển thị <1>{{start}} - {{end}}</1> trên <2>{{total}}</2> giao dịch"
+    }
+  },
+  "aiCost": {
+    "title": "AI Cost by Pipeline",
+    "monthLabel": "Tháng",
+    "totalLabel": "Tổng",
+    "pipelineA": "Pipeline A",
+    "pipelineB": "Pipeline B",
+    "currentMonth": "Tháng hiện tại",
+    "allTime": "Tất cả thời gian",
+    "netProfitTitle": "Lợi nhuận ròng",
+    "totalRevenue": "Tổng doanh thu",
+    "totalAiCost": "Chi phí AI (Tổng)",
+    "netProfit": "Lợi nhuận (Net)",
+    "financialReport": "Xem báo cáo tài chính"
+  },
+  "affiliate": {
+    "title": "Affiliate Stats",
+    "phase": "(Phase 1)",
+    "subtitle": "Dữ liệu liên kết chương trình đối tác",
+    "totalClicks": "Total Clicks",
+    "conversions": "Conversions",
+    "revenue": "Revenue",
+    "noData": "Chưa có dữ liệu thống kê"
+  },
+  "resources": {
+    "title": "Quản lý Tài nguyên",
+    "breadcrumb": "Tài nguyên học thuật",
+    "addResource": "Thêm Resource",
+    "filter": {
+      "search": "Tìm theo tiêu đề, tác giả...",
+      "type": "Loại tài nguyên",
+      "types": {
+        "course": "Khóa học (Course)",
+        "document": "Tài liệu (Document)",
+        "video": "Video bài giảng",
+        "exam": "Đề thi mẫu"
+      },
+      "needsReview": "Cần xem duyệt",
+      "clearFilters": "Xóa lọc"
+    },
+    "table": {
+      "titleAndProvider": "Tiêu đề & Nhà cung cấp",
+      "type": "Loại",
+      "copyright": "Bản quyền",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "free": "Miễn phí",
+      "paid": "Trả phí",
+      "tbc": "TBC",
+      "approved": "Đã duyệt",
+      "pending": "Cần duyệt",
+      "draft": "Bản nháp"
+    },
+    "pagination": "Hiển thị 1 - 4 của 156 tài nguyên",
+    "stats": {
+      "total": "Tổng tài nguyên",
+      "totalIncrease": "+12% tháng này",
+      "pending": "Đang chờ duyệt",
+      "pendingDesc": "Yêu cầu mới cần xử lý",
+      "freeRatio": "Tỷ lệ Tài liệu Free"
+    },
+    "banner": {
+      "title": "Hệ thống Tối ưu hóa",
+      "subtitle": "Edu-Bridge cam kết cung cấp nguồn tài nguyên học thuật chính thống, được kiểm duyệt nghiêm ngặt bởi đội ngũ chuyên gia."
+    }
+  },
+  "rag": {
+    "title": "Quản lý RAG Documents",
+    "description": "Quản lý kho tri thức của hệ thống bằng cách tải lên các tài liệu PDF để trích xuất thông tin thông qua RAG.",
+    "uploadButton": "Upload tài liệu",
+    "table": {
+      "title": "Tiêu đề",
+      "sourceType": "Loại nguồn",
+      "chunks": "Chunks",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "uploadedAt": "Tải lên: ",
+      "statusCompleted": "completed",
+      "statusProcessing": "processing",
+      "statusPending": "pending"
+    },
+    "form": {
+      "title": "Thêm tài liệu mới",
+      "fileLabel": "Tệp tài liệu (PDF)",
+      "dragDrop": "Kéo và thả tệp vào đây",
+      "orClick": "hoặc nhấn để chọn từ máy tính",
+      "docTitle": "Tiêu đề tài liệu",
+      "docTitlePlaceholder": "Nhập tiêu đề...",
+      "sourceType": "Loại nguồn",
+      "sourceTypes": {
+        "textbook": "Sách giáo khoa",
+        "research": "Báo cáo nghiên cứu",
+        "slide": "Slide bài giảng",
+        "other": "Khác"
+      },
+      "skills": "Skill IDs liên quan",
+      "skillsPlaceholder": "Gõ để tìm skill...",
+      "submit": "Hoàn tất tải lên"
+    },
+    "summary": {
+      "title": "Tóm tắt hệ thống",
+      "totalDocs": "Tổng tài liệu",
+      "totalChunks": "Tổng Chunks"
+    }
+  },
+  "users": {
+    "title": "Quản lý Người dùng",
+    "description": "Quản trị viên có thể xem, lọc và điều chỉnh trạng thái tài khoản người dùng tại đây.",
+    "exportExcel": "Xuất Excel",
+    "addNew": "Thêm Mới",
+    "filter": {
+      "searchLabel": "Tìm kiếm",
+      "searchPlaceholder": "Email hoặc tên...",
+      "tierLabel": "Phân hạng (Tier)",
+      "tiers": {
+        "all": "Tất cả các hạng",
+        "free": "Free",
+        "pro": "Pro",
+        "enterprise": "Enterprise"
+      },
+      "statusLabel": "Trạng thái Khóa",
+      "statuses": {
+        "all": "Tất cả trạng thái",
+        "active": "Hoạt động",
+        "banned": "Đã khóa"
+      },
+      "apply": "Áp dụng bộ lọc"
+    },
+    "table": {
+      "user": "Người dùng",
+      "tier": "Phân hạng",
+      "registered": "Đăng ký",
+      "expired": "Hết hạn",
+      "jdCount": "Số JD",
+      "status": "Trạng thái",
+      "actions": "Thao tác",
+      "active": "Đang hoạt động",
+      "expiredStatus": "Hết hạn",
+      "indefinite": "Vô thời hạn",
+      "normal": "Bình thường",
+      "banned": "Đã khóa",
+      "banAction": "Ban Account",
+      "unbanAction": "Unban",
+      "viewAction": "Xem chi tiết"
+    },
+    "pagination": "Đang hiển thị <1>{{start}}</1> trên <2>{{total}}</2> người dùng"
+  },
+  "subscriptions": {
+    "title": "Cấu hình gói dịch vụ",
+    "subtitle": "Thiết lập hạn mức và quyền lợi cho từng cấp bậc tài khoản người dùng. Những thay đổi này sẽ áp dụng ngay lập tức cho các thuê bao mới.",
+    "default": "Mặc định",
+    "popular": "Phổ biến nhất",
+    "quota": "Hạn mức JD (JD Quota)",
+    "roadmap": "Lộ trình hoạt động",
+    "assessment": "Lượt kiểm tra (Assessment)",
+    "tracking": "Theo dõi nghề nghiệp",
+    "save": "Lưu thay đổi",
+    "unlimited": "(-1 = Không giới hạn)",
+    "alertTitle": "Lưu ý về thay đổi hạ tầng",
+    "alertDesc": "Khi thay đổi hạn mức, các tài khoản đang hoạt động sẽ nhận được thông báo cập nhật quyền lợi vào kỳ thanh toán tiếp theo. Để thay đổi có hiệu lực ngay lập tức, vui lòng đánh dấu vào ô 'Force Sync' trong cấu hình nâng cao.",
+    "advanced": "Cấu hình nâng cao",
+    "changelog": "Nhật ký thay đổi"
+  },
+  "jdLogs": {
+    "title": "JD Logs",
+    "subtitle": "Theo dõi và quản lý trạng thái phân tích mô tả công việc.",
+    "newAnalysis": "Phân tích mới",
+    "breadcrumb": {
+      "system": "Hệ thống",
+      "current": "JD Logs"
+    },
+    "filter": {
+      "searchPlaceholder": "Tìm kiếm JD, Email...",
+      "statusAll": "Trạng thái: Tất cả"
+    },
+    "table": {
+      "date": "Ngày",
+      "email": "User Email",
+      "jdTitle": "JD Title",
+      "source": "Nguồn",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "actions": {
+      "view": "Xem chi tiết",
+      "retry": "Thử lại",
+      "delete": "Xóa"
+    },
+    "pagination": "Hiển thị {{start}}-{{end}} của {{total}} nhật ký",
+    "stats": {
+      "totalProcessed": "Tổng JD đã xử lý",
+      "success24h": "Thành công (24h)",
+      "systemErrors": "Lỗi hệ thống"
+    }
+  },
+  "jdLogDetail": {
+    "breadcrumb": {
+      "admin": "Admin",
+      "failedLogs": "JD Failed Logs",
+      "detail": "Chi tiết lỗi #{{id}}"
+    },
+    "back": "Quay lại",
+    "status": {
+      "failed": "Failed"
+    },
+    "recordedAt": "Ghi nhận hệ thống vào lúc {{time}}",
+    "userInfo": {
+      "title": "Thông tin người dùng",
+      "email": "User Email",
+      "logId": "Log ID",
+      "creationDate": "Creation Date"
+    },
+    "diagnosis": {
+      "title": "Chẩn đoán lỗi",
+      "errorType": "Error Type",
+      "technicalMessage": "Technical Message",
+      "retryCount": "Retry Count"
+    },
+    "rawSource": {
+      "title": "Dữ liệu đầu vào (Raw Source)",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép!"
+    },
+    "actions": {
+      "retry": "Thử lại phân tích",
+      "edit": "Sửa dữ liệu",
+      "delete": "Xóa log"
+    }
+  },
+  "userDetail": {
+    "breadcrumb": {
+      "admin": "Admin",
+      "userManagement": "Quản lý Người dùng",
+      "detail": "Chi tiết người dùng: {{name}}"
+    },
+    "back": "Quay lại",
+    "info": {
+      "title": "Thông tin người dùng",
+      "createdDate": "Tạo ngày: {{date}}",
+      "lastLogin": "Login cuối: {{date}}",
+      "ban": "Ban User",
+      "unban": "Unban User"
+    },
+    "subscription": {
+      "title": "Subscription Info",
+      "status": "Active",
+      "currentPlan": "Gói hiện tại",
+      "startDate": "Ngày bắt đầu",
+      "endDate": "Ngày hết hạn",
+      "autoRenew": "Auto-renew",
+      "yes": "Có",
+      "no": "Không",
+      "activate": "Kích hoạt Student",
+      "revoke": "Thu hồi gói"
+    },
+    "usage": {
+      "title": "Hạn mức sử dụng",
+      "growthMsg": "Người dùng đang trong trạng thái tăng trưởng tốt"
+    },
+    "paymentHistory": {
+      "title": "Lịch sử thanh toán",
+      "exportCsv": "Xuất dữ liệu CSV",
+      "table": {
+        "date": "Ngày",
+        "amount": "Số tiền",
+        "provider": "Provider",
+        "code": "Mã GD",
+        "status": "Status"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 Edu-Nexus Admin. System control panel.",
+    "support": "Hỗ trợ",
+    "privacy": "Bảo mật",
+    "terms": "Điều khoản"
+  }
+}

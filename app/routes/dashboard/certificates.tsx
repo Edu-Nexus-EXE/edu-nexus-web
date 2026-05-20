@@ -7,8 +7,8 @@ export function meta({}: Route.MetaArgs) {
     { title: 'Hồ sơ năng lực số - Edu-Nexus' },
     {
       name: 'description',
-      content: 'Hồ sơ năng lực số, chứng chỉ và các dự án khóa luận đã xác thực của bạn.',
-    },
+      content: 'Hồ sơ năng lực số, chứng chỉ và các dự án khóa luận đã xác thực của bạn.'
+    }
   ]
 }
 

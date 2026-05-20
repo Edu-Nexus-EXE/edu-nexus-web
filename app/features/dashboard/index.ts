@@ -5,3 +5,7 @@ export { MarketPage } from './pages/market-page'
 export { SettingsPage } from './pages/settings-page'
 export { CertificatesPage } from './pages/certificates-page'
 export { SkillsCvPage } from './pages/skills-cv-page'
+export { SkillsTestPage } from './pages/skills-test-page'
+export { GapAnalysisPage } from './pages/gap-analysis-page'
+export { RoadmapPage } from './pages/roadmap-page'
+

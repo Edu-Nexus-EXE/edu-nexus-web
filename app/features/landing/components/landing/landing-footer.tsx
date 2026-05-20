@@ -76,7 +76,7 @@ export function LandingFooter() {
                 </a>
               </li>
               <li>
-                <a href='#' className='hover:text-primary transition-colors'>
+                <a href='/contact' className='hover:text-primary transition-colors'>
                   {t('footer.companyContact')}
                 </a>
               </li>
