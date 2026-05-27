@@ -3,15 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
-import type { MockUser } from '~/shared/lib/mock-auth'
+import type { MockUser } from '~/shared/lib/auth-session'
 
 type NavItem = { key: string; icon: string; path?: string; children?: { key: string; path: string }[] }
 
 const NAV_ITEMS: NavItem[] = [
   { key: 'sidebar.overview', icon: 'dashboard', path: '/dashboard' },
-  { 
-    key: 'sidebar.skills', 
-    icon: 'psychology', 
+  {
+    key: 'sidebar.skills',
+    icon: 'psychology',
     children: [
       { key: 'sidebar.skillsCv', path: '/dashboard/skills/cv' },
       { key: 'sidebar.skillsTest', path: '/dashboard/skills/test' }
@@ -40,14 +40,20 @@ export function DashboardSidebar({ user }: { user: MockUser }) {
       </div>
 
       {/* Nav */}
-      <nav className={cn(
-        'flex-1 px-4 mt-4 space-y-1 overflow-y-auto',
-        '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent',
-        '[&::-webkit-scrollbar-thumb]:bg-primary/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-primary/50'
-      )}>
+      <nav
+        className={cn(
+          'flex-1 px-4 mt-4 space-y-1 overflow-y-auto',
+          '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent',
+          '[&::-webkit-scrollbar-thumb]:bg-primary/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-primary/50'
+        )}
+      >
         {NAV_ITEMS.map((item) =>
           item.children ? (
-            <DashboardSidebarGroup key={item.key} item={{ ...item, children: item.children }} pathname={location.pathname} />
+            <DashboardSidebarGroup
+              key={item.key}
+              item={{ ...item, children: item.children }}
+              pathname={location.pathname}
+            />
           ) : (
             <Link
               key={item.key}

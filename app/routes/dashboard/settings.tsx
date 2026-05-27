@@ -1,14 +1,15 @@
 import { SettingsPage } from '~/features/dashboard'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/settings'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Cài đặt thông tin cá nhân - Edu-Nexus' },
+    { title: getMetaTitle('dashboard', 'settings.title') },
     {
       name: 'description',
-      content: 'Quản lý thông tin hồ sơ và bảo mật tài khoản của bạn.',
-    },
+      content: getMetaTranslation('dashboard', 'settings.subtitle')
+    }
   ]
 }
 

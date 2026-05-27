@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
+import { BrandMark } from './brand-mark'
+
 export function LandingFooter() {
   const { t } = useTranslation('landing')
 
@@ -11,7 +13,7 @@ export function LandingFooter() {
           <div className='col-span-2 lg:col-span-2'>
             <div className='flex items-center gap-2 mb-4'>
               <div className='w-6 h-6 rounded-lg bg-primary flex items-center justify-center text-primary-foreground'>
-                <span className='material-symbols-outlined text-sm'>hub</span>
+                <BrandMark className='h-4 w-4' />
               </div>
               <span className='font-bold text-lg text-foreground'>Edu-Nexus</span>
             </div>

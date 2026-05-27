@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import type { MockUser } from '~/shared/lib/mock-auth'
+import type { MockUser } from '~/shared/lib/auth-session'
 
 export function SettingsPersonalInfo({ user }: { user: MockUser }) {
   const { t } = useTranslation('dashboard')
@@ -9,7 +9,10 @@ export function SettingsPersonalInfo({ user }: { user: MockUser }) {
     <section className='bg-card p-8 rounded-2xl border border-border shadow-sm'>
       <div className='flex items-center justify-between mb-8'>
         <h3 className='text-lg font-bold text-foreground'>{t('settings.personal.title')}</h3>
-        <button type='button' className='text-primary text-sm font-bold hover:opacity-80 flex items-center gap-1 transition-colors'>
+        <button
+          type='button'
+          className='text-primary text-sm font-bold hover:opacity-80 flex items-center gap-1 transition-colors'
+        >
           <span className='material-symbols-outlined text-sm'>edit</span>
           {t('settings.personal.edit')}
         </button>
@@ -69,7 +72,10 @@ export function SettingsPersonalInfo({ user }: { user: MockUser }) {
       </div>
 
       <div className='mt-10 flex justify-end'>
-        <button type='button' className='px-8 py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all'>
+        <button
+          type='button'
+          className='px-8 py-3 bg-primary text-primary-foreground font-bold rounded-xl hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all'
+        >
           {t('settings.personal.save')}
         </button>
       </div>

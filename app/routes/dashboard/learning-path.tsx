@@ -1,14 +1,15 @@
 import { LearningPathPage } from '~/features/dashboard'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/learning-path'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Lịch sử lộ trình học tập - Edu-Nexus' },
+    { title: getMetaTitle('dashboard', 'learningPath.title') },
     {
       name: 'description',
-      content: 'Theo dõi quá trình phát triển kỹ năng và các cột mốc đã đạt được.',
-    },
+      content: getMetaTranslation('dashboard', 'learningPath.subtitle')
+    }
   ]
 }
 

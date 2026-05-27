@@ -1,11 +1,10 @@
 import { SkillsCvPage } from '~/features/dashboard'
+import { getMetaTitle } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/skills-cv'
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Phân tích kỹ năng qua CV - Edu-Nexus' },
-  ]
+  return [{ title: getMetaTitle('dashboard', 'skillsCv.title') }]
 }
 
 export default function DashboardSkillsCv() {

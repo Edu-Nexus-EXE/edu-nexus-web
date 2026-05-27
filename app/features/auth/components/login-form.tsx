@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
-import { mockLogin } from '~/shared/lib/mock-auth'
+import { mockLogin } from '~/shared/lib/auth-session'
 
 function GoogleIcon() {
   return (
@@ -51,9 +51,7 @@ export function LoginForm() {
         <div className='inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4 border border-primary/20 shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.2)]'>
           <span className='material-icons text-2xl'>school</span>
         </div>
-        <h1 className='text-3xl font-bold text-foreground tracking-tight mb-2'>
-          {t('login.title')}
-        </h1>
+        <h1 className='text-3xl font-bold text-foreground tracking-tight mb-2'>{t('login.title')}</h1>
         <p className='text-muted-foreground text-sm'>{t('login.subtitle')}</p>
       </div>
 
@@ -61,13 +59,21 @@ export function LoginForm() {
       <div className='mb-6 p-4 rounded-lg bg-primary/5 border border-primary/15 text-sm grid grid-cols-2 gap-4'>
         <div>
           <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Student</p>
-          <p className='text-muted-foreground text-xs'>Email: <code className='font-mono text-foreground'>demo@edunexus.com</code></p>
-          <p className='text-muted-foreground text-xs'>Pass: <code className='font-mono text-foreground'>demo123</code></p>
+          <p className='text-muted-foreground text-xs'>
+            Email: <code className='font-mono text-foreground'>demo@edunexus.com</code>
+          </p>
+          <p className='text-muted-foreground text-xs'>
+            Pass: <code className='font-mono text-foreground'>demo123</code>
+          </p>
         </div>
         <div>
           <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Admin</p>
-          <p className='text-muted-foreground text-xs'>Email: <code className='font-mono text-foreground'>admin@edunexus.com</code></p>
-          <p className='text-muted-foreground text-xs'>Pass: <code className='font-mono text-foreground'>admin</code></p>
+          <p className='text-muted-foreground text-xs'>
+            Email: <code className='font-mono text-foreground'>admin@edunexus.com</code>
+          </p>
+          <p className='text-muted-foreground text-xs'>
+            Pass: <code className='font-mono text-foreground'>admin</code>
+          </p>
         </div>
       </div>
 

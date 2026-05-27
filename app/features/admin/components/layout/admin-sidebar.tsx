@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
-import { mockLogout } from '~/shared/lib/mock-auth'
+import { mockLogout } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 
 export function AdminSidebar() {

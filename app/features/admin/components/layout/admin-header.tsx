@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { getMockUser } from '~/shared/lib/mock-auth'
+import { getMockUser } from '~/shared/lib/auth-session'
 import { LanguageSwitcher } from '~/shared/components/language-switcher'
 
 export function AdminHeader() {

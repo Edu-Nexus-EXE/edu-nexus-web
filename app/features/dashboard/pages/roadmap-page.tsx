@@ -2,22 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
-interface RoadmapNode {
-  id: string
-  nameKey: string
-  subKey?: string
-  icon: string
-  status: 'completed' | 'active' | 'future'
-}
-
-interface ResourceItem {
-  titleKey: string
-  descKey: string
-  icon: string
-  iconBg: string
-  iconColor: string
-  sponsored?: boolean
-}
+import { roadmapNodes, roadmapResources } from '../lib/roadmap-data'
 
 export function RoadmapPage() {
   const { t } = useTranslation('dashboard')
@@ -25,19 +10,6 @@ export function RoadmapPage() {
   const [selectedNode, setSelectedNode] = useState<string | null>('spring_boot')
   const [isPanelOpen, setIsPanelOpen] = useState(true)
   const activeNodeRef = useRef<HTMLDivElement>(null)
-
-  const nodes: RoadmapNode[] = [
-    { id: 'java_core', nameKey: 'roadmap.nodes.javaCore', icon: 'check_circle', status: 'completed' },
-    { id: 'sql_db', nameKey: 'roadmap.nodes.sqlDb', icon: 'check_circle', status: 'completed' },
-    { id: 'spring_boot', nameKey: 'roadmap.nodes.springBoot', subKey: 'roadmap.nodes.springBootSub', icon: 'bolt', status: 'active' },
-    { id: 'microservices', nameKey: 'roadmap.nodes.microservices', icon: 'cloud_done', status: 'future' },
-  ]
-
-  const resources: ResourceItem[] = [
-    { titleKey: 'roadmap.youtubeTitle', descKey: 'roadmap.youtubeDesc', icon: 'play_circle', iconBg: 'bg-destructive/10', iconColor: 'text-destructive' },
-    { titleKey: 'roadmap.docsTitle', descKey: 'roadmap.docsDesc', icon: 'description', iconBg: 'bg-info/10', iconColor: 'text-info' },
-    { titleKey: 'roadmap.udemyTitle', descKey: 'roadmap.udemyDesc', icon: 'school', iconBg: 'bg-primary/10', iconColor: 'text-primary', sponsored: true },
-  ]
 
   // Subtle floating animation for the active node
   useEffect(() => {
@@ -60,27 +32,10 @@ export function RoadmapPage() {
     setIsPanelOpen(true)
   }
 
-  const activeNode = nodes.find(n => n.id === selectedNode)
+  const activeNode = roadmapNodes.find((n) => n.id === selectedNode)
 
   return (
     <div className='min-h-screen bg-background'>
-      {/* Custom styles */}
-      <style>{`
-        .roadmap-line-dashed {
-          background: repeating-linear-gradient(to bottom, var(--color-primary) 0, var(--color-primary) 8px, transparent 8px, transparent 16px);
-        }
-        .node-glow {
-          box-shadow: 0 0 30px color-mix(in srgb, var(--color-primary) 30%, transparent);
-        }
-        @keyframes float-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-6px); }
-        }
-        .badge-bounce {
-          animation: float-bounce 2s ease-in-out infinite;
-        }
-      `}</style>
-
       {/* Top Header Bar */}
       <header className='sticky top-0 w-full flex justify-between items-center px-6 h-16 bg-background/80 backdrop-blur-md z-50 border-b border-border'>
         <div className='flex items-center gap-4'>
@@ -97,10 +52,16 @@ export function RoadmapPage() {
           <span className='text-xs font-bold uppercase tracking-widest text-primary'>{t('roadmap.badge')}</span>
         </div>
         <div className='flex items-center gap-3'>
-          <button className='p-2 rounded-full hover:bg-muted transition-all active:scale-95 cursor-pointer' aria-label='Notifications'>
+          <button
+            className='p-2 rounded-full hover:bg-muted transition-all active:scale-95 cursor-pointer'
+            aria-label='Notifications'
+          >
             <span className='material-symbols-outlined text-muted-foreground'>notifications</span>
           </button>
-          <button className='p-2 rounded-full hover:bg-muted transition-all active:scale-95 cursor-pointer' aria-label='Account'>
+          <button
+            className='p-2 rounded-full hover:bg-muted transition-all active:scale-95 cursor-pointer'
+            aria-label='Account'
+          >
             <span className='material-symbols-outlined text-muted-foreground'>account_circle</span>
           </button>
         </div>
@@ -128,7 +89,7 @@ export function RoadmapPage() {
               {/* Dashed connecting line */}
               <div className='absolute w-1 h-full roadmap-line-dashed left-1/2 -translate-x-1/2 -z-10 opacity-20' />
 
-              {nodes.map((node) => {
+              {roadmapNodes.map((node) => {
                 if (node.status === 'completed') {
                   return (
                     <div
@@ -137,7 +98,9 @@ export function RoadmapPage() {
                       onClick={() => handleNodeClick(node.id)}
                     >
                       <div className='w-16 h-16 bg-muted-foreground text-background rounded-full flex items-center justify-center shadow-lg border-4 border-background ring-4 ring-muted-foreground/10 group-hover:scale-105 transition-transform'>
-                        <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                        <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>
+                          check_circle
+                        </span>
                       </div>
                       <div className='mt-4 text-center'>
                         <p className='font-bold text-foreground'>{t(node.nameKey)}</p>
@@ -166,9 +129,7 @@ export function RoadmapPage() {
                       </div>
                       <div className='mt-4 text-center'>
                         <p className='font-bold text-primary text-lg'>{t(node.nameKey)}</p>
-                        {node.subKey && (
-                          <p className='text-xs text-primary font-medium'>{t(node.subKey)}</p>
-                        )}
+                        {node.subKey && <p className='text-xs text-primary font-medium'>{t(node.subKey)}</p>}
                       </div>
                       {/* Decorative glow */}
                       <div className='absolute -inset-4 bg-primary/5 blur-2xl -z-20 rounded-full' />
@@ -204,7 +165,9 @@ export function RoadmapPage() {
               <div className='p-8 pb-4'>
                 <div className='flex justify-between items-start mb-6'>
                   <div className='w-16 h-16 bg-primary/15 rounded-2xl flex items-center justify-center text-primary shadow-lg shadow-primary/10 border border-primary/20'>
-                    <span className='material-symbols-outlined text-4xl' style={{ fontVariationSettings: "'FILL' 1" }}>bolt</span>
+                    <span className='material-symbols-outlined text-4xl' style={{ fontVariationSettings: "'FILL' 1" }}>
+                      bolt
+                    </span>
                   </div>
                   <button
                     onClick={() => setIsPanelOpen(false)}
@@ -230,9 +193,7 @@ export function RoadmapPage() {
                     {t('roadmap.level', { level: 2 })}
                   </span>
                 </div>
-                <p className='text-muted-foreground text-sm leading-relaxed mb-6'>
-                  {t('roadmap.description')}
-                </p>
+                <p className='text-muted-foreground text-sm leading-relaxed mb-6'>{t('roadmap.description')}</p>
 
                 {/* Prerequisites */}
                 <div className='mb-8 p-4 bg-muted/30 rounded-xl border border-border'>
@@ -243,7 +204,12 @@ export function RoadmapPage() {
                   <div className='flex flex-wrap gap-2'>
                     <span className='flex items-center gap-1.5 px-3 py-1.5 bg-card text-foreground border border-success/20 rounded-full text-xs font-medium shadow-sm'>
                       Java OOP
-                      <span className='material-symbols-outlined text-success text-sm' style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                      <span
+                        className='material-symbols-outlined text-success text-sm'
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        check_circle
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -259,7 +225,7 @@ export function RoadmapPage() {
                     </h3>
                   </div>
                   <div className='space-y-4'>
-                    {resources.map((res) => (
+                    {roadmapResources.map((res) => (
                       <div
                         key={res.titleKey}
                         className='group p-4 bg-card border border-border rounded-xl hover:shadow-lg hover:border-primary/30 transition-all cursor-pointer'
@@ -295,7 +261,9 @@ export function RoadmapPage() {
             {/* Footer Action */}
             <div className='absolute bottom-0 left-0 w-full p-6 bg-card/80 backdrop-blur-md border-t border-border'>
               <button className='w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 cursor-pointer'>
-                <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+                <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>
+                  check_circle
+                </span>
                 {t('roadmap.markComplete')}
               </button>
             </div>
@@ -310,7 +278,9 @@ export function RoadmapPage() {
           <span className='text-[10px] font-bold'>{t('sidebar.overview')}</span>
         </button>
         <button className='flex flex-col items-center gap-1 text-primary cursor-pointer'>
-          <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>map</span>
+          <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>
+            map
+          </span>
           <span className='text-[10px] font-bold'>{t('sidebar.learningPath')}</span>
         </button>
         <button className='flex flex-col items-center gap-1 text-muted-foreground cursor-pointer'>

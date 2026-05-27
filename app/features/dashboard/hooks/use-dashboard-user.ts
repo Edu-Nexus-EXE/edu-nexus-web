@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
 
 import { useHydrated } from '~/shared/hooks/use-hydrated'
-import { getMockUser } from '~/shared/lib/mock-auth'
+import { getMockUser } from '~/shared/lib/auth-session'
 
 export function useDashboardUser() {
   const navigate = useNavigate()

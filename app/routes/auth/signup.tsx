@@ -1,13 +1,14 @@
 import { SignupPage } from '~/features/auth'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/signup'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Đăng ký - Edu-Nexus' },
+    { title: getMetaTitle('auth', 'signup.title') },
     {
       name: 'description',
-      content: 'Tạo tài khoản Edu-Nexus để bắt đầu hành trình học tập với AI.'
+      content: getMetaTranslation('auth', 'signup.subtitle')
     }
   ]
 }

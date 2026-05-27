@@ -1,15 +1,10 @@
 import { MarketPage } from '~/features/dashboard'
+import { getMetaTitle } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/market'
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Thị trường Học bổng - Edu-Nexus' },
-    {
-      name: 'description',
-      content: 'Cổng học bổng cá nhân hóa. Gợi ý học bổng dành cho bạn.',
-    },
-  ]
+  return [{ title: getMetaTitle('dashboard', 'market.title') }]
 }
 
 export default function DashboardMarket() {

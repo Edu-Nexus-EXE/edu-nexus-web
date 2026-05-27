@@ -1,14 +1,15 @@
 import { AnalysisHistoryPage } from '~/features/dashboard'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/analysis-history'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Lịch sử Phân tích Kỹ năng - Edu-Nexus' },
+    { title: getMetaTitle('dashboard', 'analysisHistory.title') },
     {
       name: 'description',
-      content: 'Xem lại các bản đánh giá khoảng cách kỹ năng trước đây của bạn cho từng vị trí công việc.',
-    },
+      content: getMetaTranslation('dashboard', 'analysisHistory.subtitle')
+    }
   ]
 }
 

@@ -1,14 +1,15 @@
 import { DashboardPage } from '~/features/dashboard'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/index'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Dashboard - Edu-Nexus' },
+    { title: getMetaTitle('dashboard', 'header.title') },
     {
       name: 'description',
-      content: 'Tổng quan hành trình học tập và sự nghiệp của bạn.',
-    },
+      content: getMetaTranslation('dashboard', 'readiness.subtitle')
+    }
   ]
 }
 

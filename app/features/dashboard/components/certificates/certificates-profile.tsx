@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import type { MockUser } from '~/shared/lib/mock-auth'
+import type { MockUser } from '~/shared/lib/auth-session'
 
 export function CertificatesProfile({ user }: { user: MockUser }) {
   const { t } = useTranslation('dashboard')
@@ -30,17 +30,28 @@ export function CertificatesProfile({ user }: { user: MockUser }) {
               {t('certificates.profile.verified')}
             </span>
           </div>
-          <p className='text-muted-foreground text-lg mb-6'>Full Stack Developer & Cloud Enthusiast • Computer Science Senior</p>
+          <p className='text-muted-foreground text-lg mb-6'>
+            Full Stack Developer & Cloud Enthusiast • Computer Science Senior
+          </p>
           <div className='flex flex-wrap gap-4 justify-center md:justify-start'>
-            <a href='#' className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'>
+            <a
+              href='#'
+              className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
+            >
               <span className='material-symbols-outlined text-sm'>location_on</span>
               San Francisco, CA
             </a>
-            <a href='#' className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'>
+            <a
+              href='#'
+              className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
+            >
               <span className='material-symbols-outlined text-sm'>link</span>
               github.com/alexster
             </a>
-            <a href='#' className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'>
+            <a
+              href='#'
+              className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
+            >
               <span className='material-symbols-outlined text-sm'>email</span>
               {user.email}
             </a>
@@ -64,9 +75,7 @@ export function CertificatesProfile({ user }: { user: MockUser }) {
           <h3 className='text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4'>
             {t('certificates.profile.center')}
           </h3>
-          <p className='text-muted-foreground text-sm mb-6 leading-relaxed'>
-            {t('certificates.profile.centerDesc')}
-          </p>
+          <p className='text-muted-foreground text-sm mb-6 leading-relaxed'>{t('certificates.profile.centerDesc')}</p>
         </div>
         <div className='flex items-center gap-3 p-3 bg-primary/5 rounded-lg border border-primary/10'>
           <span className='material-symbols-outlined text-primary'>security</span>

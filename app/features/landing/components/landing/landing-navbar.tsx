@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { cn } from '~/shared/lib/cn'
 
+import { BrandMark } from './brand-mark'
+
 export function LandingNavbar() {
   const { t } = useTranslation('landing')
 
@@ -13,7 +15,7 @@ export function LandingNavbar() {
           {/* Logo */}
           <a href='/' className='flex-shrink-0 flex items-center gap-2 cursor-pointer'>
             <div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground'>
-              <span className='material-symbols-outlined text-xl'>hub</span>
+              <BrandMark className='h-5 w-5' />
             </div>
             <span className='font-bold text-xl tracking-tight text-foreground'>Edu-Nexus</span>
           </a>
@@ -26,10 +28,16 @@ export function LandingNavbar() {
             <a href='#' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
               {t('nav.about')}
             </a>
-            <a href='/pricing' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
+            <a
+              href='/pricing'
+              className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'
+            >
               {t('nav.prices')}
             </a>
-            <a href='/contact' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
+            <a
+              href='/contact'
+              className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'
+            >
               {t('nav.contact')}
             </a>
 

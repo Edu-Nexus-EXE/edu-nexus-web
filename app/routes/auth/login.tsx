@@ -1,13 +1,14 @@
 import { LoginPage } from '~/features/auth'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/login'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Đăng nhập - Edu-Nexus' },
+    { title: getMetaTitle('auth', 'login.title') },
     {
       name: 'description',
-      content: 'Đăng nhập vào Edu-Nexus để truy cập bảng điều khiển học tập của bạn.'
+      content: getMetaTranslation('auth', 'login.subtitle')
     }
   ]
 }

@@ -1,11 +1,10 @@
 import { SkillsTestPage } from '~/features/dashboard'
+import { getMetaTitle } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/skills-test'
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Phân tích kỹ năng qua bài test - Edu-Nexus' },
-  ]
+  return [{ title: getMetaTitle('dashboard', 'skillsTest.title') }]
 }
 
 export default function DashboardSkillsTest() {

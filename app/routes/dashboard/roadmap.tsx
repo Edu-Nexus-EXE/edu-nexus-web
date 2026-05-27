@@ -1,11 +1,10 @@
 import { RoadmapPage } from '~/features/dashboard'
+import { getMetaTitle } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/roadmap'
 
 export function meta({}: Route.MetaArgs) {
-  return [
-    { title: 'Lộ trình học tập - Edu-Nexus' },
-  ]
+  return [{ title: getMetaTitle('dashboard', 'roadmap.title') }]
 }
 
 export default function DashboardRoadmap() {

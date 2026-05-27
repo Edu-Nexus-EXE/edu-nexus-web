@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
-import { type MockUser, mockLogout } from '~/shared/lib/mock-auth'
+import { type MockUser, mockLogout } from '~/shared/lib/auth-session'
 
 export function DashboardHeader({ user }: { user: MockUser }) {
   const { t } = useTranslation('dashboard')

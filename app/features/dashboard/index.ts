@@ -8,4 +8,4 @@ export { SkillsCvPage } from './pages/skills-cv-page'
 export { SkillsTestPage } from './pages/skills-test-page'
 export { GapAnalysisPage } from './pages/gap-analysis-page'
 export { RoadmapPage } from './pages/roadmap-page'
-
+export { DashboardLayout } from './components/layout/dashboard-layout'

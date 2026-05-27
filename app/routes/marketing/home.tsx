@@ -1,13 +1,14 @@
 import { LandingPage } from '~/features/landing'
+import { getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/home'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Edu-Nexus - Định hướng Nghề nghiệp AI' },
+    { title: `Edu-Nexus - ${getMetaTranslation('landing', 'hero.titleHighlight')}` },
     {
       name: 'description',
-      content: 'Edu-Nexus ánh xạ kỹ năng của bạn vào các ngành nghề tương lai bằng AI tiên tiến.'
+      content: getMetaTranslation('landing', 'hero.subtitle')
     }
   ]
 }

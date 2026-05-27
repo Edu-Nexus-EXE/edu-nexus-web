@@ -1,13 +1,14 @@
 import { CertificatesPage } from '~/features/dashboard'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/certificates'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Hồ sơ năng lực số - Edu-Nexus' },
+    { title: getMetaTitle('dashboard', 'certificates.title') },
     {
       name: 'description',
-      content: 'Hồ sơ năng lực số, chứng chỉ và các dự án khóa luận đã xác thực của bạn.'
+      content: getMetaTranslation('dashboard', 'certificates.profile.centerDesc')
     }
   ]
 }

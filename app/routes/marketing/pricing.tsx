@@ -1,15 +1,16 @@
 import { LandingFooter, LandingNavbar, MarketingLayout } from '~/features/landing'
 import { PricingPage } from '~/features/pricing'
+import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/pricing'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: 'Bảng giá - Edu-Nexus' },
+    { title: getMetaTitle('pricing', 'hero.title') },
     {
       name: 'description',
-      content: 'Chọn gói dịch vụ phù hợp để tối ưu hóa hành trình học tập và sự nghiệp với AI.',
-    },
+      content: getMetaTranslation('pricing', 'hero.subtitle')
+    }
   ]
 }
 

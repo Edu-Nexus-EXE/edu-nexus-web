@@ -1,0 +1,67 @@
+export type GapAnalysisSkillStatus = 'missing' | 'upgrade' | 'have'
+
+export interface GapAnalysisSkill {
+  id: string
+  name: string
+  icon: string
+  status: GapAnalysisSkillStatus
+  current: string
+  required: string
+  priorityScore: number
+  hasPriority: boolean
+  reason: string
+  tags: string[]
+}
+
+export function getGapAnalysisSkills(t: (key: string) => string): GapAnalysisSkill[] {
+  return [
+    {
+      id: 'docker',
+      name: 'Docker',
+      icon: 'token',
+      status: 'missing',
+      current: t('gapAnalysis.none'),
+      required: 'Inter',
+      priorityScore: 8,
+      hasPriority: true,
+      reason: t('gapAnalysis.dockerDesc'),
+      tags: ['Containerization', 'Microservices']
+    },
+    {
+      id: 'cicd',
+      name: 'CI/CD',
+      icon: 'alt_route',
+      status: 'missing',
+      current: t('gapAnalysis.none'),
+      required: 'Basic',
+      priorityScore: 7,
+      hasPriority: true,
+      reason: t('gapAnalysis.cicdDesc'),
+      tags: ['GitHub Actions', 'Jenkins']
+    },
+    {
+      id: 'sql',
+      name: 'SQL',
+      icon: 'database',
+      status: 'upgrade',
+      current: 'Basic',
+      required: 'Inter',
+      priorityScore: 6,
+      hasPriority: true,
+      reason: t('gapAnalysis.sqlDesc'),
+      tags: ['PostgreSQL', 'Query Tuning']
+    },
+    {
+      id: 'java_oop',
+      name: 'Java OOP',
+      icon: 'code',
+      status: 'have',
+      current: 'Inter',
+      required: 'Inter',
+      priorityScore: 0,
+      hasPriority: false,
+      reason: t('gapAnalysis.javaOopDesc'),
+      tags: ['Inheritance', 'Design Patterns']
+    }
+  ]
+}

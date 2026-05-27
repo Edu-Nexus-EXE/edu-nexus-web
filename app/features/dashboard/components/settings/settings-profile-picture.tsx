@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import type { MockUser } from '~/shared/lib/mock-auth'
+import type { MockUser } from '~/shared/lib/auth-session'
 
 export function SettingsProfilePicture({ user }: { user: MockUser }) {
   const { t } = useTranslation('dashboard')
@@ -17,7 +17,10 @@ export function SettingsProfilePicture({ user }: { user: MockUser }) {
               className='w-full h-full object-cover'
             />
           </div>
-          <button type='button' className='absolute bottom-1 right-1 p-2.5 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform flex items-center justify-center'>
+          <button
+            type='button'
+            className='absolute bottom-1 right-1 p-2.5 bg-primary text-primary-foreground rounded-full shadow-lg hover:scale-110 transition-transform flex items-center justify-center'
+          >
             <span className='material-symbols-outlined text-base'>photo_camera</span>
           </button>
         </div>
@@ -26,10 +29,16 @@ export function SettingsProfilePicture({ user }: { user: MockUser }) {
           <h4 className='text-2xl font-bold text-foreground mb-1'>{user.name}</h4>
           <p className='text-muted-foreground mb-6 font-medium'>Sinh viên năm 4 • Khoa Công nghệ Thông tin</p>
           <div className='flex flex-wrap justify-center md:justify-start gap-3'>
-            <button type='button' className='px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20'>
+            <button
+              type='button'
+              className='px-6 py-2.5 bg-primary text-primary-foreground text-sm font-bold rounded-xl hover:bg-primary/90 transition-colors shadow-md shadow-primary/20'
+            >
               {t('settings.avatar.change')}
             </button>
-            <button type='button' className='px-6 py-2.5 bg-muted border border-border text-foreground text-sm font-bold rounded-xl hover:bg-muted/80 transition-colors'>
+            <button
+              type='button'
+              className='px-6 py-2.5 bg-muted border border-border text-foreground text-sm font-bold rounded-xl hover:bg-muted/80 transition-colors'
+            >
               {t('settings.avatar.remove')}
             </button>
           </div>
