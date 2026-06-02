@@ -7,6 +7,7 @@
 
 # Environment variables
 .env.local
+.env
 CLAUDE.local.md
 .claude/settings.local.json
 .claude/conversations/
@@ -16,3 +17,5 @@ CLAUDE.local.md
 .kiro/.local/
 # Whitelist template — commit cho dev mới biết cần env vars gì
 Note
+app/api
+fe-error.md

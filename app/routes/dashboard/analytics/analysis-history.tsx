@@ -8,11 +8,11 @@ export function meta({}: Route.MetaArgs) {
     { title: getMetaTitle('dashboard', 'analysisHistory.title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'analysisHistory.subtitle')
-    }
+      content: getMetaTranslation('dashboard', 'analysisHistory.subtitle'),
+    },
   ]
 }
 
-export default function DashboardAnalysisHistory() {
+export default function DashboardAnalysisHistoryRoute() {
   return <AnalysisHistoryPage />
 }

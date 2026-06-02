@@ -1,49 +1,226 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { postAuthGoogle, postAuthLogin } from '~/api/operations/auth/auth'
+import { getUsersMe } from '~/api/operations/users/users'
+import { InvalidCredentialsError } from '~/api/mutator/custom-fetch'
+import { env } from '~/shared/config/env'
 import { cn } from '~/shared/lib/cn'
-import { mockLogin } from '~/shared/lib/auth-session'
+import { setAuthSession } from '~/shared/lib/auth-session'
+import { useToast } from '~/shared/components'
+import type { AuthResponseData } from '../lib/be-auth-types'
+import { isAuthResponseData, mapAuthResponseToUser, mapUserProfileToUser } from '../lib/be-auth-types'
 
-function GoogleIcon() {
-  return (
-    <svg className='h-5 w-5 mr-2' fill='currentColor' viewBox='0 0 24 24'>
-      <path d='M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z' />
-    </svg>
-  )
+type ResponseWithData<T> = { data?: T }
+
+type UserMeDto = {
+  id: string
+  email: string
+  fullName: string
+  avatarUrl?: string | null
+  role: string
+  isSurveyCompleted: boolean
+  portfolioUrlSlug?: string | null
+  subscription?: {
+    tierCode: string
+    displayName: string
+    status: string
+    expiresAt?: string | null
+  } | null
 }
 
-function LinkedInIcon() {
-  return (
-    <svg className='h-5 w-5 mr-2' fill='currentColor' viewBox='0 0 24 24'>
-      <path d='M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z' />
-    </svg>
-  )
+type GoogleAccountsId = {
+  initialize: (options: { client_id: string; callback: (resp: { credential?: string }) => void; auto_select?: boolean; cancel_on_tap_outside?: boolean }) => void
+  renderButton: (container: HTMLElement, options: Record<string, unknown>) => void
+}
+
+type GoogleSdk = {
+  accounts?: {
+    id?: GoogleAccountsId
+  }
+}
+
+async function redirectAfterLogin(navigate: (to: string) => void, tokens: { accessToken: string; refreshToken: string }) {
+  try {
+    const me = await getUsersMe()
+    const profile = (me as ResponseWithData<UserMeDto>).data
+
+    if (profile) {
+      setAuthSession({
+        user: mapUserProfileToUser(profile),
+        tokens,
+      })
+
+      navigate(profile.isSurveyCompleted ? '/dashboard' : '/onboarding')
+      return
+    }
+
+    navigate('/dashboard')
+  } catch {
+    navigate('/dashboard')
+  }
+}
+
+function toAuthData(res: unknown): AuthResponseData {
+  const raw = (res as ResponseWithData<unknown>)?.data
+  if (!isAuthResponseData(raw)) {
+    throw new Error('Invalid auth response: missing or malformed data from server')
+  }
+  return raw
+}
+
+declare global {
+  interface Window {
+    google?: GoogleSdk
+  }
+}
+
+function loadGoogleIdentityScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (typeof document === 'undefined') {
+      resolve()
+      return
+    }
+
+    const existing = document.querySelector<HTMLScriptElement>('script[data-google-identity]')
+    if (existing) {
+      if (window.google?.accounts?.id) resolve()
+      else existing.addEventListener('load', () => resolve(), { once: true })
+      return
+    }
+
+    const script = document.createElement('script')
+    script.src = 'https://accounts.google.com/gsi/client'
+    script.async = true
+    script.defer = true
+    script.dataset.googleIdentity = 'true'
+    script.onload = () => resolve()
+    script.onerror = () => reject(new Error('Failed to load Google Identity script'))
+    document.head.appendChild(script)
+  })
 }
 
 export function LoginForm() {
   const { t } = useTranslation('auth')
+  const toast = useToast()
   const navigate = useNavigate()
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const googleBtnRef = useRef<HTMLDivElement | null>(null)
+  const googleReadyRef = useRef(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+
+  useEffect(() => {
+    if (!env.ENABLE_GOOGLE_LOGIN) return
+    if (!env.GOOGLE_CLIENT_ID) {
+      // We keep UI stable; show error only if user tries to use it.
+      return
+    }
+    if (googleReadyRef.current) return
+
+    let cancelled = false
+
+    loadGoogleIdentityScript()
+      .then(() => {
+        if (cancelled) return
+
+        const google = window.google
+        if (!google?.accounts?.id) {
+          throw new Error('Google Identity SDK not available')
+        }
+
+        google.accounts.id.initialize({
+          client_id: env.GOOGLE_CLIENT_ID,
+          callback: async (resp: { credential?: string }) => {
+            const idToken = resp?.credential
+            if (!idToken) {
+              setError('Google login failed: missing credential')
+              return
+            }
+
+            setError('')
+            setGoogleLoading(true)
+
+            try {
+              const res = await postAuthGoogle({ idToken })
+              const data = toAuthData(res)
+
+              setAuthSession({
+                user: mapAuthResponseToUser(data),
+                tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+              })
+
+              await redirectAfterLogin(navigate, { accessToken: data.accessToken, refreshToken: data.refreshToken })
+            } catch (e) {
+              setError((e as Error).message || 'Google login failed')
+            } finally {
+              setGoogleLoading(false)
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        })
+
+        if (googleBtnRef.current) {
+          google.accounts.id.renderButton(googleBtnRef.current, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'pill',
+            width: 320,
+          })
+        }
+
+        googleReadyRef.current = true
+      })
+      .catch((e) => {
+        if (cancelled) return
+        // Don't hard-crash the page; just keep button hidden.
+        console.error(e)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [navigate])
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
+    setError('')
+    setLoading(true)
 
-    const user = mockLogin(email, password)
-    if (user) {
-      if (user.role === 'admin') {
-        navigate('/admin')
-      } else {
-        navigate('/dashboard')
+    try {
+      const formData = new FormData(e.currentTarget)
+      const email = String(formData.get('email') ?? '')
+      const password = String(formData.get('password') ?? '')
+
+      const res = await postAuthLogin({ email, password })
+      const data = toAuthData(res)
+
+      setAuthSession({
+        user: mapAuthResponseToUser(data),
+        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+      })
+
+      toast.success(t('login.success'))
+
+      await redirectAfterLogin(navigate, { accessToken: data.accessToken, refreshToken: data.refreshToken })
+    } catch (err) {
+      if (err instanceof InvalidCredentialsError) {
+        setError(t('login.errorInvalid'))
+        return
       }
-    } else {
-      setError(t('login.errorInvalid'))
+      setError((err as Error).message || t('login.errorInvalid'))
+    } finally {
+      setLoading(false)
     }
   }
 
+  // Google sign-in is handled by Google Identity Services renderButton callback.
   return (
     <div className='bg-card/80 backdrop-blur-sm border border-border shadow-xl rounded-xl p-8 md:p-10 w-full'>
       {/* Header */}
@@ -53,28 +230,6 @@ export function LoginForm() {
         </div>
         <h1 className='text-3xl font-bold text-foreground tracking-tight mb-2'>{t('login.title')}</h1>
         <p className='text-muted-foreground text-sm'>{t('login.subtitle')}</p>
-      </div>
-
-      {/* Demo credentials hint */}
-      <div className='mb-6 p-4 rounded-lg bg-primary/5 border border-primary/15 text-sm grid grid-cols-2 gap-4'>
-        <div>
-          <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Student</p>
-          <p className='text-muted-foreground text-xs'>
-            Email: <code className='font-mono text-foreground'>demo@edunexus.com</code>
-          </p>
-          <p className='text-muted-foreground text-xs'>
-            Pass: <code className='font-mono text-foreground'>demo123</code>
-          </p>
-        </div>
-        <div>
-          <p className='font-medium text-primary text-xs uppercase tracking-wider mb-1'>Admin</p>
-          <p className='text-muted-foreground text-xs'>
-            Email: <code className='font-mono text-foreground'>admin@edunexus.com</code>
-          </p>
-          <p className='text-muted-foreground text-xs'>
-            Pass: <code className='font-mono text-foreground'>admin</code>
-          </p>
-        </div>
       </div>
 
       {/* Error */}
@@ -103,6 +258,7 @@ export function LoginForm() {
               type='email'
               required
               placeholder={t('login.emailPlaceholder')}
+              autoComplete='email'
               className={cn(
                 'block w-full pl-10 pr-3 py-2.5 rounded-lg',
                 'border border-border bg-card/50 text-foreground',
@@ -133,31 +289,45 @@ export function LoginForm() {
             <input
               id='login-password'
               name='password'
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               required
               placeholder={t('login.passwordPlaceholder')}
+              autoComplete='current-password'
               className={cn(
-                'block w-full pl-10 pr-3 py-2.5 rounded-lg',
+                'block w-full pl-10 pr-10 py-2.5 rounded-lg',
                 'border border-border bg-card/50 text-foreground',
                 'placeholder:text-muted-foreground',
                 'focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-primary',
                 'hover:border-primary/40 transition-all duration-200 sm:text-sm'
               )}
             />
+
+            <button
+              type='button'
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              onClick={() => setShowPassword((v) => !v)}
+              className='absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors'
+            >
+              <span className='material-icons text-lg'>
+                {showPassword ? 'visibility_off' : 'visibility'}
+              </span>
+            </button>
           </div>
         </div>
 
         {/* Submit */}
         <button
           type='submit'
+          disabled={loading}
           className={cn(
             'w-full flex justify-center py-3 px-4 rounded-lg',
             'text-sm font-bold text-primary-foreground bg-primary',
             'hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring',
-            'transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]'
+            'transition-all duration-200 hover:scale-[1.01] active:scale-[0.98]',
+            loading && 'opacity-60 pointer-events-none'
           )}
         >
-          {t('login.submitButton')}
+          {loading ? '...' : t('login.submitButton')}
         </button>
       </form>
 
@@ -173,29 +343,18 @@ export function LoginForm() {
         </div>
 
         {/* Social buttons */}
-        <div className='mt-6 grid grid-cols-2 gap-3'>
-          <button
-            type='button'
-            className={cn(
-              'w-full inline-flex justify-center items-center py-2.5 px-4',
-              'border border-border rounded-lg bg-card text-sm font-medium text-foreground',
-              'hover:bg-muted hover:border-primary/30 transition-all duration-200'
-            )}
-          >
-            <GoogleIcon />
-            {t('login.google')}
-          </button>
-          <button
-            type='button'
-            className={cn(
-              'w-full inline-flex justify-center items-center py-2.5 px-4',
-              'border border-border rounded-lg bg-card text-sm font-medium text-foreground',
-              'hover:bg-muted hover:border-primary/30 transition-all duration-200'
-            )}
-          >
-            <LinkedInIcon />
-            {t('login.linkedin')}
-          </button>
+        <div className='mt-6 grid grid-cols-1 gap-3'>
+          {env.ENABLE_GOOGLE_LOGIN && (
+            <div className='flex justify-center'>
+              <div
+                ref={googleBtnRef}
+                className={cn(googleLoading && 'pointer-events-none opacity-60')}
+                aria-hidden={!env.GOOGLE_CLIENT_ID}
+              />
+            </div>
+          )}
+
+          {/* LinkedIn login removed for now */}
         </div>
       </div>
 

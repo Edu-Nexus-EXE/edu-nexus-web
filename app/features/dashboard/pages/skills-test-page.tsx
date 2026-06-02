@@ -38,7 +38,7 @@ export function SkillsTestPage() {
     setIsAnalyzing(true)
     setTimeout(() => {
       setIsAnalyzing(false)
-      navigate('/dashboard/gap-analysis')
+      navigate('/dashboard/analytics/gap-analysis')
     }, 1500)
   }
 

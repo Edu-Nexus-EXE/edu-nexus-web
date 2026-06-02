@@ -24,21 +24,7 @@ export function SettingsSecurity() {
             </button>
           </div>
 
-          {/* 2FA */}
-          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 border border-border rounded-xl bg-muted/30'>
-            <div className='flex items-start gap-4'>
-              <div className='p-2.5 bg-info/10 text-info rounded-xl'>
-                <span className='material-symbols-outlined text-2xl'>verified_user</span>
-              </div>
-              <div>
-                <p className='font-bold text-foreground'>{t('settings.security.2fa')}</p>
-                <p className='text-sm text-muted-foreground'>{t('settings.security.2faDesc')}</p>
-              </div>
-            </div>
-            <button type='button' className='px-5 py-2.5 border border-border text-foreground text-sm font-bold rounded-xl hover:bg-card transition-all'>
-              {t('settings.security.setup')}
-            </button>
-          </div>
+          {/* / */}
         </div>
       </section>
 

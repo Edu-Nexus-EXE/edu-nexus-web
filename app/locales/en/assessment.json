@@ -1,0 +1,80 @@
+{
+  "assessment": {
+    "page": {
+      "badge": "ASSESSMENT",
+      "title": "Assessment",
+      "jdLabel": "JD: {{jdId}}",
+      "reuseTitle": "Reuse session (optional)",
+      "reuseDesc": "Reuse a session with the same job_role_category",
+      "noReusable": "No reusable sessions found.",
+      "noReuse": "Do not reuse",
+      "noReuseDesc": "Generate a new set of questions",
+      "loading": "Loading...",
+      "sessionLabel": "Session: {{sessionId}}",
+      "start": "Start session",
+      "starting": "Starting...",
+      "started": "Started",
+      "questionsTitle": "Questions",
+      "questionsDesc": "Choose 1 option for each question",
+      "questionsHint": "Start a session to load questions.",
+      "progress": "Answered {{answered}}/{{total}}",
+      "progressHint": "Please answer all questions before submitting.",
+      "questionMeta": "Question {{no}} • Part {{part}}",
+      "questionLabel": "Q",
+      "partLabel": "Part",
+      "instructions": "Choose 1 option for each question.",
+      "instructionsStart": "Press \"Start session\" to load questions.",
+      "noQuestionsYet": "No questions yet. Press \"Start session\" to begin.",
+      "answerAllHint": "Please answer all questions before submitting.",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "backToTop": " Back to top",
+      "back": "Back",
+      "errors": {
+        "startFailed": "Could not start session",
+        "missingSessionId": "sessionId was not returned by the backend",
+        "missingPathId": "No assessment path found for this JD. Please go back to the JD detail page and choose Path B first.",
+        "timeout": "Questions are not ready (timeout)",
+        "missingAnswers": "Please answer all questions before submitting.",
+        "submitFailed": "Submit failed"
+      },
+      "status": {
+        "inProgress": "In progress",
+        "submitted": "Submitted",
+        "expired": "Expired"
+      }
+    },
+    "results": {
+      "badge": "RESULTS",
+      "title": "Assessment Results",
+      "sessionLabel": "Session: {{sessionId}}",
+      "summary": "Summary",
+      "score": "Score",
+      "correct": "Correct",
+      "wrong": "Wrong",
+      "status": "Status",
+      "noData": "No data",
+      "loading": "Loading...",
+      "actions": "Actions",
+      "backToJd": "Back to JD",
+      "retake": "Retake assessment",
+      "skillBreakdown": "Skill Breakdown",
+      "noSkillScores": "No skill breakdown available.",
+      "review": "Question Review",
+      "noReview": "No review data available.",
+      "selected": "Selected",
+      "correctOption": "Correct Answer",
+      "explanation": "Explanation",
+      "correct": "Correct",
+      "badges": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "tryAgain": "Try again"
+      },
+      "errors": {
+        "missingSessionId": "Missing sessionId",
+        "loadFailed": "Could not load results"
+      }
+    }
+  }
+}

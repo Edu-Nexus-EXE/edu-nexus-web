@@ -1,21 +1,86 @@
+import { type FormEvent, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
+import { postAuthRegister } from '~/api/operations/auth/auth'
+import { getUsersMe } from '~/api/operations/users/users'
 import { cn } from '~/shared/lib/cn'
+import { setAuthSession } from '~/shared/lib/auth-session'
+import type { AuthResponseData } from '../lib/be-auth-types'
+import { mapAuthResponseToUser } from '../lib/be-auth-types'
+import { isAuthResponseData } from '../lib/be-auth-types'
+
+type ResponseWithData<T> = { data?: T }
+
+async function redirectAfterSignup(navigate: (to: string) => void) {
+  try {
+    const me = await getUsersMe()
+    const data = (me as ResponseWithData<{ isSurveyCompleted?: unknown }>).data
+    const isSurveyCompleted = Boolean(data?.isSurveyCompleted)
+
+    navigate(isSurveyCompleted ? '/dashboard' : '/onboarding')
+  } catch {
+    navigate('/dashboard')
+  }
+}
+
+function toAuthData(res: unknown): AuthResponseData {
+  const raw = (res as ResponseWithData<unknown>)?.data
+  if (!isAuthResponseData(raw)) {
+    throw new Error('Invalid auth response: missing or malformed data from server')
+  }
+  return raw
+}
 
 export function SignupForm() {
   const { t } = useTranslation('auth')
+  const navigate = useNavigate()
+
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+
+    try {
+      const formData = new FormData(e.currentTarget)
+      const fullName = String(formData.get('fullname') ?? '')
+      const email = String(formData.get('email') ?? '')
+      const password = String(formData.get('password') ?? '')
+
+      const res = await postAuthRegister({ fullName, email, password })
+      const data = toAuthData(res)
+
+      setAuthSession({
+        user: mapAuthResponseToUser(data),
+        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+      })
+
+      await redirectAfterSignup(navigate)
+    } catch (err) {
+      setError((err as Error).message || t('signup.errorInvalid'))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className='bg-card border border-border shadow-xl rounded-xl overflow-hidden backdrop-blur-sm'>
       <div className='p-8'>
         <div className='text-center mb-8'>
-          <h2 className='text-xl font-bold text-foreground mb-2'>
-            {t('signup.title')}
-          </h2>
+          <h2 className='text-xl font-bold text-foreground mb-2'>{t('signup.title')}</h2>
           <p className='text-sm text-muted-foreground'>{t('signup.subtitle')}</p>
         </div>
 
-        <form action='#' className='space-y-5'>
+        {error && (
+          <div className='mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className='space-y-5'>
           {/* Full Name */}
           <div className='space-y-1.5'>
             <label
@@ -144,16 +209,18 @@ export function SignupForm() {
           {/* Submit Button */}
           <button
             type='submit'
+            disabled={loading}
             className={cn(
               'w-full flex justify-center py-3 px-4 rounded-lg',
               'shadow-lg shadow-primary/10 text-sm font-bold',
               'text-primary-foreground bg-primary hover:opacity-90',
               'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ring',
               'transition-all duration-200 hover:-translate-y-0.5',
-              'mt-6 uppercase tracking-wide'
+              'mt-6 uppercase tracking-wide',
+              loading && 'opacity-70 cursor-not-allowed hover:translate-y-0'
             )}
           >
-            {t('signup.submitButton')}
+            {loading ? t('signup.submitting') : t('signup.submitButton')}
           </button>
         </form>
       </div>

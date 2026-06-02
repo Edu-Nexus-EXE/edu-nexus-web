@@ -10,21 +10,44 @@ import type { RequestHandler } from "msw";
  *   - api/operations/**\/*.msw.ts ← handler do `npm run orval` generate (KHÔNG viết tay)
  *
  * Khi Orval đã chạy được:
- *   1. Import generated handlers từ `~/api/operations/<tag>/<tag>.msw` vào đây.
+ *   1. Import generated handlers từ `~/api/operations/index.msw` vào đây.
  *   2. Xoá / comment handler viết tay tương ứng.
  */
 
 // Handler viết tay (placeholder — xoá khi orval generate được)
 import { exampleHandlers } from "./example.handler";
 
-// ─── Orval generated handlers (uncomment khi có swagger) ──────────────────────
-// import { getCoursesHandlers } from "~/api/operations/course-endpoints/course-endpoints.msw";
-// import { getUsersHandlers } from "~/api/operations/user-endpoints/user-endpoints.msw";
-// ─────────────────────────────────────────────────────────────────────────────
+// Domain mocks used by dashboard routes
+import { jdHandlers } from './jd.handler'
+
+// Orval generated handlers
+import {
+  getAssessmentPathsMock,
+  getAssessmentSessionsMock,
+  getAuthMock,
+  getCareerTracksMock,
+  getCvSubmissionsMock,
+  getGapAnalysisMock,
+  getJdSubmissionsMock,
+  getOnboardingMock,
+  getRoadmapsMock,
+  getUsersMock,
+} from "~/api/operations/index.msw";
 
 export const handlers: RequestHandler[] = [
   ...exampleHandlers,
 
-  // ...getCoursesHandlers(),
-  // ...getUsersHandlers(),
+  // Stateful mocks (to support polling UIs)
+  ...jdHandlers,
+
+  ...getAuthMock(),
+  ...getUsersMock(),
+  ...getOnboardingMock(),
+  ...getJdSubmissionsMock(),
+  ...getAssessmentPathsMock(),
+  ...getCvSubmissionsMock(),
+  ...getAssessmentSessionsMock(),
+  ...getGapAnalysisMock(),
+  ...getRoadmapsMock(),
+  ...getCareerTracksMock(),
 ];

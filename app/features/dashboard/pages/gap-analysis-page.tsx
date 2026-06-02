@@ -127,13 +127,13 @@ export function GapAnalysisPage() {
         {/* Row Action Buttons */}
         <div className='flex flex-col sm:flex-row justify-center gap-4 py-4'>
           <button
-            onClick={() => navigate('/dashboard/roadmap')}
+            onClick={() => navigate('/dashboard/learning/roadmap')}
             className='px-8 py-4 gradient-primary text-primary-foreground rounded-xl font-bold shadow-xl hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-base'
           >
             {t('gapAnalysis.createRoadmap')}
           </button>
           <button
-            onClick={() => navigate('/dashboard/roadmap')}
+            onClick={() => navigate('/dashboard/learning/roadmap')}
             className='px-8 py-4 bg-card border-2 border-primary text-primary hover:bg-primary/5 rounded-xl font-bold transition-all active:scale-95 cursor-pointer text-base'
           >
             {t('gapAnalysis.viewRoadmap')}

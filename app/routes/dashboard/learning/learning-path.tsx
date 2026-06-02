@@ -8,11 +8,11 @@ export function meta({}: Route.MetaArgs) {
     { title: getMetaTitle('dashboard', 'learningPath.title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'learningPath.subtitle')
-    }
+      content: getMetaTranslation('dashboard', 'learningPath.subtitle'),
+    },
   ]
 }
 
-export default function DashboardLearningPath() {
+export default function DashboardLearningPathRoute() {
   return <LearningPathPage />
 }

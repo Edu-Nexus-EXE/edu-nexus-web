@@ -1,0 +1,63 @@
+{
+  "jd": {
+    "new": {
+      "badge": "NỘP JD",
+      "title": "Nộp mô tả công việc",
+      "subtitle": "Dán JD hoặc nhập URL để bắt đầu.",
+      "jobDescription": "Mô tả công việc",
+      "jobDescriptionDesc": "Nhập URL hoặc dán nội dung JD",
+      "tabText": "Dán văn bản",
+      "tabUrl": "Dùng URL",
+      "urlPlaceholder": "https://...",
+      "textPlaceholder": "Dán mô tả công việc vào đây...",
+      "ready": "Sẵn sàng để nộp",
+      "readyToSubmit": "Sẵn sàng gửi",
+      "fetch": "Lấy nội dung",
+      "fetching": "...",
+      "next": "Tiếp theo",
+      "nextDesc": "Sau khi nộp, hệ thống sẽ phân tích JD",
+      "step1Title": "1) Phân tích JD",
+      "step1Desc": "Trang chi tiết JD sẽ tự cập nhật khi hoàn tất.",
+      "step2Title": "2) Chọn lộ trình",
+      "step2Desc": "Chọn Lộ trình A (CV) hoặc Lộ trình B (Assessment).",
+      "submit": "Nộp JD",
+      "submitting": "Đang nộp...",
+      "errors": {
+        "missingJdId": "Submit JD thành công nhưng không nhận được jdId từ BE",
+        "failed": "Submit JD thất bại"
+      }
+    },
+    "detail": {
+      "badge": "JOB DESCRIPTION",
+      "titleFallback": "Chi tiết JD",
+      "jdId": "JD: {{jdId}}",
+      "overview": "Tổng quan",
+      "loading": "Đang tải...",
+      "noData": "Không có dữ liệu",
+      "pathId": "Assessment path",
+      "createdAt": "Ngày tạo",
+      "actions": "Thao tác",
+      "createPath": "Tạo assessment path",
+      "creatingPath": "Đang tạo path...",
+      "startAssessment": "Bắt đầu assessment",
+      "uploadCv": "Tải CV lên",
+      "skills": {
+        "hard": "Hard skills",
+        "soft": "Soft skills"
+      },
+      "pathSelected": "Path: {{pathType}}",
+      "waitParse": "Vui lòng chờ AI phân tích JD xong để chọn đường đánh giá.",
+      "pathLocked": "Đã chọn path. (Đổi path sau khi có Gap Analysis sẽ bị giới hạn theo spec.)",
+      "chooseCv": "Path A — Tải CV lên",
+      "chooseAssessment": "Path B — Đánh giá kỹ năng",
+      "status": {
+        "ready": "Sẵn sàng làm bài",
+        "missingPath": "Chưa có assessment path"
+      },
+      "errors": {
+        "loadFailed": "Không thể tải JD",
+        "createPathFailed": "Không thể tạo assessment path"
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DashboardHeader } from './dashboard-header'
@@ -7,12 +8,13 @@ import { useDashboardUser } from '../../hooks/use-dashboard-user'
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation('dashboard')
   const { hydrated, user } = useDashboardUser()
+  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   if (!hydrated || !user) return null
 
   return (
     <div className='bg-background text-foreground font-display min-h-screen flex'>
-      <DashboardSidebar user={user} />
+      <DashboardSidebar user={user} open={sidebarOpen} onOpenChange={setSidebarOpen} />
 
       <main className='flex-1 flex flex-col min-w-0 overflow-x-hidden'>
         <DashboardHeader user={user} />

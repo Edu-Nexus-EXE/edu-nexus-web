@@ -32,4 +32,32 @@ export default defineConfig({
   css: {
     devSourcemap: true,
   },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/react") && !id.includes("node_modules/react-router")) {
+            return "vendor-react";
+          }
+          if (id.includes("node_modules/react-router")) {
+            return "vendor-router";
+          }
+          if (
+            id.includes("node_modules/i18next") ||
+            id.includes("node_modules/react-i18next") ||
+            id.includes("node_modules/i18next-browser-languagedetector")
+          ) {
+            return "vendor-i18n";
+          }
+          if (id.includes("node_modules/tailwindcss") || id.includes("@tailwindcss")) {
+            return "vendor-tailwind";
+          }
+          if (id.includes("node_modules/clsx") || id.includes("node_modules/tailwind-merge") || id.includes("node_modules/class-variance-authority")) {
+            return "vendor-utils";
+          }
+        },
+      },
+    },
+  },
 });

@@ -1,16 +1,19 @@
 import { Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
+
 import { SignupForm } from '../components/signup-form'
 
 export function SignupPage() {
+  const { t } = useTranslation('auth')
   return (
     <div className='bg-background text-foreground font-display min-h-screen flex items-center justify-center relative overflow-hidden'>
       <div className='absolute top-6 left-6 z-50'>
-        <Link 
+        <Link
           to='/'
           className='flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border shadow-sm'
         >
           <span className='material-symbols-outlined text-sm'>arrow_back</span>
-          Về trang chủ
+          {t('signup.backToHome')}
         </Link>
       </div>
 

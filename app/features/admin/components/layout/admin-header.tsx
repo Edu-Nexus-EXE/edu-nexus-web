@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
-import { getMockUser } from '~/shared/lib/auth-session'
+
+import { getAuthSession } from '~/shared/lib/auth-session'
 import { LanguageSwitcher } from '~/shared/components/language-switcher'
 
 export function AdminHeader() {
   const { t } = useTranslation('admin')
-  const user = getMockUser()
+  const user = getAuthSession()?.user
 
   return (
     <header className='h-20 border-b border-border px-8 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-40'>
@@ -30,8 +31,8 @@ export function AdminHeader() {
 
         <div className='flex items-center gap-3 pl-4 border-l border-border'>
           <div className='text-right hidden sm:block'>
-            <p className='text-sm font-semibold text-foreground'>{user?.name || t('header.defaultUser')}</p>
-            <p className='text-xs text-muted-foreground'>{user?.plan || t('header.defaultPlan')}</p>
+            <p className='text-sm font-semibold text-foreground'>{user?.fullName || t('header.defaultUser')}</p>
+            <p className='text-xs text-muted-foreground'>{user?.role || t('header.defaultPlan')}</p>
           </div>
           <img
             alt='Admin Avatar'

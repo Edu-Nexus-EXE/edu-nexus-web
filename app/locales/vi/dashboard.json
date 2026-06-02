@@ -3,8 +3,7 @@
     "brand": "Edu-Nexus",
     "overview": "Tổng quan",
     "skills": "Phân Tích Kỹ Năng",
-    "skillsCv": "Phân tích bằng CV",
-    "skillsTest": "Phân tích bằng bài test",
+    "skillsJd": "Tạo JD mới",
     "jobs": "Việc làm",
     "certificates": "Chứng chỉ",
     "analysisHistory": "Lịch sử phân tích",
@@ -12,12 +11,16 @@
     "learningPath": "Lộ trình học tập",
     "setting": "Cài đặt",
     "membershipLabel": "Gói thành viên",
+    "collapse": "Thu gọn thanh tab",
+    "expand": "Mở thanh tab",
     "upgrade": "Nâng cấp ngay"
   },
   "header": {
     "title": "Tổng quan hành trình",
     "welcome": "Chào mừng trở lại, {{name}} 👋",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "logoutSuccess": "Đăng xuất thành công",
+    "home": "Trang chủ"
   },
   "stats": {
     "certificates": "Chứng chỉ",
@@ -67,6 +70,77 @@
     "explore": "Khám phá lộ trình",
     "progress": "Xem tiến độ",
     "journeyTitle": "Hành trình Junior Developer v1.2"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "subtitle": "Quản lý thông tin tài khoản và tuỳ chọn của bạn.",
+    "avatar": {
+      "title": "Ảnh đại diện",
+      "change": "Đổi ảnh",
+      "remove": "Xoá ảnh"
+    },
+    "personal": {
+      "title": "Thông tin cá nhân",
+      "fullname": "Họ và tên",
+      "email": "Email",
+      "role": "Vai trò",
+      "portfolio": "Slug portfolio",
+      "subscription": "Gói thành viên",
+      "note": "Hiện tại một số trường chỉ đọc."
+    },
+    "security": {
+      "title": "Bảo mật",
+      "password": "Mật khẩu",
+      "passwordDesc": "Đổi mật khẩu để bảo vệ tài khoản của bạn.",
+      "changePassword": "Đổi mật khẩu",
+      "2fa": "Xác thực 2 lớp (2FA)",
+      "2faDesc": "Thêm một lớp bảo mật cho tài khoản.",
+      "setup": "Thiết lập"
+    },
+    "advanced": {
+      "disable": "Vô hiệu hóa tài khoản",
+      "disableDesc": "Tạm khóa tài khoản của bạn. Bạn có thể kích hoạt lại sau.",
+      "execute": "Thực hiện"
+    }
+  },
+  "jdRecent": {
+    "title": "Mô tả công việc gần đây",
+    "subtitle": "Theo dõi các JD đã nộp và trạng thái phân tích gần nhất.",
+    "badge": "Gần đây",
+    "loading": "Đang tải…",
+    "empty": "Chưa có JD nào.",
+    "cta": "Tạo JD",
+    "untitled": "JD không tên",
+    "idLabel": "JD ID",
+    "errors": {
+      "loadFailed": "Không thể tải JD gần đây"
+    },
+    "status": {
+      "completed": "Hoàn thành",
+      "failed": "Thất bại",
+      "pending": "Chờ xử lý",
+      "processing": "Đang xử lý"
+    }
+  },
+  "quota": {
+    "tiers": {
+      "free":    { "label": "Miễn phí",   "quotaText": "3 JD/tháng" },
+      "starter": { "label": "Starter",     "quotaText": "10 JD/tháng" },
+      "basic":   { "label": "Cơ bản",      "quotaText": "25 JD/tháng" },
+      "pro":     { "label": "Pro",         "quotaText": "100 JD/tháng" },
+      "premium": { "label": "Cao cấp",     "quotaText": "Không giới hạn" }
+    },
+    "status": {
+      "active":    "Hoạt động",
+      "expired":   "Hết hạn",
+      "cancelled": "Hết hạn",
+      "pending":   "Chờ xử lý"
+    },
+    "cta": {
+      "upgrade": "Nâng cấp",
+      "active":  "Đã kích hoạt"
+    },
+    "expiresAt": "Hết hạn: {{date}}"
   },
   "footer": {
     "copyright": "© 2026 Edu-Nexus. Kiến tạo tương lai nghề nghiệp.",
@@ -121,225 +195,7 @@
       "progress": "Tiến độ",
       "status": "Trạng thái",
       "actions": "Hành động",
-      "viewMap": "Xem lại bản đồ",
       "continue": "Tiếp tục"
-    },
-    "recommendations": {
-      "title": "Đề xuất tiếp theo",
-      "forYou": "Đề xuất cho bạn",
-      "microservicesTitle": "Chinh phục Microservices với Spring Cloud",
-      "microservicesDesc": "Mở rộng lộ trình Java Backend của bạn lên một tầm cao mới.",
-      "startNow": "Bắt đầu ngay",
-      "testTime": "15 PHÚT",
-      "testTitle": "Kiểm tra kỹ năng SQL",
-      "testDesc": "Hoàn thành bài test để mở khóa chương tiếp theo của Data Science.",
-      "certificatesTitle": "Chứng chỉ mới nhất",
-      "issued": "ISSUED OCT 2023",
-      "pending": "PENDING...",
-      "viewAllCertificates": "Xem tất cả chứng chỉ"
-    }
-  },
-  "market": {
-    "title": "Gợi ý dành cho bạn",
-    "sortBy": "Sắp xếp theo:",
-    "sortOptions": {
-      "highestMatch": "Độ phù hợp cao nhất",
-      "deadline": "Hạn nộp hồ sơ",
-      "value": "Giá trị học bổng"
-    },
-    "filters": {
-      "field": "Lĩnh vực",
-      "location": "Địa điểm",
-      "match": "Mức độ phù hợp",
-      "over70": "Trên 70%"
-    },
-    "card": {
-      "endsIn": "Ends in:",
-      "match": "Match",
-      "strengths": "Điểm mạnh",
-      "missing": "Còn thiếu",
-      "aiSuggestion": "AI Gợi ý:",
-      "remind": "Nhắc tôi trước 7 ngày",
-      "remindOn": "Đã bật nhắc nhở (7 ngày trước hạn)",
-      "apply": "Apply Now",
-      "details": "Chi tiết"
-    }
-  },
-  "settings": {
-    "title": "Cài đặt thông tin cá nhân",
-    "subtitle": "Quản lý thông tin hồ sơ và bảo mật tài khoản của bạn.",
-    "avatar": {
-      "title": "Ảnh đại diện",
-      "change": "Thay đổi ảnh",
-      "remove": "Gỡ bỏ"
-    },
-    "personal": {
-      "title": "Thông tin cá nhân",
-      "edit": "Chỉnh sửa",
-      "fullname": "Họ và tên",
-      "studentId": "Mã số sinh viên",
-      "university": "Trường đại học",
-      "major": "Chuyên ngành",
-      "email": "Email liên hệ",
-      "phone": "Số điện thoại",
-      "save": "Lưu thay đổi"
-    },
-    "security": {
-      "title": "Bảo mật tài khoản",
-      "password": "Mật khẩu",
-      "passwordDesc": "Thay đổi mật khẩu định kỳ để bảo vệ tài khoản",
-      "changePassword": "Đổi mật khẩu",
-      "2fa": "Xác thực 2 yếu tố (2FA)",
-      "2faDesc": "Tăng thêm một lớp bảo mật cho tài khoản của bạn",
-      "setup": "Thiết lập"
-    },
-    "advanced": {
-      "disable": "Vô hiệu hóa tài khoản",
-      "disableDesc": "Tài khoản sẽ bị tạm khóa và có thể khôi phục trong 30 ngày.",
-      "execute": "Thực hiện"
-    }
-  },
-  "certificates": {
-    "title": "Hồ sơ năng lực số",
-    "profile": {
-      "verified": "Ứng viên đã xác thực",
-      "status": "Trạng thái tuyển dụng",
-      "lookingForJob": "Đang tìm việc",
-      "center": "Trung tâm chứng chỉ Blockchain",
-      "centerDesc": "Tất cả các huy hiệu kỹ năng đều được ký bằng mật mã và được lưu trữ trên sổ cái để đảm bảo tính xác thực cho các nhà tuyển dụng tiềm năng.",
-      "secured": "Danh tính được bảo mật",
-      "hash": "HASH: 8F2A...3B9D"
-    },
-    "badges": {
-      "title": "Huy hiệu kỹ năng đã xác minh",
-      "total": "Tổng số đã xác minh: 12"
-    },
-    "projects": {
-      "title": "Dự án khóa luận đã xác thực",
-      "sourceCode": "Mã nguồn",
-      "liveDemo": "Bản demo trực tiếp",
-      "caseStudy": "Nghiên cứu tình huống"
-    }
-  },
-  "skillsCv": {
-    "badge": "ĐỊNH HƯỚNG NGHỀ NGHIỆP BẰNG AI",
-    "title": "Phân tích khoảng cách sự nghiệp của bạn",
-    "subtitle": "Tải lên CV của bạn và dán mô tả công việc. AI của chúng tôi sẽ phân tích các yêu cầu và chỉ chính xác những gì còn thiếu.",
-    "jd": {
-      "title": "Mô tả công việc",
-      "subtitle": "Dán URL hoặc yêu cầu bằng văn bản thuần túy",
-      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
-      "fetchBtn": "Lấy JD",
-      "textareaPlaceholder": "Hoặc dán toàn bộ mô tả công việc vào đây...",
-      "ready": "Sẵn sàng phân tích"
-    },
-    "cv": {
-      "title": "CV của bạn",
-      "subtitle": "Tải lên CV mới nhất của bạn (chỉ định dạng PDF)",
-      "dropzone": "Kéo và thả tệp của bạn vào đây",
-      "limit": "Giới hạn 5MB • PDF, DOCX",
-      "browseBtn": "Duyệt tệp"
-    },
-    "analyzeBtn": "Phân tích Gap",
-    "secure": "Dữ liệu của bạn được mã hóa và chỉ sử dụng cho mục đích phân tích"
-  },
-  "skillsTest": {
-    "badge": "ĐỊNH HƯỚNG NGHỀ NGHIỆP BẰNG AI",
-    "title": "Phân tích khoảng cách sự nghiệp của bạn",
-    "subtitle": "Tải lên CV của bạn và dán mô tả công việc. AI của chúng tôi sẽ phân tích các yêu cầu và chỉ chính xác những gì còn thiếu.",
-    "jd": {
-      "title": "Mô tả công việc",
-      "subtitle": "Dán URL hoặc yêu cầu bằng văn bản thuần túy",
-      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
-      "fetchBtn": "Lấy JD",
-      "textareaPlaceholder": "Hoặc dán toàn bộ mô tả công việc vào đây...",
-      "ready": "Sẵn sàng phân tích"
-    },
-    "test": {
-      "title": "Chọn Bài Kiểm Tra",
-      "subtitle": "Chọn bài đánh giá năng lực để bắt đầu phân tích khoảng cách kỹ năng.",
-      "startBtn": "Bắt đầu bài thi",
-      "t1Name": "AI CV Analysis Proficiency",
-      "t1Time": "20 PHÚT",
-      "t2Name": "JD Keyword Matching Challenge",
-      "t2Time": "15 PHÚT",
-      "t3Name": "Industry Skill Gap Assessment",
-      "t3Time": "25 PHÚT"
-    },
-    "analyzeBtn": "Phân tích Gap",
-    "secure": "Dữ liệu của bạn được mã hóa và chỉ sử dụng cho mục đích phân tích"
-  },
-  "gapAnalysis": {
-    "title": "Phân tích khoảng cách — Backend Java Developer",
-    "updated": "Cập nhật: {{date}}",
-    "source": "Nguồn: Đánh giá kỹ năng ({{percent}}%)",
-    "version": "Phiên bản {{version}}",
-    "exportPdf": "Xuất PDF",
-    "createRoadmap": "Tạo Learning Roadmap",
-    "back": "Quay lại",
-    "summaryTitle": "Kế hoạch hành động tổng quát",
-    "summaryDesc": "User thiếu <1>4 kỹ năng quan trọng</1> để đạt yêu cầu của vị trí này. Cần ưu tiên khắc phục ngay để tăng tỷ lệ match.",
-    "tableTitle": "Phân tích kỹ năng chi tiết",
-    "status": {
-      "missing": "Thiếu",
-      "upgrade": "Nâng cấp",
-      "have": "Đã có"
-    },
-    "headers": {
-      "skill": "Kỹ năng",
-      "status": "Trạng thái",
-      "current": "Hiện tại",
-      "required": "Yêu cầu",
-      "priority": "Ưu tiên"
-    },
-    "reasoning": "Phân tích chuyên sâu",
-    "dockerDesc": "JD yêu cầu intermediate Docker nhưng user chưa có kinh nghiệm. Đây là kỹ năng core cho backend hiện đại, cần bổ sung ngay.",
-    "cicdDesc": "Thiếu kỹ năng cấu hình workflow CI/CD. Cần bổ sung để tự động hóa deployment.",
-    "sqlDesc": "Cần nâng cấp kiến thức tối ưu hóa query và indexing phức tạp.",
-    "javaOopDesc": "Kiến thức OOP vững vàng, đáp ứng tốt yêu cầu dự án.",
-    "none": "Chưa có",
-    "viewRoadmap": "Xem Roadmap",
-    "historyTitle": "Lịch sử phiên bản",
-    "currentBadge": "HIỆN TẠI",
-    "viewing": "Đang xem",
-    "viewBtn": "Xem",
-    "tier": "Gói học sinh",
-    "tierDesc": "Tất cả phiên bản lịch sử được lưu trữ tại đây.",
-    "mentorTitle": "Mentor Khuyên Dùng",
-    "mentorDesc": "\"Khóa học Docker cho Backend Java tại RMIT sẽ giúp bạn lấp đầy Gap 8/10 nhanh nhất.\"",
-    "exploreNow": "Tìm hiểu ngay"
-  },
-  "roadmap": {
-    "badge": "LỘ TRÌNH BACKEND DEVELOPER",
-    "title": "Tiến trình học tập của bạn",
-    "progressText": "Bạn đã hoàn thành {{percent}}% lộ trình. Tiếp tục thôi!",
-    "backBtn": "Quay lại",
-    "completed": "Hoàn thành",
-    "learning": "ĐANG HỌC",
-    "upcoming": "Sắp tới",
-    "popular": "Phổ biến",
-    "duration": "Khoảng {{hours}} giờ",
-    "level": "Level {{level}}",
-    "description": "Xây dựng REST API với Spring Boot, học cách kết nối cơ sở dữ liệu với Spring Data JPA và quản lý bảo mật với Spring Security.",
-    "prerequisites": "Yêu cầu tiên quyết",
-    "resources": "Tài liệu học tập:",
-    "youtubeTitle": "YouTube Tutorial",
-    "youtubeDesc": "Khóa học Spring Boot 3 full series cực chi tiết",
-    "docsTitle": "Official Documentation",
-    "docsDesc": "Tài liệu chuẩn từ đội ngũ Spring.io",
-    "udemyTitle": "Udemy Premium",
-    "udemyDesc": "Master Spring Boot with Real World Projects",
-    "sponsored": "TÀI TRỢ",
-    "markComplete": "ĐÁNH DẤU HOÀN THÀNH",
-    "closePanel": "Đóng",
-    "upgradePro": "Nâng cấp Pro",
-    "upgradeDesc": "Mở khóa tất cả lộ trình cao cấp.",
-    "nodes": {
-      "javaCore": "Java Core",
-      "sqlDb": "SQL & Database",
-      "springBoot": "Spring Boot",
-      "springBootSub": "Bắt đầu xây dựng API",
-      "microservices": "Microservices"
     }
   }
 }

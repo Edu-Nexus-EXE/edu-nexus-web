@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
-import type { MockUser } from '~/shared/lib/auth-session'
+import type { AuthUser } from '~/shared/lib/auth-session'
 
-export function CertificatesProfile({ user }: { user: MockUser }) {
+export function CertificatesProfile({ user }: { user: AuthUser }) {
   const { t } = useTranslation('dashboard')
 
   return (
@@ -25,7 +25,7 @@ export function CertificatesProfile({ user }: { user: MockUser }) {
 
         <div className='flex-1 text-center md:text-left'>
           <div className='flex flex-col md:flex-row md:items-center gap-3 mb-2'>
-            <h2 className='text-3xl font-bold text-foreground tracking-tight'>{user.name}</h2>
+            <h2 className='text-3xl font-bold text-foreground tracking-tight'>{user.fullName}</h2>
             <span className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20'>
               {t('certificates.profile.verified')}
             </span>

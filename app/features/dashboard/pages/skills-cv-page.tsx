@@ -7,13 +7,25 @@ export function SkillsCvPage() {
   const navigate = useNavigate()
 
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [cvFile, setCvFile] = useState<File | null>(null)
 
   const handleAnalyzeGap = () => {
     setIsAnalyzing(true)
     setTimeout(() => {
       setIsAnalyzing(false)
-      navigate('/dashboard/gap-analysis')
+      navigate('/dashboard/analytics/gap-analysis')
     }, 1500)
+  }
+
+  function acceptCvFile(f: File | null) {
+    if (!f) return
+
+    const isPdf = f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
+    if (!isPdf) return
+
+    if (f.size > 5 * 1024 * 1024) return
+
+    setCvFile(f)
   }
 
   return (
@@ -84,32 +96,35 @@ export function SkillsCvPage() {
             </div>
           </div>
 
-          <div className='flex-grow flex flex-col items-center justify-center p-8 bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group/drop rounded-xl border-2 border-dashed border-primary/30'>
+          <label className='flex-grow flex flex-col items-center justify-center p-8 bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group/drop rounded-xl border-2 border-dashed border-primary/30'>
+            <input type='file' accept='application/pdf' className='hidden' onChange={(e) => acceptCvFile(e.target.files?.[0] ?? null)} />
+
             <div className='mb-4 transform group-hover/drop:-translate-y-1 transition-transform'>
               <span className='material-symbols-outlined text-5xl text-primary drop-shadow-sm'>cloud_upload</span>
             </div>
             <p className='text-sm font-medium mb-1 text-foreground'>{t('skillsCv.cv.dropzone')}</p>
             <p className='text-xs text-muted-foreground mb-4'>{t('skillsCv.cv.limit')}</p>
-            <button
-              type='button'
-              className='px-6 py-2 bg-card text-primary text-sm font-semibold rounded-lg shadow-sm border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer'
-            >
+            <div className='px-6 py-2 bg-card text-primary text-sm font-semibold rounded-lg shadow-sm border border-primary/30 hover:bg-primary hover:text-primary-foreground hover:border-transparent transition-all cursor-pointer'>
               {t('skillsCv.cv.browseBtn')}
-            </button>
-          </div>
+            </div>
+          </label>
 
-          <div className='mt-6 bg-muted/30 p-3 rounded-lg border border-border'>
-            <div className='flex items-center justify-between mb-2'>
-              <div className='flex items-center gap-2'>
-                <span className='material-symbols-outlined text-primary text-lg'>picture_as_pdf</span>
-                <span className='text-xs font-medium text-foreground'>my_resume_2024.pdf</span>
+          {cvFile && (
+            <div className='mt-6 bg-muted/30 p-3 rounded-lg border border-border'>
+              <div className='flex items-center justify-between mb-2'>
+                <div className='flex items-center gap-2'>
+                  <span className='material-symbols-outlined text-primary text-lg'>picture_as_pdf</span>
+                  <span className='text-xs font-medium text-foreground'>{cvFile.name}</span>
+                </div>
+                <button type='button' className='text-xs font-bold text-muted-foreground hover:text-foreground' onClick={() => setCvFile(null)}>
+                  Remove
+                </button>
               </div>
-              <span className='text-[10px] font-bold text-primary'>100%</span>
+              <div className='w-full bg-muted h-1.5 rounded-full overflow-hidden'>
+                <div className='bg-gradient-to-r from-primary to-primary/60 h-full w-full shadow-lg shadow-primary/20' />
+              </div>
             </div>
-            <div className='w-full bg-muted h-1.5 rounded-full overflow-hidden'>
-              <div className='bg-gradient-to-r from-primary to-primary/60 h-full w-full shadow-lg shadow-primary/20' />
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -120,9 +135,7 @@ export function SkillsCvPage() {
           disabled={isAnalyzing}
           className='ai-glow group relative px-12 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-3 shadow-xl shadow-primary/30 cursor-pointer disabled:opacity-50 disabled:pointer-events-none'
         >
-          <span className='material-symbols-outlined font-bold group-hover:rotate-12 transition-transform'>
-            auto_awesome
-          </span>
+          <span className='material-symbols-outlined font-bold group-hover:rotate-12 transition-transform'>auto_awesome</span>
           {isAnalyzing ? '...' : t('skillsCv.analyzeBtn')}
         </button>
         <p className='mt-4 text-sm text-muted-foreground flex items-center gap-2'>

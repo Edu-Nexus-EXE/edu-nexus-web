@@ -15,4 +15,5 @@ export const SITE = {
 export const STORAGE_KEYS = {
   theme: "edu-nexus-theme",
   language: "edu-nexus-lang",
+  authSession: "edu-nexus-auth-session",
 } as const;

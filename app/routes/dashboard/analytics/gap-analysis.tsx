@@ -7,6 +7,6 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: getMetaTitle('dashboard', 'gapAnalysis.title') }]
 }
 
-export default function DashboardGapAnalysis() {
+export default function DashboardGapAnalysisRoute() {
   return <GapAnalysisPage />
 }

@@ -1,0 +1,33 @@
+{
+  "cv": {
+    "page": {
+      "badge": "PATH A",
+      "title": "Tải CV lên",
+      "pathLabel": "Lộ trình đánh giá: {{pathId}}",
+      "cardTitle": "CV (PDF)",
+      "cardDesc": "Tối đa 5MB",
+      "dropTitle": "Thả file PDF vào đây",
+      "dropDesc": "Hoặc bấm để chọn file",
+      "selectFile": "Chọn file",
+      "upload": "Tải lên",
+      "uploading": "Đang tải lên...",
+      "latest": "File gần nhất",
+      "noData": "Chưa tải CV lên.",
+      "loading": "Đang tải...",
+      "back": "Quay lại",
+      "skillsTitle": "Kỹ năng đã trích xuất",
+      "noSkills": "Chưa có kỹ năng được trích xuất.",
+      "totalExp": "Số năm kinh nghiệm",
+      "yearsExp": "Năm",
+      "status": {
+        "failed": "Thất bại",
+        "completed": "Hoàn thành",
+        "processing": "Đang xử lý"
+      },
+      "errors": {
+        "uploadFailed": "Tải lên thất bại"
+      },
+      "viewAnalysis": "Xem phân tích"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "assessment": {
+    "page": {
+      "badge": "ASSESSMENT",
+      "title": "Bài đánh giá",
+      "jdLabel": "JD: {{jdId}}",
+      "reuseTitle": "Dùng lại phiên làm bài (tuỳ chọn)",
+      "reuseDesc": "Dùng lại session có cùng job_role_category",
+      "noReusable": "Không có session phù hợp.",
+      "noReuse": "Không dùng lại",
+      "noReuseDesc": "Tạo bộ câu hỏi mới",
+      "loading": "Đang tải...",
+      "sessionLabel": "Session: {{sessionId}}",
+      "start": "Bắt đầu",
+      "starting": "Đang bắt đầu...",
+      "started": "Đã bắt đầu",
+      "questionsTitle": "Câu hỏi",
+      "questionsDesc": "Chọn 1 đáp án cho mỗi câu",
+      "questionsHint": "Bấm Bắt đầu để tải câu hỏi.",
+      "progress": "Đã chọn {{answered}}/{{total}} câu",
+      "progressHint": "Hoàn tất tất cả câu hỏi trước khi nộp.",
+      "questionMeta": "Câu {{no}} • Phần {{part}}",
+      "questionLabel": "Câu",
+      "partLabel": "Phần",
+      "instructions": "Chọn 1 đáp án cho mỗi câu hỏi.",
+      "instructionsStart": "Nhấn Bat dau lam bai de tai cau hoi.",
+      "noQuestionsYet": "Chua co cau hoi. Vui long bam Bat dau lam bai.",
+      "answerAllHint": "Vui lòng trả lời tất cả câu hỏi trước khi nộp bài.",
+      "submit": "Nộp bài",
+      "submitting": "Đang nộp...",
+      "backToTop": "Quay lên đầu trang",
+      "back": "Quay lại",
+      "errors": {
+        "startFailed": "Không thể bắt đầu session",
+        "missingSessionId": "Không nhận được sessionId từ BE",
+        "missingPathId": "Chưa có assessment path cho JD này. Vui lòng quay lại JD detail và chọn Path B trước.",
+        "timeout": "Câu hỏi chưa sẵn sàng (timeout)",
+        "missingAnswers": "Vui lòng trả lời tất cả câu hỏi trước khi nộp.",
+        "submitFailed": "Nộp bài thất bại"
+      },
+      "status": {
+        "inProgress": "Đang làm",
+        "submitted": "Đã nộp",
+        "expired": "Hết hạn"
+      }
+    },
+    "results": {
+      "badge": "KẾT QUẢ",
+      "title": "Kết quả bài đánh giá",
+      "sessionLabel": "Session: {{sessionId}}",
+      "summary": "Tổng quan",
+      "score": "Điểm",
+      "correct": "Đúng",
+      "wrong": "Sai",
+      "status": "Trạng thái",
+      "noData": "Không có dữ liệu",
+      "loading": "Đang tải...",
+      "actions": "Thao tác",
+      "backToJd": "Quay lại JD",
+      "retake": "Làm lại bài đánh giá",
+      "skillBreakdown": "Phân tích theo kỹ năng",
+      "noSkillScores": "Chưa có breakdown theo kỹ năng.",
+      "review": "Xem lại câu hỏi",
+      "noReview": "Chưa có dữ liệu review.",
+      "selected": "Đã chọn",
+      "correctOption": "Đáp án đúng",
+      "explanation": "Giải thích",
+      "badges": {
+        "excellent": "Xuất sắc",
+        "good": "Tốt",
+        "tryAgain": "Thử lại"
+      },
+      "errors": {
+        "missingSessionId": "Thiếu sessionId",
+        "loadFailed": "Không thể tải kết quả"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "cv": {
+    "page": {
+      "badge": "PATH A",
+      "title": "Upload CV",
+      "pathLabel": "Assessment Path: {{pathId}}",
+      "cardTitle": "CV (PDF)",
+      "cardDesc": "Max 5MB",
+      "dropTitle": "Drop PDF here",
+      "dropDesc": "Or click to choose a file",
+      "selectFile": "Choose file",
+      "upload": "Upload",
+      "uploading": "Uploading...",
+      "latest": "Latest upload",
+      "noData": "No CV uploaded yet.",
+      "loading": "Loading...",
+      "back": "Back",
+      "skillsTitle": "Extracted Skills",
+      "noSkills": "No skills extracted yet.",
+      "totalExp": "Total experience (years)",
+      "yearsExp": "Years",
+      "status": {
+        "failed": "Failed",
+        "completed": "Completed",
+        "processing": "Processing"
+      },
+      "errors": {
+        "uploadFailed": "Upload failed"
+      },
+      "viewAnalysis": "View Analysis"
+    }
+  }
+}

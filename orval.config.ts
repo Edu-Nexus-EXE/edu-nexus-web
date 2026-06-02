@@ -50,7 +50,7 @@ export default defineConfig({
       // ─── Hoặc dùng file local (download swagger.json từ BE) ─────────────
       // target: "./swagger.json",
       // ─────────────────────────────────────────────────────────────────────
-      target: './swagger.json' // placeholder — đổi khi có swagger
+      target: 'http://localhost:5240/swagger/v1/swagger.json' // placeholder — đổi khi có swagger
     }
   }
 })

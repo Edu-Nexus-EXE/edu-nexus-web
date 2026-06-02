@@ -2,11 +2,14 @@ import { useTranslation } from 'react-i18next'
 
 import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { cn } from '~/shared/lib/cn'
+import { getAuthSession } from '~/shared/lib/auth-session'
 
 import { BrandMark } from './brand-mark'
 
 export function LandingNavbar() {
   const { t } = useTranslation('landing')
+
+  const session = getAuthSession()
 
   return (
     <nav className='fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-background/80 border-b border-border'>
@@ -49,9 +52,18 @@ export function LandingNavbar() {
 
             <div className='h-4 w-px bg-border' />
 
-            <a href='/login' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
-              {t('nav.login')}
-            </a>
+            {session ? (
+              <a
+                href='/dashboard'
+                className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'
+              >
+                Dashboard
+              </a>
+            ) : (
+              <a href='/login' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
+                {t('nav.login')}
+              </a>
+            )}
 
             <a
               href='/signup'

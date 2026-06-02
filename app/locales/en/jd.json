@@ -1,0 +1,63 @@
+{
+  "jd": {
+    "new": {
+      "badge": "JD SUBMISSION",
+      "title": "Submit Job Description",
+      "subtitle": "Paste the JD or enter a URL to start.",
+      "jobDescription": "Job Description",
+      "jobDescriptionDesc": "Enter URL or paste JD content",
+      "tabText": "Paste text",
+      "tabUrl": "Use URL",
+      "urlPlaceholder": "https://...",
+      "textPlaceholder": "Paste job description here...",
+      "ready": "Ready to submit",
+      "readyToSubmit": "Ready to submit",
+      "fetch": "Fetch",
+      "fetching": "...",
+      "next": "Next",
+      "nextDesc": "After submitting, the system will parse your JD",
+      "step1Title": "1) Parse JD",
+      "step1Desc": "The JD detail page will update when completed.",
+      "step2Title": "2) Choose path",
+      "step2Desc": "Choose Path A (CV) or Path B (Assessment).",
+      "submit": "Submit JD",
+      "submitting": "Submitting...",
+      "errors": {
+        "missingJdId": "JD submitted but jdId was not returned",
+        "failed": "Submit JD failed"
+      }
+    },
+    "detail": {
+      "badge": "JOB DESCRIPTION",
+      "titleFallback": "JD Detail",
+      "jdId": "JD: {{jdId}}",
+      "overview": "Overview",
+      "loading": "Loading...",
+      "noData": "No data",
+      "pathId": "Assessment path",
+      "createdAt": "Created at",
+      "actions": "Actions",
+      "createPath": "Create assessment path",
+      "creatingPath": "Creating path...",
+      "startAssessment": "Start assessment",
+      "uploadCv": "Upload CV",
+      "skills": {
+        "hard": "Hard skills",
+        "soft": "Soft skills"
+      },
+      "pathSelected": "Path: {{pathType}}",
+      "waitParse": "Please wait for the AI to finish parsing the JD before choosing an assessment path.",
+      "pathLocked": "Path selected. (Changing path after Gap Analysis is limited per spec.)",
+      "chooseCv": "Path A — Upload CV",
+      "chooseAssessment": "Path B — Skill Assessment",
+      "status": {
+        "ready": "Assessment ready",
+        "missingPath": "No assessment path yet"
+      },
+      "errors": {
+        "loadFailed": "Failed to load JD",
+        "createPathFailed": "Failed to create assessment path"
+      }
+    }
+  }
+}

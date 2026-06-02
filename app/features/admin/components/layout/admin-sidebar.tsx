@@ -1,14 +1,24 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
-import { mockLogout } from '~/shared/lib/auth-session'
+
+import { postAuthLogout } from '~/api/operations/auth/auth'
+import { clearAuthSession, getRefreshToken } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 
 export function AdminSidebar() {
   const { t } = useTranslation('admin')
 
-  function handleLogout() {
-    mockLogout()
-    window.location.href = '/'
+  async function handleLogout() {
+    const refreshToken = getRefreshToken()
+
+    try {
+      if (refreshToken) {
+        await postAuthLogout({ refreshToken })
+      }
+    } finally {
+      clearAuthSession()
+      window.location.href = '/'
+    }
   }
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>

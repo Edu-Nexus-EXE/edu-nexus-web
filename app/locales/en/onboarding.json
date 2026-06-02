@@ -1,0 +1,89 @@
+{
+  "title": "Onboarding Survey",
+  "subtitle": "Answer 8 quick questions to personalize your experience.",
+  "loading": "Loading survey...",
+  "step": "Step",
+  "questionBadge": "Question",
+  "prev": "Back",
+  "next": "Next",
+  "submitting": "Saving...",
+  "finish": "Complete",
+  "errors": {
+    "completeAll": "Please complete all questions before submitting.",
+    "submitFailed": "Onboarding submission failed."
+  },
+  "questions": {
+    "academicYear": {
+      "label": "What is your current academic year?",
+      "options": {
+        "year1": "Year 1",
+        "year2": "Year 2",
+        "year3": "Year 3",
+        "year4": "Year 4 / Graduated"
+      }
+    },
+    "major": {
+      "label": "What is your major?",
+      "options": {
+        "it": "IT / Computer Science",
+        "marketing": "Marketing / Communications",
+        "business": "Business / Management",
+        "other": "Other"
+      }
+    },
+    "primaryGoal": {
+      "label": "What is your primary goal?",
+      "options": {
+        "explore": "Explore learning paths",
+        "roadmap": "Build a personal roadmap",
+        "improveSkill": "Improve specific skills",
+        "buildPortfolio": "Build portfolio / CV"
+      }
+    },
+    "weeklyStudyHours": {
+      "label": "How many hours per week do you study?",
+      "options": {
+        "lt5": "Under 5 hours",
+        "5to10": "5–10 hours",
+        "10to20": "10–20 hours",
+        "gt20": "More than 20 hours"
+      }
+    },
+    "proficiencyLevel": {
+      "label": "What is your current proficiency level?",
+      "options": {
+        "beginner": "Just starting",
+        "basic": "Basic knowledge",
+        "project": "Have real project experience",
+        "intern": "Have interned before"
+      }
+    },
+    "learningPriority": {
+      "label": "What do you prioritize developing most?",
+      "options": {
+        "hardSkill": "Hard skills (coding, data...)",
+        "softSkill": "Soft skills (communication, leadership...)",
+        "certificate": "Certificates / Credentials",
+        "portfolioProject": "Portfolio Project"
+      }
+    },
+    "learningBudget": {
+      "label": "What is your monthly learning budget?",
+      "options": {
+        "free": "Free only",
+        "lt500k": "Under 500K VND",
+        "500kto2m": "500K – 2M VND",
+        "gt2m": "Over 2M VND"
+      }
+    },
+    "preferredChannel": {
+      "label": "Which learning channel do you prefer most?",
+      "options": {
+        "video": "Video / Online courses",
+        "docs": "Documents / Blog",
+        "projects": "Real-world projects",
+        "mentor": "Mentor / 1-1 coaching"
+      }
+    }
+  }
+}

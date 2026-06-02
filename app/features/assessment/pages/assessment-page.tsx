@@ -1,0 +1,507 @@
+import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { getJdSubmissionsId } from '~/api/operations/jd-submissions/jd-submissions'
+import {
+  getAssessmentSessionsSessionId,
+  getAssessmentSessionsSessionIdQuestions,
+  getJdSubmissionsJdIdReusableSessions,
+  postAssessmentPathsPathIdSessions,
+  postAssessmentSessionsSessionIdSubmit,
+} from '~/api/operations/assessment-sessions/assessment-sessions'
+import type { SubmitAssessmentSessionRequest } from '~/api/model/submitAssessmentSessionRequest'
+import { getAuthSession } from '~/shared/lib/auth-session'
+import { cn } from '~/shared/lib/cn'
+import { Badge } from '~/shared/ui/badge'
+
+type SessionStatus = 'in_progress' | 'submitted' | 'expired'
+
+type Question = {
+  id: string
+  sequenceOrder: number
+  part: number
+  questionText: string
+  options: Record<'A' | 'B' | 'C' | 'D', string>
+}
+
+type SessionQuestions = {
+  sessionId: string
+  status: SessionStatus
+  questions: Question[]
+}
+
+type ResponseWithData<T> = { data?: T }
+
+type ReusableSession = {
+  sessionId: string
+  scorePercent: number
+  fromJdTitle?: string | null
+}
+
+type ReusableSessionDto = {
+  sessionId?: unknown
+  scorePercent?: unknown
+  fromJdTitle?: unknown
+}
+
+type QuestionDto = {
+  id?: unknown
+  sequenceOrder?: unknown
+  part?: unknown
+  questionText?: unknown
+  options?: unknown
+}
+
+type SessionQuestionsDto = {
+  sessionId?: unknown
+  id?: unknown
+  status?: unknown
+  questions?: unknown
+}
+
+type AssessmentPathDto = {
+  id?: unknown
+  pathType?: unknown
+}
+
+type JdDto = {
+  assessmentPath?: unknown
+  assessmentPathId?: unknown
+}
+
+function parseReusable(res: unknown): ReusableSession[] {
+  const rows = ((res as ResponseWithData<unknown>)?.data ?? []) as unknown
+  if (!Array.isArray(rows)) return []
+
+  return rows
+    .map((r) => r as ReusableSessionDto)
+    .map((r) => ({
+      sessionId: String(r.sessionId ?? ''),
+      scorePercent: Number(r.scorePercent ?? 0),
+      fromJdTitle: typeof r.fromJdTitle === 'string' ? r.fromJdTitle : null,
+    }))
+    .filter((r) => Boolean(r.sessionId))
+}
+
+function parseQuestions(res: unknown): SessionQuestions {
+  const data = ((res as ResponseWithData<SessionQuestionsDto>)?.data ?? {}) as SessionQuestionsDto
+
+  const sessionId = String(data.sessionId ?? data.id ?? '')
+  const status = (String(data.status ?? 'in_progress') as SessionStatus) || 'in_progress'
+
+  const questionsRaw = Array.isArray(data.questions) ? (data.questions as QuestionDto[]) : []
+
+  const questions: Question[] = questionsRaw
+    .map((q) => {
+      const optionsRaw = (q.options ?? {}) as Record<string, unknown>
+      return {
+        id: String(q.id ?? ''),
+        sequenceOrder: Number(q.sequenceOrder ?? 0),
+        part: Number(q.part ?? 1),
+        questionText: String(q.questionText ?? ''),
+        options: {
+          A: String(optionsRaw.A ?? ''),
+          B: String(optionsRaw.B ?? ''),
+          C: String(optionsRaw.C ?? ''),
+          D: String(optionsRaw.D ?? ''),
+        },
+      }
+    })
+    .filter((q) => Boolean(q.id))
+
+  return { sessionId, status, questions }
+}
+
+function badgeFor(
+  t: (key: string, options?: Record<string, unknown>) => string,
+  status: SessionStatus
+): { variant: Parameters<typeof Badge>[0]['variant']; label: string } {
+  switch (status) {
+    case 'submitted':
+      return { variant: 'success', label: t('assessment.page.status.submitted') }
+    case 'expired':
+      return { variant: 'destructive', label: t('assessment.page.status.expired') }
+    default:
+      return { variant: 'warning', label: t('assessment.page.status.inProgress') }
+  }
+}
+
+function parseAssessmentPathId(res: unknown): string {
+  const dto = ((res as ResponseWithData<JdDto>)?.data ?? {}) as JdDto
+
+  const pathFromObj = (dto.assessmentPath ?? {}) as AssessmentPathDto
+  const id = String(pathFromObj.id ?? '')
+  if (id) return id
+
+  const maybe = (dto as Record<string, unknown>)?.assessmentPathId
+  return typeof maybe === 'string' ? maybe : ''
+}
+
+export function AssessmentPage() {
+  const session = getAuthSession()
+  const { t } = useTranslation('assessment')
+  const navigate = useNavigate()
+
+  const { jdId: jdIdParam } = useParams()
+  const jdId = jdIdParam ?? ''
+  const [searchParams] = useSearchParams()
+
+  const pathIdFromQuery = searchParams.get('pathId') ?? ''
+  const [pathId, setPathId] = useState<string>(pathIdFromQuery)
+
+  const [starting, setStarting] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  const [reusable, setReusable] = useState<ReusableSession[]>([])
+  const [reuseSessionId, setReuseSessionId] = useState<string | null>(null)
+
+  const [sessionId, setSessionId] = useState<string>('')
+  const [data, setData] = useState<SessionQuestions | null>(null)
+  const [answers, setAnswers] = useState<Record<string, 'A' | 'B' | 'C' | 'D'>>({})
+
+  const [initialLoading, setInitialLoading] = useState(false)
+  const [initialError, setInitialError] = useState('')
+
+  const questionsEndRef = useRef<HTMLDivElement>(null)
+  const total = data?.questions?.length ?? 0
+  const answered = useMemo(() => {
+    const questions = data?.questions
+    if (!questions?.length) return 0
+    return questions.reduce<number>((acc, q) => acc + (answers[q.id] ? 1 : 0), 0)
+  }, [answers, data?.questions])
+
+  const badge = useMemo(() => badgeFor(t, data?.status ?? 'in_progress'), [t, data?.status])
+
+  function scrollToQuestions() {
+    questionsEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  useEffect(() => {
+    if (!jdId) return
+    if (pathIdFromQuery) return
+
+    let cancelled = false
+
+    getJdSubmissionsId({ id: jdId })
+      .then((res) => {
+        if (cancelled) return
+        const inferredPathId = parseAssessmentPathId(res)
+        if (inferredPathId) setPathId(inferredPathId)
+      })
+      .catch(() => {
+        if (cancelled) return
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [jdId, pathIdFromQuery])
+
+  useEffect(() => {
+    if (!jdId || !pathId) return
+
+    const controller = new AbortController()
+
+    Promise.resolve().then(() => {
+      setInitialLoading(true)
+      setInitialError('')
+    })
+
+    getJdSubmissionsJdIdReusableSessions({ jdId }, { signal: controller.signal } as never)
+      .then((res) => setReusable(parseReusable(res)))
+      .catch(() => {
+        setReusable([])
+        setInitialError('')
+      })
+      .finally(() => setInitialLoading(false))
+
+    return () => controller.abort()
+  }, [jdId, pathId])
+
+  if (!session) return <Navigate to='/login' replace />
+  if (!session.user.isSurveyCompleted) return <Navigate to='/onboarding' replace />
+
+  async function startSession() {
+    if (!pathId || starting || Boolean(data?.questions?.length)) return
+
+    setStarting(true)
+    setError('')
+
+    try {
+      const res = await postAssessmentPathsPathIdSessions({ pathId }, { reuseSessionId } as never)
+      const dataRes = (res as ResponseWithData<Record<string, unknown>>)?.data ?? {}
+      const newSessionId = String((dataRes as Record<string, unknown>)?.sessionId ?? (dataRes as Record<string, unknown>)?.id ?? '')
+      if (!newSessionId) throw new Error(t('assessment.page.errors.missingSessionId'))
+
+      setSessionId(newSessionId)
+
+      for (let i = 0; i < 60; i++) {
+        const qRes = await getAssessmentSessionsSessionIdQuestions({ sessionId: newSessionId })
+        const parsed = parseQuestions(qRes)
+        setData(parsed)
+        if (parsed.questions.length > 0) {
+          setTimeout(scrollToQuestions, 100)
+          return
+        }
+        await new Promise((r) => setTimeout(r, 1000))
+      }
+
+      throw new Error(t('assessment.page.errors.timeout'))
+    } catch (e) {
+      setError((e as Error).message || t('assessment.page.errors.startFailed'))
+    } finally {
+      setStarting(false)
+    }
+  }
+
+  function selectAnswer(questionId: string, opt: 'A' | 'B' | 'C' | 'D') {
+    setAnswers((prev) => ({ ...prev, [questionId]: opt }))
+  }
+
+  async function submit() {
+    if (!sessionId || !data || submitting) return
+
+    const questions = data.questions
+    if (questions.some((q) => !answers[q.id])) {
+      setError(t('assessment.page.errors.missingAnswers'))
+      return
+    }
+
+    setSubmitting(true)
+    setError('')
+
+    try {
+      const payload: SubmitAssessmentSessionRequest = {
+        answers: questions.map((q) => ({ questionId: q.id, selectedOption: answers[q.id] })),
+      }
+
+      await postAssessmentSessionsSessionIdSubmit({ sessionId }, payload)
+      await getAssessmentSessionsSessionId({ sessionId })
+
+      navigate(
+        `/dashboard/jd/${encodeURIComponent(jdId)}/assessment/results?sessionId=${encodeURIComponent(sessionId)}&pathId=${encodeURIComponent(pathId)}`
+      )
+    } catch (e) {
+      setError((e as Error).message || t('assessment.page.errors.submitFailed'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <div className='relative w-full max-w-6xl mx-auto px-4 py-12'>
+      <div className='absolute top-0 right-0 -z-10 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none opacity-40' />
+      <div className='absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none opacity-40' />
+
+      <div className='text-center mb-12'>
+        <span className='inline-block px-4 py-1.5 mb-4 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary rounded-full border border-primary/30 shadow-sm'>
+          {t('assessment.page.badge')}
+        </span>
+        <h1 className='text-4xl md:text-5xl font-bold text-foreground mb-3'>{t('assessment.page.title')}</h1>
+        <p className='text-muted-foreground max-w-2xl mx-auto text-lg'>{t('assessment.page.jdLabel', { jdId })}</p>
+        {data && (
+          <div className='mt-4 flex items-center justify-center gap-2'>
+            <Badge variant={badge.variant}>{badge.label}</Badge>
+          </div>
+        )}
+      </div>
+
+      {!pathId ? (
+        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {t('assessment.page.errors.missingPathId')}
+        </div>
+      ) : null}
+
+      {initialError && (
+        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{initialError}</div>
+      )}
+
+      {error && (
+        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{error}</div>
+      )}
+
+      <div className='grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8'>
+        <div className='lg:col-span-4 bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors'>
+          <div className='flex items-center gap-3 mb-6'>
+            <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0'>
+              <span className='material-symbols-outlined'>history</span>
+            </div>
+            <div>
+              <h2 className='text-xl font-semibold text-foreground'>{t('assessment.page.reuseTitle')}</h2>
+              <p className='text-sm text-muted-foreground'>{t('assessment.page.reuseDesc')}</p>
+            </div>
+          </div>
+
+          {initialLoading ? (
+            <p className='text-sm text-muted-foreground'>{t('assessment.page.loading')}</p>
+          ) : reusable.length === 0 ? (
+            <p className='text-sm text-muted-foreground'>{t('assessment.page.noReusable')}</p>
+          ) : (
+            <div className='space-y-2'>
+              <button
+                type='button'
+                onClick={() => setReuseSessionId(null)}
+                className={cn(
+                  'w-full text-left p-4 rounded-xl border transition-all',
+                  reuseSessionId === null ? 'border-primary bg-primary/10' : 'border-border bg-muted/20 hover:border-primary/40'
+                )}
+              >
+                <p className='text-sm font-semibold text-foreground'>{t('assessment.page.noReuse')}</p>
+                <p className='text-xs text-muted-foreground'>{t('assessment.page.noReuseDesc')}</p>
+              </button>
+
+              {reusable.map((s) => (
+                <button
+                  key={s.sessionId}
+                  type='button'
+                  onClick={() => setReuseSessionId(s.sessionId)}
+                  className={cn(
+                    'w-full text-left p-4 rounded-xl border transition-all',
+                    reuseSessionId === s.sessionId ? 'border-primary bg-primary/10' : 'border-border bg-muted/20 hover:border-primary/40'
+                  )}
+                >
+                  <div className='flex items-center justify-between gap-4'>
+                    <p className='text-sm font-semibold text-foreground'>{s.fromJdTitle || t('assessment.page.noReuse')}</p>
+                    <Badge variant='outline'>{Math.round(s.scorePercent)}%</Badge>
+                  </div>
+                  <p className='text-xs text-muted-foreground mt-1'>{t('assessment.page.sessionLabel', { sessionId: s.sessionId })}</p>
+                </button>
+              ))}
+            </div>
+          )}
+
+          <button
+            type='button'
+            onClick={startSession}
+            disabled={!pathId || starting || Boolean(data?.questions?.length)}
+            className={cn(
+              'w-full mt-6 py-3 text-sm font-bold rounded-lg shadow-md transition-all disabled:opacity-50 disabled:pointer-events-none',
+              data?.questions?.length
+                ? 'bg-muted text-muted-foreground border border-border shadow-none'
+                : 'bg-primary text-primary-foreground shadow-primary/20 hover:opacity-90'
+            )}
+          >
+            {data?.questions?.length ? t('assessment.page.started') : starting ? t('assessment.page.starting') : t('assessment.page.start')}
+          </button>
+        </div>
+
+        <div className='lg:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors'>
+          <div className='flex items-center justify-between gap-4 mb-6'>
+            <div>
+              <div className='text-sm text-muted-foreground'>
+                {t('assessment.page.progress')} — {answered}/{total}
+              </div>
+              <div className='text-xs text-muted-foreground mt-1'>
+                {data?.questions?.length
+                  ? t('assessment.page.instructions')
+                  : t('assessment.page.instructionsStart')}
+              </div>
+            </div>
+
+            <div className='flex items-center gap-2'>
+              {data && <Badge variant={badge.variant}>{badge.label}</Badge>}
+            </div>
+          </div>
+
+          {!data?.questions?.length ? (
+            <div className='rounded-xl border border-border bg-muted/20 p-6'>
+              <p className='text-sm text-muted-foreground'>{t('assessment.page.noQuestionsYet')}</p>
+            </div>
+          ) : (
+            <div className='space-y-6' ref={questionsEndRef}>
+              {data.questions
+                .slice()
+                .sort((a, b) => a.sequenceOrder - b.sequenceOrder)
+                .map((q) => {
+                  const selected = answers[q.id]
+                  return (
+                    <div key={q.id} className='rounded-xl border border-border bg-background p-5'>
+                      <div className='flex items-start justify-between gap-4'>
+                        <div>
+                          <div className='text-xs text-muted-foreground'>
+                            {t('assessment.page.questionLabel')} {q.sequenceOrder || 0}
+                            {q.part ? ` — ${t('assessment.page.partLabel')} ${q.part}` : ''}
+                          </div>
+                          <h3 className='mt-1 text-base font-semibold text-foreground whitespace-pre-wrap'>{q.questionText}</h3>
+                        </div>
+                        <div className='shrink-0'>
+                          {selected ? <Badge variant='outline'>{selected}</Badge> : <Badge variant='info'>?</Badge>}
+                        </div>
+                      </div>
+
+                      <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3'>
+                        {(['A', 'B', 'C', 'D'] as const).map((opt) => {
+                          const isSelected = selected === opt
+                          const label = q.options?.[opt] ?? ''
+                          return (
+                            <button
+                              key={opt}
+                              type='button'
+                              onClick={() => selectAnswer(q.id, opt)}
+                              className={cn(
+                                'w-full text-left rounded-xl border px-4 py-3 transition-all',
+                                isSelected
+                                  ? 'border-primary bg-primary/10'
+                                  : 'border-border bg-muted/20 hover:border-primary/40 hover:bg-muted/30'
+                              )}
+                            >
+                              <div className='flex items-start gap-3'>
+                                <span
+                                  className={cn(
+                                    'mt-0.5 inline-flex items-center justify-center w-7 h-7 rounded-lg border text-xs font-bold',
+                                    isSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-foreground'
+                                  )}
+                                >
+                                  {opt}
+                                </span>
+                                <span className='text-sm text-foreground whitespace-pre-wrap'>{label}</span>
+                              </div>
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+
+              <div className='pt-2 flex flex-col gap-3'>
+                {answered !== total ? (
+                  <p className='text-xs text-muted-foreground text-center'>{t('assessment.page.answerAllHint')}</p>
+                ) : null}
+
+                <button
+                  type='button'
+                  onClick={submit}
+                  disabled={!data?.questions?.length || answered !== total || submitting}
+                  className={cn(
+                    'w-full py-3 text-sm font-bold rounded-lg transition-all',
+                    answered !== total || submitting
+                      ? 'bg-muted text-muted-foreground border border-border opacity-60 pointer-events-none'
+                      : 'bg-primary text-primary-foreground hover:opacity-90'
+                  )}
+                >
+                  {submitting ? t('assessment.page.submitting') : t('assessment.page.submit')}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {data?.questions?.length ? (
+        <div className='flex justify-center'>
+          <button
+            type='button'
+            onClick={scrollToQuestions}
+            className='inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card text-muted-foreground text-sm font-medium hover:text-foreground hover:bg-muted/20 transition-colors shadow-sm'
+          >
+            <span className='material-icons text-lg'>keyboard_arrow_up</span>
+            {t('assessment.page.backToTop')}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  )
+}

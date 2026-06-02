@@ -1,0 +1,89 @@
+{
+  "title": "Khảo sát Onboarding",
+  "subtitle": "Trả lời nhanh 8 câu để cá nhân hoá trải nghiệm.",
+  "loading": "Đang tải khảo sát...",
+  "step": "Bước",
+  "questionBadge": "Câu hỏi",
+  "prev": "Quay lại",
+  "next": "Tiếp",
+  "submitting": "Đang lưu...",
+  "finish": "Hoàn thành",
+  "errors": {
+    "completeAll": "Vui lòng hoàn thành tất cả câu hỏi trước khi nộp.",
+    "submitFailed": "Nộp onboarding thất bại."
+  },
+  "questions": {
+    "academicYear": {
+      "label": "Năm học hiện tại của bạn?",
+      "options": {
+        "year1": "Năm 1",
+        "year2": "Năm 2",
+        "year3": "Năm 3",
+        "year4": "Năm 4 / Tốt nghiệp"
+      }
+    },
+    "major": {
+      "label": "Ngành học của bạn là gì?",
+      "options": {
+        "it": "CNTT / Khoa học máy tính",
+        "marketing": "Marketing / Truyền thông",
+        "business": "Kinh doanh / Quản trị",
+        "other": "Khác"
+      }
+    },
+    "primaryGoal": {
+      "label": "Mục tiêu chính của bạn là gì?",
+      "options": {
+        "explore": "Khám phá lộ trình học tập",
+        "roadmap": "Xây dựng lộ trình cá nhân",
+        "improveSkill": "Cải thiện kỹ năng cụ thể",
+        "buildPortfolio": "Xây dựng portfolio / CV"
+      }
+    },
+    "weeklyStudyHours": {
+      "label": "Bạn dành bao nhiêu giờ/tuần để học?",
+      "options": {
+        "lt5": "Dưới 5 giờ",
+        "5to10": "5–10 giờ",
+        "10to20": "10–20 giờ",
+        "gt20": "Hơn 20 giờ"
+      }
+    },
+    "proficiencyLevel": {
+      "label": "Trình độ hiện tại của bạn ở mức nào?",
+      "options": {
+        "beginner": "Mới bắt đầu",
+        "basic": "Cơ bản",
+        "project": "Đã làm dự án thực tế",
+        "intern": "Đã đi thực tập"
+      }
+    },
+    "learningPriority": {
+      "label": "Bạn ưu tiên phát triển gì nhất?",
+      "options": {
+        "hardSkill": "Kỹ năng chuyên môn (coding, data...)",
+        "softSkill": "Kỹ năng mềm (giao tiếp, leadership...)",
+        "certificate": "Chứng chỉ / Credential",
+        "portfolioProject": "Dự án Portfolio"
+      }
+    },
+    "learningBudget": {
+      "label": "Ngân sách học tập hàng tháng của bạn?",
+      "options": {
+        "free": "Miễn phí",
+        "lt500k": "Dưới 500K VNĐ",
+        "500kto2m": "500K – 2M VNĐ",
+        "gt2m": "Hơn 2M VNĐ"
+      }
+    },
+    "preferredChannel": {
+      "label": "Bạn thích học qua kênh nào nhất?",
+      "options": {
+        "video": "Video / Khóa học online",
+        "docs": "Tài liệu / Blog",
+        "projects": "Làm dự án thực tế",
+        "mentor": "Mentor / Hướng dẫn 1-1"
+      }
+    }
+  }
+}

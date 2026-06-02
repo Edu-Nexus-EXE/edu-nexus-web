@@ -14,10 +14,10 @@ type Stat = {
 }
 
 const STATS: Stat[] = [
-  { icon: 'verified', tone: 'info', labelKey: 'stats.certificates', value: '12', badge: 'stats.certificatesNew', badgeTone: 'success' },
-  { icon: 'schedule', tone: 'primary', labelKey: 'stats.studyHours', value: '48.5h', badge: 'stats.studyHoursMonth', badgeTone: 'muted' },
-  { icon: 'rocket_launch', tone: 'success', labelKey: 'stats.readiness', value: '75%' },
-  { icon: 'stars', tone: 'warning', labelKey: 'stats.classRank', value: '#04', badge: 'stats.rank', badgeTone: 'muted' },
+  { icon: 'verified', tone: 'info', labelKey: 'stats.certificates', value: '--', badge: 'stats.certificatesNew', badgeTone: 'success' },
+  { icon: 'schedule', tone: 'primary', labelKey: 'stats.studyHours', value: '--', badge: 'stats.studyHoursMonth', badgeTone: 'muted' },
+  { icon: 'rocket_launch', tone: 'success', labelKey: 'stats.readiness', value: '--' },
+  { icon: 'stars', tone: 'warning', labelKey: 'stats.classRank', value: '--', badge: 'stats.rank', badgeTone: 'muted' },
 ]
 
 export function DashboardStats() {

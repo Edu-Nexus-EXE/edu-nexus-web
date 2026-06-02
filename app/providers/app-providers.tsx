@@ -1,5 +1,6 @@
 import { I18nProvider } from "./i18n-provider";
 import { ThemeProvider } from "./theme-provider";
+import { ToastProvider } from "~/shared/components";
 
 /**
  * Compose tất cả provider cấp ứng dụng. Dùng đúng 1 lần ở root.tsx.
@@ -12,7 +13,9 @@ import { ThemeProvider } from "./theme-provider";
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider>
-      <I18nProvider>{children}</I18nProvider>
+      <I18nProvider>
+        <ToastProvider>{children}</ToastProvider>
+      </I18nProvider>
     </ThemeProvider>
   );
 }

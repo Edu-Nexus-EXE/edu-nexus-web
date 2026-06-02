@@ -7,6 +7,6 @@ export function meta({}: Route.MetaArgs) {
   return [{ title: getMetaTitle('dashboard', 'roadmap.title') }]
 }
 
-export default function DashboardRoadmap() {
+export default function DashboardRoadmapRoute() {
   return <RoadmapPage />
 }

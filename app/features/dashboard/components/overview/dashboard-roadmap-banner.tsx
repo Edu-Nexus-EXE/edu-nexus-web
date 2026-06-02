@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 const ROADMAP_IMAGE =
@@ -5,6 +6,7 @@ const ROADMAP_IMAGE =
 
 export function DashboardRoadmapBanner() {
   const { t } = useTranslation('dashboard')
+  const navigate = useNavigate()
 
   return (
     <div className='bg-card rounded-2xl border border-border p-8 shadow-sm relative overflow-hidden'>
@@ -17,12 +19,14 @@ export function DashboardRoadmapBanner() {
           <div className='flex items-center gap-4'>
             <button
               type='button'
+              onClick={() => navigate('/dashboard/learning/roadmap')}
               className='px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all'
             >
               {t('roadmap.explore')}
             </button>
             <button
               type='button'
+              onClick={() => navigate('/dashboard/learning/learning-path')}
               className='px-6 py-3 border border-primary/20 text-primary rounded-xl font-bold hover:bg-primary/5 transition-all'
             >
               {t('roadmap.progress')}

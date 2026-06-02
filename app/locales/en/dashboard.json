@@ -3,8 +3,7 @@
     "brand": "Edu-Nexus",
     "overview": "Overview",
     "skills": "Analyzed Skills",
-    "skillsCv": "CV Analysis",
-    "skillsTest": "Test Analysis",
+    "skillsJd": "New JD",
     "jobs": "Jobs",
     "certificates": "Certificates",
     "analysisHistory": "Analysis History",
@@ -12,12 +11,16 @@
     "learningPath": "Learning Path",
     "setting": "Setting",
     "membershipLabel": "Membership",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
     "upgrade": "Upgrade now"
   },
   "header": {
     "title": "Journey Overview",
     "welcome": "Welcome back, {{name}} 👋",
-    "logout": "Log out"
+    "logout": "Log out",
+    "logoutSuccess": "Logged out successfully",
+    "home": "Home"
   },
   "stats": {
     "certificates": "Certificates",
@@ -67,6 +70,77 @@
     "explore": "Explore Path",
     "progress": "View Progress",
     "journeyTitle": "Junior Developer Journey v1.2"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account details and preferences.",
+    "avatar": {
+      "title": "Profile picture",
+      "change": "Change",
+      "remove": "Remove"
+    },
+    "personal": {
+      "title": "Personal information",
+      "fullname": "Full name",
+      "email": "Email",
+      "role": "Role",
+      "portfolio": "Portfolio slug",
+      "subscription": "Subscription",
+      "note": "Some fields are read-only for now."
+    },
+    "security": {
+      "title": "Security",
+      "password": "Password",
+      "passwordDesc": "Change your password to protect your account.",
+      "changePassword": "Change password",
+      "2fa": "Two-factor authentication (2FA)",
+      "2faDesc": "Add an extra layer of security.",
+      "setup": "Set up"
+    },
+    "advanced": {
+      "disable": "Disable account",
+      "disableDesc": "Temporarily disable your account. You can re-enable it later.",
+      "execute": "Execute"
+    }
+  },
+  "jdRecent": {
+    "title": "Recent job descriptions",
+    "subtitle": "Track your latest JD submissions and parsing status.",
+    "badge": "Recent",
+    "loading": "Loading…",
+    "empty": "No JDs yet.",
+    "cta": "Create JD",
+    "untitled": "Untitled JD",
+    "idLabel": "JD ID",
+    "errors": {
+      "loadFailed": "Failed to load recent JDs"
+    },
+    "status": {
+      "completed": "Completed",
+      "failed": "Failed",
+      "pending": "Pending",
+      "processing": "Processing"
+    }
+  },
+  "quota": {
+    "tiers": {
+      "free":    { "label": "Free",    "quotaText": "3 JDs/month" },
+      "starter": { "label": "Starter",  "quotaText": "10 JDs/month" },
+      "basic":   { "label": "Basic",   "quotaText": "25 JDs/month" },
+      "pro":     { "label": "Pro",      "quotaText": "100 JDs/month" },
+      "premium": { "label": "Premium",  "quotaText": "Unlimited" }
+    },
+    "status": {
+      "active":    "Active",
+      "expired":   "Expired",
+      "cancelled": "Expired",
+      "pending":   "Pending"
+    },
+    "cta": {
+      "upgrade": "Upgrade",
+      "active":  "Active"
+    },
+    "expiresAt": "Expires: {{date}}"
   },
   "footer": {
     "copyright": "© 2026 Edu-Nexus. Building your career future.",
@@ -121,225 +195,7 @@
       "progress": "Progress",
       "status": "Status",
       "actions": "Actions",
-      "viewMap": "View Map",
       "continue": "Continue"
-    },
-    "recommendations": {
-      "title": "Next Recommendations",
-      "forYou": "Recommended for you",
-      "microservicesTitle": "Mastering Microservices with Spring Cloud",
-      "microservicesDesc": "Take your Java Backend path to the next level.",
-      "startNow": "Start Now",
-      "testTime": "15 MINS",
-      "testTitle": "SQL Skill Assessment",
-      "testDesc": "Complete the test to unlock the next Data Science chapter.",
-      "certificatesTitle": "Latest Certificates",
-      "issued": "ISSUED OCT 2023",
-      "pending": "PENDING...",
-      "viewAllCertificates": "View all certificates"
-    }
-  },
-  "market": {
-    "title": "Recommended for you",
-    "sortBy": "Sort by:",
-    "sortOptions": {
-      "highestMatch": "Highest Match",
-      "deadline": "Deadline",
-      "value": "Scholarship Value"
-    },
-    "filters": {
-      "field": "Field of Study",
-      "location": "Location",
-      "match": "Match Level",
-      "over70": "Over 70%"
-    },
-    "card": {
-      "endsIn": "Ends in:",
-      "match": "Match",
-      "strengths": "Strengths",
-      "missing": "Missing",
-      "aiSuggestion": "AI Suggestion:",
-      "remind": "Remind me 7 days before",
-      "remindOn": "Reminder ON (7 days before)",
-      "apply": "Apply Now",
-      "details": "Details"
-    }
-  },
-  "settings": {
-    "title": "Personal Profile Settings",
-    "subtitle": "Manage your profile information and account security.",
-    "avatar": {
-      "title": "Profile Picture",
-      "change": "Change picture",
-      "remove": "Remove"
-    },
-    "personal": {
-      "title": "Personal Information",
-      "edit": "Edit",
-      "fullname": "Full Name",
-      "studentId": "Student ID",
-      "university": "University",
-      "major": "Major",
-      "email": "Email Address",
-      "phone": "Phone Number",
-      "save": "Save changes"
-    },
-    "security": {
-      "title": "Account Security",
-      "password": "Password",
-      "passwordDesc": "Change your password regularly to protect your account",
-      "changePassword": "Change password",
-      "2fa": "Two-Factor Authentication (2FA)",
-      "2faDesc": "Add an extra layer of security to your account",
-      "setup": "Set up"
-    },
-    "advanced": {
-      "disable": "Disable Account",
-      "disableDesc": "Your account will be temporarily locked and can be recovered within 30 days.",
-      "execute": "Execute"
-    }
-  },
-  "certificates": {
-    "title": "Digital Capability Profile",
-    "profile": {
-      "verified": "Verified Candidate",
-      "status": "Employment Status",
-      "lookingForJob": "Looking for Job",
-      "center": "Blockchain Certificate Center",
-      "centerDesc": "All skill badges are cryptographically signed and stored on ledger to ensure authenticity for potential employers.",
-      "secured": "Secured Identity",
-      "hash": "HASH: 8F2A...3B9D"
-    },
-    "badges": {
-      "title": "Verified Skill Badges",
-      "total": "Total verified: 12"
-    },
-    "projects": {
-      "title": "Verified Thesis Projects",
-      "sourceCode": "Source Code",
-      "liveDemo": "Live Demo",
-      "caseStudy": "Case Study"
-    }
-  },
-  "skillsCv": {
-    "badge": "AI CAREER GUIDANCE",
-    "title": "Analyze your career gap",
-    "subtitle": "Upload your CV and paste the job description. Our AI will analyze the requirements and pinpoint exactly what is missing.",
-    "jd": {
-      "title": "Job Description",
-      "subtitle": "Paste URL or plain text requirements",
-      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
-      "fetchBtn": "Fetch JD",
-      "textareaPlaceholder": "Or paste the full job description here...",
-      "ready": "Ready to analyze"
-    },
-    "cv": {
-      "title": "Your CV",
-      "subtitle": "Upload your latest CV (PDF format only)",
-      "dropzone": "Drag and drop your file here",
-      "limit": "5MB limit • PDF, DOCX",
-      "browseBtn": "Browse file"
-    },
-    "analyzeBtn": "Analyze Gap",
-    "secure": "Your data is encrypted and used only for analysis purposes"
-  },
-  "skillsTest": {
-    "badge": "AI CAREER GUIDANCE",
-    "title": "Analyze your career gap",
-    "subtitle": "Upload your CV and paste the job description. Our AI will analyze the requirements and pinpoint exactly what is missing.",
-    "jd": {
-      "title": "Job Description",
-      "subtitle": "Paste URL or plain text requirements",
-      "urlPlaceholder": "https://linkedin.com/jobs/view/...",
-      "fetchBtn": "Fetch JD",
-      "textareaPlaceholder": "Or paste the full job description here...",
-      "ready": "Ready to analyze"
-    },
-    "test": {
-      "title": "Select Assessment",
-      "subtitle": "Choose an assessment to start skill gap analysis.",
-      "startBtn": "Start test",
-      "t1Name": "AI CV Analysis Proficiency",
-      "t1Time": "20 MINS",
-      "t2Name": "JD Keyword Matching Challenge",
-      "t2Time": "15 MINS",
-      "t3Name": "Industry Skill Gap Assessment",
-      "t3Time": "25 MINS"
-    },
-    "analyzeBtn": "Analyze Gap",
-    "secure": "Your data is encrypted and used only for analysis purposes"
-  },
-  "gapAnalysis": {
-    "title": "Gap Analysis — Backend Java Developer",
-    "updated": "Updated: {{date}}",
-    "source": "Source: Skill Assessment ({{percent}}%)",
-    "version": "Version {{version}}",
-    "exportPdf": "Export PDF",
-    "createRoadmap": "Create Learning Roadmap",
-    "back": "Back",
-    "summaryTitle": "Summary Action Plan",
-    "summaryDesc": "User is missing <1>4 critical skills</1> to match this position's requirements. Prioritize fixing these to boost your match rate.",
-    "tableTitle": "Detailed Skill Analysis",
-    "status": {
-      "missing": "Missing",
-      "upgrade": "Upgrade",
-      "have": "Have"
-    },
-    "headers": {
-      "skill": "Skill",
-      "status": "Status",
-      "current": "Current",
-      "required": "Required",
-      "priority": "Priority"
-    },
-    "reasoning": "Reasoning Analysis",
-    "dockerDesc": "JD requires intermediate Docker but the user has no experience. This is a core skill for modern backend development, prioritize acquiring it.",
-    "cicdDesc": "CI/CD workflow configuration is missing. Add this skill to automate deployment.",
-    "sqlDesc": "SQL query optimization and advanced indexing knowledge should be upgraded.",
-    "javaOopDesc": "OOP knowledge is solid and meets the project requirements.",
-    "none": "None",
-    "viewRoadmap": "View Roadmap",
-    "historyTitle": "Version History",
-    "currentBadge": "CURRENT",
-    "viewing": "Viewing",
-    "viewBtn": "View",
-    "tier": "Student Tier",
-    "tierDesc": "All historical versions are stored here.",
-    "mentorTitle": "Mentor Recommendation",
-    "mentorDesc": "\"The Docker for Backend Java course at RMIT will help you fill the 8/10 Gap fastest.\"",
-    "exploreNow": "Explore Now"
-  },
-  "roadmap": {
-    "badge": "BACKEND DEVELOPER ROADMAP",
-    "title": "Your Learning Progress",
-    "progressText": "You have completed {{percent}}% of the roadmap. Keep going!",
-    "backBtn": "Go Back",
-    "completed": "Completed",
-    "learning": "LEARNING",
-    "upcoming": "Upcoming",
-    "popular": "Popular",
-    "duration": "About {{hours}} hours",
-    "level": "Level {{level}}",
-    "description": "Build REST APIs with Spring Boot, learn to connect databases with Spring Data JPA and manage security with Spring Security.",
-    "prerequisites": "Prerequisites",
-    "resources": "Learning Resources:",
-    "youtubeTitle": "YouTube Tutorial",
-    "youtubeDesc": "Comprehensive Spring Boot 3 full series tutorial",
-    "docsTitle": "Official Documentation",
-    "docsDesc": "Official documentation from the Spring.io team",
-    "udemyTitle": "Udemy Premium",
-    "udemyDesc": "Master Spring Boot with Real World Projects",
-    "sponsored": "SPONSORED",
-    "markComplete": "MARK AS COMPLETE",
-    "closePanel": "Close",
-    "upgradePro": "Upgrade Pro",
-    "upgradeDesc": "Unlock all premium roadmaps.",
-    "nodes": {
-      "javaCore": "Java Core",
-      "sqlDb": "SQL & Database",
-      "springBoot": "Spring Boot",
-      "springBootSub": "Start building APIs",
-      "microservices": "Microservices"
     }
   }
 }
