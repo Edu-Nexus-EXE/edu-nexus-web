@@ -139,7 +139,7 @@ export function JdDetailPage() {
   const { jdId } = useParams()
   const id = jdId ?? ''
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [creatingPath, setCreatingPath] = useState<'cv' | 'assessment' | null>(null)
   const [error, setError] = useState('')
   const [jd, setJd] = useState<JdSubmission | null>(null)
@@ -169,8 +169,12 @@ export function JdDetailPage() {
       }
     }
 
-    setLoading(true)
-    setError('')
+    setTimeout(() => {
+      if (!cancelled) {
+        setLoading(true)
+        setError('')
+      }
+    }, 0)
 
     loadOnce()
       .catch((e) => {

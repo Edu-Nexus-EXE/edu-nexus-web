@@ -1,52 +1,34 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { DASHBOARD_TONE_STYLES } from '../../lib/dashboard-tone'
+import { loadCareerTracks } from '../../lib/sprint2-api'
 
 export function AnalysisHistoryInsights() {
   const { t } = useTranslation('dashboard')
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    let cancelled = false
+    loadCareerTracks().then((res) => {
+      if (!cancelled) setCount(res.data?.length ?? 0)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
-    <div className='mt-8 grid grid-cols-1 md:grid-cols-3 gap-6'>
-      {/* Progress */}
-      <div className='bg-primary/5 border border-primary/20 rounded-xl p-6'>
-        <div className='flex items-center gap-4 mb-4'>
-          <div className='size-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground'>
-            <span className='material-symbols-outlined'>trending_up</span>
-          </div>
-          <div>
-            <p className='text-xs font-bold text-primary uppercase tracking-widest'>{t('analysisHistory.insights.progress')}</p>
-            <h3 className='text-xl font-bold text-foreground'>+15% Match</h3>
-          </div>
-        </div>
-        <p className='text-sm text-muted-foreground'>{t('analysisHistory.insights.progressDesc')}</p>
+    <div className='grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8'>
+      <div className='lg:col-span-2 bg-card rounded-2xl border border-border p-6 shadow-sm'>
+        <h3 className='font-bold text-lg text-foreground mb-4'>{t('analysisHistory.insights.title')}</h3>
+        <p className='text-sm text-muted-foreground'>{t('analysisHistory.insights.summary', { count })}</p>
       </div>
-
-      {/* Best Match */}
-      <div className='bg-success/5 border border-success/20 rounded-xl p-6'>
-        <div className='flex items-center gap-4 mb-4'>
-          <div className={DASHBOARD_TONE_STYLES.success.solid + ' size-10 rounded-full flex items-center justify-center'}>
-            <span className='material-symbols-outlined'>verified</span>
-          </div>
-          <div>
-            <p className='text-xs font-bold text-success uppercase tracking-widest'>{t('analysisHistory.insights.bestMatch')}</p>
-            <h3 className='text-xl font-bold text-foreground'>Frontend Dev</h3>
-          </div>
+      <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
+        <h3 className='font-bold text-lg text-foreground mb-4'>{t('analysisHistory.insights.quickStats')}</h3>
+        <div className='space-y-3 text-sm'>
+          <div className='flex items-center justify-between'><span>{t('analysisHistory.insights.total')}</span><span className='font-bold'>{count}</span></div>
+          <div className='flex items-center justify-between'><span>{t('analysisHistory.insights.avg')}</span><span className='font-bold'>72%</span></div>
         </div>
-        <p className='text-sm text-muted-foreground'>{t('analysisHistory.insights.bestMatchDesc')}</p>
-      </div>
-
-      {/* AI Advice */}
-      <div className='bg-foreground rounded-xl p-6 text-background shadow-xl'>
-        <h4 className='font-bold mb-2'>{t('analysisHistory.insights.aiAdvice')}</h4>
-        <p className='text-sm text-background/80 mb-4 leading-relaxed'>
-          {t('analysisHistory.insights.aiAdviceDesc')}
-        </p>
-        <button
-          type='button'
-          className='w-full py-2 bg-background text-foreground rounded-lg text-xs font-bold hover:bg-background/90 transition-colors'
-        >
-          {t('analysisHistory.insights.viewCourse')}
-        </button>
       </div>
     </div>
   )

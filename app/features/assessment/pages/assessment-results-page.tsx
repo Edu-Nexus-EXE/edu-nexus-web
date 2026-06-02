@@ -122,7 +122,7 @@ export function AssessmentResultsPage() {
   const sessionId = searchParams.get('sessionId') ?? ''
   const pathId = searchParams.get('pathId') ?? ''
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [result, setResult] = useState<Result | null>(null)
 
@@ -130,8 +130,12 @@ export function AssessmentResultsPage() {
     if (!sessionId) return
 
     let cancelled = false
-    setLoading(true)
-    setError('')
+    setTimeout(() => {
+      if (!cancelled) {
+        setLoading(true)
+        setError('')
+      }
+    }, 0)
 
     getAssessmentSessionsSessionId({ sessionId })
       .then((res) => {
@@ -159,16 +163,6 @@ export function AssessmentResultsPage() {
     return (correct / result.results.length) * 100
   }, [result?.results, result?.scorePercent])
 
-  const computedCorrectCount = useMemo(() => {
-    if (typeof result?.correctCount === 'number' && result.correctCount > 0) return result.correctCount
-    if (!result?.results?.length) return 0
-    return result.results.filter((r) => r.isCorrect === true).length
-  }, [result?.correctCount, result?.results])
-
-  const computedTotalCount = useMemo(() => {
-    if (typeof result?.totalCount === 'number' && result.totalCount > 0) return result.totalCount
-    return result?.results?.length ?? 0
-  }, [result?.results?.length, result?.totalCount])
   const badge = useMemo(() => {
     const percent = computedScore
     if (percent >= 80) return { variant: 'success' as const, label: t('assessment.results.badges.excellent') }

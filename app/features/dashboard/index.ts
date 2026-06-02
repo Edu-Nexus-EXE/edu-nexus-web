@@ -1,6 +1,7 @@
 export { DashboardPage } from './pages/dashboard-page'
 export { AnalysisHistoryPage } from './pages/analysis-history-page'
 export { LearningPathPage } from './pages/learning-path-page'
+export { CareerTrackPage } from './pages/career-track-page'
 export { MarketPage } from './pages/market-page'
 export { SettingsPage } from './pages/settings-page'
 export { CertificatesPage } from './pages/certificates-page'

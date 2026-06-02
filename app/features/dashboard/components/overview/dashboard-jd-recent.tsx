@@ -6,6 +6,8 @@ import { getJdSubmissions } from '~/api/operations/jd-submissions/jd-submissions
 import { cn } from '~/shared/lib/cn'
 import { Badge } from '~/shared/ui/badge'
 
+import { type JdRecentItem } from '../../lib/sprint2-api'
+
 type ResponseWithData<T> = { data?: T }
 
 type JdRowDto = {
@@ -17,22 +19,15 @@ type JdRowDto = {
   createdAt?: unknown
 }
 
-type JdRow = {
-  id: string
-  jobTitle: string
-  parseStatus: string
-  createdAt?: string
-}
-
-function parseJdRows(res: unknown): JdRow[] {
+function parseJdRows(res: unknown): JdRecentItem[] {
   const data = (res as ResponseWithData<unknown>)?.data
 
   const rows = Array.isArray(data)
     ? (data as unknown[])
-    : Array.isArray((data as any)?.items)
-      ? ((data as any).items as unknown[])
-      : Array.isArray((data as any)?.rows)
-        ? ((data as any).rows as unknown[])
+    : Array.isArray((data as { items?: unknown[] } | null)?.items)
+      ? ((data as { items: unknown[] }).items)
+      : Array.isArray((data as { rows?: unknown[] } | null)?.rows)
+        ? ((data as { rows: unknown[] }).rows)
         : []
 
   return rows
@@ -55,25 +50,29 @@ function statusTone(
   statusRaw: string
 ): { variant: Parameters<typeof Badge>[0]['variant']; label: string } {
   const s = statusRaw.toLowerCase()
-  if (s === 'completed')  return { variant: 'success',     label: t('jdRecent.status.completed') }
-  if (s === 'failed')    return { variant: 'destructive', label: t('jdRecent.status.failed') }
-  if (s === 'pending')   return { variant: 'warning',      label: t('jdRecent.status.pending') }
-  if (s === 'processing') return { variant: 'warning',     label: t('jdRecent.status.processing') }
+  if (s === 'completed') return { variant: 'success', label: t('jdRecent.status.completed') }
+  if (s === 'failed') return { variant: 'destructive', label: t('jdRecent.status.failed') }
+  if (s === 'pending') return { variant: 'warning', label: t('jdRecent.status.pending') }
+  if (s === 'processing') return { variant: 'warning', label: t('jdRecent.status.processing') }
   return { variant: 'outline', label: statusRaw || '—' }
 }
 
 export function DashboardJdRecent() {
   const { t } = useTranslation(['dashboard'])
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [rows, setRows] = useState<JdRow[]>([])
+  const [rows, setRows] = useState<JdRecentItem[]>([])
 
   useEffect(() => {
     let cancelled = false
 
-    setLoading(true)
-    setError('')
+    setTimeout(() => {
+      if (!cancelled) {
+        setLoading(true)
+        setError('')
+      }
+    }, 0)
 
     getJdSubmissions({ page: 1, pageSize: 5 })
       .then((res) => {
@@ -134,14 +133,14 @@ export function DashboardJdRecent() {
               <Link
                 key={r.id}
                 to={`/dashboard/jd/${encodeURIComponent(r.id)}`}
-                className={cn(
-                  'block rounded-xl border border-border bg-background p-4 transition-colors hover:bg-muted/20 hover:border-primary/30'
-                )}
+                className={cn('block rounded-xl border border-border bg-background p-4 transition-colors hover:bg-muted/20 hover:border-primary/30')}
               >
                 <div className='flex items-start justify-between gap-4'>
                   <div>
                     <p className='text-sm font-semibold text-foreground'>{r.jobTitle || t('jdRecent.untitled')}</p>
-                    <p className='text-xs text-muted-foreground mt-1'>{t('jdRecent.idLabel')}: {r.id}</p>
+                    <p className='text-xs text-muted-foreground mt-1'>
+                      {t('jdRecent.idLabel')}: {r.id}
+                    </p>
                     {r.createdAt ? <p className='text-xs text-muted-foreground mt-1'>{r.createdAt}</p> : null}
                   </div>
                   <Badge variant={tone.variant}>{tone.label}</Badge>

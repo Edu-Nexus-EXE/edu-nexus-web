@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 
-import { getAuthSession } from '~/shared/lib/auth-session'
+import { getAuthSession, setAuthSession, type AuthUser } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
+
+import { loadCurrentUser, type SubscriptionState } from '../../lib/sprint2-api'
+import { useTranslation } from 'react-i18next'
 
 type QuotaTier = 'free' | 'pro' | 'premium'
 
@@ -34,27 +36,75 @@ function getQuotaStyle(tier: QuotaTier): {
   }
 }
 
+function mapSubscription(user: AuthUser | null, subscription: SubscriptionState): AuthUser | null {
+  if (!user) return null
+  return {
+    ...user,
+    subscription: subscription
+      ? {
+          tierCode: subscription.tierCode,
+          displayName: subscription.displayName,
+          status: subscription.status,
+          expiresAt: subscription.expiresAt,
+        }
+      : user.subscription ?? null,
+  }
+}
+
 export function DashboardQuotaBanner() {
   const { t } = useTranslation('dashboard')
   const session = getAuthSession()
 
-  const sub = session?.user?.subscription
+  const [subscription, setSubscription] = useState<SubscriptionState>(session?.user?.subscription ?? null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    setTimeout(() => {
+      if (!cancelled) setLoading(true)
+    }, 0)
+
+    loadCurrentUser()
+      .then((user) => {
+        if (cancelled || !user) return
+        const nextSubscription = user.subscription
+          ? {
+              tierCode: user.subscription.tierCode,
+              displayName: user.subscription.displayName,
+              status: user.subscription.status,
+              expiresAt: user.subscription.expiresAt ?? null,
+            }
+          : null
+        setSubscription(nextSubscription)
+        const nextSession = mapSubscription(session?.user ?? null, nextSubscription)
+        if (nextSession && session) {
+          setAuthSession({ ...session, user: nextSession })
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [session])
+
+  const sub = subscription ?? session?.user?.subscription ?? null
   const tier = (sub?.tierCode?.toLowerCase() ?? 'free') as QuotaTier
   const style = getQuotaStyle(tier)
 
-  const statusVariant = useMemo(() => {
-    if (!sub?.status) return null
-    const s = sub.status.toLowerCase()
-    if (s === 'active')   return { label: t('quota.status.active'),   variant: 'success' as const }
-    if (s === 'expired' || s === 'cancelled') return { label: t('quota.status.expired'), variant: 'destructive' as const }
-    if (s === 'pending')  return { label: t('quota.status.pending'),  variant: 'warning' as const }
-    return { label: sub.status, variant: 'outline' as const }
-  }, [sub?.status, t])
+  const statusVariant = sub?.status
+    ? (() => {
+        const s = sub.status.toLowerCase()
+        if (s === 'active') return { label: t('quota.status.active'), variant: 'success' as const }
+        if (s === 'expired' || s === 'cancelled') return { label: t('quota.status.expired'), variant: 'destructive' as const }
+        if (s === 'pending') return { label: t('quota.status.pending'), variant: 'warning' as const }
+        return { label: sub.status, variant: 'outline' as const }
+      })()
+    : null
 
-  const expiresLabel = useMemo(() => {
-    if (!sub?.expiresAt) return null
-    return t('quota.expiresAt', { date: sub.expiresAt })
-  }, [sub?.expiresAt, t])
+  const expiresLabel = sub?.expiresAt ? t('quota.expiresAt', { date: sub.expiresAt }) : null
 
   const tierLabel = t(`quota.tiers.${tier}.label`)
   const quotaText = t(`quota.tiers.${tier}.quotaText`)
@@ -81,17 +131,17 @@ export function DashboardQuotaBanner() {
                 <span
                   className={cn(
                     'text-xs px-2 py-0.5 rounded-full font-medium',
-                    statusVariant.variant === 'success'    && 'bg-emerald-500/20 text-emerald-600',
+                    statusVariant.variant === 'success' && 'bg-emerald-500/20 text-emerald-600',
                     statusVariant.variant === 'destructive' && 'bg-red-500/20 text-red-600',
-                    statusVariant.variant === 'warning'   && 'bg-amber-500/20 text-amber-600',
-                    statusVariant.variant === 'outline'   && 'bg-muted text-muted-foreground'
+                    statusVariant.variant === 'warning' && 'bg-amber-500/20 text-amber-600',
+                    statusVariant.variant === 'outline' && 'bg-muted text-muted-foreground'
                   )}
                 >
                   {statusVariant.label}
                 </span>
               ) : null}
             </div>
-            <p className='text-xs text-muted-foreground mt-0.5'>{quotaText}</p>
+            <p className='text-xs text-muted-foreground mt-0.5'>{loading ? t('quota.loading') : quotaText}</p>
             {expiresLabel ? <p className='text-xs text-muted-foreground'>{expiresLabel}</p> : null}
           </div>
         </div>

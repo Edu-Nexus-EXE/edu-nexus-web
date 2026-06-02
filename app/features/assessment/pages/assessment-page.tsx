@@ -204,10 +204,10 @@ export function AssessmentPage() {
 
     const controller = new AbortController()
 
-    Promise.resolve().then(() => {
+    setTimeout(() => {
       setInitialLoading(true)
       setInitialError('')
-    })
+    }, 0)
 
     getJdSubmissionsJdIdReusableSessions({ jdId }, { signal: controller.signal } as never)
       .then((res) => setReusable(parseReusable(res)))

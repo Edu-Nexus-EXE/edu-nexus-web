@@ -86,7 +86,7 @@ export function AssessmentCvPage() {
   // Upload in progress
   const [uploading, setUploading] = useState(false)
   // Page-level data fetch
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   // Parsed CV result from GET /assessment-paths/:pathId/cv
   const [info, setInfo] = useState<CvInfo | null>(null)
@@ -115,8 +115,12 @@ export function AssessmentCvPage() {
       }
     }
 
-    setLoading(true)
-    setError('')
+    setTimeout(() => {
+      if (!cancelled) {
+        setLoading(true)
+        setError('')
+      }
+    }, 0)
     loadOnce().finally(() => {
       if (!cancelled) setLoading(false)
     })

@@ -9,6 +9,7 @@
     "analysisHistory": "Analysis History",
     "market": "Market",
     "learningPath": "Learning Path",
+    "careerTrack": "Career Track",
     "setting": "Setting",
     "membershipLabel": "Membership",
     "collapse": "Collapse sidebar",
@@ -67,6 +68,7 @@
   "roadmap": {
     "title": "Personalized Learning Path",
     "description": "Based on your current assessment, we've prepared an optimized learning path to help you reach 90% readiness in the next 3 months.",
+    "emptyDescription": "You don't have an active roadmap yet. Start from gap analysis to generate a learning path.",
     "explore": "Explore Path",
     "progress": "View Progress",
     "journeyTitle": "Junior Developer Journey v1.2"
@@ -124,21 +126,21 @@
   },
   "quota": {
     "tiers": {
-      "free":    { "label": "Free",    "quotaText": "3 JDs/month" },
-      "starter": { "label": "Starter",  "quotaText": "10 JDs/month" },
-      "basic":   { "label": "Basic",   "quotaText": "25 JDs/month" },
-      "pro":     { "label": "Pro",      "quotaText": "100 JDs/month" },
-      "premium": { "label": "Premium",  "quotaText": "Unlimited" }
+      "free": { "label": "Free", "quotaText": "3 JDs/month" },
+      "starter": { "label": "Starter", "quotaText": "10 JDs/month" },
+      "basic": { "label": "Basic", "quotaText": "25 JDs/month" },
+      "pro": { "label": "Pro", "quotaText": "100 JDs/month" },
+      "premium": { "label": "Premium", "quotaText": "Unlimited" }
     },
     "status": {
-      "active":    "Active",
-      "expired":   "Expired",
+      "active": "Active",
+      "expired": "Expired",
       "cancelled": "Expired",
-      "pending":   "Pending"
+      "pending": "Pending"
     },
     "cta": {
       "upgrade": "Upgrade",
-      "active":  "Active"
+      "active": "Active"
     },
     "expiresAt": "Expires: {{date}}"
   },
@@ -196,6 +198,24 @@
       "status": "Status",
       "actions": "Actions",
       "continue": "Continue"
+    },
+    "careerTrack": {
+      "title": "Career Track Manager",
+      "subtitle": "Create and manage tracks linked to your learning journey.",
+      "loading": "Loading career tracks…",
+      "newFromAnalysis": "Build from analysis",
+      "form": {
+        "name": "Track name",
+        "description": "Description"
+      },
+      "actions": {
+        "create": "Create",
+        "update": "Update selected",
+        "delete": "Delete selected",
+        "addJd": "Add JD",
+        "removeJd": "Remove"
+      },
+      "empty": "No career tracks yet. Create your first track to get started."
     }
   }
 }

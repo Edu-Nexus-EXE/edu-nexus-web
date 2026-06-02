@@ -28,7 +28,7 @@ export function useDashboardUser() {
       return
     }
 
-    setUser(session.user)
+    setTimeout(() => setUser(session.user), 0)
 
     // Best-effort: hydrate latest profile from BE.
     getUsersMe()
@@ -36,7 +36,7 @@ export function useDashboardUser() {
         const data = (res as MeResponse).data
         if (!data) return
 
-        const mapped = mapUserProfileToUser(data as any)
+        const mapped = mapUserProfileToUser(data as Parameters<typeof mapUserProfileToUser>[0])
 
         const nextSession = { ...session, user: mapped }
         setAuthSession(nextSession)

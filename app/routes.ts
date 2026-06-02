@@ -49,6 +49,7 @@ function dashboard() {
       // Learning
       route('dashboard/learning/learning-path', 'routes/dashboard/learning/learning-path.tsx'),
       route('dashboard/learning/roadmap', 'routes/dashboard/learning/roadmap.tsx'),
+      route('dashboard/learning/career-track', 'routes/dashboard/learning/career-track.tsx'),
 
       // Market
       route('dashboard/market', 'routes/dashboard/market/index.tsx'),

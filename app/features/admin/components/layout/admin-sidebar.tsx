@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
 
@@ -7,6 +8,7 @@ import { cn } from '~/shared/lib/cn'
 
 export function AdminSidebar() {
   const { t } = useTranslation('admin')
+  const navigate = useNavigate()
 
   async function handleLogout() {
     const refreshToken = getRefreshToken()
@@ -17,7 +19,7 @@ export function AdminSidebar() {
       }
     } finally {
       clearAuthSession()
-      window.location.href = '/'
+      navigate('/')
     }
   }
 
