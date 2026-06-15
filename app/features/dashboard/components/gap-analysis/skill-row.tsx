@@ -9,6 +9,45 @@ const STATUS_VARIANTS: Record<GapAnalysisSkillStatus, string> = {
   have: 'bg-success/10 text-success border-success/20'
 }
 
+const VI_LEVELS: Record<string, string> = {
+  none: 'Chưa có',
+  basic: 'Cơ bản',
+  intermediate: 'Trung cấp',
+  advanced: 'Nâng cao',
+  unknown: 'Chưa rõ',
+  'not evidenced': 'Chưa có minh chứng',
+  'mandatory in jd': 'Bắt buộc trong JD'
+}
+
+function hasVietnamese(value: string) {
+  return /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(value)
+}
+
+function translateValue(value: string, language: string) {
+  if (!language.startsWith('vi')) return value
+  const normalized = value.trim().toLowerCase()
+  return VI_LEVELS[normalized] ?? value
+}
+
+function translateReason(value: string, language: string) {
+  if (!language.startsWith('vi') || !value || hasVietnamese(value)) return value
+
+  let translated = value
+    .replace(/^candidate has no evidence of (.+?) skill\.?$/i, 'Ứng viên chưa có minh chứng về kỹ năng $1.')
+    .replace(/^candidate does not have (.+?) skill\.?$/i, 'Ứng viên chưa có kỹ năng $1.')
+    .replace(/^candidate lacks (.+?) skill\.?$/i, 'Ứng viên còn thiếu kỹ năng $1.')
+    .replace(/^user has no experience with (.+?)\.?$/i, 'Người dùng chưa có kinh nghiệm với $1.')
+    .replace(/^learn (.+?)\.$/i, 'Cần học $1.')
+    .replace(/mandatory in jd/gi, 'bắt buộc trong JD')
+    .replace(/required in jd/gi, 'được yêu cầu trong JD')
+
+  for (const [source, target] of Object.entries(VI_LEVELS)) {
+    translated = translated.replace(new RegExp(`\\b${source}\\b`, 'gi'), target.toLowerCase())
+  }
+
+  return translated
+}
+
 export interface SkillRowProps {
   skill: GapAnalysisSkill
   isExpanded: boolean
@@ -16,7 +55,12 @@ export interface SkillRowProps {
 }
 
 export function SkillRow({ skill, isExpanded, onToggle }: SkillRowProps) {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
+  const language = i18n.language ?? 'vi'
+  const current = translateValue(skill.current, language)
+  const required = translateValue(skill.required, language)
+  const reason = translateReason(skill.reason, language)
+  const tags = skill.tags.map((tag) => translateValue(tag, language))
 
   return (
     <Fragment>
@@ -31,11 +75,11 @@ export function SkillRow({ skill, isExpanded, onToggle }: SkillRowProps) {
           <span
             className={`${STATUS_VARIANTS[skill.status]} px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border`}
           >
-            {t(`gapAnalysis.status.${skill.status}`)}
+            {t(`learningPath.gapAnalysis.status.${skill.status}`)}
           </span>
         </td>
-        <td className='px-6 py-5 text-sm font-medium text-foreground/80'>{skill.current}</td>
-        <td className='px-6 py-5 text-sm font-bold text-foreground'>{skill.required}</td>
+        <td className='px-6 py-5 text-sm font-medium text-foreground/80'>{current}</td>
+        <td className='px-6 py-5 text-sm font-bold text-foreground'>{required}</td>
         <td className='px-6 py-5'>
           {skill.hasPriority ? (
             <div className='flex items-center gap-2'>
@@ -71,14 +115,14 @@ export function SkillRow({ skill, isExpanded, onToggle }: SkillRowProps) {
               <div className='space-y-3'>
                 <div>
                   <p className='text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1'>
-                    {t('gapAnalysis.reasoning')}
+                    {t('learningPath.gapAnalysis.reasoning')}
                   </p>
-                  <p className='text-sm text-foreground/80 italic leading-relaxed'>"{skill.reason}"</p>
+                  <p className='text-sm text-foreground/80 italic leading-relaxed'>"{reason}"</p>
                 </div>
                 <div className='flex flex-wrap gap-2'>
-                  {skill.tags.map((tag) => (
+                  {tags.map((tag, index) => (
                     <span
-                      key={tag}
+                      key={`${tag}-${index}`}
                       className='bg-card border border-border text-muted-foreground px-3 py-1 rounded-full text-xs font-medium'
                     >
                       {tag}

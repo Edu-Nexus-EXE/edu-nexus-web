@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { cn } from '~/shared/lib/cn'
 
@@ -61,11 +62,13 @@ export function useToast() {
 }
 
 function ToastViewport({ items, onDismiss }: { items: ToastItem[]; onDismiss: (id: string) => void }) {
+  const { t } = useTranslation('common')
+
   return (
     <div className='fixed top-4 right-4 z-[100] flex w-[360px] max-w-[calc(100vw-2rem)] flex-col gap-3'>
-      {items.map((t) => (
+      {items.map((item) => (
         <div
-          key={t.id}
+          key={item.id}
           className={cn(
             'rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-lg',
             'px-4 py-3'
@@ -77,23 +80,23 @@ function ToastViewport({ items, onDismiss }: { items: ToastItem[]; onDismiss: (i
             <div
               className={cn(
                 'mt-0.5 w-2.5 h-2.5 rounded-full',
-                t.variant === 'success' && 'bg-success',
-                t.variant === 'error' && 'bg-destructive',
-                t.variant === 'default' && 'bg-muted-foreground'
+                item.variant === 'success' && 'bg-success',
+                item.variant === 'error' && 'bg-destructive',
+                item.variant === 'default' && 'bg-muted-foreground'
               )}
             />
 
             <div className='min-w-0 flex-1'>
-              {t.title ? <p className='text-sm font-bold text-foreground'>{t.title}</p> : null}
-              <p className='text-sm text-muted-foreground break-words'>{t.message}</p>
+              {item.title ? <p className='text-sm font-bold text-foreground'>{item.title}</p> : null}
+              <p className='text-sm text-muted-foreground break-words'>{item.message}</p>
             </div>
 
             <button
               type='button'
-              onClick={() => onDismiss(t.id)}
+              onClick={() => onDismiss(item.id)}
               className='text-muted-foreground hover:text-foreground transition-colors'
-              aria-label='Dismiss'
-              title='Dismiss'
+              aria-label={t('accessibility.dismiss')}
+              title={t('accessibility.dismiss')}
             >
               <span className='material-icons text-lg leading-none'>close</span>
             </button>

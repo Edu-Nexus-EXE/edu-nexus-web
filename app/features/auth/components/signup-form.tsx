@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { postAuthRegister } from '~/api/operations/auth/auth'
-import { getUsersMe } from '~/api/operations/users/users'
+import { useToast } from '~/shared/components'
 import { cn } from '~/shared/lib/cn'
 import { setAuthSession } from '~/shared/lib/auth-session'
 import type { AuthResponseData } from '../lib/be-auth-types'
@@ -12,16 +12,8 @@ import { isAuthResponseData } from '../lib/be-auth-types'
 
 type ResponseWithData<T> = { data?: T }
 
-async function redirectAfterSignup(navigate: (to: string) => void) {
-  try {
-    const me = await getUsersMe()
-    const data = (me as ResponseWithData<{ isSurveyCompleted?: unknown }>).data
-    const isSurveyCompleted = Boolean(data?.isSurveyCompleted)
-
-    navigate(isSurveyCompleted ? '/dashboard' : '/onboarding')
-  } catch {
-    navigate('/dashboard')
-  }
+function redirectAfterSignup(navigate: (to: string) => void, isSurveyCompleted: boolean) {
+  navigate(isSurveyCompleted ? '/dashboard' : '/onboarding')
 }
 
 function toAuthData(res: unknown): AuthResponseData {
@@ -34,6 +26,7 @@ function toAuthData(res: unknown): AuthResponseData {
 
 export function SignupForm() {
   const { t } = useTranslation('auth')
+  const toast = useToast()
   const navigate = useNavigate()
 
   const [error, setError] = useState('')
@@ -46,9 +39,15 @@ export function SignupForm() {
 
     try {
       const formData = new FormData(e.currentTarget)
-      const fullName = String(formData.get('fullname') ?? '')
-      const email = String(formData.get('email') ?? '')
+      const fullName = String(formData.get('fullname') ?? '').trim()
+      const email = String(formData.get('email') ?? '').trim()
       const password = String(formData.get('password') ?? '')
+      const confirmPassword = String(formData.get('confirmPassword') ?? '')
+
+      if (password !== confirmPassword) {
+        setError(t('signup.passwordMismatch'))
+        return
+      }
 
       const res = await postAuthRegister({ fullName, email, password })
       const data = toAuthData(res)
@@ -58,7 +57,9 @@ export function SignupForm() {
         tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
       })
 
-      await redirectAfterSignup(navigate)
+      toast.success(t('signup.success'))
+
+      redirectAfterSignup(navigate, data.isSurveyCompleted)
     } catch (err) {
       setError((err as Error).message || t('signup.errorInvalid'))
     } finally {
@@ -163,6 +164,37 @@ export function SignupForm() {
                 type='password'
                 required
                 placeholder={t('signup.passwordPlaceholder')}
+                className={cn(
+                  'block w-full pl-10 pr-3 py-3 rounded-lg',
+                  'border border-border bg-muted text-foreground',
+                  'placeholder:text-muted-foreground',
+                  'focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-primary',
+                  'transition-all duration-200 sm:text-sm'
+                )}
+              />
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div className='space-y-1.5'>
+            <label
+              htmlFor='confirmPassword'
+              className='block text-xs font-medium text-muted-foreground uppercase tracking-wider ml-1'
+            >
+              {t('signup.confirmPasswordLabel')}
+            </label>
+            <div className='relative group'>
+              <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                <span className='material-icons text-muted-foreground group-focus-within:text-primary transition-colors text-lg'>
+                  lock_reset
+                </span>
+              </div>
+              <input
+                id='confirmPassword'
+                name='confirmPassword'
+                type='password'
+                required
+                placeholder={t('signup.confirmPasswordPlaceholder')}
                 className={cn(
                   'block w-full pl-10 pr-3 py-3 rounded-lg',
                   'border border-border bg-muted text-foreground',

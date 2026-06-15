@@ -1,11 +1,13 @@
 import { Navigate, useNavigate, useParams, useSearchParams } from 'react-router'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { getAssessmentPathsPathIdCv, postAssessmentPathsPathIdCv } from '~/api/operations/cv-submissions/cv-submissions'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 import { Badge } from '~/shared/ui/badge'
+
+const MAX_CV_FILE_SIZE_BYTES = 5 * 1024 * 1024
 
 type ResponseWithData<T> = { data?: T }
 
@@ -100,7 +102,7 @@ export function AssessmentCvPage() {
 
     async function loadOnce() {
       try {
-        const res = await getAssessmentPathsPathIdCv({ pathId })
+        const res = await getAssessmentPathsPathIdCv({ pathId: pathId ?? '' })
         if (cancelled) return
 
         const parsed = parseCvInfo(res)
@@ -144,10 +146,27 @@ export function AssessmentCvPage() {
   }, [info?.status, t, uploading])
 
   if (!session) return <Navigate to='/login' replace />
-  if (!session.user.isSurveyCompleted) return <Navigate to='/onboarding' replace />
 
   // User picks a file → preview name only, no API call yet
   function onFileChange(file: File | null) {
+    if (!file) {
+      setSelectedFile(null)
+      setError('')
+      return
+    }
+
+    if (file.type !== 'application/pdf') {
+      setSelectedFile(null)
+      setError(t('cv.page.errors.invalidFileType'))
+      return
+    }
+
+    if (file.size > MAX_CV_FILE_SIZE_BYTES) {
+      setSelectedFile(null)
+      setError(t('cv.page.errors.fileTooLarge'))
+      return
+    }
+
     setSelectedFile(file)
     setError('')
   }
@@ -160,7 +179,7 @@ export function AssessmentCvPage() {
     setError('')
 
     try {
-      await postAssessmentPathsPathIdCv({ pathId }, { file: selectedFile })
+      await postAssessmentPathsPathIdCv({ pathId: pathId ?? '' }, { file: selectedFile })
       // Poll GET until parsing is done
       await pollUntilDone(pathId)
     } catch (e) {
@@ -236,7 +255,7 @@ export function AssessmentCvPage() {
               accept='application/pdf'
               className='hidden'
               disabled={uploading}
-              onChange={(e) => onFileChange(e.target.files?.[0] ?? null)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => onFileChange(e.target.files?.[0] ?? null)}
             />
           </label>
 
@@ -251,6 +270,7 @@ export function AssessmentCvPage() {
               <button
                 type='button'
                 onClick={() => setSelectedFile(null)}
+                aria-label={t('common:accessibility.clearSelectedFile')}
                 className='text-muted-foreground hover:text-destructive transition-colors'
               >
                 <span className='material-icons text-lg'>close</span>
@@ -274,6 +294,8 @@ export function AssessmentCvPage() {
               {uploading ? t('cv.page.uploading') : t('cv.page.upload')}
             </button>
           ) : null}
+
+          <p className='mt-4 text-xs text-muted-foreground'>{t('cv.page.formatNote')}</p>
         </div>
 
         {/* Status & result area */}
@@ -295,7 +317,7 @@ export function AssessmentCvPage() {
 
                 {info.parseError ? (
                   <div className='mt-3 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-destructive text-sm'>
-                    {info.parseError}
+                    {info.parseError.includes('Không thể đọc nội dung CV') ? t('cv.page.errors.scannedPdf') : info.parseError}
                   </div>
                 ) : null}
               </div>

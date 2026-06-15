@@ -1,0 +1,77 @@
+{
+  "currentPlan": {
+    "label": "Current subscription",
+    "freeFallback": "Free plan",
+    "noExpiry": "No expiration date",
+    "expiresAt": "Expires at: {{date}}",
+    "status": {
+      "active": "active",
+      "pending": "pending",
+      "expired": "expired"
+    }
+  },
+  "plans": {
+    "perMonth": "/month",
+    "unlimited": "Unlimited",
+    "currentPlan": "Current plan",
+    "processing": "Processing...",
+    "paymentRedirectMissing": "The order was created but the system did not return an automatic payment redirect URL.",
+    "paymentManualFallback": "You can review the order history below or wait until the backend completes the provider-managed checkout flow.",
+    "duration": {
+      "label": "Billing duration",
+      "options": {
+        "1": "1 month",
+        "3": "3 months",
+        "6": "6 months"
+      }
+    },
+    "features": {
+      "jdQuota": "{{count}} JD submissions / month",
+      "roadmapQuota": "{{count}} active roadmaps",
+      "assessmentQuota": "{{count}} assessments / month",
+      "portfolioProjects": "{{count}} portfolio projects",
+      "fullGapHistory": "Full gap analysis history"
+    },
+    "free": {
+      "name": "Basic",
+      "price": "Free",
+      "description": "For individuals just starting to explore their career path.",
+      "button": "Get started for free"
+    },
+    "student": {
+      "name": "Student",
+      "badge": "Most popular",
+      "description": "Best value for active learners who need unlimited AI-assisted growth.",
+      "button": "Upgrade to Student"
+    },
+    "pro": {
+      "name": "Professional",
+      "description": "Expanded quotas and premium support for power users and mentors.",
+      "button": "Upgrade to Pro"
+    }
+  },
+  "orders": {
+    "title": "Order history",
+    "subtitle": "Track the latest subscription orders and payment statuses.",
+    "empty": "No subscription orders yet.",
+    "createdFallback": "Created order {{orderId}} · {{status}} · {{amount}}",
+    "provider": "Provider",
+    "currency": "Currency",
+    "openCheckout": "Open checkout",
+    "manualReview": "Waiting for backend/provider-managed checkout",
+    "paymentSuccess": "Payment completed successfully. Your subscription status will refresh shortly.",
+    "paymentFailed": "Payment did not complete. Please retry or choose another payment option."
+  },
+  "errors": {
+    "loadFailed": "Could not load subscription information.",
+    "orderFailed": "Could not create subscription order."
+  },
+  "quotaExceeded": {
+    "title": "You've reached your quota",
+    "message": "Quota exceeded",
+    "quotaType": "Quota type:",
+    "usage": "Usage:",
+    "close": "Close",
+    "upgrade": "Upgrade plan"
+  }
+}

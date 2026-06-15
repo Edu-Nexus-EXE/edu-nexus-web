@@ -1,65 +1,128 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { loadAdminPaymentOrders, type AdminPaymentOrderView } from '../../lib/admin-data'
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(value)
+}
+
+function providerTone(provider: string) {
+  const normalized = provider.toLowerCase()
+  if (normalized.includes('vnpay')) return 'bg-primary/10 text-primary'
+  if (normalized.includes('momo')) return 'bg-muted text-muted-foreground'
+  return 'bg-secondary text-secondary-foreground'
+}
 
 export function AdminRevenueSection() {
   const { t } = useTranslation('admin')
+  const [orders, setOrders] = useState<AdminPaymentOrderView[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    loadAdminPaymentOrders()
+      .then((data) => {
+        if (!cancelled) setOrders(data)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const totalRevenue = useMemo(() => orders.reduce((sum, item) => sum + item.amount, 0), [orders])
+  const paidOrders = useMemo(() => orders.filter((item) => item.status.toLowerCase() === 'completed' || item.status.toLowerCase() === 'paid'), [orders])
+  const monthlyRevenue = useMemo(() => {
+    const now = new Date()
+    return paidOrders
+      .filter((item) => {
+        const createdAt = new Date(item.createdAt)
+        return createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear()
+      })
+      .reduce((sum, item) => sum + item.amount, 0)
+  }, [paidOrders])
+
+  const providerShare = useMemo(() => {
+    const totals = new Map<string, number>()
+    for (const item of paidOrders) {
+      totals.set(item.provider, (totals.get(item.provider) ?? 0) + item.amount)
+    }
+    const aggregate = Array.from(totals.entries())
+      .map(([provider, amount]) => ({
+        provider,
+        amount,
+        percent: totalRevenue > 0 ? Math.max(8, Math.round((amount / totalRevenue) * 100)) : 0,
+      }))
+      .sort((a, b) => b.amount - a.amount)
+    return aggregate.slice(0, 3)
+  }, [paidOrders, totalRevenue])
+
+  const recentOrders = useMemo(() => orders.slice(0, 5), [orders])
 
   return (
     <section className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-      {/* Revenue Overview */}
       <div className='lg:col-span-2 bg-card rounded-2xl border border-border p-8 shadow-sm flex flex-col'>
         <div className='flex items-center justify-between mb-8'>
           <div>
             <h2 className='text-xl font-bold text-foreground'>{t('revenue.title')}</h2>
             <p className='text-sm text-muted-foreground'>{t('revenue.subtitle')}</p>
           </div>
-          <button className='text-primary text-sm font-semibold hover:underline'>{t('revenue.reportDetail')}</button>
+          <button type='button' className='text-primary text-sm font-semibold hover:underline'>
+            {t('revenue.reportDetail')}
+          </button>
         </div>
+
         <div className='grid grid-cols-2 gap-6 mb-10'>
-          <div className='p-6 bg-primary/5 border border-primary/10 rounded-2xl'>
-            <p className='text-xs font-bold text-primary uppercase tracking-widest mb-2'>{t('revenue.thisMonth')}</p>
-            <h4 className='text-2xl font-bold text-foreground'>
-              125,000,000 <span className='text-sm font-normal text-muted-foreground'>VND</span>
-            </h4>
-          </div>
-          <div className='p-6 bg-muted/50 border border-border rounded-2xl'>
-            <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2'>{t('revenue.allTime')}</p>
-            <h4 className='text-2xl font-bold text-foreground'>
-              1,450,000,000 <span className='text-sm font-normal text-muted-foreground'>VND</span>
-            </h4>
-          </div>
+          {loading ? (
+            Array.from({ length: 2 }).map((_, index) => (
+              <div key={index} className='p-6 rounded-2xl border border-border bg-muted/20 animate-pulse'>
+                <div className='h-4 w-28 rounded bg-muted' />
+                <div className='mt-3 h-8 w-40 rounded bg-muted' />
+              </div>
+            ))
+          ) : (
+            <>
+              <div className='p-6 bg-primary/5 border border-primary/10 rounded-2xl'>
+                <p className='text-xs font-bold text-primary uppercase tracking-widest mb-2'>{t('revenue.thisMonth')}</p>
+                <h4 className='text-2xl font-bold text-foreground'>{formatCurrency(monthlyRevenue)}</h4>
+              </div>
+              <div className='p-6 bg-muted/50 border border-border rounded-2xl'>
+                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2'>{t('revenue.allTime')}</p>
+                <h4 className='text-2xl font-bold text-foreground'>{formatCurrency(totalRevenue)}</h4>
+              </div>
+            </>
+          )}
         </div>
+
         <div className='flex-1'>
           <h3 className='text-sm font-bold text-foreground mb-6'>{t('revenue.paymentSources')}</h3>
-          <div className='h-48 flex items-end gap-10 border-b border-border pb-4 px-4'>
-            <div className='flex-1 flex flex-col items-center gap-3'>
-              <div className='w-full bg-primary rounded-t-xl h-[80%] relative group transition-all hover:opacity-90'>
-                <span className='absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
-                  80%
-                </span>
-              </div>
-              <span className='text-xs font-bold text-muted-foreground'>VNPay</span>
+          {loading ? (
+            <div className='h-48 rounded-2xl bg-muted/20 animate-pulse' />
+          ) : providerShare.length === 0 ? (
+            <div className='rounded-2xl border border-dashed border-border bg-muted/10 p-6 text-sm text-muted-foreground text-center'>
+              {t('adminCommon.empty')}
             </div>
-            <div className='flex-1 flex flex-col items-center gap-3'>
-              <div className='w-full bg-primary/60 rounded-t-xl h-[45%] relative group transition-all hover:opacity-90'>
-                <span className='absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
-                  45%
-                </span>
-              </div>
-              <span className='text-xs font-bold text-muted-foreground'>MoMo</span>
+          ) : (
+            <div className='h-48 flex items-end gap-6 border-b border-border pb-4 px-4'>
+              {providerShare.map((item) => (
+                <div key={item.provider} className='flex-1 flex flex-col items-center gap-3'>
+                  <div className='w-full bg-primary rounded-t-xl relative group transition-all hover:opacity-90' style={{ height: `${item.percent}%` }}>
+                    <span className='absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
+                      {item.percent}%
+                    </span>
+                  </div>
+                  <span className='text-xs font-bold text-muted-foreground'>{item.provider}</span>
+                </div>
+              ))}
             </div>
-            <div className='flex-1 flex flex-col items-center gap-3'>
-              <div className='w-full bg-primary/30 rounded-t-xl h-[20%] relative group transition-all hover:opacity-90'>
-                <span className='absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
-                  20%
-                </span>
-              </div>
-              <span className='text-xs font-bold text-muted-foreground'>Manual</span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Recent Orders Table */}
       <div className='bg-card rounded-2xl border border-border p-8 shadow-sm flex flex-col'>
         <h3 className='text-xl font-bold text-foreground mb-6'>{t('revenue.recentTransactions')}</h3>
         <div className='flex-1 overflow-x-auto'>
@@ -72,35 +135,38 @@ export function AdminRevenueSection() {
               </tr>
             </thead>
             <tbody className='divide-y divide-border'>
-              {[
-                { email: 'user1@gmail.com', amount: '500k', method: 'VNPay', methodClass: 'bg-primary/10 text-primary' },
-                { email: 'student.hust@...', amount: '200k', method: 'MoMo', methodClass: 'bg-muted text-muted-foreground' },
-                { email: 'admin.test@...', amount: '1M', method: 'Manual', methodClass: 'bg-muted text-muted-foreground' },
-                { email: 'nguyen.a@...', amount: '500k', method: 'VNPay', methodClass: 'bg-primary/10 text-primary' },
-                { email: 'tran.b@...', amount: '200k', method: 'MoMo', methodClass: 'bg-muted text-muted-foreground' },
-              ].map((row, i) => (
-                <tr key={i} className='hover:bg-primary/5 transition-colors group'>
-                  <td className='py-4 pr-2 text-xs font-medium text-foreground max-w-[100px] truncate'>
-                    {row.email}
-                  </td>
-                  <td className='py-4 px-2 text-xs font-bold text-right text-foreground'>{row.amount}</td>
-                  <td className='py-4 pl-2 text-right'>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${row.methodClass}`}>
-                      {row.method}
-                    </span>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={index} className='animate-pulse'>
+                    <td className='py-4 pr-2'><div className='h-4 w-28 rounded bg-muted' /></td>
+                    <td className='py-4 px-2'><div className='ml-auto h-4 w-16 rounded bg-muted' /></td>
+                    <td className='py-4 pl-2'><div className='ml-auto h-5 w-16 rounded-full bg-muted' /></td>
+                  </tr>
+                ))
+              ) : recentOrders.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className='py-8 text-center text-sm text-muted-foreground'>
+                    {t('adminCommon.empty')}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentOrders.map((row) => (
+                  <tr key={row.id} className='hover:bg-primary/5 transition-colors group'>
+                    <td className='py-4 pr-2 text-xs font-medium text-foreground max-w-[120px] truncate'>{row.user}</td>
+                    <td className='py-4 px-2 text-xs font-bold text-right text-foreground'>{formatCurrency(row.amount)}</td>
+                    <td className='py-4 pl-2 text-right'>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${providerTone(row.provider)}`}>{row.provider}</span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        <a
-          className='mt-6 w-full py-3 border border-border text-muted-foreground font-bold text-xs rounded-xl hover:bg-muted hover:text-primary transition-all flex items-center justify-center gap-2'
-          href='#'
-        >
+        <button type='button' className='mt-6 w-full py-3 border border-border text-muted-foreground font-bold text-xs rounded-xl hover:bg-muted hover:text-primary transition-all flex items-center justify-center gap-2'>
           {t('revenue.viewAll')}
           <span className='material-symbols-outlined text-sm'>arrow_forward</span>
-        </a>
+        </button>
       </div>
     </section>
   )

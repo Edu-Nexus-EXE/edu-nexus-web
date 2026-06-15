@@ -63,7 +63,7 @@ export function AdminJdLogDetailPage() {
           {t('jdLogDetail.breadcrumb.admin')}
         </Link>
         <span className='material-symbols-outlined text-[14px]'>chevron_right</span>
-        <Link to='/admin/jd-logs' className='hover:text-primary transition-colors'>
+        <Link to='/admin/jd-failed' className='hover:text-primary transition-colors'>
           {t('jdLogDetail.breadcrumb.failedLogs')}
         </Link>
         <span className='material-symbols-outlined text-[14px]'>chevron_right</span>
@@ -74,9 +74,10 @@ export function AdminJdLogDetailPage() {
       <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mt-2'>
         <div className='flex items-center gap-4'>
           <Link
-            to='/admin/jd-logs'
+            to='/admin/jd-failed'
             className='h-10 w-10 flex items-center justify-center rounded-full hover:bg-card border border-border text-muted-foreground transition-all'
             title={t('jdLogDetail.back')}
+            aria-label={t('jdLogDetail.back')}
           >
             <span className='material-symbols-outlined'>arrow_back</span>
           </Link>
@@ -172,6 +173,7 @@ export function AdminJdLogDetailPage() {
           </div>
           <button
             onClick={handleCopy}
+            aria-label={copied ? t('jdLogDetail.rawSource.copied') : t('jdLogDetail.rawSource.copy')}
             className='text-primary font-bold text-sm flex items-center gap-1 hover:underline transition-all active:scale-95'
           >
             <span className='material-symbols-outlined text-sm'>{copied ? 'check' : 'content_copy'}</span>
@@ -187,18 +189,18 @@ export function AdminJdLogDetailPage() {
 
       {/* Floating Footer Actions */}
       <div className='pb-12 flex flex-col md:flex-row items-center gap-4'>
-        <button className='w-full md:w-auto px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
+        <button aria-label={t('jdLogDetail.actions.retry')} className='w-full md:w-auto px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
           <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>
             refresh
           </span>
           {t('jdLogDetail.actions.retry')}
         </button>
-        <button className='w-full md:w-auto px-8 py-3.5 border border-primary text-primary rounded-xl font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
+        <button aria-label={t('jdLogDetail.actions.edit')} className='w-full md:w-auto px-8 py-3.5 border border-primary text-primary rounded-xl font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
           <span className='material-symbols-outlined'>edit_note</span>
           {t('jdLogDetail.actions.edit')}
         </button>
         <div className='flex-1' />
-        <button className='w-full md:w-auto px-6 py-3.5 text-destructive font-semibold flex items-center justify-center gap-2 hover:bg-destructive/10 rounded-xl transition-all cursor-pointer'>
+        <button aria-label={t('jdLogDetail.actions.delete')} className='w-full md:w-auto px-6 py-3.5 text-destructive font-semibold flex items-center justify-center gap-2 hover:bg-destructive/10 rounded-xl transition-all cursor-pointer'>
           <span className='material-symbols-outlined'>delete</span>
           {t('jdLogDetail.actions.delete')}
         </button>

@@ -9,13 +9,13 @@ const LABEL: Record<Language, string> = {
 };
 
 export function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const current = (i18n.resolvedLanguage ?? "vi") as Language;
 
   return (
     <div
       role="group"
-      aria-label="Language"
+      aria-label={t("common:language")}
       className="inline-flex items-center rounded-full border border-border bg-card p-0.5 text-sm"
     >
       {SUPPORTED_LANGUAGES.map((lng) => {

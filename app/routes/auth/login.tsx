@@ -6,6 +6,12 @@ import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/login'
 
+type LoginLocationState = {
+  from?: {
+    pathname?: string
+  }
+}
+
 export function meta({}: Route.MetaArgs) {
   return [
     { title: getMetaTitle('auth', 'login.title') },
@@ -21,8 +27,10 @@ export default function Login() {
   const location = useLocation()
 
   if (session) {
-    const from = (location.state as any)?.from?.pathname as string | undefined
-    return <Navigate to={from || '/dashboard'} replace />
+    const state = location.state as LoginLocationState | null
+    const from = state?.from?.pathname
+    const fallback = session.user.role === 'admin' ? '/admin' : '/dashboard'
+    return <Navigate to={from || fallback} replace />
   }
 
   return <LoginPage />

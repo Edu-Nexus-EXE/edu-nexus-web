@@ -1,13 +1,14 @@
 {
   "cv": {
     "page": {
-      "badge": "PATH A",
+      "badge": "CV",
       "title": "Tải CV lên",
       "pathLabel": "Lộ trình đánh giá: {{pathId}}",
       "cardTitle": "CV (PDF)",
       "cardDesc": "Tối đa 5MB",
       "dropTitle": "Thả file PDF vào đây",
       "dropDesc": "Hoặc bấm để chọn file",
+      "formatNote": "📄 Hỗ trợ CV dạng PDF có text (xuất từ Word, Canva, Google Docs). CV scan hoặc ảnh chụp chưa được hỗ trợ.",
       "selectFile": "Chọn file",
       "upload": "Tải lên",
       "uploading": "Đang tải lên...",
@@ -25,7 +26,10 @@
         "processing": "Đang xử lý"
       },
       "errors": {
-        "uploadFailed": "Tải lên thất bại"
+        "uploadFailed": "Tải lên thất bại",
+        "invalidFileType": "Vui lòng chọn tệp PDF hợp lệ.",
+        "fileTooLarge": "Tệp vượt quá giới hạn 5MB. Vui lòng chọn tệp nhỏ hơn.",
+        "scannedPdf": "❌ Không thể đọc nội dung CV. File có thể là bản scan hoặc ảnh. Vui lòng xuất CV từ Word/Canva dưới dạng PDF rồi upload lại."
       },
       "viewAnalysis": "Xem phân tích"
     }

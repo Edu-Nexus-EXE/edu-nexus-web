@@ -17,18 +17,18 @@ export interface GapAnalysisSkill {
  * Fallback mock data used when API returns no data.
  * The actual UI data flows through loadGapAnalysis() in sprint2-api.ts.
  */
-export function getGapAnalysisSkills(t: (key: string) => string): GapAnalysisSkill[] {
+export function getGapAnalysisSkills(t: (key: string, options?: Record<string, unknown>) => string): GapAnalysisSkill[] {
   return [
     {
       id: 'docker',
       name: 'Docker',
       icon: 'token',
       status: 'missing',
-      current: t('gapAnalysis.none'),
+      current: t('learningPath.gapAnalysis.none', { ns: 'dashboard' }),
       required: 'Inter',
       priorityScore: 8,
       hasPriority: true,
-      reason: t('gapAnalysis.dockerDesc'),
+      reason: t('learningPath.gapAnalysis.dockerDesc', { ns: 'dashboard' }),
       tags: ['Containerization', 'Microservices'],
     },
     {
@@ -36,11 +36,11 @@ export function getGapAnalysisSkills(t: (key: string) => string): GapAnalysisSki
       name: 'CI/CD',
       icon: 'alt_route',
       status: 'missing',
-      current: t('gapAnalysis.none'),
+      current: t('learningPath.gapAnalysis.none', { ns: 'dashboard' }),
       required: 'Basic',
       priorityScore: 7,
       hasPriority: true,
-      reason: t('gapAnalysis.cicdDesc'),
+      reason: t('learningPath.gapAnalysis.cicdDesc', { ns: 'dashboard' }),
       tags: ['GitHub Actions', 'Jenkins'],
     },
     {
@@ -52,7 +52,7 @@ export function getGapAnalysisSkills(t: (key: string) => string): GapAnalysisSki
       required: 'Inter',
       priorityScore: 6,
       hasPriority: true,
-      reason: t('gapAnalysis.sqlDesc'),
+      reason: t('learningPath.gapAnalysis.sqlDesc', { ns: 'dashboard' }),
       tags: ['PostgreSQL', 'Query Tuning'],
     },
     {
@@ -64,7 +64,7 @@ export function getGapAnalysisSkills(t: (key: string) => string): GapAnalysisSki
       required: 'Inter',
       priorityScore: 0,
       hasPriority: false,
-      reason: t('gapAnalysis.javaOopDesc'),
+      reason: t('learningPath.gapAnalysis.javaOopDesc', { ns: 'dashboard' }),
       tags: ['Inheritance', 'Design Patterns'],
     },
   ]

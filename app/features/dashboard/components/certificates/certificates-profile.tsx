@@ -1,9 +1,15 @@
 import { useTranslation } from 'react-i18next'
 
+import type { PortfolioDocument } from '~/features/portfolio/lib/portfolio-data'
 import type { AuthUser } from '~/shared/lib/auth-session'
 
-export function CertificatesProfile({ user }: { user: AuthUser }) {
+export function CertificatesProfile({ user, portfolio }: { user: AuthUser; portfolio: PortfolioDocument | null }) {
   const { t } = useTranslation('dashboard')
+  const avatarUrl = user.avatarUrl || `https://placehold.co/240x240?text=${encodeURIComponent(user.fullName.slice(0, 2).toUpperCase())}`
+  const headline = portfolio?.overview.headline || t('certificates.profile.headlineFallback')
+  const portfolioHref = portfolio?.overview.slug ? `/p/${portfolio.overview.slug}` : user.portfolioUrlSlug ? `/p/${user.portfolioUrlSlug}` : '/dashboard/portfolio'
+  const visibleCertificateCount = portfolio?.certificates.filter((item) => item.isVisible).length ?? 0
+  const projectCount = portfolio?.projects.length ?? 0
 
   return (
     <section className='grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12'>
@@ -13,8 +19,8 @@ export function CertificatesProfile({ user }: { user: AuthUser }) {
         <div className='relative'>
           <div className='w-32 h-32 rounded-full border-2 border-primary p-1 shadow-md'>
             <img
-              src='https://lh3.googleusercontent.com/aida-public/AB6AXuDwE_aoJoKSENxYGp7mx_DuHUBv635lcE_9SnJKF3U69markYIknKaYfQjhfHcvRWa0bRV_xBpnrwNwmoHF9SqbJsiw3v7OY7as98e0iXPzgFr1_vy2vylxtX15S1qOA5NGZE1rinj3QkxNgAvITjZ2D9oiOkxrBWno2L9fe21HwFFOkfMRIY6at-ySMPGxTL-QCpHXvL-WLWuo0hKaWFkwCPo6MIqrdSLhH-pnxRVpNaZNSUYQvVaph5cFEdXYUTnCYm-jbtz69E1R'
-              alt='Student Profile'
+              src={avatarUrl}
+              alt={user.fullName}
               className='w-full h-full rounded-full object-cover'
             />
           </div>
@@ -30,31 +36,40 @@ export function CertificatesProfile({ user }: { user: AuthUser }) {
               {t('certificates.profile.verified')}
             </span>
           </div>
-          <p className='text-muted-foreground text-lg mb-6'>
+          <p className='hidden'>
             Full Stack Developer & Cloud Enthusiast • Computer Science Senior
           </p>
+          <p className='text-muted-foreground text-lg mb-6'>{headline}</p>
           <div className='flex flex-wrap gap-4 justify-center md:justify-start'>
             <a
               href='#'
-              className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
+              className='hidden'
             >
               <span className='material-symbols-outlined text-sm'>location_on</span>
               San Francisco, CA
             </a>
             <a
-              href='#'
+              href={portfolioHref}
               className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
             >
               <span className='material-symbols-outlined text-sm'>link</span>
-              github.com/alexster
+              {portfolioHref}
             </a>
             <a
-              href='#'
+              href={`mailto:${user.email}`}
               className='flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors'
             >
               <span className='material-symbols-outlined text-sm'>email</span>
               {user.email}
             </a>
+          </div>
+          <div className='mt-5 flex flex-wrap gap-2 justify-center md:justify-start'>
+            <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary'>
+              {t('certificates.profile.visibleCertificates', { count: visibleCertificateCount })}
+            </span>
+            <span className='rounded-full bg-muted px-3 py-1 text-xs font-bold text-muted-foreground'>
+              {t('certificates.profile.projects', { count: projectCount })}
+            </span>
           </div>
         </div>
 

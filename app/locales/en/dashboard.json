@@ -2,7 +2,7 @@
   "sidebar": {
     "brand": "Edu-Nexus",
     "overview": "Overview",
-    "skills": "Analyzed Skills",
+    "skills": "JD Analysis",
     "skillsJd": "New JD",
     "jobs": "Jobs",
     "certificates": "Certificates",
@@ -10,6 +10,7 @@
     "market": "Market",
     "learningPath": "Learning Path",
     "careerTrack": "Career Track",
+    "portfolio": "Portfolio",
     "setting": "Setting",
     "membershipLabel": "Membership",
     "collapse": "Collapse sidebar",
@@ -21,7 +22,8 @@
     "welcome": "Welcome back, {{name}} 👋",
     "logout": "Log out",
     "logoutSuccess": "Logged out successfully",
-    "home": "Home"
+    "home": "Home",
+    "adminPanel": "Admin panel"
   },
   "stats": {
     "certificates": "Certificates",
@@ -79,25 +81,70 @@
     "avatar": {
       "title": "Profile picture",
       "change": "Change",
-      "remove": "Remove"
+      "remove": "Remove",
+      "urlLabel": "Avatar image URL",
+      "previewFallback": "Preview unavailable"
     },
     "personal": {
       "title": "Personal information",
+      "description": "Keep your profile details up to date for a better experience.",
       "fullname": "Full name",
       "email": "Email",
       "role": "Role",
       "portfolio": "Portfolio slug",
+      "portfolioPlaceholder": "your-public-portfolio",
+      "avatarUrl": "Avatar URL",
       "subscription": "Subscription",
-      "note": "Some fields are read-only for now."
+      "save": "Save changes",
+      "saving": "Saving...",
+      "success": "Profile updated successfully",
+      "note": "Email and role are read-only. Portfolio slug and avatar can be updated here.",
+      "errors": {
+        "fullNameRequired": "Full name is required.",
+        "saveFailed": "Failed to update profile."
+      }
     },
     "security": {
       "title": "Security",
       "password": "Password",
       "passwordDesc": "Change your password to protect your account.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "validationHint": "Password must be at least 8 characters and include one uppercase letter and one number.",
       "changePassword": "Change password",
+      "submitting": "Submitting...",
+      "apiUnavailable": "Change password API is not available in the current generated client yet.",
+      "errors": {
+        "allFieldsRequired": "Please fill in all password fields.",
+        "passwordLength": "New password must be at least 8 characters.",
+        "passwordUppercase": "New password must include at least one uppercase letter.",
+        "passwordNumber": "New password must include at least one number.",
+        "passwordConfirm": "Password confirmation does not match."
+      },
       "2fa": "Two-factor authentication (2FA)",
       "2faDesc": "Add an extra layer of security.",
       "setup": "Set up"
+    },
+    "subscription": {
+      "title": "Subscription",
+      "description": "Review your current plan and upgrade when you need more quota.",
+      "currentPlan": "Current plan",
+      "status": "Status",
+      "expiresAt": "Expires at",
+      "upgrade": "Go to pricing",
+      "notAvailable": "Not available"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Choose which account updates you want to receive.",
+      "weeklyReport": "Weekly progress report",
+      "weeklyReportDesc": "Receive a weekly digest of your study and readiness progress.",
+      "jdMatches": "New JD matches",
+      "jdMatchesDesc": "Get notified when new job descriptions match your profile.",
+      "subscriptionExpiry": "Subscription expiry reminders",
+      "subscriptionExpiryDesc": "Be reminded before your current plan expires.",
+      "saved": "Notification preferences saved"
     },
     "advanced": {
       "disable": "Disable account",
@@ -126,11 +173,18 @@
   },
   "quota": {
     "tiers": {
-      "free": { "label": "Free", "quotaText": "3 JDs/month" },
-      "starter": { "label": "Starter", "quotaText": "10 JDs/month" },
-      "basic": { "label": "Basic", "quotaText": "25 JDs/month" },
-      "pro": { "label": "Pro", "quotaText": "100 JDs/month" },
-      "premium": { "label": "Premium", "quotaText": "Unlimited" }
+      "free": {
+        "label": "Free",
+        "quotaText": "3 JDs/month"
+      },
+      "student": {
+        "label": "Student",
+        "quotaText": "30 JDs/month"
+      },
+      "pro": {
+        "label": "Pro",
+        "quotaText": "Unlimited"
+      }
     },
     "status": {
       "active": "Active",
@@ -142,7 +196,110 @@
       "upgrade": "Upgrade",
       "active": "Active"
     },
-    "expiresAt": "Expires: {{date}}"
+    "dynamic": {
+      "jdQuota": "{{count}} JD submissions / month"
+    },
+    "unlimited": "Unlimited",
+    "nearLimit": "Near limit",
+    "expiresAt": "Expires: {{date}}",
+    "loading": "Loading quota..."
+  },
+  "quickActions": {
+    "title": "Quick actions",
+    "go": "Open",
+    "submitJd": { "title": "Submit a JD", "desc": "Analyze a new job description." },
+    "roadmap": { "title": "Learning roadmap", "desc": "Continue your skill tree." },
+    "careerTrack": { "title": "Career tracks", "desc": "Organize JDs by goal." },
+    "portfolio": { "title": "Portfolio", "desc": "Showcase your achievements." }
+  },
+  "quotaOverview": {
+    "title": "Plan usage",
+    "subtitle": "Track how much of your plan quota you have used.",
+    "usage": "{{used}} / {{limit}}",
+    "usageUnlimited": "{{used}} used · Unlimited",
+    "nearLimit": "Near limit",
+    "labels": {
+      "jd": "JD submissions",
+      "gapAnalysis": "Gap analyses",
+      "assessment": "Skill assessments",
+      "roadmapActive": "Active roadmaps",
+      "careerTrack": "Career tracks",
+      "portfolioCertificate": "Certificates",
+      "portfolioProject": "Projects"
+    }
+  },
+  "market": {
+    "title": "Scholarship market",
+    "sortBy": "Sort by",
+    "sortOptions": {
+      "highestMatch": "Highest match",
+      "deadline": "Deadline",
+      "value": "Value"
+    },
+    "filters": {
+      "field": "Field",
+      "location": "Location",
+      "fieldOptions": {
+        "csAi": "Computer Science & AI",
+        "dataScience": "Data Science",
+        "softwareEngineering": "Software Engineering"
+      },
+      "locationOptions": {
+        "vietnam": "Vietnam",
+        "singapore": "Singapore",
+        "australia": "Australia"
+      }
+    },
+    "card": {
+      "match": "Match",
+      "strengths": "Strengths",
+      "missing": "Missing",
+      "aiSuggestion": "AI suggestion:",
+      "remind": "Remind me",
+      "remindOn": "Reminder on",
+      "apply": "Apply",
+      "details": "Details"
+    },
+    "pagination": {
+      "previous": "Previous page",
+      "next": "Next page"
+    },
+    "items": {
+      "aiMaster": {
+        "title": "AI Master's Scholarship",
+        "location": "Hanoi",
+        "endsIn": "03 days 12h",
+        "strength1": "IELTS 7.5",
+        "strength2": "GPA 3.6/4.0",
+        "strength3": "Python experience",
+        "missing1": "Research paper",
+        "missing2": "AWS certificate",
+        "suggestionBefore": "Complete the",
+        "suggestionLink": "AWS Cloud Practitioner",
+        "suggestionAfter": "certificate to raise your match chance to 95%."
+      },
+      "womenTech": {
+        "title": "Women in Tech Scholarship",
+        "location": "HCMC",
+        "endsIn": "15 days",
+        "strength1": "Leadership",
+        "strength2": "GPA 3.6",
+        "missing1": "Portfolio",
+        "missing2": "Recommendation letter",
+        "missing3": "Interview prep",
+        "suggestion": "Update your project portfolio on GitHub to improve your application score."
+      },
+      "dataScience": {
+        "title": "Data Science Excellence",
+        "location": "Remote",
+        "endsIn": "01 month",
+        "strength1": "Statistics",
+        "strength2": "Python",
+        "strength3": "SQL",
+        "missing1": "TOEFL > 100",
+        "suggestion": "You are almost ready. Improve your TOEFL score over the next 2 months."
+      }
+    }
   },
   "footer": {
     "copyright": "© 2026 Edu-Nexus. Building your career future.",
@@ -154,16 +311,20 @@
     "title": "Skill Analysis History",
     "subtitle": "Review your past skill gap assessments for each job role.",
     "newAnalysis": "New Analysis",
+    "loading": "Loading analysis history…",
+    "empty": "No analysis history yet.",
     "table": {
       "job": "Job Role",
       "company": "Company",
       "date": "Analysis Date",
       "match": "Match %",
+      "skillsCount": "{{count}} skills",
       "actions": "Actions",
       "detail": "Details"
     },
     "pagination": {
-      "info": "Showing 1-5 of 12 analyses"
+      "info": "Showing 1-5 of 12 analyses",
+      "loaded": "Loaded {{count}} analyses"
     },
     "insights": {
       "progress": "Progress",
@@ -172,7 +333,12 @@
       "bestMatchDesc": "Frontend role at VNG is the best match for your current skill set.",
       "aiAdvice": "AI Advice",
       "aiAdviceDesc": "Based on analysis history, you should add an AWS certification to increase FPT match rate to 95%.",
-      "viewCourse": "View suggested course"
+      "viewCourse": "View suggested course",
+      "title": "Insights",
+      "summary": "Key takeaways from your recent skill gap analyses.",
+      "quickStats": "Quick stats",
+      "total": "Total analyses",
+      "avg": "Average match"
     }
   },
   "learningPath": {
@@ -197,16 +363,163 @@
       "progress": "Progress",
       "status": "Status",
       "actions": "Actions",
-      "continue": "Continue"
+      "continue": "Continue",
+      "descFallback": "No description available.",
+      "viewMap": "View roadmap",
+      "footer": "Showing your most recent learning paths."
+    },
+    "roadmap": {
+      "backBtn": "Back",
+      "badge": "Roadmap",
+      "viewAll": "View all roadmaps",
+      "title": "Personalized roadmap",
+      "detailSubtitle": "Review your generated learning roadmap, inspect node dependencies, and open recommended resources.",
+      "emptyTitle": "No roadmap yet",
+      "emptyDescription": "Create a roadmap from gap analysis to start tracking your learning journey.",
+      "generate": "Generate roadmap",
+      "generateStarted": "Roadmap generation started.",
+      "generateFailed": "Failed to generate roadmap.",
+      "archive": "Archive roadmap",
+      "archiveSuccess": "Roadmap archived.",
+      "archiveFailed": "Failed to archive roadmap.",
+      "refresh": "Regenerate",
+      "regenerateStarted": "Roadmap regeneration started.",
+      "regenerateFailed": "Failed to regenerate roadmap.",
+      "keep": "Keep current roadmap",
+      "keepSuccess": "Current roadmap kept.",
+      "keepFailed": "Failed to keep roadmap.",
+      "loading": "Loading roadmap…",
+      "generating": "Roadmap is generating…",
+      "progressMini": "Progress",
+      "nodesMini": "Nodes",
+      "statusMini": "Status",
+      "progressText": "Progress {{percent}}%",
+      "statusLabel": "Status: {{status}}",
+      "status": {
+        "active": "active",
+        "archived": "archived",
+        "completed": "completed",
+        "failed": "failed",
+        "generating": "generating",
+        "unknown": "{{value}}"
+      },
+      "outdatedTitle": "This roadmap is outdated",
+      "outdatedDescription": "The source gap analysis changed. Regenerate to refresh this roadmap or keep the current version.",
+      "nodesTitle": "Skill nodes",
+      "hideDetails": "Hide details",
+      "showDetails": "Show details",
+      "detailTitle": "Node detail",
+      "closePanel": "Close panel",
+      "duration": "{{hours}}h estimated",
+      "level": "Level {{level}}",
+      "nodeDescriptionFallback": "No description available for this node yet.",
+      "prerequisites": "Prerequisites",
+      "noPrerequisites": "This node has no prerequisites.",
+      "resources": "Resources",
+      "resourcesLoading": "Loading resources…",
+      "resourcesEmpty": "No learning resources available for this node yet.",
+      "resourcesLoadFailed": "Failed to load resources.",
+      "affiliate": "Affiliate",
+      "primaryResource": "Primary",
+      "watchHere": "Watch here",
+      "readHere": "Read here",
+      "openInNewTab": "Open tab",
+      "videoPreview": "Video preview",
+      "documentPreview": "Document preview",
+      "archivedReadOnly": "Archived roadmaps are read-only and no longer show learning resources.",
+      "markCompleteSuccess": "Node marked as completed.",
+      "markCompleteFailed": "Failed to update node status.",
+      "prerequisitesNotMet": "Complete prerequisite nodes first.",
+      "noJdSelected": "Choose a JD before generating a roadmap.",
+      "loadFailed": "Failed to load roadmap.",
+      "completed": "Completed",
+      "markComplete": "Mark as completed",
+      "tierLabel": "Level {{level}}",
+      "nodeStatus": {
+        "completed": "Completed",
+        "active": "Active",
+        "future": "Future"
+      }
+    },
+    "gapAnalysis": {
+      "title": "Gap analysis",
+      "back": "Back",
+      "version": "Version {{version}}",
+      "updated": "Updated: {{date}}",
+      "source": "Assessment score: {{percent}}%",
+      "loading": "Gap analysis is updating…",
+      "loadFailed": "Failed to load gap analysis.",
+      "empty": "No gap analysis data available yet.",
+      "triggered": "Gap analysis started.",
+      "runAnalysis": "Run analysis",
+      "summaryTitle": "Skill gap summary",
+      "summaryDesc": "You have <1>{{missing}}</1> missing skills, <1>{{upgrade}}</1> upgrade targets, and <1>{{have}}</1> strengths across {{total}} tracked skills.",
+      "tableTitle": "Skill breakdown",
+      "historyNote": "Student plans can review versioned history when `all=true` is enabled.",
+      "historyLocked": "Upgrade to Student to unlock gap analysis history.",
+      "headers": {
+        "skill": "Skill",
+        "status": "Status",
+        "current": "Current",
+        "required": "Required",
+        "priority": "Priority",
+        "details": "Details"
+      },
+      "status": {
+        "missing": "Missing",
+        "upgrade": "Upgrade",
+        "have": "Have"
+      },
+      "createRoadmap": "Create roadmap",
+      "viewRoadmap": "View roadmap",
+      "reasoning": "Reasoning",
+      "none": "None",
+      "dockerDesc": "The JD requires intermediate Docker but you have no experience yet.",
+      "cicdDesc": "CI/CD is required to automate builds and deployments for this role.",
+      "sqlDesc": "You have basic SQL; the role needs stronger query and design skills.",
+      "javaOopDesc": "Your Java OOP level matches the requirement."
     },
     "careerTrack": {
       "title": "Career Track Manager",
       "subtitle": "Create and manage tracks linked to your learning journey.",
       "loading": "Loading career tracks…",
       "newFromAnalysis": "Build from analysis",
+      "listTitle": "Career tracks",
+      "jdListTitle": "JDs in this track",
+      "jdListSubtitle": "Keep the track aligned with the jobs you want to target next.",
+      "noDescription": "No description yet.",
+      "permissions": "Only administrators can create, edit, or delete career tracks.",
+      "backToList": "Back to track list",
+      "openDetailRoute": "Open detail route",
+      "emptyJds": "No JDs have been added to this track yet.",
+      "emptySelection": "Select a career track from the list to view details.",
+      "emptyAdminHint": "Use the form on the right to create the first career track.",
+      "selectionHint": "The current UX uses a single-page master-detail layout; the detail route is preserved for deep-links while staying synced with the right-hand panel.",
+      "detailBadge": "Track detail",
+      "manageBadge": "Manage track",
+      "quickStats": "Tracking {{count}} JDs",
+      "openStandalone": "Open this route directly",
+      "trackMeta": "{{count}} JDs",
+      "jdRoadmapProgress": "Roadmap progress: {{progress}}%",
+      "jdNoRoadmap": "No roadmap yet",
+      "confirmDelete": "Delete career track \"{{name}}\"?",
+      "confirmRemoveJd": "Remove this JD from the current career track?",
+      "errors": {
+        "nameRequired": "Track name is required.",
+        "jdRequired": "Please enter a JD ID before adding it to the track.",
+        "loadFailed": "Failed to load career tracks.",
+        "createFailed": "Failed to create career track.",
+        "updateFailed": "Failed to update career track.",
+        "deleteFailed": "Failed to delete career track.",
+        "addJdFailed": "Failed to add JD.",
+        "removeJdFailed": "Failed to remove JD."
+      },
       "form": {
         "name": "Track name",
-        "description": "Description"
+        "description": "Description",
+        "namePlaceholder": "Frontend Engineer Track",
+        "descriptionPlaceholder": "Target role, scope, or learning focus",
+        "jdPlaceholder": "Enter JD ID"
       },
       "actions": {
         "create": "Create",
@@ -216,6 +529,48 @@
         "removeJd": "Remove"
       },
       "empty": "No career tracks yet. Create your first track to get started."
+    },
+    "loading": "Loading learning paths…",
+    "empty": "No learning paths yet.",
+    "recommendations": {
+      "title": "Recommendations",
+      "forYou": "For you",
+      "microservicesTitle": "Microservices fundamentals",
+      "microservicesDesc": "Strengthen your backend architecture skills.",
+      "startNow": "Start now",
+      "testTime": "~30 minutes",
+      "testTitle": "Skill assessment",
+      "testDesc": "Validate your current level with a quick test.",
+      "readyCount": "{{count}} ready",
+      "certificatesTitle": "Certificates",
+      "issued": "Issued",
+      "pending": "Pending",
+      "viewAllCertificates": "View all certificates"
+    }
+  },
+  "certificates": {
+    "title": "Certificates",
+    "badges": {
+      "title": "Achievement badges",
+      "total": "Total badges"
+    },
+    "profile": {
+      "verified": "Verified profile",
+      "status": "Status",
+      "lookingForJob": "Open to work",
+      "headlineFallback": "Build your verified Edu-Nexus portfolio from your profile settings.",
+      "visibleCertificates": "{{count}} visible certificates",
+      "projects": "{{count}} projects",
+      "center": "Verification center",
+      "centerDesc": "Your credentials are verified and securely stored.",
+      "secured": "Secured",
+      "hash": "Verification hash"
+    },
+    "projects": {
+      "title": "Projects",
+      "sourceCode": "Source code",
+      "liveDemo": "Live demo",
+      "caseStudy": "Case study"
     }
   }
 }

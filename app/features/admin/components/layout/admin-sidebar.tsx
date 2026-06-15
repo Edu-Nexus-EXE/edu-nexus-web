@@ -59,27 +59,23 @@ export function AdminSidebar() {
           <span className='material-symbols-outlined text-xl'>library_books</span>
           <span>{t('sidebar.resourceManagement')}</span>
         </NavLink>
-        <NavLink to='/admin/revenue' className={navLinkClass}>
+        <NavLink to='/admin/payment-orders' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>payments</span>
           <span>{t('sidebar.revenue')}</span>
-        </NavLink>
-        <NavLink to='/admin/costs' className={navLinkClass}>
-          <span className='material-symbols-outlined text-xl'>memory</span>
-          <span>{t('sidebar.aiCosts')}</span>
-        </NavLink>
-        <NavLink to='/admin/affiliate' className={navLinkClass}>
-          <span className='material-symbols-outlined text-xl'>handshake</span>
-          <span>{t('sidebar.affiliateStats')}</span>
         </NavLink>
         <NavLink to='/admin/rag-documents' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>description</span>
           <span>{t('sidebar.ragDocuments')}</span>
         </NavLink>
-        <NavLink to='/admin/subscriptions' className={navLinkClass}>
+        <NavLink to='/admin/skills' className={navLinkClass}>
+          <span className='material-symbols-outlined text-xl'>psychology</span>
+          <span>{t('sidebar.skillsQueue')}</span>
+        </NavLink>
+        <NavLink to='/admin/subscription-config' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>settings_applications</span>
           <span>{t('sidebar.subscriptions')}</span>
         </NavLink>
-        <NavLink to='/admin/jd-logs' className={navLinkClass}>
+        <NavLink to='/admin/jd-failed' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>list_alt</span>
           <span>{t('sidebar.jdLogs')}</span>
         </NavLink>

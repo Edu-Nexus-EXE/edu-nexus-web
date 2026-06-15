@@ -9,24 +9,18 @@ type NavItem = { key: string; icon: string; path?: string; children?: { key: str
 
 const NAV_ITEMS: NavItem[] = [
   { key: 'sidebar.overview', icon: 'dashboard', path: '/dashboard' },
-  {
-    key: 'sidebar.skills',
-    icon: 'psychology',
-    children: [{ key: 'sidebar.skillsJd', path: '/dashboard/jd/new' }]
-  },
+  { key: 'sidebar.skills', icon: 'psychology', path: '/dashboard/jd/new' },
   { key: 'sidebar.certificates', icon: 'history_edu', path: '/dashboard/credentials/certificates' },
   { key: 'sidebar.analysisHistory', icon: 'timeline', path: '/dashboard/analytics/analysis-history' },
-  { key: 'sidebar.learningPath', icon: 'school', path: '/dashboard/learning/learning-path' },
-  { key: 'sidebar.market', icon: 'analytics', path: '/dashboard/market' },
-  { key: 'sidebar.setting', icon: 'settings', path: '/dashboard/settings' }
+  { key: 'sidebar.careerTrack', icon: 'route', path: '/career-tracks' },
+  { key: 'sidebar.portfolio', icon: 'badge', path: '/dashboard/portfolio' },
+  { key: 'sidebar.setting', icon: 'settings', path: '/settings' }
 ]
 
 const TIER_LABELS: Record<string, { vi: string; en: string }> = {
-  free:    { vi: 'Miễn phí',  en: 'Free'    },
-  starter: { vi: 'Starter',    en: 'Starter'  },
-  basic:   { vi: 'Cơ bản',    en: 'Basic'    },
-  pro:     { vi: 'Pro',        en: 'Pro'      },
-  premium: { vi: 'Cao cấp',   en: 'Premium'  },
+  free: { vi: 'Miễn phí', en: 'Free' },
+  student: { vi: 'Sinh viên', en: 'Student' },
+  pro: { vi: 'Pro', en: 'Pro' },
 }
 
 export function DashboardSidebar({ user, open, onOpenChange }: { user: AuthUser; open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -75,6 +69,7 @@ export function DashboardSidebar({ user, open, onOpenChange }: { user: AuthUser;
             'w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-muted-foreground hover:text-primary hover:bg-primary/5',
             !open && 'justify-center px-0'
           )}
+          aria-label={collapseLabel}
           title={collapseLabel}
         >
           <span className='material-icons text-[20px]'>{open ? 'chevron_left' : 'chevron_right'}</span>

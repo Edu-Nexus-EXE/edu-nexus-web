@@ -14,8 +14,9 @@ import { defineConfig } from 'orval'
  *   4. Import generated handlers vào app/mocks/handlers/index.ts,
  *      rồi xoá / comment handler viết tay tương ứng.
  *
- * ⚠️  KHÔNG viết code tay trong app/api/model/ và app/api/operations/
- *     vì `clean: true` sẽ XÓA SẠCH rồi tạo lại mỗi lần chạy orval.
+ * ⚠️  KHÔNG viết code tay trong app/api/model/ và app/api/operations/.
+ *     Các type guard / mapper tuỳ biến phải đặt ở feature/lib riêng (ví dụ `app/features/auth/lib/`).
+ *     Vì các thư mục generated này có thể bị ghi đè hoàn toàn mỗi lần chạy Orval.
  */
 export default defineConfig({
   backendApi: {
@@ -24,7 +25,7 @@ export default defineConfig({
       target: 'app/api/operations', // fetch functions
       schemas: 'app/api/model', // TypeScript types
       client: 'fetch', // plain fetch — hoạt động với RR7 loader
-      clean: true, // xoá sạch output trước khi generate lại
+      clean: false, // giữ output hiện có; không dựa vào generated zones để chứa code tay
       indexFiles: true, // tạo barrel index.ts
       mock: {
         type: 'msw',

@@ -7,13 +7,14 @@
       "jobDescription": "Job Description",
       "jobDescriptionDesc": "Enter URL or paste JD content",
       "tabText": "Paste text",
+      "recommendedBadge": "Recommended",
       "tabUrl": "Use URL",
+      "urlNote": "⚠️ Some job sites may not be supported. If parsing fails, switch to the \"{{tabText}}\" tab and paste the JD content instead.",
+      "fetchBtn": "Fetch content",
+      "fetching": "Fetching...",
       "urlPlaceholder": "https://...",
       "textPlaceholder": "Paste job description here...",
       "ready": "Ready to submit",
-      "readyToSubmit": "Ready to submit",
-      "fetch": "Fetch",
-      "fetching": "...",
       "next": "Next",
       "nextDesc": "After submitting, the system will parse your JD",
       "step1Title": "1) Parse JD",
@@ -22,10 +23,39 @@
       "step2Desc": "Choose Path A (CV) or Path B (Assessment).",
       "submit": "Submit JD",
       "submitting": "Submitting...",
+      "flow": {
+        "stats": {
+          "input": "Input",
+          "textMode": "Text mode",
+          "urlMode": "URL mode",
+          "payload": "Payload",
+          "readyToSendUrl": "Ready to send URL",
+          "waitingForUrl": "Waiting for URL",
+          "charactersDetected": "{{count}} characters detected",
+          "aiParsing": "AI parsing",
+          "submittingToBackend": "Submitting to backend...",
+          "detailAutoUpdate": "The JD detail page will auto-update after submission"
+        },
+        "timeline": {
+          "step1Hint": "Prepare the JD input you want to analyze.",
+          "step2Title": "Submit JD",
+          "step2Hint": "Send the request to the backend and start the parsing pipeline.",
+          "step3Hint": "Watch the JD detail screen update and then choose your path."
+        },
+        "submissionStatus": "Submission status",
+        "continueWithUrl": "Paste a job URL to continue",
+        "continueWithText": "Paste the JD text to continue",
+        "urlHelp": "Best for job posts published on company or recruitment sites.",
+        "textHelp": "Best when you already copied the full JD from email, PDF, or job board."
+      },
       "errors": {
         "missingJdId": "JD submitted but jdId was not returned",
-        "failed": "Submit JD failed"
-      }
+        "emptyFetchResult": "Could not extract JD content from this URL.",
+        "fetchFailed": "Failed to fetch JD content from URL",
+        "failed": "Submit JD failed",
+        "quotaExceeded": "You have reached your JD submission limit ({{used}}/{{limit}}). Upgrade your plan to submit more JDs."
+      },
+      "quotaExceeded": "You have reached your JD quota for the Free plan. Upgrade to submit more."
     },
     "detail": {
       "badge": "JOB DESCRIPTION",
@@ -37,10 +67,43 @@
       "pathId": "Assessment path",
       "createdAt": "Created at",
       "actions": "Actions",
+      "overviewSummary": "JD analysis summary",
+      "overviewMeta": "Key metadata and skill clusters extracted by AI from the JD.",
+      "createdAtHint": "The time this JD record was created in the system",
+      "seniorityLevelLabel": "Seniority level",
+      "salaryLabel": "Salary range",
+      "seniorityLevel": {
+        "fresher": "Fresher",
+        "junior": "Junior",
+        "mid": "Mid-level",
+        "senior": "Senior",
+        "unknown": "Not specified"
+      },
+      "salaryNotSpecified": "Not specified by the employer",
+      "salaryRange": "{{min}} - {{max}} {{currency}}",
+      "salaryFrom": "From {{min}} {{currency}}",
+      "salaryUpTo": "Up to {{max}} {{currency}}",
+      "skillsMeta": {
+        "hard": "Core technical skills, tools, and role-specific capabilities.",
+        "soft": "Communication, collaboration, and thinking skills expected for this role."
+      },
+      "mandatory": "Mandatory",
+      "optional": "Recommended",
       "createPath": "Create assessment path",
       "creatingPath": "Creating path...",
       "startAssessment": "Start assessment",
       "uploadCv": "Upload CV",
+      "viewCv": "View uploaded CV",
+      "continueCv": "Continue with CV",
+      "viewAssessmentResults": "View assessment results",
+      "continueAssessment": "Continue assessment",
+      "retakeAssessment": "Retake assessment",
+      "resetPath": "Choose another path",
+      "deletingPath": "Removing path...",
+      "deleteJd": "Delete this JD",
+      "deletingJd": "Deleting JD...",
+      "dangerZone": "Danger zone",
+      "deleteJdHint": "Soft delete this JD to free a quota slot and remove it from the active list.",
       "skills": {
         "hard": "Hard skills",
         "soft": "Soft skills"
@@ -48,15 +111,90 @@
       "pathSelected": "Path: {{pathType}}",
       "waitParse": "Please wait for the AI to finish parsing the JD before choosing an assessment path.",
       "pathLocked": "Path selected. (Changing path after Gap Analysis is limited per spec.)",
+      "resetLockedTooltip": "This path can no longer be changed because a Gap Analysis already exists for this JD.",
+      "pathAssessmentHelper": "The assessment path is ready. Open it to start or continue the skill assessment.",
+      "pathAssessmentDoneHelper": "This JD already has an assessment result. Open it again to review details and continue the next steps.",
+      "pathAssessmentInProgressHelper": "You already started an assessment for this JD. Open it again to continue.",
+      "pathAssessmentExpiredHelper": "The previous assessment has expired. Open it again to start a fresh session.",
+      "pathCvReadyHelper": "A CV already exists for this path. Open it again to review parsed results and continue the flow.",
+      "pathCvProcessingHelper": "A CV has been uploaded. Open it to monitor parsing or review the latest result.",
+      "pathCvFailedHelper": "A CV was uploaded but parsing did not finish successfully. Open it to see the error and retry.",
+      "pathCvMissingHelper": "The CV path is selected but no file has been uploaded yet. Open it to upload a CV now.",
+      "confirmDeletePath": "Are you sure you want to remove the current assessment path and choose another one?",
+      "confirmDeleteJd": "Are you sure you want to delete this JD and free its quota slot?",
+      "deletePath": "Delete path",
+      "cvStatus": {
+        "loading": "Checking CV status...",
+        "missing": "No CV uploaded yet",
+        "pending": "CV is queued",
+        "processing": "CV is being parsed",
+        "completed": "CV is ready",
+        "failed": "CV parsing failed"
+      },
+      "assessmentStatus": {
+        "loading": "Checking assessment status...",
+        "not_started": "Assessment not started",
+        "in_progress": "Assessment in progress",
+        "submitted": "Assessment completed",
+        "expired": "Assessment expired"
+      },
       "chooseCv": "Path A — Upload CV",
+      "chooseCvDesc": "Use an existing CV so the system can parse skills, experience, and compare it against the JD.",
       "chooseAssessment": "Path B — Skill Assessment",
+      "chooseAssessmentDesc": "Take the assessment so the system can measure fit before generating gap analysis.",
+      "choosePathTitle": "Choose how to continue with this JD",
+      "choosePathHint": "Pick one of the two paths below. After you choose, the current path stays locked until you change it again.",
+      "parseStatus": {
+        "pending": "Queued for parsing",
+        "processing": "AI is analyzing the JD",
+        "completed": "Parsing completed",
+        "failed": "Parsing failed"
+      },
       "status": {
         "ready": "Assessment ready",
         "missingPath": "No assessment path yet"
       },
+      "flow": {
+        "step1Title": "JD submitted",
+        "step1Hint": "The backend accepted the request and created a JD record.",
+        "step2Title": "AI parsing",
+        "step2ProcessingHint": "Skills and metadata are still being extracted from the JD.",
+        "step2DoneHint": "Parsing has finished and the JD summary is ready.",
+        "step3Title": "Choose your path",
+        "step3ReadyHint": "Pick CV or Assessment to continue Sprint 1.",
+        "step3LockedHint": "This step unlocks automatically after parsing completes."
+      },
+      "pipeline": {
+        "title": "Progress pipeline",
+        "jd": {
+          "label": "JD analyzed",
+          "doneHint": "The JD has been submitted and parsed."
+        },
+        "path": {
+          "label": "Assessment path",
+          "doneHint": "A path (CV or Assessment) has been selected.",
+          "currentHint": "Choose CV or Assessment to continue.",
+          "lockedHint": "Available once JD parsing completes."
+        },
+        "gap": {
+          "label": "Gap analysis",
+          "doneHint": "View your skill gap report.",
+          "currentHint": "Run your skill gap analysis.",
+          "lockedHint": "Available after choosing a path."
+        },
+        "roadmap": {
+          "label": "Learning roadmap",
+          "doneHint": "View your active learning roadmap.",
+          "currentHint": "Generate a roadmap from your Gap Analysis.",
+          "lockedHint": "Available after the Gap Analysis is ready."
+        }
+      },
       "errors": {
         "loadFailed": "Failed to load JD",
-        "createPathFailed": "Failed to create assessment path"
+        "createPathFailed": "Failed to create assessment path",
+        "deletePathFailed": "Failed to delete assessment path",
+        "cannotResetAfterGap": "Can't change path: this JD already has a Gap Analysis.",
+        "deleteJdFailed": "Failed to delete JD"
       }
     }
   }

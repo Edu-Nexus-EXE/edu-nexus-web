@@ -9,6 +9,7 @@
     "aiCosts": "AI Costs",
     "affiliateStats": "Affiliate Stats",
     "ragDocuments": "RAG Documents",
+    "skillsQueue": "Skills Queue",
     "subscriptions": "Subscription Config",
     "jdLogs": "JD Logs",
     "generateReport": "Generate Report",
@@ -20,7 +21,8 @@
     "subtitle": "Real-time statistics.",
     "searchPlaceholder": "Search system...",
     "defaultUser": "Admin Manager",
-    "defaultPlan": "System Controller"
+    "defaultPlan": "System Controller",
+    "viewAsUser": "View as user"
   },
   "stats": {
     "totalUsers": "Total users",
@@ -55,7 +57,11 @@
         "provider": "Provider",
         "fromDate": "From date",
         "toDate": "To date",
-        "searchEmail": "Search email"
+        "searchEmail": "Search email",
+        "all": "All",
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
       },
       "table": {
         "date": "Date",
@@ -89,7 +95,11 @@
     "totalClicks": "Total Clicks",
     "conversions": "Conversions",
     "revenue": "Revenue",
-    "noData": "No statistical data yet"
+    "noData": "No statistical data yet",
+    "placeholderTitle": "Affiliate area is waiting for backend metrics",
+    "placeholderDescription": "The frontend dashboard shell for affiliate has been completed. Once backend metrics and click logs are available, this area will render real data and the corresponding drill-down views.",
+    "placeholderCta": "Track affiliate backlog",
+    "phaseNote": "Currently kept as a phase-ready shell to avoid showing fake numbers."
   },
   "resources": {
     "title": "Resource Management",
@@ -131,6 +141,11 @@
     "banner": {
       "title": "Optimized System",
       "subtitle": "Edu-Bridge is committed to providing authentic academic resources, strictly reviewed by a team of experts."
+    },
+    "subtitle": "Manage learning resources and review AI-generated entries.",
+    "actions": {
+      "reject": "Reject",
+      "approve": "Approve"
     }
   },
   "rag": {
@@ -170,6 +185,9 @@
       "title": "System Summary",
       "totalDocs": "Total Documents",
       "totalChunks": "Total Chunks"
+    },
+    "actions": {
+      "delete": "Delete"
     }
   },
   "users": {
@@ -184,6 +202,7 @@
       "tiers": {
         "all": "All tiers",
         "free": "Free",
+        "student": "Student",
         "pro": "Pro",
         "enterprise": "Enterprise"
       },
@@ -223,6 +242,12 @@
     "roadmap": "Learning Roadmap",
     "assessment": "Assessment Limit",
     "tracking": "Career Tracking",
+    "priceMonthly": "Price / month",
+    "portfolioProjects": "Portfolio projects",
+    "portfolioCertificates": "Portfolio certificates",
+    "fullGapHistory": "Full gap history",
+    "activeTier": "Active tier",
+    "saved": "{{name}} saved.",
     "save": "Save Changes",
     "unlimited": "(-1 = Unlimited)",
     "alertTitle": "Infrastructure Change Notice",
@@ -260,6 +285,11 @@
       "totalProcessed": "Total JD Processed",
       "success24h": "Success (24h)",
       "systemErrors": "System Errors"
+    },
+    "status": {
+      "failed": "Failed",
+      "completed": "Completed",
+      "pending": "Pending"
     }
   },
   "jdLogDetail": {
@@ -335,7 +365,58 @@
         "provider": "Provider",
         "code": "TX Code",
         "status": "Status"
-      }
+      },
+      "empty": "No transactions recorded."
+    }
+  },
+  "adminCommon": {
+    "loading": "Loading data...",
+    "empty": "No data available.",
+    "submitting": "Submitting...",
+    "pagination": "Page {{page}} / {{totalPages}} · {{total}} items",
+    "prev": "Previous",
+    "next": "Next",
+    "adminAvatar": "Admin avatar"
+  },
+  "adminOverview": {
+    "revenue": "Revenue (VND)",
+    "aiCost": "AI Cost Estimate",
+    "aiCostBadge": "ESTIMATED",
+    "activeSubscriptions": "Active subscriptions"
+  },
+  "skillsQueue": {
+    "title": "Skills Review Queue",
+    "subtitle": "Review pending skills before they become available in the system.",
+    "helper": "Approve to publish a skill, edit metadata before approval, or reject by disabling it from the review queue.",
+    "errors": {
+      "load": "Failed to load skills queue.",
+      "approve": "Failed to approve skill.",
+      "update": "Failed to update skill.",
+      "reject": "Failed to reject skill."
+    },
+    "approve": "Approve",
+    "reject": "Reject",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "noDescription": "No description provided.",
+    "uncategorized": "Uncategorized",
+    "aiGeneratedDescription": "AI-generated skill from Roadmap Generator. Admin should verify name, category, and major before publishing.",
+    "filter": {
+      "search": "Search skill name",
+      "major": "Filter by major"
+    },
+    "table": {
+      "skill": "Skill",
+      "category": "Category",
+      "description": "Description",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
     }
   },
   "footer": {

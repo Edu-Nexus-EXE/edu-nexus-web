@@ -4,11 +4,10 @@ import { useTranslation } from 'react-i18next'
 
 import { getJdSubmissions } from '~/api/operations/jd-submissions/jd-submissions'
 import { cn } from '~/shared/lib/cn'
+import { formatDateTime } from '~/shared/lib/format-date'
 import { Badge } from '~/shared/ui/badge'
 
 import { type JdRecentItem } from '../../lib/sprint2-api'
-
-type ResponseWithData<T> = { data?: T }
 
 type JdRowDto = {
   id?: unknown
@@ -20,7 +19,8 @@ type JdRowDto = {
 }
 
 function parseJdRows(res: unknown): JdRecentItem[] {
-  const data = (res as ResponseWithData<unknown>)?.data
+  const root = res as { data?: unknown; pagination?: unknown }
+  const data = root?.data
 
   const rows = Array.isArray(data)
     ? (data as unknown[])
@@ -58,7 +58,7 @@ function statusTone(
 }
 
 export function DashboardJdRecent() {
-  const { t } = useTranslation(['dashboard'])
+  const { t, i18n } = useTranslation(['dashboard'])
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -141,7 +141,7 @@ export function DashboardJdRecent() {
                     <p className='text-xs text-muted-foreground mt-1'>
                       {t('jdRecent.idLabel')}: {r.id}
                     </p>
-                    {r.createdAt ? <p className='text-xs text-muted-foreground mt-1'>{r.createdAt}</p> : null}
+                    {r.createdAt ? <p className='text-xs text-muted-foreground mt-1'>{formatDateTime(r.createdAt, i18n.language)}</p> : null}
                   </div>
                   <Badge variant={tone.variant}>{tone.label}</Badge>
                 </div>

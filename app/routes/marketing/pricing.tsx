@@ -1,4 +1,6 @@
-import { LandingFooter, LandingNavbar, MarketingLayout } from '~/features/landing'
+import { LandingFooter } from '~/features/landing/components/landing/landing-footer'
+import { LandingNavbar } from '~/features/landing/components/landing/landing-navbar'
+import { MarketingLayout } from '~/features/landing/components/landing/marketing-layout'
 import { PricingPage } from '~/features/pricing'
 import { getMetaTitle, getMetaTranslation } from '~/shared/lib/get-meta-t'
 

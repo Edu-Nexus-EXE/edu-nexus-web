@@ -5,11 +5,13 @@
   "step": "Step",
   "questionBadge": "Question",
   "prev": "Back",
+  "backToDashboard": "Back to dashboard",
   "next": "Next",
   "submitting": "Saving...",
   "finish": "Complete",
   "errors": {
     "completeAll": "Please complete all questions before submitting.",
+    "loadFailed": "Failed to load onboarding data. Please sign in again.",
     "submitFailed": "Onboarding submission failed."
   },
   "questions": {

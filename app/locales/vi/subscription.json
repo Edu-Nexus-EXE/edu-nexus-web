@@ -1,0 +1,77 @@
+{
+  "currentPlan": {
+    "label": "Gói hiện tại",
+    "freeFallback": "Gói miễn phí",
+    "noExpiry": "Không có ngày hết hạn",
+    "expiresAt": "Hết hạn: {{date}}",
+    "status": {
+      "active": "Đang hoạt động",
+      "pending": "Đang chờ",
+      "expired": "Đã hết hạn"
+    }
+  },
+  "plans": {
+    "perMonth": "/tháng",
+    "unlimited": "Không giới hạn",
+    "currentPlan": "Gói hiện tại",
+    "processing": "Đang xử lý...",
+    "paymentRedirectMissing": "Đơn hàng đã được tạo nhưng hệ thống chưa trả về đường dẫn thanh toán tự động.",
+    "paymentManualFallback": "Bạn có thể kiểm tra lịch sử đơn bên dưới hoặc chờ máy chủ hoàn thiện luồng thanh toán do nhà cung cấp xử lý.",
+    "duration": {
+      "label": "Chu kỳ thanh toán",
+      "options": {
+        "1": "1 tháng",
+        "3": "3 tháng",
+        "6": "6 tháng"
+      }
+    },
+    "features": {
+      "jdQuota": "{{count}} JD / tháng",
+      "roadmapQuota": "{{count}} lộ trình đang hoạt động",
+      "assessmentQuota": "{{count}} bài đánh giá / tháng",
+      "portfolioProjects": "{{count}} dự án hồ sơ",
+      "fullGapHistory": "Xem đầy đủ lịch sử phân tích khoảng cách kỹ năng"
+    },
+    "free": {
+      "name": "Cơ bản",
+      "price": "0đ",
+      "description": "Dành cho cá nhân mới bắt đầu khám phá lộ trình.",
+      "button": "Bắt đầu miễn phí"
+    },
+    "student": {
+      "name": "Sinh viên",
+      "badge": "Phổ biến nhất",
+      "description": "Lựa chọn tối ưu cho người học cần AI và hạn mức gần như không giới hạn.",
+      "button": "Nâng cấp gói Sinh viên"
+    },
+    "pro": {
+      "name": "Chuyên nghiệp",
+      "description": "Hạn mức mở rộng và hỗ trợ cao cấp cho người dùng chuyên sâu hoặc mentor.",
+      "button": "Nâng cấp gói Pro"
+    }
+  },
+  "orders": {
+    "title": "Lịch sử đơn hàng",
+    "subtitle": "Theo dõi các đơn đăng ký gần đây và trạng thái thanh toán.",
+    "empty": "Chưa có đơn đăng ký nào.",
+    "createdFallback": "Đã tạo đơn {{orderId}} · {{status}} · {{amount}}",
+    "provider": "Nhà cung cấp",
+    "currency": "Tiền tệ",
+    "openCheckout": "Mở thanh toán",
+    "manualReview": "Chờ máy chủ / nhà cung cấp hoàn tất thanh toán",
+    "paymentSuccess": "Thanh toán thành công. Trạng thái gói sẽ sớm được cập nhật.",
+    "paymentFailed": "Thanh toán chưa hoàn tất. Hãy thử lại hoặc chọn phương thức khác."
+  },
+  "errors": {
+    "loadFailed": "Không thể tải thông tin gói đăng ký.",
+    "orderFailed": "Không thể tạo đơn đăng ký."
+  },
+  "quotaExceeded": {
+    "title": "Bạn đã dùng hết hạn mức",
+    "message": "Đã vượt quá hạn mức",
+    "quotaType": "Loại hạn mức:",
+    "usage": "Đã dùng:",
+    "close": "Đóng",
+    "upgrade": "Nâng cấp gói"
+  }
+}

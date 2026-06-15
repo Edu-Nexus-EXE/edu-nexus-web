@@ -6,10 +6,19 @@ import { getAuthSession } from '~/shared/lib/auth-session'
 
 import { BrandMark } from './brand-mark'
 
+function hasCompleteUserSession() {
+  const session = getAuthSession()
+  const accessToken = session?.tokens?.accessToken?.trim()
+  const user = session?.user
+
+  return Boolean(accessToken && user?.id && user?.email && user?.fullName)
+}
+
 export function LandingNavbar() {
   const { t } = useTranslation('landing')
 
   const session = getAuthSession()
+  const shouldHideGetStarted = hasCompleteUserSession()
 
   return (
     <nav className='fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-background/80 border-b border-border'>
@@ -57,7 +66,7 @@ export function LandingNavbar() {
                 href='/dashboard'
                 className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'
               >
-                Dashboard
+                {t('nav.dashboard')}
               </a>
             ) : (
               <a href='/login' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
@@ -65,16 +74,18 @@ export function LandingNavbar() {
               </a>
             )}
 
-            <a
-              href='/signup'
-              className={cn(
-                'bg-primary hover:opacity-90 text-primary-foreground',
-                'px-5 py-2.5 rounded-lg text-sm font-medium transition-all',
-                'shadow-lg shadow-primary/20'
-              )}
-            >
-              {t('nav.getStarted')}
-            </a>
+            {shouldHideGetStarted ? null : (
+              <a
+                href='/signup'
+                className={cn(
+                  'bg-primary hover:opacity-90 text-primary-foreground',
+                  'px-5 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  'shadow-lg shadow-primary/20'
+                )}
+              >
+                {t('nav.getStarted')}
+              </a>
+            )}
           </div>
 
           {/* Mobile actions */}
@@ -84,7 +95,7 @@ export function LandingNavbar() {
             <button
               type='button'
               className='text-muted-foreground hover:text-foreground focus:outline-none'
-              aria-label='Open menu'
+              aria-label={t('common:accessibility.openMenu')}
             >
               <span className='material-icons'>menu</span>
             </button>

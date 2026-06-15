@@ -5,6 +5,18 @@
   "light": "Sáng",
   "dark": "Tối",
   "loading": "Đang tải...",
+  "accessibility": {
+    "notifications": "Thông báo",
+    "dismiss": "Đóng",
+    "openMenu": "Mở menu",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "previousPage": "Trang trước",
+    "nextPage": "Trang sau",
+    "clearSelectedFile": "Xóa file đã chọn",
+    "account": "Tài khoản"
+  },
   "errors": {
     "unknown": "Đã xảy ra lỗi không xác định.",
     "notFound": "Không tìm thấy trang yêu cầu."

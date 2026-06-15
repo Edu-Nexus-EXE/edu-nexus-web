@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { loadCareerTracks } from '../../lib/sprint2-api'
+import { loadRecentJds } from '../../lib/sprint2-api'
 
 export function AnalysisHistoryInsights() {
   const { t } = useTranslation('dashboard')
@@ -9,8 +9,10 @@ export function AnalysisHistoryInsights() {
 
   useEffect(() => {
     let cancelled = false
-    loadCareerTracks().then((res) => {
-      if (!cancelled) setCount(res.data?.length ?? 0)
+    loadRecentJds().then((res) => {
+      if (!cancelled) {
+        setCount((res.data ?? []).filter((jd) => jd.parseStatus.toLowerCase() === 'completed').length)
+      }
     })
     return () => {
       cancelled = true

@@ -5,6 +5,18 @@
   "light": "Light",
   "dark": "Dark",
   "loading": "Loading...",
+  "accessibility": {
+    "notifications": "Notifications",
+    "dismiss": "Dismiss",
+    "openMenu": "Open menu",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "clearSelectedFile": "Clear selected file",
+    "account": "Account"
+  },
   "errors": {
     "unknown": "An unexpected error occurred.",
     "notFound": "The requested page could not be found."

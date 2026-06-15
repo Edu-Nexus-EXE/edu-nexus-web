@@ -5,10 +5,10 @@ import type { Route } from './+types/career-track'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: getMetaTitle('dashboard', 'careerTrack.title') },
+    { title: getMetaTitle('dashboard', 'learningPath.careerTrack.title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'careerTrack.subtitle'),
+      content: getMetaTranslation('dashboard', 'learningPath.careerTrack.subtitle'),
     },
   ]
 }

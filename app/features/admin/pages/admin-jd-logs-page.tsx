@@ -1,248 +1,137 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { loadAdminJdFailed, retryAdminJd, type AdminJdFailedView } from '../lib/admin-data'
+
+function getJdLogStatusLabel(status: string, t: ReturnType<typeof useTranslation>['t']) {
+  const normalized = status.toLowerCase()
+  if (normalized === 'failed') return t('jdLogs.status.failed')
+  if (normalized === 'completed' || normalized === 'success') return t('jdLogs.status.completed')
+  if (normalized === 'pending' || normalized === 'processing') return t('jdLogs.status.pending')
+  return status
+}
+
 export function AdminJdLogsPage() {
   const { t } = useTranslation('admin')
+  const [rows, setRows] = useState<AdminJdFailedView[]>([])
+  const [loading, setLoading] = useState(true)
+  const [parseStatus, setParseStatus] = useState('failed')
+  const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const pageSize = 10
+
+  async function refresh(nextPage = page) {
+    const next = await loadAdminJdFailed({ parseStatus, page: nextPage, pageSize })
+    setRows(next.items)
+    setTotal(next.total)
+  }
+
+  useEffect(() => {
+    let cancelled = false
+
+    loadAdminJdFailed({ parseStatus, page, pageSize })
+      .then((next) => {
+        if (cancelled) return
+        setRows(next.items)
+        setTotal(next.total)
+        setLoading(false)
+      })
+      .catch(() => {
+        if (cancelled) return
+        setRows([])
+        setTotal(0)
+        setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [page, parseStatus])
+
+  async function onRetry(id: string) {
+    await retryAdminJd(id)
+    await refresh()
+  }
+
+  const totalPages = Math.max(1, Math.ceil((total || rows.length || 1) / pageSize))
 
   return (
     <div className='p-8 max-w-7xl mx-auto w-full space-y-8'>
-      {/* Hero/Header Section */}
       <div className='flex flex-col md:flex-row md:items-end justify-between gap-6'>
         <div>
-          <nav className='flex gap-2 text-xs text-muted-foreground mb-2'>
-            <span>{t('jdLogs.breadcrumb.system')}</span>
-            <span>/</span>
-            <span className='text-primary font-medium'>{t('jdLogs.breadcrumb.current')}</span>
-          </nav>
           <h2 className='text-4xl font-bold text-foreground'>{t('jdLogs.title')}</h2>
           <p className='text-muted-foreground max-w-2xl mt-1'>{t('jdLogs.subtitle')}</p>
         </div>
-        <div className='flex gap-3'>
-          <button className='px-6 py-3 bg-primary text-primary-foreground rounded-lg font-bold flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-primary/20'>
-            <span className='material-symbols-outlined'>add</span>
-            {t('jdLogs.newAnalysis')}
-          </button>
-        </div>
+        <select value={parseStatus} onChange={(e) => { setPage(1); setParseStatus(e.target.value) }} className='px-4 py-3 bg-muted border-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50'>
+          <option value='failed'>{t('jdLogs.status.failed')}</option>
+          <option value='completed'>{t('jdLogs.status.completed')}</option>
+          <option value='pending'>{t('jdLogs.status.pending')}</option>
+        </select>
       </div>
 
-      {/* Filters & Search */}
-      <section className='bg-card p-6 rounded-xl space-y-4 border border-border shadow-sm'>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-          <div className='md:col-span-2 relative'>
-            <span className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-              search
-            </span>
-            <input
-              className='w-full pl-10 pr-4 py-3 bg-muted border-none ring-1 ring-border focus:ring-2 focus:ring-primary/50 rounded-lg text-foreground'
-              placeholder={t('jdLogs.filter.searchPlaceholder')}
-              type='text'
-            />
-          </div>
-          <div className='relative'>
-            <span className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-              filter_list
-            </span>
-            <select className='w-full pl-10 pr-4 py-3 bg-muted border-none ring-1 ring-border focus:ring-2 focus:ring-primary/50 rounded-lg text-foreground appearance-none'>
-              <option>{t('jdLogs.filter.statusAll')}</option>
-              <option>Success</option>
-              <option>Failed</option>
-            </select>
-          </div>
-          <div className='relative'>
-            <span className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground'>
-              calendar_today
-            </span>
-            <input
-              className='w-full pl-10 pr-4 py-3 bg-muted border-none ring-1 ring-border focus:ring-2 focus:ring-primary/50 rounded-lg text-foreground'
-              type='date'
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Data Table */}
       <div className='bg-card rounded-xl overflow-hidden shadow-sm border border-border'>
         <div className='overflow-x-auto'>
           <table className='w-full text-left border-collapse'>
             <thead>
               <tr className='bg-muted'>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
-                  {t('jdLogs.table.date')}
-                </th>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
-                  {t('jdLogs.table.email')}
-                </th>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
-                  {t('jdLogs.table.jdTitle')}
-                </th>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
-                  {t('jdLogs.table.source')}
-                </th>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
-                  {t('jdLogs.table.status')}
-                </th>
-                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider text-right'>
-                  {t('jdLogs.table.actions')}
-                </th>
+                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('jdLogs.table.date')}</th>
+                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('jdLogs.table.email')}</th>
+                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('jdLogs.table.jdTitle')}</th>
+                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('jdLogs.table.status')}</th>
+                <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider text-right'>{t('jdLogs.table.actions')}</th>
               </tr>
             </thead>
             <tbody className='divide-y divide-border'>
-              {/* Row 1 — Success */}
-              <tr className='hover:bg-muted/50 transition-colors'>
-                <td className='px-6 py-4 whitespace-nowrap'>
-                  <div className='flex flex-col'>
-                    <span className='font-medium text-foreground'>Oct 24, 2023</span>
-                    <span className='text-xs text-muted-foreground'>14:20 PM</span>
-                  </div>
-                </td>
-                <td className='px-6 py-4 text-muted-foreground'>nguyen.van@edu-bridge.com</td>
-                <td className='px-6 py-4 font-medium text-foreground'>Senior Frontend Developer</td>
-                <td className='px-6 py-4'>
-                  <span className='px-2 py-1 bg-muted text-xs rounded-full border border-border'>LinkedIn</span>
-                </td>
-                <td className='px-6 py-4'>
-                  <div className='flex items-center gap-1.5 text-success font-medium text-sm'>
-                    <span className='material-symbols-outlined text-sm' style={{ fontVariationSettings: "'FILL' 1" }}>
-                      check_circle
-                    </span>
-                    Success
-                  </div>
-                </td>
-                <td className='px-6 py-4 text-right space-x-1'>
-                  <Link
-                    to='/admin/jd-logs/JD-9922'
-                    className='p-2 inline-flex hover:bg-muted rounded-lg text-primary transition-colors'
-                    title={t('jdLogs.actions.view')}
-                  >
-                    <span className='material-symbols-outlined'>visibility</span>
-                  </Link>
-                  <button
-                    className='p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors'
-                    title={t('jdLogs.actions.retry')}
-                  >
-                    <span className='material-symbols-outlined'>refresh</span>
-                  </button>
-                  <button
-                    className='p-2 hover:bg-destructive/10 rounded-lg text-destructive transition-colors'
-                    title={t('jdLogs.actions.delete')}
-                  >
-                    <span className='material-symbols-outlined'>delete</span>
-                  </button>
-                </td>
-              </tr>
-
-              {/* Row 2 — Failed */}
-              <tr className='hover:bg-muted/50 transition-colors'>
-                <td className='px-6 py-4 whitespace-nowrap'>
-                  <div className='flex flex-col'>
-                    <span className='font-medium text-foreground'>Oct 14, 2023</span>
-                    <span className='text-xs text-muted-foreground'>09:42 AM</span>
-                  </div>
-                </td>
-                <td className='px-6 py-4 text-muted-foreground'>hoang.anh@company.com</td>
-                <td className='px-6 py-4 font-medium text-foreground'>Software Engineer</td>
-                <td className='px-6 py-4'>
-                  <span className='px-2 py-1 bg-muted text-xs rounded-full border border-border'>File Upload</span>
-                </td>
-                <td className='px-6 py-4'>
-                  <div className='flex items-center gap-1.5 text-destructive font-medium text-sm'>
-                    <span className='material-symbols-outlined text-sm' style={{ fontVariationSettings: "'FILL' 1" }}>
-                      error
-                    </span>
-                    Failed
-                  </div>
-                </td>
-                <td className='px-6 py-4 text-right space-x-1'>
-                  <Link
-                    to='/admin/jd-logs/JD-9921'
-                    className='p-2 inline-flex hover:bg-muted rounded-lg text-primary transition-colors'
-                    title={t('jdLogs.actions.view')}
-                  >
-                    <span className='material-symbols-outlined'>visibility</span>
-                  </Link>
-                  <button
-                    className='p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors'
-                    title={t('jdLogs.actions.retry')}
-                  >
-                    <span className='material-symbols-outlined'>refresh</span>
-                  </button>
-                  <button
-                    className='p-2 hover:bg-destructive/10 rounded-lg text-destructive transition-colors'
-                    title={t('jdLogs.actions.delete')}
-                  >
-                    <span className='material-symbols-outlined'>delete</span>
-                  </button>
-                </td>
-              </tr>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={index} className='animate-pulse'>
+                    <td className='px-6 py-4'><div className='h-4 w-24 rounded bg-muted' /></td>
+                    <td className='px-6 py-4'><div className='h-4 w-40 rounded bg-muted' /></td>
+                    <td className='px-6 py-4'>
+                      <div className='space-y-2'>
+                        <div className='h-4 w-36 rounded bg-muted' />
+                        <div className='h-3 w-28 rounded bg-muted' />
+                      </div>
+                    </td>
+                    <td className='px-6 py-4'><div className='h-4 w-20 rounded bg-muted' /></td>
+                    <td className='px-6 py-4'>
+                      <div className='ml-auto flex justify-end gap-1'>
+                        <div className='h-9 w-9 rounded-lg bg-muted' />
+                        <div className='h-9 w-9 rounded-lg bg-muted' />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : rows.length === 0 ? (
+                <tr><td colSpan={5} className='px-6 py-8'><div className='flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/10 px-6 py-8 text-center'><div className='mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary'><span className='material-symbols-outlined'>playlist_remove</span></div><p className='text-sm font-semibold text-foreground'>{t('adminCommon.empty')}</p><p className='mt-2 text-sm text-muted-foreground'>{t('jdLogs.subtitle')}</p></div></td></tr>
+              ) : (
+                rows.map((row) => (
+                  <tr key={row.id} className='hover:bg-muted/50 transition-colors'>
+                    <td className='px-6 py-4'>{new Date(row.submittedAt).toLocaleDateString('vi-VN')}</td>
+                    <td className='px-6 py-4 text-muted-foreground'>{row.submittedBy}</td>
+                    <td className='px-6 py-4 font-medium text-foreground'>
+                      <div>
+                        <div>{row.title}</div>
+                        <div className='text-xs text-destructive mt-1'>{row.errorReason}</div>
+                      </div>
+                    </td>
+                    <td className='px-6 py-4'>{getJdLogStatusLabel(row.status, t)}</td>
+                    <td className='px-6 py-4 text-right space-x-1'>
+                      <Link to={`/admin/jd-failed/${encodeURIComponent(row.id)}`} className='p-2 inline-flex hover:bg-muted rounded-lg text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card' title={t('jdLogs.actions.view')} aria-label={t('jdLogs.actions.view')}><span className='material-symbols-outlined'>visibility</span></Link>
+                      <button type='button' onClick={() => void onRetry(row.id)} className='p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card' title={t('jdLogs.actions.retry')} aria-label={t('jdLogs.actions.retry')}><span className='material-symbols-outlined'>refresh</span></button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-
-        {/* Pagination */}
-        <div className='px-6 py-4 bg-muted flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border'>
-          <span className='text-sm text-muted-foreground'>
-            {t('jdLogs.pagination', { start: 1, end: 5, total: 128 })}
-          </span>
+        <div className='px-6 py-4 flex items-center justify-between border-t border-border bg-muted/30'>
+          <p className='text-xs font-semibold text-muted-foreground'>{t('adminCommon.pagination', { page, totalPages, total })}</p>
           <div className='flex items-center gap-2'>
-            <button
-              className='w-10 h-10 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all disabled:opacity-50'
-              disabled
-            >
-              <span className='material-symbols-outlined'>chevron_left</span>
-            </button>
-            <button className='w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold'>
-              1
-            </button>
-            <button className='w-10 h-10 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all'>
-              2
-            </button>
-            <button className='w-10 h-10 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all'>
-              3
-            </button>
-            <span className='px-2 text-muted-foreground'>...</span>
-            <button className='w-10 h-10 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all'>
-              26
-            </button>
-            <button className='w-10 h-10 flex items-center justify-center rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all'>
-              <span className='material-symbols-outlined'>chevron_right</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 pb-4'>
-        <div className='bg-card p-6 rounded-xl shadow-sm border border-border flex items-center gap-4'>
-          <div className='w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center'>
-            <span className='material-symbols-outlined'>task</span>
-          </div>
-          <div>
-            <p className='text-xs text-muted-foreground font-bold uppercase tracking-wider'>
-              {t('jdLogs.stats.totalProcessed')}
-            </p>
-            <p className='text-2xl font-bold text-foreground'>1,284</p>
-          </div>
-        </div>
-        <div className='bg-card p-6 rounded-xl shadow-sm border border-border flex items-center gap-4'>
-          <div className='w-12 h-12 bg-success/10 text-success rounded-full flex items-center justify-center'>
-            <span className='material-symbols-outlined'>check_circle</span>
-          </div>
-          <div>
-            <p className='text-xs text-muted-foreground font-bold uppercase tracking-wider'>
-              {t('jdLogs.stats.success24h')}
-            </p>
-            <p className='text-2xl font-bold text-foreground'>42</p>
-          </div>
-        </div>
-        <div className='bg-card p-6 rounded-xl shadow-sm border border-border flex items-center gap-4'>
-          <div className='w-12 h-12 bg-destructive/10 text-destructive rounded-full flex items-center justify-center'>
-            <span className='material-symbols-outlined'>error</span>
-          </div>
-          <div>
-            <p className='text-xs text-muted-foreground font-bold uppercase tracking-wider'>
-              {t('jdLogs.stats.systemErrors')}
-            </p>
-            <p className='text-2xl font-bold text-foreground'>03</p>
+            <button type='button' disabled={page <= 1} onClick={() => setPage((current) => Math.max(1, current - 1))} className='px-3 py-2 rounded-lg border border-border disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card'>{t('adminCommon.prev')}</button>
+            <button type='button' disabled={page >= totalPages} onClick={() => setPage((current) => Math.min(totalPages, current + 1))} className='px-3 py-2 rounded-lg border border-border disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card'>{t('adminCommon.next')}</button>
           </div>
         </div>
       </div>

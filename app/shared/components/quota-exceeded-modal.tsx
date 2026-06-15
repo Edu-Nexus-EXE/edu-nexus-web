@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 
 import { QuotaExceededError } from '~/api/mutator/custom-fetch'
 
@@ -14,6 +15,7 @@ type QuotaModalState = {
 
 export function QuotaExceededModal() {
   const navigate = useNavigate()
+  const { t } = useTranslation(['subscription'])
   const [state, setState] = useState<QuotaModalState | null>(null)
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function QuotaExceededModal() {
 
       setState({
         open: true,
-        message: reason.message || 'Quota exceeded',
+        message: reason.message || t('quotaExceeded.message', { defaultValue: 'Quota exceeded' }),
         quotaType: reason.quotaType,
         current: reason.current,
         limit: reason.limit,
@@ -40,7 +42,7 @@ export function QuotaExceededModal() {
 
       setState({
         open: true,
-        message: err.message || 'Quota exceeded',
+        message: err.message || t('quotaExceeded.message', { defaultValue: 'Quota exceeded' }),
         quotaType: err.quotaType,
         current: err.current,
         limit: err.limit,
@@ -55,16 +57,13 @@ export function QuotaExceededModal() {
       window.removeEventListener('unhandledrejection', onUnhandledRejection)
       window.removeEventListener('error', onError)
     }
-  }, [])
+  }, [t])
 
   if (!state?.open) return null
 
   return (
     <div className='fixed inset-0 z-[100] flex items-center justify-center px-4'>
-      <div
-        className='absolute inset-0 bg-background/60 backdrop-blur-sm'
-        onClick={() => setState(null)}
-      />
+      <div className='absolute inset-0 bg-background/60 backdrop-blur-sm' onClick={() => setState(null)} />
 
       <div className='relative w-full max-w-lg rounded-2xl border border-border bg-card shadow-xl p-6'>
         <div className='flex items-start gap-3'>
@@ -73,20 +72,20 @@ export function QuotaExceededModal() {
           </div>
 
           <div className='flex-1'>
-            <h2 className='text-lg font-bold text-foreground'>Bạn đã dùng hết quota</h2>
+            <h2 className='text-lg font-bold text-foreground'>{t('quotaExceeded.title')}</h2>
             <p className='mt-1 text-sm text-muted-foreground'>{state.message}</p>
 
             {(state.limit !== undefined || state.quotaType) && (
               <div className='mt-3 text-xs text-muted-foreground space-y-1'>
                 {state.quotaType ? (
                   <p>
-                    Loại quota: <span className='font-semibold text-foreground'>{state.quotaType}</span>
+                    {t('quotaExceeded.quotaType')} <span className='font-semibold text-foreground'>{state.quotaType}</span>
                   </p>
                 ) : null}
                 {state.limit !== undefined ? (
                   <p>
-                    Đã dùng: <span className='font-semibold text-foreground'>{state.current ?? '-'}</span> /{' '}
-                    <span className='font-semibold text-foreground'>{state.limit}</span>
+                    {t('quotaExceeded.usage')}{' '}
+                    <span className='font-semibold text-foreground'>{state.current ?? '-'}</span> / <span className='font-semibold text-foreground'>{state.limit}</span>
                   </p>
                 ) : null}
               </div>
@@ -98,7 +97,7 @@ export function QuotaExceededModal() {
                 className='flex-1 px-4 py-2.5 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-all'
                 onClick={() => setState(null)}
               >
-                Đóng
+                {t('quotaExceeded.close')}
               </button>
               <button
                 type='button'
@@ -109,7 +108,7 @@ export function QuotaExceededModal() {
                   navigate(to)
                 }}
               >
-                Nâng cấp gói
+                {t('quotaExceeded.upgrade')}
               </button>
             </div>
           </div>

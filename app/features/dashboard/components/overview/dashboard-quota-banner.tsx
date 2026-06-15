@@ -1,152 +1,92 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-
-import { getAuthSession, setAuthSession, type AuthUser } from '~/shared/lib/auth-session'
-import { cn } from '~/shared/lib/cn'
-
-import { loadCurrentUser, type SubscriptionState } from '../../lib/sprint2-api'
 import { useTranslation } from 'react-i18next'
 
-type QuotaTier = 'free' | 'pro' | 'premium'
+import { cn } from '~/shared/lib/cn'
 
-function getQuotaStyle(tier: QuotaTier): {
-  accentClass: string
-  barClass: string
-  upgradeRequired: boolean
-} {
+import { useQuotaSummary } from '~/features/pricing/lib/subscription'
+
+type QuotaTier = 'free' | 'student' | 'pro'
+
+function getQuotaStyle(tier: QuotaTier, nearLimit: boolean) {
+  if (nearLimit) {
+    return {
+      accentClass: 'from-warning/20 to-warning/5',
+      badgeClass: 'bg-warning/10 text-warning',
+      icon: 'warning',
+    }
+  }
+
   switch (tier) {
-    case 'premium':
-      return {
-        accentClass: 'from-purple-500/20 to-primary/10',
-        barClass: 'bg-gradient-to-r from-purple-500 to-primary',
-        upgradeRequired: false,
-      }
     case 'pro':
       return {
         accentClass: 'from-primary/20 to-primary/5',
-        barClass: 'bg-gradient-to-r from-primary to-primary/70',
-        upgradeRequired: false,
+        badgeClass: 'bg-primary/10 text-primary',
+        icon: 'workspace_premium',
+      }
+    case 'student':
+      return {
+        accentClass: 'from-secondary/20 to-primary/5',
+        badgeClass: 'bg-secondary/20 text-foreground',
+        icon: 'school',
       }
     default:
       return {
-        accentClass: 'from-amber-500/20 to-orange-500/10',
-        barClass: 'bg-gradient-to-r from-amber-500 to-orange-400',
-        upgradeRequired: true,
+        accentClass: 'from-muted/80 to-muted/30',
+        badgeClass: 'bg-muted text-muted-foreground',
+        icon: 'person',
       }
-  }
-}
-
-function mapSubscription(user: AuthUser | null, subscription: SubscriptionState): AuthUser | null {
-  if (!user) return null
-  return {
-    ...user,
-    subscription: subscription
-      ? {
-          tierCode: subscription.tierCode,
-          displayName: subscription.displayName,
-          status: subscription.status,
-          expiresAt: subscription.expiresAt,
-        }
-      : user.subscription ?? null,
   }
 }
 
 export function DashboardQuotaBanner() {
   const { t } = useTranslation('dashboard')
-  const session = getAuthSession()
+  const summary = useQuotaSummary()
 
-  const [subscription, setSubscription] = useState<SubscriptionState>(session?.user?.subscription ?? null)
-  const [loading, setLoading] = useState(false)
+  const tier = ((summary?.tierCode ?? 'free').toLowerCase() as QuotaTier) || 'free'
+  const style = getQuotaStyle(tier, summary?.nearLimit ?? false)
 
-  useEffect(() => {
-    let cancelled = false
-    setTimeout(() => {
-      if (!cancelled) setLoading(true)
-    }, 0)
-
-    loadCurrentUser()
-      .then((user) => {
-        if (cancelled || !user) return
-        const nextSubscription = user.subscription
-          ? {
-              tierCode: user.subscription.tierCode,
-              displayName: user.subscription.displayName,
-              status: user.subscription.status,
-              expiresAt: user.subscription.expiresAt ?? null,
-            }
-          : null
-        setSubscription(nextSubscription)
-        const nextSession = mapSubscription(session?.user ?? null, nextSubscription)
-        if (nextSession && session) {
-          setAuthSession({ ...session, user: nextSession })
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [session])
-
-  const sub = subscription ?? session?.user?.subscription ?? null
-  const tier = (sub?.tierCode?.toLowerCase() ?? 'free') as QuotaTier
-  const style = getQuotaStyle(tier)
-
-  const statusVariant = sub?.status
+  const statusVariant = summary?.status
     ? (() => {
-        const s = sub.status.toLowerCase()
+        const s = summary.status.toLowerCase()
         if (s === 'active') return { label: t('quota.status.active'), variant: 'success' as const }
         if (s === 'expired' || s === 'cancelled') return { label: t('quota.status.expired'), variant: 'destructive' as const }
         if (s === 'pending') return { label: t('quota.status.pending'), variant: 'warning' as const }
-        return { label: sub.status, variant: 'outline' as const }
+        return { label: summary.status, variant: 'outline' as const }
       })()
     : null
 
-  const expiresLabel = sub?.expiresAt ? t('quota.expiresAt', { date: sub.expiresAt }) : null
-
-  const tierLabel = t(`quota.tiers.${tier}.label`)
-  const quotaText = t(`quota.tiers.${tier}.quotaText`)
-
   return (
-    <div
-      className={cn(
-        'rounded-2xl border border-border p-5 bg-gradient-to-br shadow-sm relative overflow-hidden',
-        style.accentClass
-      )}
-    >
+    <div className={cn('rounded-2xl border border-border p-5 bg-gradient-to-br shadow-sm relative overflow-hidden', style.accentClass)}>
       <div className='relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
         <div className='flex items-center gap-4'>
           <div className='w-12 h-12 rounded-xl bg-card/80 border border-border flex items-center justify-center shadow-sm'>
-            <span className='material-icons text-primary'>
-              {tier === 'premium' ? 'diamond' : tier === 'pro' ? 'workspace_premium' : 'person'}
-            </span>
+            <span className='material-icons text-primary'>{style.icon}</span>
           </div>
 
           <div>
-            <div className='flex items-center gap-2'>
-              <p className='text-sm font-semibold text-foreground'>{tierLabel}</p>
+            <div className='flex items-center gap-2 flex-wrap'>
+              <p className='text-sm font-semibold text-foreground'>{summary?.tierLabel ?? t('quota.tiers.free.label')}</p>
               {statusVariant ? (
                 <span
                   className={cn(
                     'text-xs px-2 py-0.5 rounded-full font-medium',
-                    statusVariant.variant === 'success' && 'bg-emerald-500/20 text-emerald-600',
-                    statusVariant.variant === 'destructive' && 'bg-red-500/20 text-red-600',
-                    statusVariant.variant === 'warning' && 'bg-amber-500/20 text-amber-600',
+                    statusVariant.variant === 'success' && 'bg-success/10 text-success',
+                    statusVariant.variant === 'destructive' && 'bg-destructive/10 text-destructive',
+                    statusVariant.variant === 'warning' && 'bg-warning/10 text-warning',
                     statusVariant.variant === 'outline' && 'bg-muted text-muted-foreground'
                   )}
                 >
                   {statusVariant.label}
                 </span>
               ) : null}
+              {summary?.nearLimit ? <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium', style.badgeClass)}>{t('quota.nearLimit')}</span> : null}
             </div>
-            <p className='text-xs text-muted-foreground mt-0.5'>{loading ? t('quota.loading') : quotaText}</p>
-            {expiresLabel ? <p className='text-xs text-muted-foreground'>{expiresLabel}</p> : null}
+            <p className='text-xs text-muted-foreground mt-0.5'>{summary?.quotaText ?? t('quota.loading')}</p>
+            {summary?.expiresAt ? <p className='text-xs text-muted-foreground'>{t('quota.expiresAt', { date: summary.expiresAt })}</p> : null}
           </div>
         </div>
 
-        {style.upgradeRequired ? (
+        {summary?.upgradeRequired ? (
           <Link
             to='/pricing'
             className={cn(
@@ -159,10 +99,7 @@ export function DashboardQuotaBanner() {
             {t('quota.cta.upgrade')}
           </Link>
         ) : (
-          <div className={cn(
-            'shrink-0 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold',
-            'bg-emerald-500/20 text-emerald-700'
-          )}>
+          <div className='shrink-0 inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold bg-success/10 text-success'>
             <span className='material-icons text-lg'>verified</span>
             {t('quota.cta.active')}
           </div>

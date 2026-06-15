@@ -1,10 +1,22 @@
-import { useEffect, useMemo, useState } from 'react'
-
-import { getRoadmapsId, getRoadmapNodesNodeIdResources, getUsersMeRoadmaps, patchRoadmapNodesNodeIdStatus, patchRoadmapsIdKeep, postRoadmapsIdRegenerate } from '~/api/operations/roadmaps/roadmaps'
-import { getJdSubmissionsJdIdGapAnalysis, postJdSubmissionsJdIdGapAnalysis } from '~/api/operations/gap-analysis/gap-analysis'
-import { getCareerTracks, getCareerTracksId, postCareerTracks, putCareerTracksId, deleteCareerTracksId, postCareerTracksIdJds, deleteCareerTracksIdJdsJdId } from '~/api/operations/career-tracks/career-tracks'
+import { deleteCareerTracksId, deleteCareerTracksIdJdsJdId, postCareerTracks, postCareerTracksIdJds, putCareerTracksId } from '~/api/operations/career-tracks/career-tracks'
+import { getJdSubmissions } from '~/api/operations/jd-submissions/jd-submissions'
 import { getUsersMe } from '~/api/operations/users/users'
+import { getSubscriptionMe } from '~/api/operations/subscription/subscription'
 import type { AuthUser } from '~/shared/lib/auth-session'
+import {
+  getCareerTrackRuntime,
+  getCareerTracksRuntime,
+  getGapAnalysisRuntime,
+  getRoadmapNodeResourcesRuntime,
+  getRoadmapRuntime,
+  getUserRoadmapsRuntime,
+  patchRoadmapArchiveRuntime,
+  patchRoadmapKeepRuntime,
+  patchRoadmapNodeStatusRuntime,
+  postGapAnalysisRuntime,
+  postRoadmapRegenerateRuntime,
+  postRoadmapRuntime,
+} from '~/shared/lib/sprint2-api-runtime'
 
 export type LoadState<T> = {
   data: T | null
@@ -48,31 +60,51 @@ export type GapAnalysisSkillView = {
   tags: string[]
 }
 
+export type GapAnalysisMetaView = {
+  version: number
+  completedAt: string | null
+  scorePercent: number | null
+  status: string
+  jdId: string | null
+  gapAnalysisId: string | null
+}
+
 export type RoadmapNodeView = {
   id: string
-  nameKey: string
-  subKey?: string
+  title: string
+  description?: string
   icon: string
   status: 'completed' | 'active' | 'future'
+  orderIndex: number
+  estimatedHours?: number
+  level?: number
+  prerequisiteNodeIds: string[]
 }
 
 export type RoadmapResourceView = {
-  titleKey: string
-  descKey: string
+  id: string
+  title: string
+  description: string
+  url?: string
+  type: string
+  provider?: string
+  isAffiliate: boolean
+  isPrimary: boolean
+  affiliateLabel?: string
   icon: string
   iconBg: string
   iconColor: string
-  sponsored?: boolean
 }
 
 export type RoadmapView = {
   id: string
+  jdId?: string
   title: string
   progress: number
+  status: string
   isOutdated: boolean
   nodes: RoadmapNodeView[]
   resources: RoadmapResourceView[]
-  activeNodeId?: string | null
 }
 
 export type CareerTrackView = {
@@ -92,89 +124,347 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object'
 }
 
-export function toStringValue(value: unknown, fallback = ''): string {
+function toStringValue(value: unknown, fallback = ''): string {
   return typeof value === 'string' ? value : fallback
 }
 
-export function toNumberValue(value: unknown, fallback = 0): number {
-  return typeof value === 'number' ? value : fallback
+function toNumberValue(value: unknown, fallback = 0): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback
 }
 
-export async function loadCurrentUser(): Promise<AuthUser | null> {
-  const res = await getUsersMe()
-  const data = unwrapData<unknown>(res)
-  if (!isObject(data)) return null
+function toOptionalNumber(value: unknown): number | undefined {
+  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+function toStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.map((item) => toStringValue(item)).filter(Boolean) : []
+}
+
+function toAuthUser(data: Record<string, unknown>): AuthUser {
+  const subscription = isObject(data.subscription)
+    ? {
+        tierCode: toStringValue(data.subscription.tierCode, 'free'),
+        displayName: toStringValue(data.subscription.displayName, 'Free'),
+        status: toStringValue(data.subscription.status, 'inactive'),
+        expiresAt: typeof data.subscription.expiresAt === 'string' ? data.subscription.expiresAt : null,
+      }
+    : null
+
   return {
-    id: toStringValue(data.id),
-    email: toStringValue(data.email),
-    fullName: toStringValue(data.fullName),
-    role: toStringValue(data.role) === 'admin' ? 'admin' : 'user',
-    isSurveyCompleted: Boolean(data.isSurveyCompleted),
-    avatarUrl: typeof data.avatarUrl === 'string' ? data.avatarUrl : undefined,
+    id: toStringValue(data.id, 'user-1'),
+    email: toStringValue(data.email, 'user@example.com'),
+    fullName: toStringValue(data.fullName || data.name, 'Demo User'),
+    role: toStringValue(data.role, 'user') as AuthUser['role'],
+    isSurveyCompleted: Boolean(data.isSurveyCompleted ?? true),
     portfolioUrlSlug: typeof data.portfolioUrlSlug === 'string' ? data.portfolioUrlSlug : undefined,
-    subscription: isObject(data.subscription)
-      ? {
-          tierCode: toStringValue(data.subscription.tierCode, 'free'),
-          displayName: toStringValue(data.subscription.displayName, 'Free'),
-          status: toStringValue(data.subscription.status, 'active'),
-          expiresAt: typeof data.subscription.expiresAt === 'string' ? data.subscription.expiresAt : null,
-        }
-      : null,
+    subscription,
   }
 }
 
-export async function loadDashboardRoadmaps(status = 'active'): Promise<LoadState<RoadmapView[]>> {
+function getCollection(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value
+  if (isObject(value) && Array.isArray(value.items)) return value.items
+  if (isObject(value) && Array.isArray(value.results)) return value.results
+  if (isObject(value) && Array.isArray(value.data)) return value.data
+  return []
+}
+
+function normalizeGapStatus(value: unknown): GapAnalysisSkillStatus {
+  const raw = toStringValue(value).toLowerCase().replace(/[_\s-]/g, '')
+  if (raw === 'missing') return 'missing'
+  if (raw === 'needsupgrade' || raw === 'upgrade' || raw === 'partial') return 'upgrade'
+  return 'have'
+}
+
+function mapGapSkill(item: unknown, index: number): GapAnalysisSkillView {
+  const raw = isObject(item) ? item : {}
+  const status = normalizeGapStatus(raw.gapStatus ?? raw.status)
+  const priorityScoreRaw = toNumberValue(raw.priorityScore ?? raw.urgencyScore ?? raw.urgency, 0)
+  const tags = [
+    typeof raw.isMandatoryInJd === 'boolean' && raw.isMandatoryInJd ? 'Mandatory in JD' : '',
+    toStringValue(raw.currentLevel),
+    toStringValue(raw.targetLevel),
+    toStringValue(raw.category),
+  ].filter(Boolean)
+
+  return {
+    id: toStringValue(raw.id, `gap-${index}`),
+    name: toStringValue(raw.skillName ?? raw.skillNameRaw ?? raw.name, 'Unknown skill'),
+    icon: status === 'missing' ? 'warning' : status === 'upgrade' ? 'trending_up' : 'check_circle',
+    status,
+    current: toStringValue(raw.currentLevel, status === 'missing' ? 'Not evidenced' : 'Unknown'),
+    required: toStringValue(raw.targetLevel, 'Unknown'),
+    priorityScore: priorityScoreRaw,
+    hasPriority: priorityScoreRaw > 0,
+    reason: toStringValue(raw.reasoning ?? raw.reason ?? raw.explanation, ''),
+    tags,
+  }
+}
+
+function parseGapSkills(root: Record<string, unknown>): GapAnalysisSkillView[] {
+  const directSkills = getCollection(root.skills)
+  if (directSkills.length > 0) return directSkills.map(mapGapSkill)
+
+  const grouped = [
+    ...getCollection(root.missingSkills),
+    ...getCollection(root.skillsToImprove),
+    ...getCollection(root.existingSkills),
+  ]
+
+  return grouped.map(mapGapSkill)
+}
+
+function normalizeRoadmapNodeStatus(value: unknown): RoadmapNodeView['status'] {
+  const raw = toStringValue(value).toLowerCase()
+  if (raw === 'completed' || raw === 'done') return 'completed'
+  if (raw === 'active' || raw === 'current' || raw === 'inprogress' || raw === 'in_progress') return 'active'
+  return 'future'
+}
+
+function mapRoadmapNode(item: unknown, index: number): RoadmapNodeView {
+  const raw = isObject(item) ? item : {}
+  return {
+    id: toStringValue(raw.id, `node-${index}`),
+    title: toStringValue(raw.title ?? raw.name ?? raw.skillName, 'Roadmap node'),
+    description: toStringValue(raw.description, '') || undefined,
+    icon: toStringValue(raw.icon, 'task_alt'),
+    status: normalizeRoadmapNodeStatus(raw.status),
+    orderIndex: toNumberValue(raw.sequenceOrder ?? raw.orderIndex ?? raw.order, index),
+    estimatedHours: toOptionalNumber(raw.estimatedHours ?? raw.durationHours),
+    level: toOptionalNumber(raw.level),
+    prerequisiteNodeIds: toStringArray(raw.prerequisiteNodeIds ?? raw.prerequisites),
+  }
+}
+
+function mapRoadmapResource(item: unknown, index: number): RoadmapResourceView {
+  const raw = isObject(item) ? item : {}
+  const resourceType = toStringValue(raw.type, 'article').toLowerCase()
+  const provider = toStringValue(raw.provider)
+  const affiliateLabel = toStringValue(raw.affiliateLabel ?? raw.affiliateTag)
+  const isAffiliate = Boolean(raw.isAffiliate ?? raw.sponsored ?? affiliateLabel)
+  const isPrimary = Boolean(raw.isPrimary)
+
+  let icon = 'description'
+  let iconBg = 'bg-muted/10'
+  let iconColor = 'text-foreground'
+
+  if (resourceType.includes('video') || provider.toLowerCase().includes('youtube')) {
+    icon = 'play_circle'
+    iconBg = 'bg-destructive/10'
+    iconColor = 'text-destructive'
+  } else if (resourceType.includes('course') || provider.toLowerCase().includes('udemy')) {
+    icon = 'school'
+    iconBg = 'bg-primary/10'
+    iconColor = 'text-primary'
+  } else if (resourceType.includes('doc')) {
+    icon = 'description'
+    iconBg = 'bg-info/10'
+    iconColor = 'text-info'
+  }
+
+  return {
+    id: toStringValue(raw.id, `resource-${index}`),
+    title: toStringValue(raw.title, 'Learning resource'),
+    description: toStringValue(raw.description, ''),
+    url: toStringValue(raw.url) || undefined,
+    type: resourceType,
+    provider: provider || undefined,
+    isAffiliate,
+    isPrimary,
+    affiliateLabel: affiliateLabel || undefined,
+    icon,
+    iconBg,
+    iconColor,
+  }
+}
+
+function mapRoadmapSummary(item: unknown, index: number): RoadmapView {
+  const raw = isObject(item) ? item : {}
+  return {
+    id: toStringValue(raw.id, `roadmap-${index}`),
+    jdId: toStringValue(raw.jdId) || undefined,
+    title: toStringValue(raw.title ?? raw.name, 'Roadmap'),
+    progress: toNumberValue(raw.progressPercent ?? raw.progress, 0),
+    status: toStringValue(raw.status, 'active'),
+    isOutdated: Boolean(raw.isOutdated),
+    nodes: getCollection(raw.nodes).map(mapRoadmapNode).sort((a, b) => a.orderIndex - b.orderIndex),
+    resources: [],
+  }
+}
+
+function mapCareerTrack(item: unknown, index: number): CareerTrackView {
+  const raw = isObject(item) ? item : {}
+  return {
+    id: toStringValue(raw.id, `track-${index}`),
+    name: toStringValue(raw.name, 'Career Track'),
+    description: toStringValue(raw.description) || undefined,
+    jdCount: toNumberValue(raw.jdCount ?? raw.jobDescriptionCount ?? raw.jobsCount, 0),
+    progress: toOptionalNumber(raw.overallProgress ?? raw.progress ?? raw.progressPercent),
+  }
+}
+
+export async function loadCurrentUser(): Promise<AuthUser | null> {
+  const res = await loadDashboardUser()
+  return res.data
+}
+
+export async function loadDashboardUser(): Promise<LoadState<AuthUser>> {
   try {
-    const res = await getUsersMeRoadmaps({ status })
+    const res = await getUsersMe()
     const data = unwrapData<unknown>(res)
-    const items = Array.isArray(data)
-      ? data
-      : Array.isArray((data as { items?: unknown[] } | null)?.items)
-        ? ((data as { items: unknown[] }).items)
-        : []
+    if (!isObject(data)) return { data: null, loading: false, error: 'User not found' }
 
     return {
-      data: items.map((item, index) => {
-        const raw = isObject(item) ? item : {}
-        const nodes = Array.isArray(raw.nodes)
-          ? raw.nodes.map((node, nodeIndex) => {
-              const n = isObject(node) ? node : {}
-              return {
-                id: toStringValue(n.id, `node-${index}-${nodeIndex}`),
-                nameKey: toStringValue(n.nameKey, 'roadmap.nodes.javaCore'),
-                subKey: typeof n.subKey === 'string' ? n.subKey : undefined,
-                icon: toStringValue(n.icon, 'bolt'),
-                status: ['completed', 'active', 'future'].includes(toStringValue(n.status))
-                  ? (toStringValue(n.status) as RoadmapNodeView['status'])
-                  : 'future',
-              }
-            })
-          : []
+      data: toAuthUser(data),
+      loading: false,
+      error: null,
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load user' }
+  }
+}
 
-        const resources = Array.isArray(raw.resources)
-          ? raw.resources.map((resource) => {
-              const r = isObject(resource) ? resource : {}
-              return {
-                titleKey: toStringValue(r.titleKey, 'roadmap.docsTitle'),
-                descKey: toStringValue(r.descKey, 'roadmap.docsDesc'),
-                icon: toStringValue(r.icon, 'description'),
-                iconBg: toStringValue(r.iconBg, 'bg-muted/10'),
-                iconColor: toStringValue(r.iconColor, 'text-foreground'),
-                sponsored: Boolean(r.sponsored),
-              }
-            })
-          : []
+export type QuotaUsageItem = {
+  key: string
+  used: number
+  limit: number
+  nearLimit: boolean
+  unlimited: boolean
+}
 
-        return {
-          id: toStringValue(raw.id, `roadmap-${index}`),
-          title: toStringValue(raw.title, 'Roadmap'),
-          progress: toNumberValue(raw.progress, 0),
-          isOutdated: Boolean(raw.isOutdated),
-          nodes,
-          resources,
-          activeNodeId: typeof raw.activeNodeId === 'string' ? raw.activeNodeId : null,
-        }
-      }),
+const QUOTA_KEYS = ['jd', 'gapAnalysis', 'assessment', 'roadmapActive', 'careerTrack', 'portfolioCertificate', 'portfolioProject'] as const
+
+export async function loadQuotaUsage(): Promise<LoadState<QuotaUsageItem[]>> {
+  try {
+    const res = await getSubscriptionMe()
+    const data = unwrapData<unknown>(res)
+    const usage = isObject(data) && isObject(data.usage) ? data.usage : {}
+
+    const items = QUOTA_KEYS.map((key) => {
+      const raw = isObject(usage[key]) ? usage[key] : {}
+      const used = toNumberValue(raw.used, 0)
+      const limit = toNumberValue(raw.limit, 0)
+      const unlimited = limit < 0
+      const nearLimit = typeof raw.nearLimit === 'boolean' ? raw.nearLimit : !unlimited && limit > 0 && used >= limit * (2 / 3)
+      return { key, used, limit, nearLimit, unlimited }
+    })
+
+    return { data: items, loading: false, error: null }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load quota usage' }
+  }
+}
+
+export async function loadDashboardStats(): Promise<LoadState<DashboardStatsState>> {
+  try {
+    return {
+      data: {
+        certificates: '12',
+        studyHours: '146h',
+        readiness: '82%',
+        classRank: '#8',
+      },
+      loading: false,
+      error: null,
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load stats' }
+  }
+}
+
+export async function loadSubscriptionState(): Promise<LoadState<SubscriptionState>> {
+  try {
+    const user = await getUsersMe()
+    const data = unwrapData<unknown>(user)
+    if (!isObject(data)) return { data: null, loading: false, error: null }
+    const subscription = isObject(data.subscription) ? data.subscription : null
+
+    return {
+      data: subscription
+        ? {
+            tierCode: toStringValue(subscription.tierCode, 'free'),
+            displayName: toStringValue(subscription.displayName, 'Free'),
+            status: toStringValue(subscription.status, 'inactive'),
+            expiresAt: typeof subscription.expiresAt === 'string' ? subscription.expiresAt : null,
+          }
+        : null,
+      loading: false,
+      error: null,
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load subscription' }
+  }
+}
+
+export async function loadRecentJds(): Promise<LoadState<JdRecentItem[]>> {
+  try {
+    const res = await getJdSubmissions({ page: 1, pageSize: 10 })
+    const rows = getCollection((res as { data?: unknown })?.data)
+
+    return {
+      data: rows
+        .map((item) => (isObject(item) ? item : {}))
+        .map((item, index) => ({
+          id: toStringValue(item.id, `jd-${index}`),
+          jobTitle: toStringValue(item.jobTitle, 'Untitled JD'),
+          parseStatus: toStringValue(item.parseStatus, 'pending'),
+          createdAt: typeof item.createdAt === 'string' ? item.createdAt : undefined,
+        }))
+        .filter((item) => Boolean(item.id)),
+      loading: false,
+      error: null,
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load JDs' }
+  }
+}
+
+export async function triggerGapAnalysis(jdId: string) {
+  return postGapAnalysisRuntime({ jdId })
+}
+
+export async function loadGapAnalysis(
+  jdId: string,
+  options?: { all?: boolean }
+): Promise<LoadState<{ meta: GapAnalysisMetaView; skills: GapAnalysisSkillView[] }>> {
+  try {
+    const res = await getGapAnalysisRuntime({ jdId, all: options?.all })
+    const data = unwrapData<unknown>(res)
+    const root = isObject(data) ? data : {}
+    const skills = parseGapSkills(root)
+
+    return {
+      data: {
+        meta: {
+          version: toNumberValue(root.version, 1),
+          completedAt: typeof root.completedAt === 'string' ? root.completedAt : null,
+          scorePercent: typeof root.scorePercent === 'number' ? root.scorePercent : null,
+          status: toStringValue(root.status, skills.length > 0 ? 'completed' : 'pending'),
+          jdId: toStringValue(root.jdId) || jdId,
+          gapAnalysisId: toStringValue(root.id) || null,
+        },
+        skills,
+      },
+      loading: false,
+      error: null,
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load gap analysis' }
+  }
+}
+
+export async function loadDashboardRoadmaps(status?: string): Promise<LoadState<RoadmapView[]>> {
+  return loadRoadmapOverview({ status })
+}
+
+export async function loadRoadmapOverview(filters?: { status?: string; jdId?: string }): Promise<LoadState<RoadmapView[]>> {
+  try {
+    const res = await getUserRoadmapsRuntime(filters)
+    const data = unwrapData<unknown>(res)
+    const items = getCollection(data)
+
+    return {
+      data: items.map(mapRoadmapSummary),
       loading: false,
       error: null,
     }
@@ -185,44 +475,21 @@ export async function loadDashboardRoadmaps(status = 'active'): Promise<LoadStat
 
 export async function loadRoadmapById(id: string): Promise<LoadState<RoadmapView>> {
   try {
-    const res = await getRoadmapsId({ id })
+    const res = await getRoadmapRuntime({ id })
     const data = unwrapData<unknown>(res)
-    if (!isObject(data)) return { data: null, loading: false, error: 'Roadmap not found' }
+    const raw = isObject(data) ? data : {}
+    const nodes = getCollection(raw.nodes).map(mapRoadmapNode).sort((a, b) => a.orderIndex - b.orderIndex)
 
     return {
       data: {
-        id: toStringValue(data.id, id),
-        title: toStringValue(data.title, 'Roadmap'),
-        progress: toNumberValue(data.progress, 0),
-        isOutdated: Boolean(data.isOutdated),
-        nodes: Array.isArray(data.nodes)
-          ? data.nodes.map((node, nodeIndex) => {
-              const n = isObject(node) ? node : {}
-              return {
-                id: toStringValue(n.id, `node-${nodeIndex}`),
-                nameKey: toStringValue(n.nameKey, 'roadmap.nodes.javaCore'),
-                subKey: typeof n.subKey === 'string' ? n.subKey : undefined,
-                icon: toStringValue(n.icon, 'bolt'),
-                status: ['completed', 'active', 'future'].includes(toStringValue(n.status))
-                  ? (toStringValue(n.status) as RoadmapNodeView['status'])
-                  : 'future',
-              }
-            })
-          : [],
-        resources: Array.isArray(data.resources)
-          ? data.resources.map((resource) => {
-              const r = isObject(resource) ? resource : {}
-              return {
-                titleKey: toStringValue(r.titleKey, 'roadmap.docsTitle'),
-                descKey: toStringValue(r.descKey, 'roadmap.docsDesc'),
-                icon: toStringValue(r.icon, 'description'),
-                iconBg: toStringValue(r.iconBg, 'bg-muted/10'),
-                iconColor: toStringValue(r.iconColor, 'text-foreground'),
-                sponsored: Boolean(r.sponsored),
-              }
-            })
-          : [],
-        activeNodeId: typeof data.activeNodeId === 'string' ? data.activeNodeId : null,
+        id: toStringValue(raw.id, id),
+        jdId: toStringValue(raw.jdId) || undefined,
+        title: toStringValue(raw.title ?? raw.name, 'Roadmap'),
+        progress: toNumberValue(raw.progressPercent ?? raw.progress, 0),
+        status: toStringValue(raw.status, 'active'),
+        isOutdated: Boolean(raw.isOutdated),
+        nodes,
+        resources: [],
       },
       loading: false,
       error: null,
@@ -232,80 +499,34 @@ export async function loadRoadmapById(id: string): Promise<LoadState<RoadmapView
   }
 }
 
-export async function loadGapAnalysis(jdId: string): Promise<LoadState<GapAnalysisSkillView[]>> {
-  try {
-    const res = await getJdSubmissionsJdIdGapAnalysis({ jdId })
-    const data = unwrapData<unknown>(res)
-    const items = Array.isArray(data)
-      ? data
-      : Array.isArray((data as { items?: unknown[] } | null)?.items)
-        ? ((data as { items: unknown[] }).items)
-        : []
-
-    return {
-      data: items.map((item, index) => {
-        const raw = isObject(item) ? item : {}
-        return {
-          id: toStringValue(raw.id, `skill-${index}`),
-          name: toStringValue(raw.name, 'Skill'),
-          icon: toStringValue(raw.icon, 'token'),
-          status: ['missing', 'upgrade', 'have'].includes(toStringValue(raw.status))
-            ? (toStringValue(raw.status) as GapAnalysisSkillView['status'])
-            : 'missing',
-          current: toStringValue(raw.current, '—'),
-          required: toStringValue(raw.required, '—'),
-          priorityScore: toNumberValue(raw.priorityScore, 0),
-          hasPriority: Boolean(raw.hasPriority),
-          reason: toStringValue(raw.reason, ''),
-          tags: Array.isArray(raw.tags) ? raw.tags.filter((tag): tag is string => typeof tag === 'string') : [],
-        }
-      }),
-      loading: false,
-      error: null,
-    }
-  } catch (error) {
-    return { data: null, loading: false, error: (error as Error).message || 'Failed to load gap analysis' }
-  }
-}
-
-export async function triggerGapAnalysis(jdId: string) {
-  return postJdSubmissionsJdIdGapAnalysis({ jdId })
+export async function triggerRoadmap(jdId: string) {
+  return postRoadmapRuntime({ jdId })
 }
 
 export async function triggerRoadmapRegenerate(id: string) {
-  return postRoadmapsIdRegenerate({ id })
+  return postRoadmapRegenerateRuntime({ id })
+}
+
+export async function triggerRoadmapArchive(id: string) {
+  return patchRoadmapArchiveRuntime({ id })
 }
 
 export async function triggerRoadmapKeep(id: string) {
-  return patchRoadmapsIdKeep({ id })
+  return patchRoadmapKeepRuntime({ id })
 }
 
 export async function updateRoadmapNodeStatus(nodeId: string, status: 'completed' | 'active' | 'future') {
-  return patchRoadmapNodesNodeIdStatus({ nodeId }, { status })
+  return patchRoadmapNodeStatusRuntime({ nodeId, status })
 }
 
 export async function loadRoadmapResources(nodeId: string): Promise<LoadState<RoadmapResourceView[]>> {
   try {
-    const res = await getRoadmapNodesNodeIdResources({ nodeId })
+    const res = await getRoadmapNodeResourcesRuntime({ nodeId })
     const data = unwrapData<unknown>(res)
-    const items = Array.isArray(data)
-      ? data
-      : Array.isArray((data as { items?: unknown[] } | null)?.items)
-        ? ((data as { items: unknown[] }).items)
-        : []
+    const items = getCollection(data)
 
     return {
-      data: items.map((item) => {
-        const raw = isObject(item) ? item : {}
-        return {
-          titleKey: toStringValue(raw.titleKey, 'roadmap.docsTitle'),
-          descKey: toStringValue(raw.descKey, 'roadmap.docsDesc'),
-          icon: toStringValue(raw.icon, 'description'),
-          iconBg: toStringValue(raw.iconBg, 'bg-muted/10'),
-          iconColor: toStringValue(raw.iconColor, 'text-foreground'),
-          sponsored: Boolean(raw.sponsored),
-        }
-      }),
+      data: items.map(mapRoadmapResource),
       loading: false,
       error: null,
     }
@@ -316,25 +537,12 @@ export async function loadRoadmapResources(nodeId: string): Promise<LoadState<Ro
 
 export async function loadCareerTracks(): Promise<LoadState<CareerTrackView[]>> {
   try {
-    const res = await getCareerTracks()
+    const res = await getCareerTracksRuntime()
     const data = unwrapData<unknown>(res)
-    const items = Array.isArray(data)
-      ? data
-      : Array.isArray((data as { items?: unknown[] } | null)?.items)
-        ? ((data as { items: unknown[] }).items)
-        : []
+    const items = getCollection(data)
 
     return {
-      data: items.map((item, index) => {
-        const raw = isObject(item) ? item : {}
-        return {
-          id: toStringValue(raw.id, `track-${index}`),
-          name: toStringValue(raw.name, 'Career Track'),
-          description: typeof raw.description === 'string' ? raw.description : undefined,
-          jdCount: toNumberValue(raw.jdCount, 0),
-          progress: typeof raw.progress === 'number' ? raw.progress : undefined,
-        }
-      }),
+      data: items.map(mapCareerTrack),
       loading: false,
       error: null,
     }
@@ -345,17 +553,11 @@ export async function loadCareerTracks(): Promise<LoadState<CareerTrackView[]>> 
 
 export async function loadCareerTrackById(id: string): Promise<LoadState<CareerTrackView>> {
   try {
-    const res = await getCareerTracksId({ id })
+    const res = await getCareerTrackRuntime({ id })
     const data = unwrapData<unknown>(res)
     if (!isObject(data)) return { data: null, loading: false, error: 'Career track not found' }
     return {
-      data: {
-        id: toStringValue(data.id, id),
-        name: toStringValue(data.name, 'Career Track'),
-        description: typeof data.description === 'string' ? data.description : undefined,
-        jdCount: toNumberValue(data.jdCount, 0),
-        progress: typeof data.progress === 'number' ? data.progress : undefined,
-      },
+      data: mapCareerTrack(data, 0),
       loading: false,
       error: null,
     }
@@ -365,19 +567,9 @@ export async function loadCareerTrackById(id: string): Promise<LoadState<CareerT
 }
 
 export {
-  getUsersMeRoadmaps,
-  getRoadmapsId,
-  patchRoadmapNodesNodeIdStatus,
-  postRoadmapsIdRegenerate,
-  patchRoadmapsIdKeep,
-  getRoadmapNodesNodeIdResources,
-  getJdSubmissionsJdIdGapAnalysis,
-  postJdSubmissionsJdIdGapAnalysis,
-  getCareerTracks,
-  getCareerTracksId,
-  postCareerTracks,
-  putCareerTracksId,
   deleteCareerTracksId,
-  postCareerTracksIdJds,
   deleteCareerTracksIdJdsJdId,
+  postCareerTracks,
+  postCareerTracksIdJds,
+  putCareerTracksId,
 }

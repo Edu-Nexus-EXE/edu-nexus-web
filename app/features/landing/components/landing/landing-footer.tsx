@@ -112,13 +112,13 @@ export function LandingFooter() {
         <div className='pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4'>
           <p className='text-sm text-muted-foreground'>{t('footer.copyright')}</p>
           <div className='flex gap-6'>
-            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label='Facebook'>
+            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label={t('common:accessibility.facebook')}>
               <span className='material-icons text-lg'>facebook</span>
             </a>
-            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label='Twitter'>
+            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label={t('common:accessibility.twitter')}>
               <span className='material-icons text-lg'>flutter_dash</span>
             </a>
-            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label='LinkedIn'>
+            <a href='#' className='text-muted-foreground hover:text-primary transition-colors' aria-label={t('common:accessibility.linkedin')}>
               <span className='material-icons text-lg'>link</span>
             </a>
           </div>

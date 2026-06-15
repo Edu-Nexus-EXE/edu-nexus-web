@@ -1,132 +1,158 @@
-import { http, HttpResponse } from 'msw'
+import { HttpResponse, http } from 'msw'
 
-// NOTE: these are dev mocks only.
-// They are intentionally kept small + stateful so polling UIs work.
+function ok<T>(data: T, init?: ResponseInit) {
+  return HttpResponse.json({ data }, init)
+}
 
-type ParseStatus = 'pending' | 'processing' | 'completed' | 'failed'
+type JdSourceType = 'text' | 'url'
+type AssessmentPathType = 'assessment' | 'cv'
+type SubmittedAnswer = {
+  selectedOption?: string
+}
+type JdSubmissionBody = {
+  sourceType?: string
+  sourceUrl?: string | null
+  rawContent?: string | null
+}
+type AssessmentPathBody = {
+  pathType?: string
+}
+type SessionReuseBody = {
+  reuseSessionId?: string
+}
+type SubmitSessionBody = {
+  answers?: SubmittedAnswer[]
+}
 
-type Jd = {
+type SeedJd = {
   id: string
-  parseStatus: ParseStatus
-  sourceType: 'url' | 'text'
+  parseStatus: 'processing' | 'completed' | 'failed'
+  sourceType: JdSourceType
   sourceUrl: string | null
   rawContent: string | null
   jobTitle: string
   jobRoleCategory: string
   seniorityLevel: string
-  hardSkills: { id: string; skillNameRaw: string; isMandatory: boolean }[]
-  softSkills: { id: string; skillNameRaw: string; isMandatory: boolean }[]
-  assessmentPath: { id: string; pathType: 'cv' | 'assessment' } | null
+  hardSkills: string[]
+  softSkills: string[]
+  assessmentPath?: {
+    id: string
+    pathType: AssessmentPathType
+  }
   __pollCount: number
 }
 
-type Cv = {
+type Question = {
   id: string
-  pathId: string
-  status: 'not_uploaded' | 'uploaded' | 'processing' | 'completed' | 'failed'
-  fileName: string | null
-  __pollCount: number
+  questionText: string
+  options: Record<string, string>
 }
 
 type Session = {
   sessionId: string
   pathId: string
-  status: 'in_progress' | 'submitted' | 'expired'
+  status: 'in_progress' | 'submitted'
   questionsReadyAfter: number
   __pollCount: number
-  questions: {
-    id: string
-    sequenceOrder: number
-    part: number
-    questionText: string
-    options: { A: string; B: string; C: string; D: string }
-  }[]
-  submittedAnswers: { questionId: string; selectedOption: 'A' | 'B' | 'C' | 'D' }[]
+  questions: Question[]
+  submittedAnswers: SubmittedAnswer[]
+}
+
+type CvState = {
+  id?: string
+  status: 'not_uploaded' | 'uploaded' | 'processing' | 'completed' | 'failed'
+  fileName?: string
+  __pollCount: number
 }
 
 const db = {
-  jd: new Map<string, Jd>(),
-  pathToJd: new Map<string, string>(),
-  cv: new Map<string, Cv>(),
+  jd: new Map<string, SeedJd>(),
   session: new Map<string, Session>(),
+  cv: new Map<string, CvState>(),
+  pathToJd: new Map<string, string>(),
 }
 
+let seq = 1
 function id(prefix: string) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 10)}`
+  seq += 1
+  return `${prefix}-${seq}`
 }
 
-function ok(data: unknown, init?: { status?: number }) {
-  return HttpResponse.json({ data }, { status: init?.status ?? 200 })
-}
-
-function seedJd(partial?: Partial<Jd>): Jd {
-  const jdId = partial?.id ?? id('jd')
-  const jobRoleCategory = partial?.jobRoleCategory ?? 'backend_java'
+function seedJd(overrides?: Partial<SeedJd>): SeedJd {
   return {
-    id: jdId,
-    parseStatus: partial?.parseStatus ?? 'processing',
-    sourceType: partial?.sourceType ?? 'text',
-    sourceUrl: partial?.sourceUrl ?? null,
-    rawContent: partial?.rawContent ?? 'Sample JD',
-    jobTitle: partial?.jobTitle ?? 'Backend Java Developer',
-    jobRoleCategory,
-    seniorityLevel: partial?.seniorityLevel ?? 'junior',
-    hardSkills:
-      partial?.hardSkills ??
-      [
-        { id: id('hs'), skillNameRaw: 'Java', isMandatory: true },
-        { id: id('hs'), skillNameRaw: 'Spring Boot', isMandatory: true },
-        { id: id('hs'), skillNameRaw: 'Docker', isMandatory: false },
-      ],
-    softSkills:
-      partial?.softSkills ??
-      [
-        { id: id('ss'), skillNameRaw: 'Communication', isMandatory: true },
-        { id: id('ss'), skillNameRaw: 'Teamwork', isMandatory: false },
-      ],
-    assessmentPath: partial?.assessmentPath ?? null,
-    __pollCount: partial?.__pollCount ?? 0,
+    id: overrides?.id ?? id('jd'),
+    parseStatus: overrides?.parseStatus ?? 'completed',
+    sourceType: overrides?.sourceType ?? 'text',
+    sourceUrl: overrides?.sourceUrl ?? null,
+    rawContent: overrides?.rawContent ?? 'Senior Java Developer JD content...',
+    jobTitle: overrides?.jobTitle ?? 'Senior Java Developer',
+    jobRoleCategory: overrides?.jobRoleCategory ?? 'Backend',
+    seniorityLevel: overrides?.seniorityLevel ?? 'Senior',
+    hardSkills: overrides?.hardSkills ?? ['Java', 'Spring Boot', 'SQL'],
+    softSkills: overrides?.softSkills ?? ['Communication', 'Problem Solving'],
+    assessmentPath: overrides?.assessmentPath,
+    __pollCount: overrides?.__pollCount ?? 0,
   }
 }
 
-function ensureJd(jdId: string): Jd {
+function ensureJd(jdId: string): SeedJd {
   const existing = db.jd.get(jdId)
   if (existing) return existing
-  const created = seedJd({ id: jdId })
+  const created = seedJd({ id: jdId, parseStatus: 'completed' })
   db.jd.set(jdId, created)
   return created
 }
 
-function ensureCv(pathId: string): Cv {
+function ensureCv(pathId: string): CvState {
   const existing = db.cv.get(pathId)
   if (existing) return existing
-  const created: Cv = { id: id('cv'), pathId, status: 'not_uploaded', fileName: null, __pollCount: 0 }
+  const created: CvState = {
+    status: 'not_uploaded',
+    fileName: undefined,
+    __pollCount: 0,
+  }
   db.cv.set(pathId, created)
   return created
 }
 
-function seedQuestions(): Session['questions'] {
+function seedQuestions(): Question[] {
   return [
     {
       id: id('q'),
-      sequenceOrder: 1,
-      part: 1,
-      questionText: 'Trong Java, interface khác abstract class ở điểm nào?',
+      questionText: 'What is the main benefit of using interfaces in Java?',
       options: {
-        A: 'Interface có thể có constructor',
-        B: 'Interface có thể có default methods (Java 8+)',
-        C: 'Abstract class không thể có field',
-        D: 'Không có sự khác biệt',
+        A: 'They allow multiple inheritance of implementation',
+        B: 'They define contracts that classes can implement',
+        C: 'They replace abstract classes entirely',
+        D: 'They improve JVM startup speed',
       },
     },
     {
       id: id('q'),
-      sequenceOrder: 2,
-      part: 2,
-      questionText: 'Spring Boot actuator dùng để làm gì?',
+      questionText: 'Which Spring Boot module is commonly used to expose REST APIs?',
       options: {
-        A: 'Expose metrics/health endpoints',
-        B: 'Tạo UI component',
+        A: 'spring-boot-starter-batch',
+        B: 'spring-boot-starter-data-jpa',
+        C: 'spring-boot-starter-web',
+        D: 'spring-boot-starter-test',
+      },
+    },
+    {
+      id: id('q'),
+      questionText: 'Why are database migrations useful in backend systems?',
+      options: {
+        A: 'They replace version control',
+        B: 'They automate UI testing',
+        C: 'They keep schema changes reproducible across environments',
+        D: 'They compile Java source code',
+      },
+    },
+    {
+      id: id('q'),
+      questionText: 'Which task is typically part of a CI pipeline?',
+      options: {
+        A: 'Run unit tests',
+        B: 'Design Figma screens',
         C: 'Build Docker image',
         D: 'Run database migrations',
       },
@@ -151,9 +177,8 @@ function ensureSession(sessionId: string, pathId: string): Session {
 }
 
 export const jdHandlers = [
-  // JD submission
   http.post('*/jd-submissions', async ({ request }) => {
-    const body = (await request.json().catch(() => null)) as any
+    const body = (await request.json().catch(() => null)) as JdSubmissionBody | null
 
     const jdId = id('jd')
     const jd = seedJd({
@@ -166,8 +191,6 @@ export const jdHandlers = [
     })
 
     db.jd.set(jdId, jd)
-
-    // FE expects res.data.id or res.data.jdId
     return ok({ id: jdId })
   }),
 
@@ -175,13 +198,11 @@ export const jdHandlers = [
     const jdId = String(params.id ?? '')
     const jd = ensureJd(jdId)
 
-    // Simulate parse status transitions for polling UI
     jd.__pollCount += 1
     if (jd.parseStatus === 'processing' && jd.__pollCount >= 2) {
       jd.parseStatus = 'completed'
     }
 
-    // Return ONLY API spec fields (no extra mock-only fields like `title`, `assessmentPathId`)
     return ok({
       id: jd.id,
       parseStatus: jd.parseStatus,
@@ -198,15 +219,12 @@ export const jdHandlers = [
     })
   }),
 
-  // GET /jd-submissions (list) — Sprint 1 Dashboard
   http.get('*/jd-submissions', ({ request }) => {
     const url = new URL(request.url)
     const page = Number(url.searchParams.get('page') ?? 1)
     const pageSize = Number(url.searchParams.get('pageSize') ?? 10)
 
-    const all = Array.from(db.jd.values())
-      .slice()
-      .sort((a, b) => 0)
+    const all = Array.from(db.jd.values()).slice()
     const start = (page - 1) * pageSize
     const items = all.slice(start, start + pageSize)
 
@@ -223,21 +241,19 @@ export const jdHandlers = [
     })
   }),
 
-  // create assessment path
   http.post('*/jd-submissions/:jdId/assessment-path', async ({ params, request }) => {
     const jdId = String(params.jdId ?? '')
     const jd = ensureJd(jdId)
-    const body = (await request.json().catch(() => null)) as any
-    const pathType: string = typeof body?.pathType === 'string' ? body.pathType : 'assessment'
+    const body = (await request.json().catch(() => null)) as AssessmentPathBody | null
+    const pathType = body?.pathType === 'cv' ? 'cv' : 'assessment'
 
     const pathId = id('path')
-    jd.assessmentPath = { id: pathId, pathType: pathType === 'cv' ? 'cv' : 'assessment' }
+    jd.assessmentPath = { id: pathId, pathType }
     db.pathToJd.set(pathId, jdId)
 
     return ok({ pathId })
   }),
 
-  // reusable sessions
   http.get('*/jd-submissions/:jdId/reusable-sessions', ({ params }) => {
     const jdId = String(params.jdId ?? '')
     ensureJd(jdId)
@@ -248,10 +264,9 @@ export const jdHandlers = [
     ])
   }),
 
-  // create session from path
   http.post('*/assessment-paths/:pathId/sessions', async ({ params, request }) => {
     const pathId = String(params.pathId ?? '')
-    const reuse = (await request.json().catch(() => null)) as any
+    const reuse = (await request.json().catch(() => null)) as SessionReuseBody | null
 
     const sessionId = reuse?.reuseSessionId ? String(reuse.reuseSessionId) : id('sess')
     ensureSession(sessionId, pathId)
@@ -262,7 +277,6 @@ export const jdHandlers = [
   http.get('*/assessment-sessions/:sessionId/questions', ({ params }) => {
     const sessionId = String(params.sessionId ?? '')
 
-    // Find pathId if exists, else seed one
     const existing = db.session.get(sessionId)
     const pathId = existing?.pathId ?? id('path')
     const sess = ensureSession(sessionId, pathId)
@@ -279,7 +293,7 @@ export const jdHandlers = [
 
   http.post('*/assessment-sessions/:sessionId/submit', async ({ params, request }) => {
     const sessionId = String(params.sessionId ?? '')
-    const body = (await request.json().catch(() => null)) as any
+    const body = (await request.json().catch(() => null)) as SubmitSessionBody | null
 
     const sess = ensureSession(sessionId, id('path'))
     sess.status = 'submitted'
@@ -324,7 +338,6 @@ export const jdHandlers = [
     const correctCount = Math.max(0, Math.min(totalCount, Math.floor(totalCount * 0.7)))
     const scorePercent = totalCount ? (correctCount / totalCount) * 100 : 0
 
-    // skillScores field names match API spec: { skillName, score, maxScore, proficiencyLevel }
     const skillScores =
       sess.status === 'submitted'
         ? [
@@ -358,7 +371,6 @@ export const jdHandlers = [
     })
   }),
 
-  // CV endpoints
   http.get('*/assessment-paths/:pathId/cv', ({ params }) => {
     const pathId = String(params.pathId ?? '')
     const cv = ensureCv(pathId)
@@ -368,7 +380,6 @@ export const jdHandlers = [
       cv.status = 'completed'
     }
 
-    // Map CV internal status to API spec parseStatus
     const statusMap: Record<string, string> = {
       not_uploaded: 'pending',
       uploaded: 'pending',

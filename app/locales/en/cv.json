@@ -8,6 +8,7 @@
       "cardDesc": "Max 5MB",
       "dropTitle": "Drop PDF here",
       "dropDesc": "Or click to choose a file",
+      "formatNote": "📄 Supports PDF files with selectable text (exported from Word, Canva, Google Docs). Scanned or image-based CVs are not supported yet.",
       "selectFile": "Choose file",
       "upload": "Upload",
       "uploading": "Uploading...",
@@ -25,7 +26,10 @@
         "processing": "Processing"
       },
       "errors": {
-        "uploadFailed": "Upload failed"
+        "uploadFailed": "Upload failed",
+        "invalidFileType": "Please choose a valid PDF file.",
+        "fileTooLarge": "The file exceeds the 5MB limit. Please choose a smaller file.",
+        "scannedPdf": "❌ Could not read the CV content. The file may be a scanned copy or an image. Please export your CV from Word/Canva as a PDF and upload it again."
       },
       "viewAnalysis": "View Analysis"
     }

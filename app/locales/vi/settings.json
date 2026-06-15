@@ -1,0 +1,98 @@
+{
+  "title": "Cài đặt",
+  "subtitle": "Quản lý thông tin tài khoản và tuỳ chọn của bạn.",
+  "loading": {
+    "title": "Đang tải cài đặt...",
+    "subtitle": "Đang chuẩn bị thông tin tài khoản và tuỳ chọn của bạn."
+  },
+  "avatar": {
+    "title": "Ảnh đại diện",
+    "change": "Đổi ảnh",
+    "remove": "Xoá",
+    "urlLabel": "URL ảnh đại diện",
+    "previewFallback": "Không thể xem trước"
+  },
+  "personal": {
+    "title": "Thông tin cá nhân",
+    "description": "Cập nhật hồ sơ của bạn để có trải nghiệm tốt hơn.",
+    "fullname": "Họ tên",
+    "email": "Email",
+    "role": "Vai trò",
+    "portfolio": "Đường dẫn hồ sơ công khai",
+    "portfolioPlaceholder": "portfolio-cong-khai-cua-ban",
+    "avatarUrl": "URL ảnh đại diện",
+    "subscription": "Gói dịch vụ",
+    "save": "Lưu thay đổi",
+    "saving": "Đang lưu...",
+    "success": "Cập nhật hồ sơ thành công",
+    "note": "Email và vai trò hiện là chỉ đọc. Bạn có thể cập nhật đường dẫn hồ sơ công khai và ảnh đại diện tại đây.",
+    "errors": {
+      "fullNameRequired": "Họ tên là bắt buộc.",
+      "saveFailed": "Không thể cập nhật hồ sơ."
+    },
+    "survey": {
+      "title": "Khảo sát định hướng",
+      "description": "Khảo sát giúp cá nhân hoá JD, CV và bài đánh giá. Bạn có thể làm ngay bây giờ hoặc cập nhật lại sau trong phần cài đặt.",
+      "completed": "Đã hoàn thành",
+      "pending": "Chưa hoàn thành",
+      "startCta": "Làm khảo sát ngay",
+      "updateCta": "Cập nhật khảo sát"
+    }
+  },
+  "security": {
+    "title": "Bảo mật",
+    "password": "Mật khẩu",
+    "passwordDesc": "Đổi mật khẩu để bảo vệ tài khoản.",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Xác nhận mật khẩu mới",
+    "validationHint": "Mật khẩu phải có ít nhất 8 ký tự, gồm ít nhất 1 chữ in hoa và 1 chữ số.",
+    "changePassword": "Đổi mật khẩu",
+    "submitting": "Đang gửi...",
+    "statusLabel": "Đã xong giao diện - chờ API",
+    "unavailableTitle": "Tính năng này chưa khả dụng trong bản phát hành hiện tại.",
+    "apiUnavailable": "API đổi mật khẩu hiện chưa có trong client được sinh tự động của dự án.",
+    "disabledCta": "Luồng gửi thật sẽ được bật khi máy chủ và client được sinh tự động hỗ trợ điểm cuối API tương ứng.",
+    "pendingBackend": "Giao diện đã sẵn sàng - chờ máy chủ",
+    "reviewing": "Đang kiểm tra biểu mẫu...",
+    "reviewingMock": "Đang mô phỏng bước gửi phía giao diện để hoàn thiện trải nghiệm người dùng.",
+    "futureApiNote": "Phần giao diện đã hoàn thiện. Khi API sẵn sàng, nút này sẽ gọi điểm cuối đổi mật khẩu thật.",
+    "readyTitle": "Biểu mẫu đã sẵn sàng để nối API.",
+    "readyDescription": "Giao diện đã hoàn tất kiểm tra dữ liệu và trạng thái gửi. Bước còn lại là nối điểm cuối đổi mật khẩu khi máy chủ cung cấp.",
+    "errors": {
+      "allFieldsRequired": "Vui lòng nhập đầy đủ các trường mật khẩu.",
+      "passwordLength": "Mật khẩu mới phải có ít nhất 8 ký tự.",
+      "passwordUppercase": "Mật khẩu mới phải có ít nhất 1 chữ in hoa.",
+      "passwordNumber": "Mật khẩu mới phải có ít nhất 1 chữ số.",
+      "passwordConfirm": "Xác nhận mật khẩu chưa khớp."
+    }
+  },
+  "subscription": {
+    "title": "Gói dịch vụ",
+    "description": "Xem gói hiện tại và nâng cấp khi bạn cần thêm hạn mức.",
+    "currentPlan": "Gói hiện tại",
+    "status": "Trạng thái",
+    "expiresAt": "Ngày hết hạn",
+    "upgrade": "Đi đến bảng giá",
+    "notAvailable": "Chưa có"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "description": "Chọn các cập nhật tài khoản mà bạn muốn nhận.",
+    "weeklyReport": "Báo cáo tiến độ hằng tuần",
+    "weeklyReportDesc": "Nhận bản tổng hợp hằng tuần về tiến độ học tập và mức độ sẵn sàng của bạn.",
+    "jdMatches": "JD phù hợp mới",
+    "jdMatchesDesc": "Nhận thông báo khi có JD mới phù hợp với hồ sơ của bạn.",
+    "subscriptionExpiry": "Nhắc hạn gói dịch vụ",
+    "subscriptionExpiryDesc": "Được nhắc trước khi gói hiện tại của bạn hết hạn.",
+    "saved": "Đã cập nhật lựa chọn thông báo ở giao diện",
+    "savingMock": "Đang mô phỏng lưu lựa chọn trên giao diện...",
+    "futureApiNote": "Phần thông báo đã hoàn thiện trên giao diện. Khi API tuỳ chọn thông báo sẵn sàng, trạng thái này sẽ được lưu theo tài khoản.",
+    "enabled": "Bật",
+    "disabled": "Tắt",
+    "statusLabel": "Đã xong giao diện - chờ API",
+    "unavailableTitle": "Tùy chọn thông báo chưa được kết nối tới API.",
+    "unavailableDescription": "Màn này hiện đã hoàn thiện đầy đủ trải nghiệm giao diện với trạng thái mô phỏng và kiểm tra hiển thị. Khi máy chủ hỗ trợ tuỳ chọn thông báo, các công tắc sẽ lưu đồng bộ theo tài khoản.",
+    "unavailablePill": "Chưa khả dụng"
+  }
+}

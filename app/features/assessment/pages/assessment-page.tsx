@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 
 import { getJdSubmissionsId } from '~/api/operations/jd-submissions/jd-submissions'
 import {
-  getAssessmentSessionsSessionId,
   getAssessmentSessionsSessionIdQuestions,
-  getJdSubmissionsJdIdReusableSessions,
   postAssessmentPathsPathIdSessions,
   postAssessmentSessionsSessionIdSubmit,
 } from '~/api/operations/assessment-sessions/assessment-sessions'
-import type { SubmitAssessmentSessionRequest } from '~/api/model/submitAssessmentSessionRequest'
+import type { StartAssessmentSessionRequest, SubmitAssessmentSessionRequest } from '~/api/model'
+import { useToast } from '~/shared/components'
+import { getReusableSessions, parseAutoTriggered } from '~/shared/lib/assessment-api'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 import { Badge } from '~/shared/ui/badge'
@@ -48,8 +48,10 @@ type ReusableSessionDto = {
 type QuestionDto = {
   id?: unknown
   sequenceOrder?: unknown
+  sequence_order?: unknown
   part?: unknown
   questionText?: unknown
+  question_text?: unknown
   options?: unknown
 }
 
@@ -67,7 +69,6 @@ type AssessmentPathDto = {
 
 type JdDto = {
   assessmentPath?: unknown
-  assessmentPathId?: unknown
 }
 
 function parseReusable(res: unknown): ReusableSession[] {
@@ -95,22 +96,50 @@ function parseQuestions(res: unknown): SessionQuestions {
   const questions: Question[] = questionsRaw
     .map((q) => {
       const optionsRaw = (q.options ?? {}) as Record<string, unknown>
+      const normalizedOptions =
+        optionsRaw && typeof optionsRaw === 'object' && !Array.isArray(optionsRaw)
+          ? optionsRaw
+          : {}
+
       return {
         id: String(q.id ?? ''),
-        sequenceOrder: Number(q.sequenceOrder ?? 0),
+        sequenceOrder: Number(q.sequenceOrder ?? q.sequence_order ?? 0),
         part: Number(q.part ?? 1),
-        questionText: String(q.questionText ?? ''),
+        questionText: String(q.questionText ?? q.question_text ?? ''),
         options: {
-          A: String(optionsRaw.A ?? ''),
-          B: String(optionsRaw.B ?? ''),
-          C: String(optionsRaw.C ?? ''),
-          D: String(optionsRaw.D ?? ''),
+          A: String(normalizedOptions.A ?? normalizedOptions.a ?? ''),
+          B: String(normalizedOptions.B ?? normalizedOptions.b ?? ''),
+          C: String(normalizedOptions.C ?? normalizedOptions.c ?? ''),
+          D: String(normalizedOptions.D ?? normalizedOptions.d ?? ''),
         },
       }
     })
     .filter((q) => Boolean(q.id))
 
   return { sessionId, status, questions }
+}
+
+function extractSessionIdFromStartResponse(res: unknown): string {
+  const response = (res ?? {}) as {
+    data?: Record<string, unknown> | null
+    headers?: Headers | null
+  }
+
+  const data = response.data ?? {}
+  const fromBody = String(
+    (data as Record<string, unknown>)?.sessionId ??
+      (data as Record<string, unknown>)?.id ??
+      (data as Record<string, unknown>)?.assessmentSessionId ??
+      ''
+  )
+
+  if (fromBody) return fromBody
+
+  const location = response.headers?.get('Location') ?? response.headers?.get('location') ?? ''
+  if (!location) return ''
+
+  const match = location.match(/assessment-sessions\/([^/?#]+)/i)
+  return match?.[1] ? decodeURIComponent(match[1]) : ''
 }
 
 function badgeFor(
@@ -131,17 +160,14 @@ function parseAssessmentPathId(res: unknown): string {
   const dto = ((res as ResponseWithData<JdDto>)?.data ?? {}) as JdDto
 
   const pathFromObj = (dto.assessmentPath ?? {}) as AssessmentPathDto
-  const id = String(pathFromObj.id ?? '')
-  if (id) return id
-
-  const maybe = (dto as Record<string, unknown>)?.assessmentPathId
-  return typeof maybe === 'string' ? maybe : ''
+  return String(pathFromObj.id ?? '')
 }
 
 export function AssessmentPage() {
   const session = getAuthSession()
   const { t } = useTranslation('assessment')
   const navigate = useNavigate()
+  const toast = useToast()
 
   const { jdId: jdIdParam } = useParams()
   const jdId = jdIdParam ?? ''
@@ -151,6 +177,7 @@ export function AssessmentPage() {
   const [pathId, setPathId] = useState<string>(pathIdFromQuery)
 
   const [starting, setStarting] = useState(false)
+  const [pollingQuestions, setPollingQuestions] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
@@ -159,6 +186,7 @@ export function AssessmentPage() {
 
   const [sessionId, setSessionId] = useState<string>('')
   const [data, setData] = useState<SessionQuestions | null>(null)
+  const [showQuestionsUI, setShowQuestionsUI] = useState(false)
   const [answers, setAnswers] = useState<Record<string, 'A' | 'B' | 'C' | 'D'>>({})
 
   const [initialLoading, setInitialLoading] = useState(false)
@@ -209,7 +237,7 @@ export function AssessmentPage() {
       setInitialError('')
     }, 0)
 
-    getJdSubmissionsJdIdReusableSessions({ jdId }, { signal: controller.signal } as never)
+    getReusableSessions({ jdId }, { signal: controller.signal })
       .then((res) => setReusable(parseReusable(res)))
       .catch(() => {
         setReusable([])
@@ -221,27 +249,30 @@ export function AssessmentPage() {
   }, [jdId, pathId])
 
   if (!session) return <Navigate to='/login' replace />
-  if (!session.user.isSurveyCompleted) return <Navigate to='/onboarding' replace />
 
   async function startSession() {
     if (!pathId || starting || Boolean(data?.questions?.length)) return
 
     setStarting(true)
+    setPollingQuestions(false)
     setError('')
 
     try {
-      const res = await postAssessmentPathsPathIdSessions({ pathId }, { reuseSessionId } as never)
-      const dataRes = (res as ResponseWithData<Record<string, unknown>>)?.data ?? {}
-      const newSessionId = String((dataRes as Record<string, unknown>)?.sessionId ?? (dataRes as Record<string, unknown>)?.id ?? '')
+      const payload: StartAssessmentSessionRequest = reuseSessionId ? { reuseSessionId } : {}
+      const res = await postAssessmentPathsPathIdSessions({ pathId }, payload)
+      const newSessionId = extractSessionIdFromStartResponse(res)
       if (!newSessionId) throw new Error(t('assessment.page.errors.missingSessionId'))
 
+      setShowQuestionsUI(true)
       setSessionId(newSessionId)
+      setPollingQuestions(true)
 
       for (let i = 0; i < 60; i++) {
         const qRes = await getAssessmentSessionsSessionIdQuestions({ sessionId: newSessionId })
         const parsed = parseQuestions(qRes)
         setData(parsed)
         if (parsed.questions.length > 0) {
+          setPollingQuestions(false)
           setTimeout(scrollToQuestions, 100)
           return
         }
@@ -253,6 +284,7 @@ export function AssessmentPage() {
       setError((e as Error).message || t('assessment.page.errors.startFailed'))
     } finally {
       setStarting(false)
+      setPollingQuestions(false)
     }
   }
 
@@ -277,8 +309,11 @@ export function AssessmentPage() {
         answers: questions.map((q) => ({ questionId: q.id, selectedOption: answers[q.id] })),
       }
 
-      await postAssessmentSessionsSessionIdSubmit({ sessionId }, payload)
-      await getAssessmentSessionsSessionId({ sessionId })
+      const res = await postAssessmentSessionsSessionIdSubmit({ sessionId }, payload)
+      const autoTriggered = parseAutoTriggered((res as { data?: { autoTriggered?: unknown } })?.data?.autoTriggered)
+      if (autoTriggered) {
+        toast.success(t('assessment.page.autoTriggeredMessage'), t('assessment.page.autoTriggeredTitle'))
+      }
 
       navigate(
         `/dashboard/jd/${encodeURIComponent(jdId)}/assessment/results?sessionId=${encodeURIComponent(sessionId)}&pathId=${encodeURIComponent(pathId)}`
@@ -301,11 +336,11 @@ export function AssessmentPage() {
         </span>
         <h1 className='text-4xl md:text-5xl font-bold text-foreground mb-3'>{t('assessment.page.title')}</h1>
         <p className='text-muted-foreground max-w-2xl mx-auto text-lg'>{t('assessment.page.jdLabel', { jdId })}</p>
-        {data && (
+        {data ? (
           <div className='mt-4 flex items-center justify-center gap-2'>
             <Badge variant={badge.variant}>{badge.label}</Badge>
           </div>
-        )}
+        ) : null}
       </div>
 
       {!pathId ? (
@@ -314,16 +349,20 @@ export function AssessmentPage() {
         </div>
       ) : null}
 
-      {initialError && (
-        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{initialError}</div>
-      )}
+      {initialError ? (
+        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {initialError}
+        </div>
+      ) : null}
 
-      {error && (
-        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{error}</div>
-      )}
+      {error ? (
+        <div className='mb-6 max-w-4xl mx-auto p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {error}
+        </div>
+      ) : null}
 
-      <div className='grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8'>
-        <div className='lg:col-span-4 bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors'>
+      <div className='grid grid-cols-1 gap-8'>
+        <div className='bg-card p-8 rounded-2xl shadow-sm border border-border hover:border-primary/40 transition-colors max-w-4xl mx-auto w-full'>
           <div className='flex items-center gap-3 mb-6'>
             <div className='w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0'>
               <span className='material-symbols-outlined'>history</span>
@@ -331,6 +370,7 @@ export function AssessmentPage() {
             <div>
               <h2 className='text-xl font-semibold text-foreground'>{t('assessment.page.reuseTitle')}</h2>
               <p className='text-sm text-muted-foreground'>{t('assessment.page.reuseDesc')}</p>
+              <p className='mt-2 text-xs text-muted-foreground'>{t('assessment.page.reuseActionHint')}</p>
             </div>
           </div>
 
@@ -375,7 +415,7 @@ export function AssessmentPage() {
           <button
             type='button'
             onClick={startSession}
-            disabled={!pathId || starting || Boolean(data?.questions?.length)}
+            disabled={!pathId || starting || pollingQuestions || Boolean(data?.questions?.length)}
             className={cn(
               'w-full mt-6 py-3 text-sm font-bold rounded-lg shadow-md transition-all disabled:opacity-50 disabled:pointer-events-none',
               data?.questions?.length
@@ -383,111 +423,166 @@ export function AssessmentPage() {
                 : 'bg-primary text-primary-foreground shadow-primary/20 hover:opacity-90'
             )}
           >
-            {data?.questions?.length ? t('assessment.page.started') : starting ? t('assessment.page.starting') : t('assessment.page.start')}
+            {data?.questions?.length
+              ? t('assessment.page.started')
+              : starting
+                ? t('assessment.page.starting')
+                : pollingQuestions
+                  ? t('assessment.page.pollingQuestions')
+                  : reuseSessionId
+                    ? t('assessment.page.reuseSessionCta')
+                    : t('assessment.page.newSessionCta')}
           </button>
         </div>
 
-        <div className='lg:col-span-8 bg-card p-8 rounded-xl shadow-sm border border-border hover:border-primary/40 transition-colors'>
-          <div className='flex items-center justify-between gap-4 mb-6'>
-            <div>
-              <div className='text-sm text-muted-foreground'>
-                {t('assessment.page.progress')} — {answered}/{total}
-              </div>
-              <div className='text-xs text-muted-foreground mt-1'>
-                {data?.questions?.length
-                  ? t('assessment.page.instructions')
-                  : t('assessment.page.instructionsStart')}
-              </div>
-            </div>
+        {showQuestionsUI ? (
+          <div className='bg-card p-8 rounded-2xl shadow-sm border border-border hover:border-primary/40 transition-colors'>
+            <div className='sticky top-[5.5rem] z-20 -mx-3 mb-6 rounded-2xl border border-border bg-background/95 px-3 py-3 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/85 sm:-mx-4 sm:px-4'>
+              <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 rounded-2xl border border-border bg-muted/10 p-5 md:flex-row md:items-start md:justify-between'>
+                  <div className='flex items-start gap-4'>
+                    <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
+                      <span className='material-icons text-lg'>quiz</span>
+                    </div>
+                    <div>
+                      <p className='text-sm font-semibold text-foreground'>{t('assessment.page.questionsTitle')}</p>
+                      <p className='mt-1 text-sm text-muted-foreground'>{t('assessment.page.questionsDesc')}</p>
+                      <p className='mt-2 text-xs text-muted-foreground'>
+                        {data?.questions?.length
+                          ? t('assessment.page.questionReady')
+                          : pollingQuestions
+                            ? t('assessment.page.pollingQuestions')
+                            : t('assessment.page.instructionsStart')}
+                      </p>
+                    </div>
+                  </div>
 
-            <div className='flex items-center gap-2'>
-              {data && <Badge variant={badge.variant}>{badge.label}</Badge>}
-            </div>
-          </div>
+                  <div className='flex items-center gap-2'>
+                    {data ? <Badge variant={badge.variant}>{badge.label}</Badge> : null}
+                  </div>
+                </div>
 
-          {!data?.questions?.length ? (
-            <div className='rounded-xl border border-border bg-muted/20 p-6'>
-              <p className='text-sm text-muted-foreground'>{t('assessment.page.noQuestionsYet')}</p>
-            </div>
-          ) : (
-            <div className='space-y-6' ref={questionsEndRef}>
-              {data.questions
-                .slice()
-                .sort((a, b) => a.sequenceOrder - b.sequenceOrder)
-                .map((q) => {
-                  const selected = answers[q.id]
-                  return (
-                    <div key={q.id} className='rounded-xl border border-border bg-background p-5'>
-                      <div className='flex items-start justify-between gap-4'>
-                        <div>
-                          <div className='text-xs text-muted-foreground'>
-                            {t('assessment.page.questionLabel')} {q.sequenceOrder || 0}
-                            {q.part ? ` — ${t('assessment.page.partLabel')} ${q.part}` : ''}
-                          </div>
-                          <h3 className='mt-1 text-base font-semibold text-foreground whitespace-pre-wrap'>{q.questionText}</h3>
-                        </div>
-                        <div className='shrink-0'>
-                          {selected ? <Badge variant='outline'>{selected}</Badge> : <Badge variant='info'>?</Badge>}
-                        </div>
+                <div className='rounded-2xl border border-border bg-card/95 p-4'>
+                  <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+                    <div>
+                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('assessment.page.progressHint')}</p>
+                      <p className='mt-1 text-base font-semibold text-foreground'>{t('assessment.page.progress', { answered, total })}</p>
+                      <p className='mt-1 text-sm text-muted-foreground'>
+                        {data?.questions?.length ? t('assessment.page.instructions') : t('assessment.page.questionsHint')}
+                      </p>
+                    </div>
+                    <div className='w-full sm:max-w-[240px]'>
+                      <div className='mb-2 flex items-center justify-between text-xs text-muted-foreground'>
+                        <span>{Math.round(total > 0 ? (answered / total) * 100 : 0)}%</span>
+                        <span>
+                          {answered}/{total}
+                        </span>
                       </div>
-
-                      <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3'>
-                        {(['A', 'B', 'C', 'D'] as const).map((opt) => {
-                          const isSelected = selected === opt
-                          const label = q.options?.[opt] ?? ''
-                          return (
-                            <button
-                              key={opt}
-                              type='button'
-                              onClick={() => selectAnswer(q.id, opt)}
-                              className={cn(
-                                'w-full text-left rounded-xl border px-4 py-3 transition-all',
-                                isSelected
-                                  ? 'border-primary bg-primary/10'
-                                  : 'border-border bg-muted/20 hover:border-primary/40 hover:bg-muted/30'
-                              )}
-                            >
-                              <div className='flex items-start gap-3'>
-                                <span
-                                  className={cn(
-                                    'mt-0.5 inline-flex items-center justify-center w-7 h-7 rounded-lg border text-xs font-bold',
-                                    isSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-background text-foreground'
-                                  )}
-                                >
-                                  {opt}
-                                </span>
-                                <span className='text-sm text-foreground whitespace-pre-wrap'>{label}</span>
-                              </div>
-                            </button>
-                          )
-                        })}
+                      <div className='h-2 w-full overflow-hidden rounded-full bg-muted'>
+                        <div
+                          className='h-full rounded-full bg-primary transition-all'
+                          style={{ width: `${total > 0 ? (answered / total) * 100 : 0}%` }}
+                        />
                       </div>
                     </div>
-                  )
-                })}
-
-              <div className='pt-2 flex flex-col gap-3'>
-                {answered !== total ? (
-                  <p className='text-xs text-muted-foreground text-center'>{t('assessment.page.answerAllHint')}</p>
-                ) : null}
-
-                <button
-                  type='button'
-                  onClick={submit}
-                  disabled={!data?.questions?.length || answered !== total || submitting}
-                  className={cn(
-                    'w-full py-3 text-sm font-bold rounded-lg transition-all',
-                    answered !== total || submitting
-                      ? 'bg-muted text-muted-foreground border border-border opacity-60 pointer-events-none'
-                      : 'bg-primary text-primary-foreground hover:opacity-90'
-                  )}
-                >
-                  {submitting ? t('assessment.page.submitting') : t('assessment.page.submit')}
-                </button>
+                  </div>
+                </div>
               </div>
             </div>
-          )}
-        </div>
+
+            {!data?.questions?.length ? (
+              <div className='rounded-xl border border-border bg-muted/20 p-6'>
+                <p className='text-sm text-muted-foreground'>
+                  {pollingQuestions ? t('assessment.page.pollingQuestions') : t('assessment.page.noQuestionsYet')}
+                </p>
+              </div>
+            ) : (
+              <div className='space-y-6' ref={questionsEndRef}>
+                {data.questions
+                  .slice()
+                  .sort((a, b) => a.sequenceOrder - b.sequenceOrder)
+                  .map((q) => {
+                    const selected = answers[q.id]
+                    return (
+                      <div key={q.id} className='rounded-2xl border border-border bg-background p-5 shadow-sm'>
+                        <div className='flex items-start justify-between gap-4'>
+                          <div>
+                            <div className='text-xs text-muted-foreground'>
+                              {t('assessment.page.questionMeta', { no: q.sequenceOrder || 0, part: q.part || 1 })}
+                            </div>
+                            <h3 className='mt-1 text-base font-semibold text-foreground whitespace-pre-wrap'>{q.questionText}</h3>
+                          </div>
+                          <div className='shrink-0'>
+                            {selected ? <Badge variant='outline'>{selected}</Badge> : <Badge variant='info'>?</Badge>}
+                          </div>
+                        </div>
+
+                        <div className='mt-5 rounded-2xl border border-border bg-muted/10 p-4'>
+                          <div className='mb-3 flex items-center gap-2'>
+                            <span className='material-icons text-base text-primary'>radio_button_checked</span>
+                            <p className='text-sm font-semibold text-foreground'>{t('assessment.page.answerChoices')}</p>
+                          </div>
+                          <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+                            {(['A', 'B', 'C', 'D'] as const).map((opt) => {
+                              const isSelected = selected === opt
+                              const label = (q.options?.[opt] ?? '').trim() || t('assessment.page.emptyOption')
+                              return (
+                                <button
+                                  key={opt}
+                                  type='button'
+                                  onClick={() => selectAnswer(q.id, opt)}
+                                  className={cn(
+                                    'w-full rounded-2xl border p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary/30',
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 shadow-sm'
+                                      : 'border-border bg-card hover:border-primary/40 hover:bg-muted/20'
+                                  )}
+                                >
+                                  <div className='flex items-start gap-3'>
+                                    <span
+                                      className={cn(
+                                        'mt-0.5 inline-flex h-8 w-8 items-center justify-center rounded-xl border text-xs font-bold',
+                                        isSelected
+                                          ? 'border-primary bg-primary text-primary-foreground'
+                                          : 'border-border bg-background text-foreground'
+                                      )}
+                                    >
+                                      {opt}
+                                    </span>
+                                    <span className='flex-1 text-sm leading-6 text-foreground whitespace-pre-wrap'>{label}</span>
+                                  </div>
+                                </button>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                <div className='pt-2 flex flex-col gap-3'>
+                  {answered !== total ? (
+                    <p className='text-xs text-muted-foreground text-center'>{t('assessment.page.answerAllHint')}</p>
+                  ) : null}
+
+                  <button
+                    type='button'
+                    onClick={submit}
+                    disabled={!data?.questions?.length || answered !== total || submitting}
+                    className={cn(
+                      'w-full py-3 text-sm font-bold rounded-lg transition-all',
+                      answered !== total || submitting
+                        ? 'bg-muted text-muted-foreground border border-border opacity-60 pointer-events-none'
+                        : 'bg-primary text-primary-foreground hover:opacity-90'
+                    )}
+                  >
+                    {submitting ? t('assessment.page.submitting') : t('assessment.page.submit')}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
 
       {data?.questions?.length ? (

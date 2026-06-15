@@ -1,122 +1,139 @@
-import { type FormEvent, useEffect, useMemo, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router'
+import type { FormEvent } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link, Navigate, useNavigate } from 'react-router'
 
 import { getOnboarding, postOnboarding, putOnboarding } from '~/api/operations/onboarding/onboarding'
 import type { SubmitOnboardingRequest } from '~/api/model'
-import { cn } from '~/shared/lib/cn'
 import { getAuthSession, setAuthSession } from '~/shared/lib/auth-session'
+import { cn } from '~/shared/lib/cn'
 
-type QuestionKey = keyof SubmitOnboardingRequest
-
-type Question = {
-  key: QuestionKey
-  labelKey: string
-  optionKeys: string[]
-}
-
-const QUESTIONS: Question[] = [
+const QUESTIONS = [
   {
     key: 'academicYear',
-    labelKey: 'onboarding.questions.academicYear.label',
-    optionKeys: [
-      'onboarding.questions.academicYear.options.year1',
-      'onboarding.questions.academicYear.options.year2',
-      'onboarding.questions.academicYear.options.year3',
-      'onboarding.questions.academicYear.options.year4',
+    labelKey: 'questions.academicYear.label',
+    options: [
+      { value: 'Năm 1', labelKey: 'questions.academicYear.options.year1' },
+      { value: 'Năm 2', labelKey: 'questions.academicYear.options.year2' },
+      { value: 'Năm 3', labelKey: 'questions.academicYear.options.year3' },
+      { value: 'Năm 4', labelKey: 'questions.academicYear.options.year4' },
     ],
   },
   {
     key: 'major',
-    labelKey: 'onboarding.questions.major.label',
-    optionKeys: [
-      'onboarding.questions.major.options.it',
-      'onboarding.questions.major.options.marketing',
-      'onboarding.questions.major.options.business',
-      'onboarding.questions.major.options.other',
+    labelKey: 'questions.major.label',
+    options: [
+      { value: 'IT', labelKey: 'questions.major.options.it' },
+      { value: 'Marketing', labelKey: 'questions.major.options.marketing' },
+      { value: 'Business', labelKey: 'questions.major.options.business' },
+      { value: 'Khác', labelKey: 'questions.major.options.other' },
     ],
   },
   {
     key: 'primaryGoal',
-    labelKey: 'onboarding.questions.primaryGoal.label',
-    optionKeys: [
-      'onboarding.questions.primaryGoal.options.explore',
-      'onboarding.questions.primaryGoal.options.roadmap',
-      'onboarding.questions.primaryGoal.options.improveSkill',
-      'onboarding.questions.primaryGoal.options.buildPortfolio',
+    labelKey: 'questions.primaryGoal.label',
+    options: [
+      { value: 'Khám phá hướng đi', labelKey: 'questions.primaryGoal.options.explore' },
+      { value: 'Đã có target, cần lộ trình', labelKey: 'questions.primaryGoal.options.roadmap' },
+      { value: 'Improve 1 kỹ năng cụ thể', labelKey: 'questions.primaryGoal.options.improveSkill' },
+      { value: 'Build portfolio để xin việc', labelKey: 'questions.primaryGoal.options.buildPortfolio' },
     ],
   },
   {
     key: 'weeklyStudyHours',
-    labelKey: 'onboarding.questions.weeklyStudyHours.label',
-    optionKeys: [
-      'onboarding.questions.weeklyStudyHours.options.lt5',
-      'onboarding.questions.weeklyStudyHours.options.5to10',
-      'onboarding.questions.weeklyStudyHours.options.10to20',
-      'onboarding.questions.weeklyStudyHours.options.gt20',
+    labelKey: 'questions.weeklyStudyHours.label',
+    options: [
+      { value: '< 5h', labelKey: 'questions.weeklyStudyHours.options.lt5' },
+      { value: '5-10h', labelKey: 'questions.weeklyStudyHours.options.5to10' },
+      { value: '10-20h', labelKey: 'questions.weeklyStudyHours.options.10to20' },
+      { value: '> 20h', labelKey: 'questions.weeklyStudyHours.options.gt20' },
     ],
   },
   {
     key: 'proficiencyLevel',
-    labelKey: 'onboarding.questions.proficiencyLevel.label',
-    optionKeys: [
-      'onboarding.questions.proficiencyLevel.options.beginner',
-      'onboarding.questions.proficiencyLevel.options.basic',
-      'onboarding.questions.proficiencyLevel.options.project',
-      'onboarding.questions.proficiencyLevel.options.intern',
+    labelKey: 'questions.proficiencyLevel.label',
+    options: [
+      { value: 'Beginner', labelKey: 'questions.proficiencyLevel.options.beginner' },
+      { value: 'Đã học cơ bản', labelKey: 'questions.proficiencyLevel.options.basic' },
+      { value: 'Có kinh nghiệm dự án', labelKey: 'questions.proficiencyLevel.options.project' },
+      { value: 'Đã đi thực tập', labelKey: 'questions.proficiencyLevel.options.intern' },
     ],
   },
   {
     key: 'learningPriority',
-    labelKey: 'onboarding.questions.learningPriority.label',
-    optionKeys: [
-      'onboarding.questions.learningPriority.options.hardSkill',
-      'onboarding.questions.learningPriority.options.softSkill',
-      'onboarding.questions.learningPriority.options.certificate',
-      'onboarding.questions.learningPriority.options.portfolioProject',
+    labelKey: 'questions.learningPriority.label',
+    options: [
+      { value: 'Hard skill', labelKey: 'questions.learningPriority.options.hardSkill' },
+      { value: 'Soft skill', labelKey: 'questions.learningPriority.options.softSkill' },
+      { value: 'Certificate', labelKey: 'questions.learningPriority.options.certificate' },
+      { value: 'Portfolio project', labelKey: 'questions.learningPriority.options.portfolioProject' },
     ],
   },
   {
     key: 'learningBudget',
-    labelKey: 'onboarding.questions.learningBudget.label',
-    optionKeys: [
-      'onboarding.questions.learningBudget.options.free',
-      'onboarding.questions.learningBudget.options.lt500k',
-      'onboarding.questions.learningBudget.options.500kto2m',
-      'onboarding.questions.learningBudget.options.gt2m',
+    labelKey: 'questions.learningBudget.label',
+    options: [
+      { value: 'free', labelKey: 'questions.learningBudget.options.free' },
+      { value: '< 500k', labelKey: 'questions.learningBudget.options.lt500k' },
+      { value: '500k-2tr', labelKey: 'questions.learningBudget.options.500kto2m' },
+      { value: '> 2tr', labelKey: 'questions.learningBudget.options.gt2m' },
     ],
   },
   {
     key: 'preferredChannel',
-    labelKey: 'onboarding.questions.preferredChannel.label',
-    optionKeys: [
-      'onboarding.questions.preferredChannel.options.video',
-      'onboarding.questions.preferredChannel.options.docs',
-      'onboarding.questions.preferredChannel.options.projects',
-      'onboarding.questions.preferredChannel.options.mentor',
+    labelKey: 'questions.preferredChannel.label',
+    options: [
+      { value: 'Video', labelKey: 'questions.preferredChannel.options.video' },
+      { value: 'Đọc tài liệu', labelKey: 'questions.preferredChannel.options.docs' },
+      { value: 'Làm project thực tế', labelKey: 'questions.preferredChannel.options.projects' },
+      { value: 'Học có mentor', labelKey: 'questions.preferredChannel.options.mentor' },
     ],
   },
-]
+] as const
 
-type ResponseWithData<T> = { data?: T }
+type QuestionKey = (typeof QUESTIONS)[number]['key']
 
-type OnboardingResponseData = {
-  completed?: unknown
-  responses?: unknown
+type ParsedOnboarding = {
+  completed: boolean
+  responses?: SubmitOnboardingRequest
 }
 
-function parseOnboardingData(res: unknown): { completed: boolean; responses: SubmitOnboardingRequest | null } | null {
-  const data = (res as ResponseWithData<OnboardingResponseData>)?.data
-  if (!data) return null
+function parseOnboardingData(res: unknown): ParsedOnboarding | null {
+  const data = (res as { data?: unknown })?.data
+  if (!data || typeof data !== 'object') return null
+  const raw = data as Record<string, unknown>
+  return {
+    completed: Boolean(raw.completed),
+    responses: raw.responses && typeof raw.responses === 'object' ? (raw.responses as SubmitOnboardingRequest) : undefined,
+  }
+}
 
-  if (typeof data?.completed === 'boolean') {
-    return {
-      completed: Boolean(data.completed),
-      responses: (data.responses ?? null) as SubmitOnboardingRequest | null,
+function parseApiError(error: unknown, fallback: string) {
+  const message = (error as Error)?.message
+  if (!message) return fallback
+
+  try {
+    const parsed = JSON.parse(message) as {
+      title?: string
+      errors?: Record<string, string[]>
+      error?: { code?: string; message?: string }
     }
+
+    if (parsed.error?.message || parsed.error?.code) {
+      return parsed.error.message || parsed.error.code || fallback
+    }
+
+    const firstValidationMessage = Object.values(parsed.errors ?? {})
+      .flat()
+      .find((value) => typeof value === 'string' && value.trim().length > 0)
+
+    if (firstValidationMessage) return firstValidationMessage
+    if (parsed.title) return parsed.title
+  } catch {
+    return message || fallback
   }
 
-  return null
+  return message || fallback
 }
 
 export default function OnboardingRoute() {
@@ -124,28 +141,28 @@ export default function OnboardingRoute() {
   const navigate = useNavigate()
   const session = getAuthSession()
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(Boolean(session && !session.user.isSurveyCompleted))
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string>('')
-
+  const [error, setError] = useState('')
   const [hasExisting, setHasExisting] = useState(false)
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<SubmitOnboardingRequest>({})
 
   const current = useMemo(() => QUESTIONS[Math.min(step, QUESTIONS.length - 1)], [step])
   const currentLabel = t(current.labelKey)
-  const currentOptions = current.optionKeys.map((k) => t(k))
+  const currentOptions = current.options.map((option) => ({
+    value: option.value,
+    label: t(option.labelKey),
+  }))
 
   useEffect(() => {
-    if (!session) return
-    if (session.user.isSurveyCompleted) return
+    if (!session || session.user.isSurveyCompleted) {
+      return
+    }
 
     const controller = new AbortController()
 
-    setError('')
-    setLoading(true)
-
-    getOnboarding({ signal: controller.signal } as never)
+    getOnboarding({ signal: controller.signal })
       .then((res) => {
         const parsed = parseOnboardingData(res)
         if (!parsed) return
@@ -160,9 +177,11 @@ export default function OnboardingRoute() {
           setHasExisting(true)
           setAnswers(parsed.responses)
         }
+
+        setError('')
       })
-      .catch(() => {
-        // If onboarding not found or any error, user can still submit.
+      .catch((err) => {
+        setError(parseApiError(err, t('errors.loadFailed')))
       })
       .finally(() => {
         setLoading(false)
@@ -171,6 +190,7 @@ export default function OnboardingRoute() {
     return () => {
       controller.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate, session])
 
   if (!session) return <Navigate to='/login' replace />
@@ -202,22 +222,28 @@ export default function OnboardingRoute() {
 
     for (const q of QUESTIONS) {
       if (!answers[q.key]) {
-        setError(t('onboarding.errors.completeAll'))
+        setError(t('errors.completeAll'))
         return
       }
     }
+
+    const payload = QUESTIONS.reduce<SubmitOnboardingRequest>((acc, question) => {
+      acc[question.key] = answers[question.key] ?? ''
+      return acc
+    }, {})
 
     setSubmitting(true)
     setError('')
 
     try {
-      if (hasExisting) await putOnboarding(answers)
-      else await postOnboarding(answers)
+      if (hasExisting) await putOnboarding(payload)
+      else await postOnboarding(payload)
 
       setAuthSession({ ...session, user: { ...session.user, isSurveyCompleted: true }, tokens: session.tokens })
       navigate('/dashboard', { replace: true })
     } catch (err) {
-      setError((err as Error).message || t('onboarding.errors.submitFailed'))
+      console.error('Onboarding submit failed', { payload, err })
+      setError(parseApiError(err, t('errors.submitFailed')))
     } finally {
       setSubmitting(false)
     }
@@ -228,7 +254,7 @@ export default function OnboardingRoute() {
       <div className='min-h-screen bg-background text-foreground flex items-center justify-center'>
         <div className='text-center'>
           <div className='w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto' />
-          <p className='mt-4 text-sm text-muted-foreground'>{t('onboarding.loading')}</p>
+          <p className='mt-4 text-sm text-muted-foreground'>{t('loading')}</p>
         </div>
       </div>
     )
@@ -238,15 +264,23 @@ export default function OnboardingRoute() {
     <div className='min-h-screen bg-background text-foreground px-4 py-10'>
       <div className='max-w-3xl mx-auto'>
         <div className='text-center mb-8'>
-          <h1 className='text-3xl md:text-4xl font-extrabold tracking-tight'>{t('onboarding.title')}</h1>
-          <p className='text-muted-foreground mt-2'>{t('onboarding.subtitle')}</p>
+          <h1 className='text-3xl md:text-4xl font-extrabold tracking-tight'>{t('title')}</h1>
+          <p className='text-muted-foreground mt-2'>{t('subtitle')}</p>
+          <div className='mt-4'>
+            <Link
+              to='/dashboard'
+              className='inline-flex items-center justify-center rounded-xl border border-border px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+            >
+              {t('backToDashboard')}
+            </Link>
+          </div>
         </div>
 
         <div className='bg-card border border-border rounded-2xl shadow-sm overflow-hidden'>
           <div className='px-6 pt-6'>
             <div className='flex items-center justify-between text-sm'>
               <span className='font-semibold text-foreground'>
-                {t('onboarding.step')} {step + 1}/{total}
+                {t('step')} {step + 1}/{total}
               </span>
               <span className='text-muted-foreground'>{progress}%</span>
             </div>
@@ -264,19 +298,19 @@ export default function OnboardingRoute() {
 
             <div className='mb-6'>
               <p className='text-xs font-semibold text-primary uppercase tracking-wider mb-2'>
-                {t('onboarding.questionBadge')}
+                {t('questionBadge')}
               </p>
               <h2 className='text-xl md:text-2xl font-bold text-foreground'>{currentLabel}</h2>
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-              {currentOptions.map((opt, idx) => {
-                const checked = currentValue === opt
+              {currentOptions.map((opt) => {
+                const checked = currentValue === opt.value
                 return (
                   <button
-                    key={idx}
+                    key={opt.value}
                     type='button'
-                    onClick={() => setAnswer(current.key, opt)}
+                    onClick={() => setAnswer(current.key, opt.value)}
                     className={cn(
                       'text-left p-4 rounded-xl border transition-all',
                       checked
@@ -293,7 +327,7 @@ export default function OnboardingRoute() {
                       >
                         {checked && <span className='w-2.5 h-2.5 rounded-full bg-primary' />}
                       </span>
-                      <span className={cn('text-sm font-medium', checked ? 'text-foreground' : 'text-muted-foreground')}>{opt}</span>
+                      <span className={cn('text-sm font-medium', checked ? 'text-foreground' : 'text-muted-foreground')}>{opt.label}</span>
                     </div>
                   </button>
                 )
@@ -307,7 +341,7 @@ export default function OnboardingRoute() {
                 disabled={step === 0 || submitting}
                 className='px-5 py-2.5 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/40 disabled:opacity-50 disabled:pointer-events-none'
               >
-                {t('onboarding.prev')}
+                {t('prev')}
               </button>
 
               {step < total - 1 ? (
@@ -317,7 +351,7 @@ export default function OnboardingRoute() {
                   disabled={!canNext || submitting}
                   className='px-6 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none'
                 >
-                  {t('onboarding.next')}
+                  {t('next')}
                 </button>
               ) : (
                 <button
@@ -325,7 +359,7 @@ export default function OnboardingRoute() {
                   disabled={submitting}
                   className='px-6 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none'
                 >
-                  {submitting ? t('onboarding.submitting') : t('onboarding.finish')}
+                  {submitting ? t('submitting') : t('finish')}
                 </button>
               )}
             </div>

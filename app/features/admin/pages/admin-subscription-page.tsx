@@ -1,213 +1,261 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import type { UpdateSubscriptionTierRequest } from '~/api/model'
+import { putAdminSubscriptionTiersTierCode } from '~/api/operations/admin-subscription-tiers/admin-subscription-tiers'
+import { loadSubscriptionTiers, type PricingTierView } from '~/features/pricing/lib/subscription'
+
+function toInputValue(value: number) {
+  return value >= 999 ? '-1' : String(value)
+}
+
+function fromInputValue(value: string) {
+  const parsed = Number(value)
+  if (Number.isNaN(parsed)) return 0
+  return parsed < 0 ? 999 : parsed
+}
+
+type EditableTier = PricingTierView & {
+  jdQuotaInput: string
+  roadmapQuotaInput: string
+  assessmentQuotaInput: string
+  careerTrackQuotaInput: string
+  portfolioProjectQuotaInput: string
+  portfolioCertificateQuotaInput: string
+}
+
+function toEditableTier(tier: PricingTierView): EditableTier {
+  return {
+    ...tier,
+    jdQuotaInput: toInputValue(tier.jdQuota),
+    roadmapQuotaInput: toInputValue(tier.roadmapQuota),
+    assessmentQuotaInput: toInputValue(tier.assessmentQuota),
+    careerTrackQuotaInput: toInputValue(tier.careerTrackQuota),
+    portfolioProjectQuotaInput: toInputValue(tier.portfolioProjectQuota),
+    portfolioCertificateQuotaInput: toInputValue(tier.portfolioCertificateQuota),
+  }
+}
 
 export function AdminSubscriptionPage() {
   const { t } = useTranslation('admin')
+  const [tiers, setTiers] = useState<EditableTier[]>([])
+  const [loading, setLoading] = useState(true)
+  const [savingTier, setSavingTier] = useState<string | null>(null)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+
+    loadSubscriptionTiers()
+      .then((next) => {
+        if (cancelled) return
+        setTiers(next.map(toEditableTier))
+        setError('')
+      })
+      .catch((e) => {
+        if (cancelled) return
+        setError((e as Error).message || t('adminCommon.empty'))
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [t])
+
+  function updateTier(tierCode: string, key: keyof EditableTier, value: string | number | boolean) {
+    setTiers((current) =>
+      current.map((tier) =>
+        tier.code === tierCode
+          ? {
+              ...tier,
+              [key]: value,
+            }
+          : tier
+      )
+    )
+  }
+
+  async function handleSave(tier: EditableTier) {
+    setSavingTier(tier.code)
+    setMessage('')
+    setError('')
+
+    const payload: UpdateSubscriptionTierRequest = {
+      priceMonthly: tier.priceMonthly,
+      jdQuota: fromInputValue(tier.jdQuotaInput),
+      gapAnalysisQuota: fromInputValue(tier.jdQuotaInput),
+      assessmentQuota: fromInputValue(tier.assessmentQuotaInput),
+      roadmapActiveQuota: fromInputValue(tier.roadmapQuotaInput),
+      careerTrackQuota: fromInputValue(tier.careerTrackQuotaInput),
+      portfolioCertificateQuota: fromInputValue(tier.portfolioCertificateQuotaInput),
+      portfolioProjectQuota: fromInputValue(tier.portfolioProjectQuotaInput),
+      fullGapHistory: tier.fullGapHistory,
+      isActive: tier.active,
+    }
+
+    try {
+      await putAdminSubscriptionTiersTierCode({ tierCode: tier.code }, payload)
+      setMessage(t('subscriptions.saved', { name: tier.name }))
+    } catch (e) {
+      setError((e as Error).message || t('adminCommon.empty'))
+    } finally {
+      setSavingTier(null)
+    }
+  }
 
   return (
-    <div className='p-8 max-w-7xl mx-auto w-full space-y-8'>
-      {/* Header Section */}
-      <div className='mb-12 relative'>
-        <div className='absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl -z-10'></div>
+    <div className='p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-8'>
+      <div>
         <h1 className='text-4xl font-bold mb-2 text-foreground'>{t('subscriptions.title')}</h1>
-        <p className='text-muted-foreground max-w-2xl'>{t('subscriptions.subtitle')}</p>
+        <p className='max-w-3xl text-muted-foreground'>{t('subscriptions.subtitle')}</p>
       </div>
 
-      {/* Bento-style Grid for Tier Configuration */}
-      <div className='grid grid-cols-1 lg:grid-cols-12 gap-8 items-start'>
-        {/* Tier: Free */}
-        <section className='lg:col-span-4 bg-card rounded-xl border border-border p-8 flex flex-col gap-6 transform hover:-translate-y-1 transition-transform'>
-          <div className='flex justify-between items-center'>
-            <h3 className='text-xl text-primary font-bold'>Free</h3>
-            <span className='bg-muted px-3 py-1 rounded-full text-xs font-medium text-muted-foreground uppercase tracking-widest'>
-              {t('subscriptions.default')}
-            </span>
-          </div>
-          <div className='space-y-4'>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.quota')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='3'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.roadmap')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='1'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.assessment')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='2'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.tracking')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='1'
-              />
-            </div>
-          </div>
-          <button className='mt-4 w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl active:scale-95 transition-transform hover:shadow-lg hover:shadow-primary/30'>
-            {t('subscriptions.save')}
-          </button>
-        </section>
+      <div className='rounded-2xl border border-warning/30 bg-warning/10 p-5 text-sm text-foreground'>
+        <div className='font-semibold'>{t('subscriptions.alertTitle')}</div>
+        <div className='mt-2 text-muted-foreground'>{t('subscriptions.alertDesc')}</div>
+      </div>
 
-        {/* Tier: Student (Featured / Highlighted) */}
-        <section className='lg:col-span-4 bg-card rounded-xl shadow-xl border-2 border-primary p-8 flex flex-col gap-6 transform hover:-translate-y-1 transition-transform relative'>
-          <div className='absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] font-bold px-4 py-1 rounded-full uppercase tracking-widest'>
-            {t('subscriptions.popular')}
-          </div>
-          <div className='flex justify-between items-center'>
-            <h3 className='text-xl text-primary font-bold'>Student</h3>
-            <span className='material-symbols-outlined text-primary'>school</span>
-          </div>
-          <div className='space-y-4'>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.quota')}
-              </label>
-              <div className='relative'>
-                <input
-                  className='w-full bg-muted border-none rounded-lg p-3 text-primary font-bold focus:ring-2 focus:ring-primary'
-                  type='number'
-                  defaultValue='-1'
-                />
-                <span className='absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground opacity-60'>
-                  {t('subscriptions.unlimited')}
-                </span>
+      {error ? (
+        <div className='rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>{error}</div>
+      ) : null}
+      {message ? (
+        <div className='rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary'>{message}</div>
+      ) : null}
+
+      {loading ? (
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <div key={index} className='rounded-2xl border border-border bg-card p-6 shadow-sm animate-pulse'>
+              <div className='h-6 w-40 rounded bg-muted' />
+              <div className='mt-6 grid grid-cols-2 gap-4'>
+                {Array.from({ length: 6 }).map((__, inputIndex) => (
+                  <div key={inputIndex} className='h-14 rounded bg-muted' />
+                ))}
               </div>
             </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.roadmap')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='10'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.assessment')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='50'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.tracking')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-foreground focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='5'
-              />
-            </div>
-          </div>
-          <button className='mt-4 w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl active:scale-95 transition-transform shadow-xl shadow-primary/40 hover:brightness-110'>
-            {t('subscriptions.save')}
-          </button>
-        </section>
-
-        {/* Tier: Enterprise */}
-        <section className='lg:col-span-4 bg-card rounded-xl border border-border p-8 flex flex-col gap-6 transform hover:-translate-y-1 transition-transform'>
-          <div className='flex justify-between items-center'>
-            <h3 className='text-xl text-primary font-bold'>Enterprise</h3>
-            <span className='material-symbols-outlined text-primary'>business_center</span>
-          </div>
-          <div className='space-y-4'>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.quota')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-primary font-bold focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='-1'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.roadmap')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-primary font-bold focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='-1'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.assessment')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-primary font-bold focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='-1'
-              />
-            </div>
-            <div className='flex flex-col gap-1.5'>
-              <label className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
-                {t('subscriptions.tracking')}
-              </label>
-              <input
-                className='w-full bg-muted border-none rounded-lg p-3 text-primary font-bold focus:ring-2 focus:ring-primary'
-                type='number'
-                defaultValue='-1'
-              />
-            </div>
-          </div>
-          <button className='mt-4 w-full bg-primary text-primary-foreground font-bold py-4 rounded-xl active:scale-95 transition-transform hover:shadow-lg hover:shadow-primary/30'>
-            {t('subscriptions.save')}
-          </button>
-        </section>
-
-        {/* Additional Editorial Section for Global Settings */}
-        <div className='lg:col-span-12 mt-12'>
-          <div className='bg-primary/5 rounded-2xl p-12 flex flex-col md:flex-row items-center gap-12 border border-primary/10'>
-            <div className='flex-1'>
-              <h2 className='text-2xl font-bold mb-4 text-foreground'>{t('subscriptions.alertTitle')}</h2>
-              <p className='text-muted-foreground mb-6 leading-relaxed'>{t('subscriptions.alertDesc')}</p>
-              <div className='flex gap-4'>
-                <button className='px-6 py-2 border-b-2 border-primary font-bold text-primary hover:bg-primary/5 transition-all'>
-                  {t('subscriptions.advanced')}
-                </button>
-                <button className='px-6 py-2 border-b-2 border-primary font-bold text-primary hover:bg-primary/5 transition-all'>
-                  {t('subscriptions.changelog')}
-                </button>
-              </div>
-            </div>
-            <div className='w-full md:w-1/3 aspect-video rounded-xl overflow-hidden shadow-2xl border border-border'>
-              <img
-                alt='Data visualization dashboard'
-                className='w-full h-full object-cover'
-                src='https://lh3.googleusercontent.com/aida-public/AB6AXuB7Gd0DljP-yMJau-ILUGTWiO6koprx72UQSfBBE5jssUGEXW2ZU6bt4yfl3Uxgs4M_w_5PDsUr1ClzVDMAmN2FMjpFvbAAt819SMbsq9JZRZGq45nRelko37rzTGvgu_Hz-s6mHU-V1AY-VhQWonLZvB-9QPmqsy6L7FcQfONMcQrRq3V7W-qUFdsAVxhnkRRXuRSnKw5iEg1uxJ133wkUsi6E8rCOduyhZqeqw6sW2nFq6fZ9P0dr5QoYQva13arbjdIXe1cKekKz'
-              />
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+          {tiers.map((tier) => (
+            <section key={tier.code} className='rounded-2xl border border-border bg-card p-6 shadow-sm space-y-5'>
+              <div className='flex items-start justify-between gap-4'>
+                <div>
+                  <h2 className='text-2xl font-bold text-foreground'>{tier.name}</h2>
+                  <p className='mt-1 text-sm text-muted-foreground'>{tier.code.toUpperCase()}</p>
+                </div>
+                <div className='flex flex-wrap gap-2'>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${tier.active ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                    {tier.active ? t('users.table.active') : t('userDetail.subscription.no')}
+                  </span>
+                  {tier.code === 'student' ? (
+                    <span className='rounded-full bg-primary px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-foreground'>
+                      {t('subscriptions.popular')}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.priceMonthly')}</span>
+                  <input
+                    type='number'
+                    value={tier.priceMonthly}
+                    onChange={(e) => updateTier(tier.code, 'priceMonthly', Number(e.target.value))}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.quota')}</span>
+                  <input
+                    type='number'
+                    value={tier.jdQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'jdQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.roadmap')}</span>
+                  <input
+                    type='number'
+                    value={tier.roadmapQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'roadmapQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.assessment')}</span>
+                  <input
+                    type='number'
+                    value={tier.assessmentQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'assessmentQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.tracking')}</span>
+                  <input
+                    type='number'
+                    value={tier.careerTrackQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'careerTrackQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.portfolioProjects')}</span>
+                  <input
+                    type='number'
+                    value={tier.portfolioProjectQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'portfolioProjectQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+                <label className='space-y-2 text-sm'>
+                  <span className='font-semibold text-foreground'>{t('subscriptions.portfolioCertificates')}</span>
+                  <input
+                    type='number'
+                    value={tier.portfolioCertificateQuotaInput}
+                    onChange={(e) => updateTier(tier.code, 'portfolioCertificateQuotaInput', e.target.value)}
+                    className='w-full rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none focus:border-primary'
+                  />
+                </label>
+              </div>
+
+              <div className='grid gap-3 md:grid-cols-2'>
+                <label className='flex items-center gap-3 rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium text-foreground'>
+                  <input
+                    type='checkbox'
+                    checked={tier.fullGapHistory}
+                    onChange={(e) => updateTier(tier.code, 'fullGapHistory', e.target.checked)}
+                  />
+                  {t('subscriptions.fullGapHistory')}
+                </label>
+                <label className='flex items-center gap-3 rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium text-foreground'>
+                  <input type='checkbox' checked={tier.active} onChange={(e) => updateTier(tier.code, 'active', e.target.checked)} />
+                  {t('subscriptions.activeTier')}
+                </label>
+              </div>
+
+              <div className='flex items-center justify-between gap-4 border-t border-border pt-5'>
+                <p className='text-xs text-muted-foreground'>{t('subscriptions.unlimited')}</p>
+                <button
+                  type='button'
+                  disabled={savingTier === tier.code}
+                  onClick={() => void handleSave(tier)}
+                  className='rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-50'
+                >
+                  {savingTier === tier.code ? t('adminCommon.submitting') : t('subscriptions.save')}
+                </button>
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

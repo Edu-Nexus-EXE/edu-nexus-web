@@ -1,4 +1,4 @@
-import { MarketPage } from '~/features/dashboard'
+import { Navigate } from 'react-router'
 import { getMetaTitle } from '~/shared/lib/get-meta-t'
 
 import type { Route } from './+types/index'
@@ -8,5 +8,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function DashboardMarketRoute() {
-  return <MarketPage />
+  return <Navigate to='/dashboard' replace />
 }

@@ -5,10 +5,10 @@ import type { Route } from './+types/index'
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: getMetaTitle('dashboard', 'settings.title') },
+    { title: getMetaTitle('settings', 'title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'settings.subtitle'),
+      content: getMetaTranslation('settings', 'subtitle'),
     },
   ]
 }

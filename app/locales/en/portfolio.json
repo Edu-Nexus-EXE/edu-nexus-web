@@ -1,0 +1,133 @@
+{
+  "editor": {
+    "badge": "PORTFOLIO",
+    "title": "Portfolio Editor",
+    "subtitle": "Build a public-ready portfolio from your profile, JD analyses, certificates, and projects.",
+    "viewPublic": "View public portfolio",
+    "overview": {
+      "title": "Overview",
+      "subtitle": "Introduce yourself, shape your headline, and highlight key skills.",
+      "fullName": "Full name",
+      "slug": "Public slug",
+      "headline": "Professional headline",
+      "bio": "Short bio",
+      "skills": "Skill tags",
+      "skillPlaceholder": "React, Node.js, AWS",
+      "addSkill": "Add skill",
+      "emptySkills": "No skills added yet.",
+      "visibility": {
+        "title": "Visibility settings",
+        "publicPortfolio": "Public portfolio",
+        "completedSkills": "Show completed skills",
+        "certificates": "Show certificates",
+        "projects": "Show projects"
+      },
+      "sourceSummaryTitle": "Current data sources",
+      "sourceSummarySubtitle": "The portfolio currently prioritizes canonical backend data, then enriches it with signals from the current profile and analyzed JDs.",
+      "sourceCanonical": "Current backend portfolio",
+      "sourceProfile": "Manually added / current profile skills",
+      "sourceJd": "Skills inferred from analyzed JDs",
+      "sourceCanonicalCount": "Primary canonical source used first during auto-populate.",
+      "sourceJdCount": "Adds skills when analyzed JDs suggest relevant evidence.",
+      "sourceManualCount": "Preserves skills you manually added in the current editor state.",
+      "pending": "Waiting on backend",
+      "skillSource": {
+        "backend": "backend",
+        "jd-inferred": "jd",
+        "manual": "manual"
+      },
+      "sourceExternalPending": "External profile adapter (pending API / connector)",
+      "sourceRoadmapPending": "Completed roadmap nodes (will unlock once the backend exposes them)",
+      "sourceDisclosure": "Pending sources are not auto-imported in the current FE release yet, but are surfaced here to keep FR6.1/FR6.4 scope explicit."
+    },
+    "preview": {
+      "title": "Live preview",
+      "subtitle": "This section reflects what visitors will see on your public portfolio.",
+      "headlineFallback": "Add a strong headline to introduce your role.",
+      "bioFallback": "Write a short bio to explain your strengths, goals, and experience.",
+      "publicUrl": "Public URL",
+      "visibilityVisible": "visible",
+      "visibilityHidden": "hidden",
+      "skillsVisibleCount": "{{count}} skills will appear on the public page.",
+      "skillsHiddenHint": "The skills section is currently hidden from the public page.",
+      "certificatesVisibleCount": "{{count}} certificates are public after per-item visibility filtering.",
+      "certificatesHiddenHint": "The certificates section is currently hidden from the public page.",
+      "projectsVisibleCount": "{{count}} projects are public after per-item visibility filtering.",
+      "projectsHiddenHint": "The projects section is currently hidden from the public page.",
+      "disclosure": "This preview reflects both section visibility and per-item visibility for certificates and projects.",
+      "updatedAt": "Last updated: {{date}}",
+      "copyUrl": "Copy URL",
+      "copySuccess": "Public portfolio URL copied.",
+      "copyError": "Could not copy the public URL."
+    },
+    "autoPopulate": {
+      "cta": "Auto-populate from analysis",
+      "loading": "Auto-populating...",
+      "success": "Portfolio overview was updated from your latest data.",
+      "error": "Could not auto-populate portfolio right now.",
+      "defaultHeadline": "Aspiring software engineer building job-ready skills.",
+      "defaultBio": "{{name}} is an Edu Nexus learner preparing for internship opportunities. Contact: {{email}}."
+    },
+    "certificates": {
+      "title": "Certificates",
+      "subtitle": "Track your badges, achievements, and proof of learning.",
+      "add": "Add certificate",
+      "added": "Certificate added successfully.",
+      "empty": "No certificates yet.",
+      "validation": "Certificate name, issuer, and issue date are required.",
+      "fields": {
+        "name": "Certificate name",
+        "issuer": "Issuer",
+        "credentialUrl": "Credential URL"
+      }
+    },
+    "projects": {
+      "title": "Projects",
+      "subtitle": "Showcase portfolio projects that support your target role.",
+      "add": "Add project",
+      "added": "Project added successfully.",
+      "empty": "No projects yet.",
+      "validation": "Project title, description, and start date are required.",
+      "fields": {
+        "title": "Project title",
+        "description": "Project description",
+        "techStack": "Tech stack (comma separated)",
+        "demoUrl": "Demo URL",
+        "repoUrl": "Repository URL"
+      }
+    },
+    "actions": {
+      "delete": "Delete",
+      "save": "Save portfolio",
+      "saveItem": "Save item",
+      "show": "Show",
+      "hide": "Hide"
+    }
+  },
+  "public": {
+    "title": "Portfolio {{slug}}",
+    "subtitle": "Public portfolio for Edu Nexus learners.",
+    "badge": "PUBLIC PORTFOLIO",
+    "headlineFallback": "Portfolio owner has not added a headline yet.",
+    "bioFallback": "Portfolio owner has not added a bio yet.",
+    "emptySkills": "No skills have been published yet.",
+    "hiddenSkills": "The portfolio owner is currently hiding the skills section.",
+    "certificatesTitle": "Certificates",
+    "projectsTitle": "Projects",
+    "emptyCertificates": "No certificates published yet.",
+    "hiddenCertificates": "The portfolio owner is currently hiding the certificates section.",
+    "emptyProjects": "No projects published yet.",
+    "hiddenProjects": "The portfolio owner is currently hiding the projects section.",
+    "visibility": {
+      "skillsTitle": "Skills",
+      "certificatesTitle": "Certificates",
+      "projectsTitle": "Projects",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "publicItems": "{{count}} public items",
+      "disclosure": "The public page only shows sections that are enabled and items marked as publicly visible."
+    },
+    "notFoundTitle": "Portfolio not found",
+    "notFoundSubtitle": "This portfolio link is empty or has not been created yet."
+  }
+}

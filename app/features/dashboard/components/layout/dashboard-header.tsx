@@ -37,6 +37,17 @@ export function DashboardHeader({ user }: { user: AuthUser }) {
           <span className='hidden sm:inline'>{t('header.home')}</span>
         </Link>
 
+        {user.role === 'admin' ? (
+          <Link
+            to='/admin'
+            className='inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-3 py-2 text-sm font-semibold text-primary hover:bg-primary/15 transition-colors'
+            title={t('header.adminPanel')}
+          >
+            <span className='material-icons text-lg'>shield_person</span>
+            <span className='hidden sm:inline'>{t('header.adminPanel')}</span>
+          </Link>
+        ) : null}
+
         <div>
           <h1 className='text-2xl font-bold text-foreground'>{t('header.title')}</h1>
           <p className='text-sm text-muted-foreground'>{t('header.welcome', { name: user.fullName })}</p>
@@ -47,6 +58,7 @@ export function DashboardHeader({ user }: { user: AuthUser }) {
         <LanguageSwitcher />
         <button
           type='button'
+          aria-label={t('accessibility.notifications', { ns: 'common' })}
           className='w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors'
         >
           <span className='material-icons text-xl'>notifications</span>
@@ -67,6 +79,7 @@ export function DashboardHeader({ user }: { user: AuthUser }) {
           <button
             type='button'
             onClick={handleLogout}
+            aria-label={t('header.logout')}
             title={t('header.logout')}
             className='w-10 h-10 ml-2 rounded-full border border-border flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors'
           >

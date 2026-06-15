@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
+import { ThemeToggle } from '~/shared/components/theme-toggle'
 import { SignupForm } from '../components/signup-form'
 
 export function SignupPage() {
@@ -15,6 +16,10 @@ export function SignupPage() {
           <span className='material-symbols-outlined text-sm'>arrow_back</span>
           {t('signup.backToHome')}
         </Link>
+      </div>
+
+      <div className='absolute top-6 right-6 z-50'>
+        <ThemeToggle />
       </div>
 
       {/* Decorative blobs */}

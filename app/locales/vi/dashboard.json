@@ -2,14 +2,15 @@
   "sidebar": {
     "brand": "Edu-Nexus",
     "overview": "Tổng quan",
-    "skills": "Kỹ năng đã phân tích",
+    "skills": "Phân tích JD",
     "skillsJd": "JD mới",
     "jobs": "Việc làm",
     "certificates": "Chứng chỉ",
     "analysisHistory": "Lịch sử phân tích",
     "market": "Thị trường",
     "learningPath": "Lộ trình học",
-    "careerTrack": "Track nghề nghiệp",
+    "careerTrack": "Lộ trình nghề nghiệp",
+    "portfolio": "Hồ sơ năng lực",
     "setting": "Cài đặt",
     "membershipLabel": "Gói thành viên",
     "collapse": "Thu gọn sidebar",
@@ -21,7 +22,8 @@
     "welcome": "Chào mừng quay lại, {{name}} 👋",
     "logout": "Đăng xuất",
     "logoutSuccess": "Đăng xuất thành công",
-    "home": "Trang chủ"
+    "home": "Trang chủ",
+    "adminPanel": "Trang quản trị"
   },
   "stats": {
     "certificates": "Chứng chỉ",
@@ -48,7 +50,7 @@
     "good": "TỐT",
     "experience": "Kinh nghiệm thực tế",
     "profile": "Hồ sơ cá nhân",
-    "analyzeGap": "Phân tích gap"
+    "analyzeGap": "Phân tích khoảng cách"
   },
   "skills": {
     "title": "Kỹ năng đang nổi",
@@ -68,7 +70,7 @@
   "roadmap": {
     "title": "Lộ trình học cá nhân hoá",
     "description": "Dựa trên đánh giá hiện tại, chúng tôi đã chuẩn bị lộ trình tối ưu giúp bạn đạt 90% mức sẵn sàng trong 3 tháng tới.",
-    "emptyDescription": "Bạn chưa có roadmap đang hoạt động. Hãy bắt đầu từ phân tích gap để tạo lộ trình học.",
+    "emptyDescription": "Bạn chưa có lộ trình đang hoạt động. Hãy bắt đầu từ phân tích khoảng cách kỹ năng để tạo lộ trình học.",
     "explore": "Khám phá lộ trình",
     "progress": "Xem tiến độ",
     "journeyTitle": "Junior Developer Journey v1.2"
@@ -79,25 +81,70 @@
     "avatar": {
       "title": "Ảnh đại diện",
       "change": "Đổi ảnh",
-      "remove": "Xoá"
+      "remove": "Xoá",
+      "urlLabel": "URL ảnh đại diện",
+      "previewFallback": "Không thể xem trước"
     },
     "personal": {
       "title": "Thông tin cá nhân",
+      "description": "Cập nhật hồ sơ của bạn để có trải nghiệm tốt hơn.",
       "fullname": "Họ tên",
       "email": "Email",
       "role": "Vai trò",
-      "portfolio": "Portfolio slug",
+      "portfolio": "Đường dẫn hồ sơ công khai",
+      "portfolioPlaceholder": "portfolio-cong-khai-cua-ban",
+      "avatarUrl": "URL ảnh đại diện",
       "subscription": "Gói dịch vụ",
-      "note": "Một số trường hiện chỉ đọc."
+      "save": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "success": "Cập nhật hồ sơ thành công",
+      "note": "Email và vai trò hiện là chỉ đọc. Bạn có thể cập nhật đường dẫn hồ sơ công khai và ảnh đại diện tại đây.",
+      "errors": {
+        "fullNameRequired": "Họ tên là bắt buộc.",
+        "saveFailed": "Không thể cập nhật hồ sơ."
+      }
     },
     "security": {
       "title": "Bảo mật",
       "password": "Mật khẩu",
       "passwordDesc": "Đổi mật khẩu để bảo vệ tài khoản.",
+      "currentPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "validationHint": "Mật khẩu phải có ít nhất 8 ký tự, gồm ít nhất 1 chữ in hoa và 1 chữ số.",
       "changePassword": "Đổi mật khẩu",
+      "submitting": "Đang gửi...",
+      "apiUnavailable": "API đổi mật khẩu hiện chưa có trong client được sinh tự động của dự án.",
+      "errors": {
+        "allFieldsRequired": "Vui lòng nhập đầy đủ các trường mật khẩu.",
+        "passwordLength": "Mật khẩu mới phải có ít nhất 8 ký tự.",
+        "passwordUppercase": "Mật khẩu mới phải có ít nhất 1 chữ in hoa.",
+        "passwordNumber": "Mật khẩu mới phải có ít nhất 1 chữ số.",
+        "passwordConfirm": "Xác nhận mật khẩu chưa khớp."
+      },
       "2fa": "Xác thực hai lớp (2FA)",
       "2faDesc": "Thêm một lớp bảo mật.",
       "setup": "Thiết lập"
+    },
+    "subscription": {
+      "title": "Gói dịch vụ",
+      "description": "Xem gói hiện tại và nâng cấp khi bạn cần thêm hạn mức.",
+      "currentPlan": "Gói hiện tại",
+      "status": "Trạng thái",
+      "expiresAt": "Ngày hết hạn",
+      "upgrade": "Đi đến bảng giá",
+      "notAvailable": "Chưa có"
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "description": "Chọn các cập nhật tài khoản mà bạn muốn nhận.",
+      "weeklyReport": "Báo cáo tiến độ hằng tuần",
+      "weeklyReportDesc": "Nhận bản tổng hợp hằng tuần về tiến độ học tập và mức độ sẵn sàng của bạn.",
+      "jdMatches": "JD phù hợp mới",
+      "jdMatchesDesc": "Nhận thông báo khi có JD mới phù hợp với hồ sơ của bạn.",
+      "subscriptionExpiry": "Nhắc hạn gói dịch vụ",
+      "subscriptionExpiryDesc": "Được nhắc trước khi gói hiện tại của bạn hết hạn.",
+      "saved": "Đã lưu tuỳ chọn thông báo"
     },
     "advanced": {
       "disable": "Vô hiệu hoá tài khoản",
@@ -126,11 +173,18 @@
   },
   "quota": {
     "tiers": {
-      "free": { "label": "Miễn phí", "quotaText": "3 JD/tháng" },
-      "starter": { "label": "Starter", "quotaText": "10 JD/tháng" },
-      "basic": { "label": "Basic", "quotaText": "25 JD/tháng" },
-      "pro": { "label": "Pro", "quotaText": "100 JD/tháng" },
-      "premium": { "label": "Premium", "quotaText": "Không giới hạn" }
+      "free": {
+        "label": "Miễn phí",
+        "quotaText": "3 JD/tháng"
+      },
+      "student": {
+        "label": "Sinh viên",
+        "quotaText": "30 JD/tháng"
+      },
+      "pro": {
+        "label": "Pro",
+        "quotaText": "Không giới hạn"
+      }
     },
     "status": {
       "active": "Đang hoạt động",
@@ -142,7 +196,110 @@
       "upgrade": "Nâng cấp",
       "active": "Đang hoạt động"
     },
-    "expiresAt": "Hết hạn: {{date}}"
+    "dynamic": {
+      "jdQuota": "{{count}} JD / tháng"
+    },
+    "unlimited": "Không giới hạn",
+    "nearLimit": "Sắp chạm giới hạn",
+    "expiresAt": "Hết hạn: {{date}}",
+    "loading": "Đang tải hạn mức..."
+  },
+  "quickActions": {
+    "title": "Hành động nhanh",
+    "go": "Mở",
+    "submitJd": { "title": "Nộp JD", "desc": "Phân tích một JD mới." },
+    "roadmap": { "title": "Lộ trình học", "desc": "Tiếp tục cây kỹ năng của bạn." },
+    "careerTrack": { "title": "Lộ trình nghề nghiệp", "desc": "Tổ chức JD theo mục tiêu." },
+    "portfolio": { "title": "Hồ sơ năng lực", "desc": "Thể hiện thành tích của bạn." }
+  },
+  "quotaOverview": {
+    "title": "Mức sử dụng gói",
+    "subtitle": "Theo dõi bạn đã dùng bao nhiêu hạn mức của gói.",
+    "usage": "{{used}} / {{limit}}",
+    "usageUnlimited": "Đã dùng {{used}} · Không giới hạn",
+    "nearLimit": "Sắp chạm giới hạn",
+    "labels": {
+      "jd": "Lượt nộp JD",
+      "gapAnalysis": "Phân tích khoảng cách",
+      "assessment": "Bài đánh giá",
+      "roadmapActive": "Lộ trình đang hoạt động",
+      "careerTrack": "Lộ trình nghề nghiệp",
+      "portfolioCertificate": "Chứng chỉ",
+      "portfolioProject": "Dự án"
+    }
+  },
+  "market": {
+    "title": "Thị trường học bổng",
+    "sortBy": "Sắp xếp theo",
+    "sortOptions": {
+      "highestMatch": "Mức phù hợp cao nhất",
+      "deadline": "Hạn nộp",
+      "value": "Giá trị"
+    },
+    "filters": {
+      "field": "Lĩnh vực",
+      "location": "Địa điểm",
+      "fieldOptions": {
+        "csAi": "Khoa học máy tính & AI",
+        "dataScience": "Khoa học dữ liệu",
+        "softwareEngineering": "Kỹ thuật phần mềm"
+      },
+      "locationOptions": {
+        "vietnam": "Việt Nam",
+        "singapore": "Singapore",
+        "australia": "Australia"
+      }
+    },
+    "card": {
+      "match": "Phù hợp",
+      "strengths": "Điểm mạnh",
+      "missing": "Còn thiếu",
+      "aiSuggestion": "Gợi ý AI:",
+      "remind": "Nhắc tôi",
+      "remindOn": "Đã bật nhắc",
+      "apply": "Ứng tuyển",
+      "details": "Chi tiết"
+    },
+    "pagination": {
+      "previous": "Trang trước",
+      "next": "Trang sau"
+    },
+    "items": {
+      "aiMaster": {
+        "title": "Học bổng Thạc sĩ AI",
+        "location": "Hà Nội",
+        "endsIn": "03 ngày 12h",
+        "strength1": "IELTS 7.5",
+        "strength2": "GPA 3.6/4.0",
+        "strength3": "Kinh nghiệm Python",
+        "missing1": "Bài nghiên cứu",
+        "missing2": "Chứng chỉ AWS",
+        "suggestionBefore": "Hoàn thành thêm chứng chỉ",
+        "suggestionLink": "AWS Cloud Practitioner",
+        "suggestionAfter": "để tăng khả năng đạt 95%."
+      },
+      "womenTech": {
+        "title": "Học bổng Women in Tech",
+        "location": "TP.HCM",
+        "endsIn": "15 ngày",
+        "strength1": "Lãnh đạo",
+        "strength2": "GPA 3.6",
+        "missing1": "Hồ sơ năng lực",
+        "missing2": "Thư giới thiệu",
+        "missing3": "Chuẩn bị phỏng vấn",
+        "suggestion": "Cập nhật hồ sơ dự án cá nhân lên GitHub để cải thiện điểm hồ sơ."
+      },
+      "dataScience": {
+        "title": "Data Science Excellence",
+        "location": "Từ xa",
+        "endsIn": "01 tháng",
+        "strength1": "Thống kê",
+        "strength2": "Python",
+        "strength3": "SQL",
+        "missing1": "TOEFL > 100",
+        "suggestion": "Bạn gần như đã sẵn sàng. Hãy cải thiện điểm TOEFL trong 2 tháng tới."
+      }
+    }
   },
   "footer": {
     "copyright": "© 2026 Edu-Nexus. Xây dựng tương lai nghề nghiệp của bạn.",
@@ -152,18 +309,22 @@
   },
   "analysisHistory": {
     "title": "Lịch sử phân tích kỹ năng",
-    "subtitle": "Xem lại các lần đánh giá gap kỹ năng trước đây theo từng vị trí.",
+    "subtitle": "Xem lại các lần đánh giá khoảng cách kỹ năng trước đây theo từng vị trí.",
     "newAnalysis": "Phân tích mới",
+    "loading": "Đang tải lịch sử phân tích…",
+    "empty": "Chưa có lịch sử phân tích.",
     "table": {
       "job": "Vị trí",
       "company": "Công ty",
       "date": "Ngày phân tích",
       "match": "Mức độ khớp %",
+      "skillsCount": "{{count}} kỹ năng",
       "actions": "Hành động",
       "detail": "Chi tiết"
     },
     "pagination": {
-      "info": "Đang hiển thị 1-5 của 12 phân tích"
+      "info": "Đang hiển thị 1-5 của 12 phân tích",
+      "loaded": "Đã tải {{count}} phân tích"
     },
     "insights": {
       "progress": "Tiến bộ",
@@ -172,7 +333,12 @@
       "bestMatchDesc": "Vị trí Frontend tại VNG là phù hợp nhất với bộ kỹ năng hiện tại của bạn.",
       "aiAdvice": "Gợi ý AI",
       "aiAdviceDesc": "Dựa trên lịch sử phân tích, bạn nên bổ sung chứng chỉ AWS để tăng tỷ lệ phù hợp với FPT lên 95%.",
-      "viewCourse": "Xem khoá học gợi ý"
+      "viewCourse": "Xem khoá học gợi ý",
+      "title": "Thông tin chi tiết",
+      "summary": "Những điểm chính rút ra từ các lần phân tích khoảng cách gần đây.",
+      "quickStats": "Thống kê nhanh",
+      "total": "Tổng số lần phân tích",
+      "avg": "Mức khớp trung bình"
     }
   },
   "learningPath": {
@@ -187,8 +353,8 @@
       "hours": "Giờ học",
       "hoursSub": "Top 5% sinh viên"
     },
-    "table": {
-      "title": "Danh sách roadmap",
+      "table": {
+      "title": "Danh sách lộ trình",
       "all": "Tất cả",
       "learning": "Đang học",
       "completed": "Hoàn thành",
@@ -197,16 +363,163 @@
       "progress": "Tiến độ",
       "status": "Trạng thái",
       "actions": "Hành động",
-      "continue": "Tiếp tục"
+      "continue": "Tiếp tục",
+      "descFallback": "Chưa có mô tả.",
+      "viewMap": "Xem lộ trình",
+      "footer": "Đang hiển thị các lộ trình học gần đây nhất."
+    },
+    "roadmap": {
+      "backBtn": "Quay lại",
+      "badge": "Lộ trình",
+      "viewAll": "Xem tất cả lộ trình",
+      "title": "Lộ trình cá nhân hoá",
+      "detailSubtitle": "Xem lộ trình học tập đã tạo, kiểm tra phụ thuộc giữa các node và mở các tài nguyên được đề xuất.",
+      "emptyTitle": "Chưa có lộ trình",
+      "emptyDescription": "Hãy tạo lộ trình từ phân tích khoảng cách kỹ năng để bắt đầu theo dõi lộ trình học của bạn.",
+      "generate": "Tạo lộ trình",
+      "generateStarted": "Đã bắt đầu tạo lộ trình.",
+      "generateFailed": "Không thể tạo lộ trình.",
+      "archive": "Lưu trữ lộ trình",
+      "archiveSuccess": "Đã lưu trữ lộ trình.",
+      "archiveFailed": "Không thể lưu trữ lộ trình.",
+      "refresh": "Tạo lại",
+      "regenerateStarted": "Đã bắt đầu tạo lại lộ trình.",
+      "regenerateFailed": "Không thể tạo lại lộ trình.",
+      "keep": "Giữ lộ trình hiện tại",
+      "keepSuccess": "Đã giữ lộ trình hiện tại.",
+      "keepFailed": "Không thể giữ lộ trình hiện tại.",
+      "loading": "Đang tải lộ trình…",
+      "generating": "Lộ trình đang được tạo…",
+      "progressMini": "Tiến độ",
+      "nodesMini": "Node",
+      "statusMini": "Trạng thái",
+      "progressText": "Tiến độ {{percent}}%",
+      "statusLabel": "Trạng thái: {{status}}",
+      "status": {
+        "active": "đang hoạt động",
+        "archived": "đã lưu trữ",
+        "completed": "hoàn thành",
+        "failed": "thất bại",
+        "generating": "đang tạo",
+        "unknown": "{{value}}"
+      },
+      "outdatedTitle": "Lộ trình này đã cũ",
+      "outdatedDescription": "Nguồn phân tích khoảng cách kỹ năng đã thay đổi. Hãy tạo lại để làm mới lộ trình hoặc giữ phiên bản hiện tại.",
+      "nodesTitle": "Các node kỹ năng",
+      "hideDetails": "Ẩn chi tiết",
+      "showDetails": "Hiện chi tiết",
+      "detailTitle": "Chi tiết node",
+      "closePanel": "Đóng panel",
+      "duration": "Ước tính {{hours}} giờ",
+      "level": "Cấp độ {{level}}",
+      "nodeDescriptionFallback": "Chưa có mô tả cho node này.",
+      "prerequisites": "Điều kiện tiên quyết",
+      "noPrerequisites": "Node này không có điều kiện tiên quyết.",
+      "resources": "Tài nguyên",
+      "resourcesLoading": "Đang tải tài nguyên…",
+      "resourcesEmpty": "Chưa có tài nguyên học tập cho node này.",
+      "resourcesLoadFailed": "Không thể tải tài nguyên.",
+      "affiliate": "Liên kết",
+      "primaryResource": "Ưu tiên",
+      "watchHere": "Xem tại đây",
+      "readHere": "Đọc tại đây",
+      "openInNewTab": "Mở tab mới",
+      "videoPreview": "Xem trước video",
+      "documentPreview": "Xem trước tài liệu",
+      "archivedReadOnly": "Lộ trình đã lưu trữ ở chế độ chỉ đọc và không còn hiển thị tài nguyên học tập.",
+      "markCompleteSuccess": "Đã đánh dấu hoàn thành node.",
+      "markCompleteFailed": "Không thể cập nhật trạng thái node.",
+      "prerequisitesNotMet": "Hãy hoàn thành các node tiên quyết trước.",
+      "noJdSelected": "Hãy chọn JD trước khi tạo lộ trình.",
+      "loadFailed": "Không tải được lộ trình.",
+      "completed": "Hoàn thành",
+      "markComplete": "Đánh dấu hoàn thành",
+      "tierLabel": "Bước {{level}}",
+      "nodeStatus": {
+        "completed": "Hoàn thành",
+        "active": "Đang học",
+        "future": "Sắp tới"
+      }
+    },
+    "gapAnalysis": {
+      "title": "Phân tích khoảng cách",
+      "back": "Quay lại",
+      "version": "Phiên bản {{version}}",
+      "updated": "Cập nhật: {{date}}",
+      "source": "Điểm đánh giá: {{percent}}%",
+      "loading": "Đang cập nhật phân tích khoảng cách kỹ năng…",
+      "loadFailed": "Không thể tải phân tích khoảng cách kỹ năng.",
+      "empty": "Chưa có dữ liệu phân tích khoảng cách kỹ năng.",
+      "triggered": "Đã bắt đầu phân tích khoảng cách kỹ năng.",
+      "runAnalysis": "Chạy phân tích",
+      "summaryTitle": "Tóm tắt khoảng cách kỹ năng",
+      "summaryDesc": "Bạn có <1>{{missing}}</1> kỹ năng còn thiếu, <1>{{upgrade}}</1> kỹ năng cần nâng cấp và <1>{{have}}</1> điểm mạnh trên tổng {{total}} kỹ năng được theo dõi.",
+      "tableTitle": "Chi tiết kỹ năng",
+      "historyNote": "Gói Student có thể xem lịch sử phiên bản khi bật `all=true`.",
+      "historyLocked": "Nâng cấp lên Student để mở lịch sử phân tích khoảng cách kỹ năng.",
+      "headers": {
+        "skill": "Kỹ năng",
+        "status": "Trạng thái",
+        "current": "Hiện tại",
+        "required": "Yêu cầu",
+        "priority": "Ưu tiên",
+        "details": "Chi tiết"
+      },
+      "status": {
+        "missing": "Thiếu",
+        "upgrade": "Cần nâng cấp",
+        "have": "Đã có"
+      },
+      "createRoadmap": "Tạo lộ trình",
+      "viewRoadmap": "Xem lộ trình",
+      "reasoning": "Lý do",
+      "none": "Chưa có",
+      "dockerDesc": "JD yêu cầu Docker mức trung cấp nhưng bạn chưa có kinh nghiệm.",
+      "cicdDesc": "CI/CD cần thiết để tự động hoá build và deploy cho vị trí này.",
+      "sqlDesc": "Bạn mới có SQL cơ bản; vị trí cần kỹ năng truy vấn và thiết kế tốt hơn.",
+      "javaOopDesc": "Mức Java OOP của bạn đã đáp ứng yêu cầu."
     },
     "careerTrack": {
-      "title": "Quản lý Career Track",
-      "subtitle": "Tạo và quản lý các track gắn với hành trình học của bạn.",
-      "loading": "Đang tải career track…",
+      "title": "Quản lý lộ trình nghề nghiệp",
+      "subtitle": "Tạo và quản lý các lộ trình gắn với hành trình học của bạn.",
+      "loading": "Đang tải lộ trình nghề nghiệp…",
       "newFromAnalysis": "Tạo từ phân tích",
+      "listTitle": "Danh sách lộ trình",
+      "jdListTitle": "Danh sách JD trong lộ trình",
+      "jdListSubtitle": "Giữ lộ trình bám sát các vị trí công việc bạn muốn nhắm tới tiếp theo.",
+      "noDescription": "Chưa có mô tả.",
+      "permissions": "Chỉ quản trị viên mới có thể tạo, sửa hoặc xoá lộ trình nghề nghiệp.",
+      "backToList": "Quay lại danh sách lộ trình",
+      "openDetailRoute": "Mở trang chi tiết",
+      "emptyJds": "Chưa có JD nào trong lộ trình này.",
+      "emptySelection": "Hãy chọn một lộ trình nghề nghiệp từ danh sách để xem chi tiết.",
+      "emptyAdminHint": "Dùng biểu mẫu bên phải để tạo lộ trình nghề nghiệp đầu tiên.",
+      "selectionHint": "Mô hình hiện tại dùng trang chính - chi tiết; trang chi tiết được giữ để hỗ trợ liên kết sâu nhưng vẫn đồng bộ với bảng bên phải.",
+      "detailBadge": "Chi tiết lộ trình",
+      "manageBadge": "Quản lý lộ trình",
+      "quickStats": "{{count}} JD đang được theo dõi",
+      "openStandalone": "Mở riêng trang này",
+      "trackMeta": "{{count}} JD",
+      "jdRoadmapProgress": "Tiến độ lộ trình: {{progress}}%",
+      "jdNoRoadmap": "Chưa có lộ trình",
+      "confirmDelete": "Xoá lộ trình nghề nghiệp \"{{name}}\"?",
+      "confirmRemoveJd": "Gỡ JD này khỏi lộ trình nghề nghiệp hiện tại?",
+      "errors": {
+        "nameRequired": "Tên lộ trình là bắt buộc.",
+        "jdRequired": "Hãy nhập JD ID trước khi thêm vào lộ trình.",
+        "loadFailed": "Không thể tải danh sách lộ trình nghề nghiệp.",
+        "createFailed": "Không thể tạo lộ trình nghề nghiệp.",
+        "updateFailed": "Không thể cập nhật lộ trình nghề nghiệp.",
+        "deleteFailed": "Không thể xoá lộ trình nghề nghiệp.",
+        "addJdFailed": "Không thể thêm JD.",
+        "removeJdFailed": "Không thể gỡ JD."
+      },
       "form": {
-        "name": "Tên track",
-        "description": "Mô tả"
+        "name": "Tên lộ trình",
+        "description": "Mô tả",
+        "namePlaceholder": "Lộ trình Frontend Engineer",
+        "descriptionPlaceholder": "Vai trò mục tiêu, phạm vi hoặc trọng tâm học tập",
+        "jdPlaceholder": "Nhập JD ID"
       },
       "actions": {
         "create": "Tạo",
@@ -215,7 +528,49 @@
         "addJd": "Thêm JD",
         "removeJd": "Xoá"
       },
-      "empty": "Chưa có career track nào. Hãy tạo track đầu tiên để bắt đầu."
+      "empty": "Chưa có lộ trình nghề nghiệp nào. Hãy tạo lộ trình đầu tiên để bắt đầu."
+    },
+    "loading": "Đang tải lộ trình học…",
+    "empty": "Chưa có lộ trình học nào.",
+    "recommendations": {
+      "title": "Gợi ý",
+      "forYou": "Dành cho bạn",
+      "microservicesTitle": "Nền tảng Microservices",
+      "microservicesDesc": "Củng cố kỹ năng kiến trúc phía máy chủ.",
+      "startNow": "Bắt đầu ngay",
+      "testTime": "~30 phút",
+      "testTitle": "Đánh giá kỹ năng",
+      "testDesc": "Kiểm tra trình độ hiện tại bằng một bài test nhanh.",
+      "readyCount": "{{count}} sẵn sàng",
+      "certificatesTitle": "Chứng chỉ",
+      "issued": "Đã cấp",
+      "pending": "Đang chờ",
+      "viewAllCertificates": "Xem tất cả chứng chỉ"
+    }
+  },
+  "certificates": {
+    "title": "Chứng chỉ",
+    "badges": {
+      "title": "Huy hiệu thành tích",
+      "total": "Tổng số huy hiệu"
+    },
+    "profile": {
+      "verified": "Hồ sơ đã xác minh",
+      "status": "Trạng thái",
+      "lookingForJob": "Sẵn sàng tìm việc",
+      "headlineFallback": "Xây dựng hồ sơ Edu-Nexus đã xác minh từ thông tin cài đặt của bạn.",
+      "visibleCertificates": "{{count}} chứng chỉ đang hiển thị",
+      "projects": "{{count}} dự án",
+      "center": "Trung tâm xác minh",
+      "centerDesc": "Chứng chỉ của bạn được xác minh và lưu trữ an toàn.",
+      "secured": "Đã bảo mật",
+      "hash": "Mã xác minh"
+    },
+    "projects": {
+      "title": "Dự án",
+      "sourceCode": "Mã nguồn",
+      "liveDemo": "Bản demo",
+      "caseStudy": "Nghiên cứu tình huống"
     }
   }
 }

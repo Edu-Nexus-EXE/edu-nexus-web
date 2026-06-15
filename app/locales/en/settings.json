@@ -1,0 +1,98 @@
+{
+  "title": "Settings",
+  "subtitle": "Manage your account details and preferences.",
+  "loading": {
+    "title": "Loading settings...",
+    "subtitle": "Preparing your account information and preferences."
+  },
+  "avatar": {
+    "title": "Profile picture",
+    "change": "Change",
+    "remove": "Remove",
+    "urlLabel": "Avatar image URL",
+    "previewFallback": "Preview unavailable"
+  },
+  "personal": {
+    "title": "Personal information",
+    "description": "Keep your profile details up to date for a better experience.",
+    "fullname": "Full name",
+    "email": "Email",
+    "role": "Role",
+    "portfolio": "Portfolio slug",
+    "portfolioPlaceholder": "your-public-portfolio",
+    "avatarUrl": "Avatar URL",
+    "subscription": "Subscription",
+    "save": "Save changes",
+    "saving": "Saving...",
+    "success": "Profile updated successfully",
+    "note": "Email and role are read-only. Portfolio slug and avatar can be updated here.",
+    "errors": {
+      "fullNameRequired": "Full name is required.",
+      "saveFailed": "Failed to update profile."
+    },
+    "survey": {
+      "title": "Career survey",
+      "description": "This survey personalizes JD, CV, and assessment flows. You can complete it now or come back later from settings.",
+      "completed": "Completed",
+      "pending": "Not completed",
+      "startCta": "Start survey",
+      "updateCta": "Update survey"
+    }
+  },
+  "security": {
+    "title": "Security",
+    "password": "Password",
+    "passwordDesc": "Change your password to protect your account.",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "validationHint": "Password must be at least 8 characters and include one uppercase letter and one number.",
+    "changePassword": "Change password",
+    "submitting": "Submitting...",
+    "statusLabel": "UI/UX done - waiting for API",
+    "unavailableTitle": "This feature is not available in the current release yet.",
+    "apiUnavailable": "Change password API is not available in the current generated client yet.",
+    "disabledCta": "The real submit flow will be enabled once backend and generated client support the corresponding endpoint.",
+    "pendingBackend": "UI ready - waiting for backend",
+    "reviewing": "Reviewing form...",
+    "reviewingMock": "Simulating the frontend submit step to complete the user experience.",
+    "futureApiNote": "The FE UI/UX is complete. Once the API is ready, this action will call the real change-password endpoint.",
+    "readyTitle": "The form is ready for API wiring.",
+    "readyDescription": "Frontend validation and submit states are complete. The remaining step is connecting the real change-password endpoint once backend support is available.",
+    "errors": {
+      "allFieldsRequired": "Please fill in all password fields.",
+      "passwordLength": "New password must be at least 8 characters.",
+      "passwordUppercase": "New password must include at least one uppercase letter.",
+      "passwordNumber": "New password must include at least one number.",
+      "passwordConfirm": "Password confirmation does not match."
+    }
+  },
+  "subscription": {
+    "title": "Subscription",
+    "description": "Review your current plan and upgrade when you need more quota.",
+    "currentPlan": "Current plan",
+    "status": "Status",
+    "expiresAt": "Expires at",
+    "upgrade": "Go to pricing",
+    "notAvailable": "Not available"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Choose which account updates you want to receive.",
+    "weeklyReport": "Weekly progress report",
+    "weeklyReportDesc": "Receive a weekly digest of your study and readiness progress.",
+    "jdMatches": "New JD matches",
+    "jdMatchesDesc": "Get notified when new job descriptions match your profile.",
+    "subscriptionExpiry": "Subscription expiry reminders",
+    "subscriptionExpiryDesc": "Be reminded before your current plan expires.",
+    "saved": "Notification preferences updated in FE UI",
+    "savingMock": "Simulating preference saving on the frontend...",
+    "futureApiNote": "The notifications UI/UX is complete. Once the notification preferences API is ready, these states will persist per account.",
+    "enabled": "On",
+    "disabled": "Off",
+    "statusLabel": "UI/UX done - waiting for API",
+    "unavailableTitle": "Notification preferences are not connected to an API yet.",
+    "unavailableDescription": "This section now provides the full FE experience with mock state and interaction feedback. Once the backend exposes notification preferences, these toggles can persist per account.",
+    "unavailablePill": "Unavailable"
+  }
+}

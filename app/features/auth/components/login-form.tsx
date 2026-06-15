@@ -3,32 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { postAuthGoogle, postAuthLogin } from '~/api/operations/auth/auth'
-import { getUsersMe } from '~/api/operations/users/users'
 import { InvalidCredentialsError } from '~/api/mutator/custom-fetch'
 import { env } from '~/shared/config/env'
 import { cn } from '~/shared/lib/cn'
 import { setAuthSession } from '~/shared/lib/auth-session'
 import { useToast } from '~/shared/components'
 import type { AuthResponseData } from '../lib/be-auth-types'
-import { isAuthResponseData, mapAuthResponseToUser, mapUserProfileToUser } from '../lib/be-auth-types'
+import { isAuthResponseData, mapAuthResponseToUser } from '../lib/be-auth-types'
 
 type ResponseWithData<T> = { data?: T }
-
-type UserMeDto = {
-  id: string
-  email: string
-  fullName: string
-  avatarUrl?: string | null
-  role: string
-  isSurveyCompleted: boolean
-  portfolioUrlSlug?: string | null
-  subscription?: {
-    tierCode: string
-    displayName: string
-    status: string
-    expiresAt?: string | null
-  } | null
-}
 
 type GoogleAccountsId = {
   initialize: (options: { client_id: string; callback: (resp: { credential?: string }) => void; auto_select?: boolean; cancel_on_tap_outside?: boolean }) => void
@@ -41,25 +24,12 @@ type GoogleSdk = {
   }
 }
 
-async function redirectAfterLogin(navigate: (to: string) => void, tokens: { accessToken: string; refreshToken: string }) {
-  try {
-    const me = await getUsersMe()
-    const profile = (me as ResponseWithData<UserMeDto>).data
-
-    if (profile) {
-      setAuthSession({
-        user: mapUserProfileToUser(profile),
-        tokens,
-      })
-
-      navigate(profile.isSurveyCompleted ? '/dashboard' : '/onboarding')
-      return
-    }
-
-    navigate('/dashboard')
-  } catch {
-    navigate('/dashboard')
+async function redirectAfterLogin(navigate: (to: string) => void, data: { role?: string; isSurveyCompleted: boolean }) {
+  if (typeof data.role === 'string' && data.role.toLowerCase() === 'admin') {
+    navigate('/admin')
+    return
   }
+  navigate(data.isSurveyCompleted ? '/dashboard' : '/onboarding')
 }
 
 function toAuthData(res: unknown): AuthResponseData {
@@ -153,7 +123,7 @@ export function LoginForm() {
                 tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
               })
 
-              await redirectAfterLogin(navigate, { accessToken: data.accessToken, refreshToken: data.refreshToken })
+              await redirectAfterLogin(navigate, data)
             } catch (e) {
               setError((e as Error).message || 'Google login failed')
             } finally {
@@ -208,7 +178,7 @@ export function LoginForm() {
 
       toast.success(t('login.success'))
 
-      await redirectAfterLogin(navigate, { accessToken: data.accessToken, refreshToken: data.refreshToken })
+      await redirectAfterLogin(navigate, data)
     } catch (err) {
       if (err instanceof InvalidCredentialsError) {
         setError(t('login.errorInvalid'))

@@ -39,7 +39,7 @@ export function DashboardRoadmapBanner() {
           <div className='flex items-center gap-4'>
             <button
               type='button'
-              onClick={() => navigate('/dashboard/learning/roadmap')}
+              onClick={() => navigate('/roadmaps')}
               className='px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all'
             >
               {t('roadmap.explore')}

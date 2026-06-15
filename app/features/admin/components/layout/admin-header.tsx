@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import { getAuthSession } from '~/shared/lib/auth-session'
@@ -24,9 +25,22 @@ export function AdminHeader() {
             type='text'
           />
         </div>
-        <button className='w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors'>
+        <button
+          type='button'
+          aria-label={t('accessibility.notifications', { ns: 'common' })}
+          className='w-10 h-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card'
+        >
           <span className='material-symbols-outlined text-xl'>notifications</span>
         </button>
+        <Link
+          to='/dashboard'
+          className='inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/15 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card'
+          title={t('header.viewAsUser')}
+        >
+          <span className='material-symbols-outlined text-lg'>visibility</span>
+          <span className='hidden md:inline'>{t('header.viewAsUser')}</span>
+        </Link>
+
         <LanguageSwitcher />
 
         <div className='flex items-center gap-3 pl-4 border-l border-border'>
@@ -35,7 +49,7 @@ export function AdminHeader() {
             <p className='text-xs text-muted-foreground'>{user?.role || t('header.defaultPlan')}</p>
           </div>
           <img
-            alt='Admin Avatar'
+            alt={t('adminCommon.adminAvatar')}
             className='w-10 h-10 rounded-full object-cover ring-2 ring-primary/20'
             src={
               user?.avatarUrl ||

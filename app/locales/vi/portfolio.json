@@ -1,0 +1,133 @@
+{
+  "editor": {
+    "badge": "HỒ SƠ NĂNG LỰC",
+    "title": "Trình chỉnh sửa hồ sơ năng lực",
+    "subtitle": "Xây dựng hồ sơ công khai từ hồ sơ cá nhân, phân tích JD, chứng chỉ và dự án của bạn.",
+    "viewPublic": "Xem hồ sơ công khai",
+    "overview": {
+      "title": "Tổng quan",
+      "subtitle": "Giới thiệu bản thân, tạo tiêu đề nghề nghiệp và làm nổi bật kỹ năng chính.",
+      "fullName": "Họ và tên",
+      "slug": "Đường dẫn công khai",
+      "headline": "Tiêu đề nghề nghiệp",
+      "bio": "Mô tả ngắn",
+      "skills": "Thẻ kỹ năng",
+      "skillPlaceholder": "React, Node.js, AWS",
+      "addSkill": "Thêm kỹ năng",
+      "emptySkills": "Chưa có kỹ năng nào.",
+      "visibility": {
+        "title": "Tùy chọn hiển thị",
+        "publicPortfolio": "Hồ sơ công khai",
+        "completedSkills": "Hiển thị kỹ năng hoàn thành",
+        "certificates": "Hiển thị chứng chỉ",
+        "projects": "Hiển thị dự án"
+      },
+      "sourceSummaryTitle": "Nguồn dữ liệu đang dùng",
+      "sourceSummarySubtitle": "Hồ sơ hiện ưu tiên dữ liệu chuẩn từ máy chủ, sau đó bổ sung bằng tín hiệu từ hồ sơ hiện tại và các JD đã phân tích.",
+      "sourceCanonical": "Hồ sơ hiện tại từ máy chủ",
+      "sourceProfile": "Kỹ năng tự thêm / hồ sơ hiện tại",
+      "sourceJd": "Kỹ năng suy luận từ JD đã phân tích",
+      "sourceCanonicalCount": "Nguồn dữ liệu chuẩn được ưu tiên khi tự động điền.",
+      "sourceJdCount": "Bổ sung khi JD đã phân tích cho thấy thêm kỹ năng phù hợp.",
+      "sourceManualCount": "Giữ lại kỹ năng bạn tự thêm trong trình chỉnh sửa hiện tại.",
+      "pending": "Đang chờ máy chủ",
+      "skillSource": {
+        "backend": "máy chủ",
+        "jd-inferred": "suy luận từ JD",
+        "manual": "tự thêm"
+      },
+      "sourceExternalPending": "Bộ kết nối hồ sơ ngoài (đang chờ API / bộ kết nối)",
+      "sourceRoadmapPending": "Các nút lộ trình đã hoàn thành (sẽ bật khi máy chủ cung cấp riêng)",
+      "sourceDisclosure": "Các nguồn đang chờ chưa được tự động nhập trong bản giao diện hiện tại, nhưng vẫn được hiển thị để phản ánh đúng phạm vi FR6.1/FR6.4."
+    },
+    "preview": {
+      "title": "Xem trước trực tiếp",
+      "subtitle": "Phần này phản ánh những gì người xem sẽ thấy trên hồ sơ công khai của bạn.",
+      "headlineFallback": "Hãy thêm tiêu đề để giới thiệu vai trò mục tiêu của bạn.",
+      "bioFallback": "Viết mô tả ngắn về thế mạnh, mục tiêu và kinh nghiệm của bạn.",
+      "publicUrl": "URL công khai",
+      "visibilityVisible": "đang hiện",
+      "visibilityHidden": "đang ẩn",
+      "skillsVisibleCount": "{{count}} kỹ năng sẽ xuất hiện trên trang công khai.",
+      "skillsHiddenHint": "Danh sách kỹ năng hiện đang bị ẩn khỏi trang công khai.",
+      "certificatesVisibleCount": "{{count}} chứng chỉ đang hiển thị công khai sau khi lọc trạng thái từng mục.",
+      "certificatesHiddenHint": "Toàn bộ phần chứng chỉ hiện đang bị ẩn khỏi trang công khai.",
+      "projectsVisibleCount": "{{count}} dự án đang hiển thị công khai sau khi lọc trạng thái từng mục.",
+      "projectsHiddenHint": "Toàn bộ phần dự án hiện đang bị ẩn khỏi trang công khai.",
+      "disclosure": "Bản xem trước này phản ánh cả trạng thái hiển thị của từng phần và từng chứng chỉ / dự án.",
+      "updatedAt": "Cập nhật gần nhất: {{date}}",
+      "copyUrl": "Sao chép URL",
+      "copySuccess": "Đã sao chép URL hồ sơ công khai.",
+      "copyError": "Không thể sao chép URL hồ sơ công khai."
+    },
+    "autoPopulate": {
+      "cta": "Điền từ phân tích",
+      "loading": "Đang điền...",
+      "success": "Đã cập nhật thông tin hồ sơ từ dữ liệu gần nhất.",
+      "error": "Hiện chưa thể tự động điền hồ sơ.",
+      "defaultHeadline": "Ứng viên kỹ sư phần mềm đang xây dựng bộ kỹ năng sẵn sàng đi làm.",
+      "defaultBio": "{{name}} là học viên Edu Nexus đang chuẩn bị cho cơ hội thực tập. Liên hệ: {{email}}."
+    },
+    "certificates": {
+      "title": "Chứng chỉ",
+      "subtitle": "Lưu trữ huy hiệu, thành tựu và minh chứng học tập của bạn.",
+      "add": "Thêm chứng chỉ",
+      "added": "Đã thêm chứng chỉ thành công.",
+      "empty": "Chưa có chứng chỉ nào.",
+      "validation": "Tên chứng chỉ, đơn vị cấp và ngày cấp là bắt buộc.",
+      "fields": {
+        "name": "Tên chứng chỉ",
+        "issuer": "Đơn vị cấp",
+        "credentialUrl": "URL chứng chỉ"
+      }
+    },
+    "projects": {
+      "title": "Dự án",
+      "subtitle": "Trưng bày các dự án giúp bạn nổi bật với vị trí mục tiêu.",
+      "add": "Thêm dự án",
+      "added": "Đã thêm dự án thành công.",
+      "empty": "Chưa có dự án nào.",
+      "validation": "Tên dự án, mô tả và ngày bắt đầu là bắt buộc.",
+      "fields": {
+        "title": "Tên dự án",
+        "description": "Mô tả dự án",
+        "techStack": "Công nghệ sử dụng (phân tách bằng dấu phẩy)",
+        "demoUrl": "URL demo",
+        "repoUrl": "URL kho mã nguồn"
+      }
+    },
+    "actions": {
+      "delete": "Xoá",
+      "save": "Lưu hồ sơ",
+      "saveItem": "Lưu mục",
+      "show": "Hiện",
+      "hide": "Ẩn"
+    }
+  },
+  "public": {
+    "title": "Hồ sơ {{slug}}",
+    "subtitle": "Hồ sơ công khai dành cho học viên Edu Nexus.",
+    "badge": "HỒ SƠ CÔNG KHAI",
+    "headlineFallback": "Chủ hồ sơ chưa thêm tiêu đề.",
+    "bioFallback": "Chủ hồ sơ chưa thêm phần giới thiệu.",
+    "emptySkills": "Chủ hồ sơ chưa công bố kỹ năng nào.",
+    "hiddenSkills": "Chủ hồ sơ hiện đang ẩn phần kỹ năng.",
+    "certificatesTitle": "Chứng chỉ",
+    "projectsTitle": "Dự án",
+    "emptyCertificates": "Chưa có chứng chỉ nào được công bố.",
+    "hiddenCertificates": "Chủ hồ sơ hiện đang ẩn phần chứng chỉ.",
+    "emptyProjects": "Chưa có dự án nào được công bố.",
+    "hiddenProjects": "Chủ hồ sơ hiện đang ẩn phần dự án.",
+    "visibility": {
+      "skillsTitle": "Kỹ năng",
+      "certificatesTitle": "Chứng chỉ",
+      "projectsTitle": "Dự án",
+      "visible": "Đang hiển thị",
+      "hidden": "Đang ẩn",
+      "publicItems": "{{count}} mục công khai",
+      "disclosure": "Trang công khai chỉ hiển thị các phần đang bật và các mục đã được đánh dấu hiển thị công khai."
+    },
+    "notFoundTitle": "Không tìm thấy hồ sơ",
+    "notFoundSubtitle": "Liên kết này chưa có dữ liệu hoặc hồ sơ chưa được tạo."
+  }
+}

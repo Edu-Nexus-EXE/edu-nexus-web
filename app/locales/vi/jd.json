@@ -7,56 +7,194 @@
       "jobDescription": "Mô tả công việc",
       "jobDescriptionDesc": "Nhập URL hoặc dán nội dung JD",
       "tabText": "Dán văn bản",
+      "recommendedBadge": "Khuyến nghị",
       "tabUrl": "Dùng URL",
+      "urlNote": "⚠️ Một số trang tuyển dụng có thể không hỗ trợ. Nếu phân tích bị lỗi, hãy chuyển sang tab \"{{tabText}}\" và dán nội dung JD vào đó.",
+      "fetchBtn": "Lấy nội dung",
+      "fetching": "Đang lấy...",
       "urlPlaceholder": "https://...",
       "textPlaceholder": "Dán mô tả công việc vào đây...",
       "ready": "Sẵn sàng để nộp",
-      "readyToSubmit": "Sẵn sàng gửi",
-      "fetch": "Lấy nội dung",
-      "fetching": "...",
       "next": "Tiếp theo",
       "nextDesc": "Sau khi nộp, hệ thống sẽ phân tích JD",
       "step1Title": "1) Phân tích JD",
       "step1Desc": "Trang chi tiết JD sẽ tự cập nhật khi hoàn tất.",
       "step2Title": "2) Chọn lộ trình",
-      "step2Desc": "Chọn Lộ trình A (CV) hoặc Lộ trình B (Assessment).",
+      "step2Desc": "Chọn Lộ trình A (CV) hoặc Lộ trình B (bài đánh giá).",
       "submit": "Nộp JD",
       "submitting": "Đang nộp...",
+      "flow": {
+        "stats": {
+          "input": "Đầu vào",
+          "textMode": "Chế độ văn bản",
+          "urlMode": "Chế độ URL",
+          "payload": "Dữ liệu gửi đi",
+          "readyToSendUrl": "Sẵn sàng gửi URL",
+          "waitingForUrl": "Đang chờ URL",
+          "charactersDetected": "Đã nhận {{count}} ký tự",
+          "aiParsing": "AI phân tích",
+          "submittingToBackend": "Đang gửi lên máy chủ...",
+          "detailAutoUpdate": "Trang chi tiết JD sẽ tự cập nhật sau khi nộp"
+        },
+        "timeline": {
+          "step1Hint": "Chuẩn bị nội dung JD bạn muốn phân tích.",
+          "step2Title": "Nộp JD",
+          "step2Hint": "Gửi yêu cầu tới máy chủ và khởi động quy trình phân tích.",
+          "step3Hint": "Theo dõi trang chi tiết JD cập nhật rồi chọn lộ trình phù hợp."
+        },
+        "submissionStatus": "Trạng thái nộp",
+        "continueWithUrl": "Dán URL tuyển dụng để tiếp tục",
+        "continueWithText": "Dán nội dung JD để tiếp tục",
+        "urlHelp": "Phù hợp khi JD nằm trên website công ty hoặc trang tuyển dụng.",
+        "textHelp": "Phù hợp khi bạn đã copy toàn bộ JD từ email, PDF hoặc job board."
+      },
       "errors": {
-        "missingJdId": "Submit JD thành công nhưng không nhận được jdId từ BE",
-        "failed": "Submit JD thất bại"
-      }
+        "missingJdId": "Nộp JD thành công nhưng không nhận được mã JD từ máy chủ",
+        "emptyFetchResult": "Không lấy được nội dung JD từ URL này.",
+        "fetchFailed": "Không thể lấy nội dung JD từ URL",
+        "failed": "Nộp JD thất bại",
+        "quotaExceeded": "Bạn đã đạt hạn mức nộp JD ({{used}}/{{limit}}). Nâng cấp gói để nộp thêm JD."
+      },
+      "quotaExceeded": "Bạn đã đạt hạn mức JD của gói Miễn phí. Nâng cấp để nộp thêm."
     },
     "detail": {
-      "badge": "JOB DESCRIPTION",
+      "badge": "MÔ TẢ CÔNG VIỆC",
       "titleFallback": "Chi tiết JD",
       "jdId": "JD: {{jdId}}",
       "overview": "Tổng quan",
       "loading": "Đang tải...",
       "noData": "Không có dữ liệu",
-      "pathId": "Assessment path",
+      "pathId": "Lộ trình đánh giá",
       "createdAt": "Ngày tạo",
       "actions": "Thao tác",
-      "createPath": "Tạo assessment path",
-      "creatingPath": "Đang tạo path...",
-      "startAssessment": "Bắt đầu assessment",
-      "uploadCv": "Tải CV lên",
-      "skills": {
-        "hard": "Hard skills",
-        "soft": "Soft skills"
+      "overviewSummary": "Tóm tắt phân tích JD",
+      "overviewMeta": "Thông tin chính và các nhóm kỹ năng được AI trích xuất từ JD.",
+      "createdAtHint": "Thời điểm JD được tạo trong hệ thống",
+      "seniorityLevelLabel": "Cấp độ kinh nghiệm",
+      "salaryLabel": "Mức lương",
+      "seniorityLevel": {
+        "fresher": "Fresher",
+        "junior": "Junior",
+        "mid": "Mid-level",
+        "senior": "Senior",
+        "unknown": "Chưa xác định"
       },
-      "pathSelected": "Path: {{pathType}}",
+      "salaryNotSpecified": "Nhà tuyển dụng chưa công bố",
+      "salaryRange": "{{min}} - {{max}} {{currency}}",
+      "salaryFrom": "Từ {{min}} {{currency}}",
+      "salaryUpTo": "Lên đến {{max}} {{currency}}",
+      "skillsMeta": {
+        "hard": "Các kỹ năng chuyên môn và công cụ quan trọng cho vị trí này.",
+        "soft": "Các kỹ năng giao tiếp, phối hợp và tư duy cần có."
+      },
+      "mandatory": "Bắt buộc",
+      "optional": "Khuyến nghị",
+      "createPath": "Tạo lộ trình đánh giá",
+      "creatingPath": "Đang tạo lộ trình...",
+      "startAssessment": "Bắt đầu bài đánh giá",
+      "uploadCv": "Tải CV lên",
+      "viewCv": "Xem CV đã tải",
+      "continueCv": "Tiếp tục với CV",
+      "viewAssessmentResults": "Xem kết quả bài đánh giá",
+      "continueAssessment": "Tiếp tục làm bài",
+      "retakeAssessment": "Làm lại bài đánh giá",
+      "resetPath": "Chọn lại lộ trình",
+      "deletingPath": "Đang xoá lộ trình...",
+      "deleteJd": "Xoá JD này",
+      "deletingJd": "Đang xoá JD...",
+      "dangerZone": "Vùng thao tác nguy hiểm",
+      "deleteJdHint": "Xoá mềm JD này để giải phóng ô hạn mức và ẩn nó khỏi danh sách đang dùng.",
+      "skills": {
+        "hard": "Kỹ năng cứng",
+        "soft": "Kỹ năng mềm"
+      },
+      "pathSelected": "Lộ trình: {{pathType}}",
       "waitParse": "Vui lòng chờ AI phân tích JD xong để chọn đường đánh giá.",
-      "pathLocked": "Đã chọn path. (Đổi path sau khi có Gap Analysis sẽ bị giới hạn theo spec.)",
-      "chooseCv": "Path A — Tải CV lên",
-      "chooseAssessment": "Path B — Đánh giá kỹ năng",
+      "pathLocked": "Đã chọn lộ trình. (Đổi lộ trình sau khi có phân tích khoảng cách sẽ bị giới hạn theo đặc tả.)",
+      "resetLockedTooltip": "Không thể đổi lộ trình nữa vì JD này đã có phân tích khoảng cách.",
+      "pathAssessmentHelper": "Lộ trình đánh giá đã sẵn sàng. Bạn có thể vào làm bài hoặc xem lại tiến trình hiện tại.",
+      "pathAssessmentDoneHelper": "JD này đã có kết quả bài đánh giá. Mở lại để xem chi tiết và tiếp tục các bước tiếp theo.",
+      "pathAssessmentInProgressHelper": "Bạn đã bắt đầu bài đánh giá cho JD này. Mở lại để tiếp tục làm bài.",
+      "pathAssessmentExpiredHelper": "Bài đánh giá cũ đã hết hạn. Bạn có thể vào lại để tạo phiên mới và làm lại.",
+      "pathCvReadyHelper": "Đã có CV cho lộ trình này. Mở lại để xem kết quả phân tích và tiếp tục luồng xử lý.",
+      "pathCvProcessingHelper": "CV đã được tải lên. Mở lại để theo dõi trạng thái phân tích hoặc xem kết quả mới nhất.",
+      "pathCvFailedHelper": "CV đã tải lên nhưng phân tích chưa thành công. Mở lại để xem lỗi và thử tải lên lại.",
+      "pathCvMissingHelper": "Lộ trình CV đã được chọn nhưng chưa có tệp nào được tải lên. Bấm vào để tải CV lên ngay.",
+      "confirmDeletePath": "Bạn có chắc muốn xoá lộ trình đánh giá hiện tại để chọn lại lộ trình khác không?",
+      "confirmDeleteJd": "Bạn có chắc muốn xoá JD này để giải phóng ô hạn mức không?",
+      "deletePath": "Xoá lộ trình",
+      "cvStatus": {
+        "loading": "Đang kiểm tra trạng thái CV...",
+        "missing": "Chưa tải CV lên",
+        "pending": "CV đang chờ xử lý",
+        "processing": "CV đang được phân tích",
+        "completed": "CV đã sẵn sàng",
+        "failed": "Phân tích CV thất bại"
+      },
+      "assessmentStatus": {
+        "loading": "Đang kiểm tra trạng thái bài đánh giá...",
+        "not_started": "Chưa làm bài đánh giá",
+        "in_progress": "Đang làm bài đánh giá",
+        "submitted": "Đã có kết quả bài đánh giá",
+        "expired": "Bài đánh giá đã hết hạn"
+      },
+      "chooseCv": "Lộ trình A — Tải CV lên",
+      "chooseCvDesc": "Dùng CV hiện có để hệ thống phân tích kỹ năng, kinh nghiệm và so sánh với JD.",
+      "chooseAssessment": "Lộ trình B — Đánh giá kỹ năng",
+      "chooseAssessmentDesc": "Làm bài đánh giá để hệ thống đo mức độ phù hợp trước khi sinh phân tích khoảng cách.",
+      "choosePathTitle": "Chọn cách tiếp tục với JD này",
+      "choosePathHint": "Bạn có thể chọn một trong hai lộ trình bên dưới. Sau khi chọn, hệ thống sẽ khoá lộ trình hiện tại cho đến khi bạn đổi lại.",
+      "parseStatus": {
+        "pending": "Đang xếp hàng phân tích",
+        "processing": "AI đang phân tích JD",
+        "completed": "Phân tích hoàn tất",
+        "failed": "Phân tích thất bại"
+      },
       "status": {
         "ready": "Sẵn sàng làm bài",
-        "missingPath": "Chưa có assessment path"
+        "missingPath": "Chưa có lộ trình đánh giá"
+      },
+      "flow": {
+        "step1Title": "JD đã được nộp",
+        "step1Hint": "Máy chủ đã nhận yêu cầu và tạo bản ghi JD thành công.",
+        "step2Title": "AI đang phân tích",
+        "step2ProcessingHint": "Hệ thống vẫn đang trích xuất kỹ năng và siêu dữ liệu từ JD.",
+        "step2DoneHint": "Phân tích đã hoàn tất và bản tóm tắt JD đã sẵn sàng.",
+        "step3Title": "Chọn lộ trình",
+        "step3ReadyHint": "Chọn CV hoặc bài đánh giá để tiếp tục Sprint 1.",
+        "step3LockedHint": "Bước này sẽ tự mở khi quá trình phân tích hoàn tất."
+      },
+      "pipeline": {
+        "title": "Tiến trình tổng thể",
+        "jd": {
+          "label": "Phân tích JD",
+          "doneHint": "JD đã được nộp và phân tích xong."
+        },
+        "path": {
+          "label": "Lộ trình đánh giá",
+          "doneHint": "Đã chọn lộ trình (CV hoặc bài đánh giá).",
+          "currentHint": "Chọn CV hoặc bài đánh giá để tiếp tục.",
+          "lockedHint": "Mở khi JD phân tích xong."
+        },
+        "gap": {
+          "label": "Phân tích khoảng cách",
+          "doneHint": "Xem báo cáo phân tích khoảng cách của bạn.",
+          "currentHint": "Chạy phân tích khoảng cách kỹ năng.",
+          "lockedHint": "Mở sau khi đã chọn lộ trình."
+        },
+        "roadmap": {
+          "label": "Lộ trình học",
+          "doneHint": "Xem lộ trình học đang hoạt động.",
+          "currentHint": "Tạo lộ trình học từ phân tích khoảng cách.",
+          "lockedHint": "Mở sau khi có phân tích khoảng cách."
+        }
       },
       "errors": {
         "loadFailed": "Không thể tải JD",
-        "createPathFailed": "Không thể tạo assessment path"
+        "createPathFailed": "Không thể tạo lộ trình đánh giá",
+        "deletePathFailed": "Không thể xoá lộ trình đánh giá",
+        "cannotResetAfterGap": "Không thể đổi lộ trình: JD này đã có phân tích khoảng cách.",
+        "deleteJdFailed": "Không thể xoá JD"
       }
     }
   }

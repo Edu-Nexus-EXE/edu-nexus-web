@@ -40,7 +40,15 @@ export function LearningPathTable() {
       {loading ? (
         <div className='p-6 text-sm text-muted-foreground'>{t('learningPath.loading')}</div>
       ) : tracks.length === 0 ? (
-        <div className='p-6 text-sm text-muted-foreground'>{t('learningPath.empty')}</div>
+        <div className='p-6'>
+          <div className='rounded-2xl border border-dashed border-border bg-muted/10 px-6 py-10 text-center'>
+            <div className='mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
+              <span className='material-symbols-outlined'>school</span>
+            </div>
+            <p className='text-sm font-semibold text-foreground'>{t('learningPath.empty')}</p>
+            <p className='mt-2 text-sm text-muted-foreground'>{t('learningPath.loading')}</p>
+          </div>
+        </div>
       ) : (
         <div className='overflow-x-auto'>
           <table className='w-full text-left border-collapse'>
@@ -108,13 +116,13 @@ export function LearningPathTable() {
       <div className='px-6 py-4 bg-muted/30 border-t border-border flex items-center justify-between'>
         <span className='text-xs font-medium text-muted-foreground'>{t('learningPath.table.footer', { count: tracks.length })}</span>
         <div className='flex gap-1'>
-          <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
+          <button type='button' aria-label='Previous page' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
             <span className='material-symbols-outlined text-sm'>chevron_left</span>
           </button>
           <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-primary-foreground text-xs font-bold'>1</button>
           <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'>2</button>
           <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'>3</button>
-          <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
+          <button type='button' aria-label='Next page' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
             <span className='material-symbols-outlined text-sm'>chevron_right</span>
           </button>
         </div>

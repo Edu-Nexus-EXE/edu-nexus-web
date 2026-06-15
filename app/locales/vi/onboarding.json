@@ -5,11 +5,13 @@
   "step": "Bước",
   "questionBadge": "Câu hỏi",
   "prev": "Quay lại",
+  "backToDashboard": "Về dashboard",
   "next": "Tiếp",
   "submitting": "Đang lưu...",
   "finish": "Hoàn thành",
   "errors": {
     "completeAll": "Vui lòng hoàn thành tất cả câu hỏi trước khi nộp.",
+    "loadFailed": "Không tải được dữ liệu onboarding. Vui lòng đăng nhập lại.",
     "submitFailed": "Nộp onboarding thất bại."
   },
   "questions": {
@@ -37,7 +39,7 @@
         "explore": "Khám phá lộ trình học tập",
         "roadmap": "Xây dựng lộ trình cá nhân",
         "improveSkill": "Cải thiện kỹ năng cụ thể",
-        "buildPortfolio": "Xây dựng portfolio / CV"
+        "buildPortfolio": "Xây dựng hồ sơ năng lực / CV"
       }
     },
     "weeklyStudyHours": {
@@ -64,7 +66,7 @@
         "hardSkill": "Kỹ năng chuyên môn (coding, data...)",
         "softSkill": "Kỹ năng mềm (giao tiếp, leadership...)",
         "certificate": "Chứng chỉ / Credential",
-        "portfolioProject": "Dự án Portfolio"
+        "portfolioProject": "Dự án hồ sơ năng lực"
       }
     },
     "learningBudget": {

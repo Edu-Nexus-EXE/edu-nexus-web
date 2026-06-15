@@ -5,6 +5,7 @@
     "prices": "Giá cả",
     "contact": "Liên hệ",
     "login": "Đăng nhập",
+    "dashboard": "Bảng điều khiển",
     "getStarted": "Bắt đầu"
   },
   "hero": {
@@ -129,8 +130,8 @@
     "features": {
       "title": "Quyền lợi đã mở khóa:",
       "list": [
-        { "name": "AI Gap Analysis:", "desc": " Phân tích lỗ hổng kiến thức thông minh." },
-        { "name": "Custom Roadmap:", "desc": " Lộ trình học tập cá nhân hóa 1:1." },
+        { "name": "Phân tích khoảng cách bằng AI:", "desc": " Phân tích lỗ hổng kiến thức thông minh." },
+        { "name": "Lộ trình cá nhân hoá:", "desc": " Lộ trình học tập cá nhân hóa 1:1." },
         { "name": "Priority Support:", "desc": " Hỗ trợ giải đáp thắc mắc ưu tiên 24/7." }
       ]
     },

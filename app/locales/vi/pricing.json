@@ -4,40 +4,6 @@
     "title": "Bảng giá dịch vụ Edu-Nexus",
     "subtitle": "Chọn gói dịch vụ phù hợp để tối ưu hóa hành trình học tập và sự nghiệp của bạn với công nghệ AI hàng đầu."
   },
-  "plans": {
-    "perMonth": "/tháng",
-    "free": {
-      "name": "Cơ bản",
-      "price": "0đ",
-      "description": "Dành cho cá nhân mới bắt đầu khám phá lộ trình.",
-      "button": "Bắt đầu miễn phí",
-      "f1": "Phân tích CV cơ bản",
-      "f2": "Lộ trình học tập mẫu",
-      "f3": "Truy cập cộng đồng",
-      "disabled1": "Cố vấn AI 24/7"
-    },
-    "pro": {
-      "name": "Chuyên nghiệp",
-      "badge": "Phổ biến nhất",
-      "price": "50.000đ",
-      "description": "Giải pháp tối ưu để bứt phá sự nghiệp nhanh chóng.",
-      "button": "Nâng cấp ngay",
-      "f1": "Phân tích CV nâng cao (AI)",
-      "f2": "Lộ trình tùy chỉnh chuyên sâu",
-      "f3": "Cố vấn AI 24/7 không giới hạn",
-      "f4": "Khớp lệnh học bổng thông minh"
-    },
-    "enterprise": {
-      "name": "Doanh nghiệp",
-      "price": "Liên hệ",
-      "description": "Dành cho các tổ chức giáo dục và đào tạo quy mô lớn.",
-      "button": "Liên hệ chúng tôi",
-      "f1": "Quản lý đào tạo tập trung",
-      "f2": "API tích hợp hệ thống",
-      "f3": "Báo cáo phân tích chuyên sâu",
-      "f4": "Hỗ trợ kỹ thuật ưu tiên 1:1"
-    }
-  },
   "faq": {
     "title": "Câu hỏi thường gặp",
     "q1": "Tôi có thể hủy gói đăng ký bất cứ lúc nào không?",

@@ -1,31 +1,33 @@
 {
   "brand": "Edu-Nexus",
   "sidebar": {
-    "adminControl": "Admin Control",
-    "dashboard": "Dashboard",
-    "userManagement": "User Management",
+    "adminControl": "Bảng quản trị",
+    "dashboard": "Tổng quan",
+    "userManagement": "Quản lý người dùng",
     "resourceManagement": "Quản lý Tài nguyên",
-    "revenue": "Revenue",
-    "aiCosts": "AI Costs",
-    "affiliateStats": "Affiliate Stats",
-    "ragDocuments": "RAG Documents",
+    "revenue": "Doanh thu",
+    "aiCosts": "Chi phí AI",
+    "affiliateStats": "Thống kê liên kết",
+    "ragDocuments": "Tài liệu RAG",
+    "skillsQueue": "Hàng đợi kỹ năng",
     "subscriptions": "Cấu hình gói dịch vụ",
-    "jdLogs": "JD Logs",
-    "generateReport": "Generate Report",
-    "support": "Support",
-    "logout": "Logout"
+    "jdLogs": "Nhật ký JD",
+    "generateReport": "Tạo báo cáo",
+    "support": "Hỗ trợ",
+    "logout": "Đăng xuất"
   },
   "header": {
     "title": "Tổng quan hệ thống",
     "subtitle": "Số liệu thống kê theo thời gian thực.",
     "searchPlaceholder": "Tìm kiếm hệ thống...",
-    "defaultUser": "Admin Manager",
-    "defaultPlan": "System Controller"
+    "defaultUser": "Quản trị viên",
+    "defaultPlan": "Điều phối hệ thống",
+    "viewAsUser": "Xem giao diện người dùng"
   },
   "stats": {
-    "totalUsers": "Total users",
-    "usersByTier": "Users by tier",
-    "totalJdSubmitted": "Total JD submitted",
+    "totalUsers": "Tổng người dùng",
+    "usersByTier": "Người dùng theo gói",
+    "totalJdSubmitted": "Tổng JD đã nộp",
     "weeklyIncrease": "+5% TUẦN NÀY",
     "conversionRate": "35% CHUYỂN ĐỔI",
     "monthlyIncrease": "+12% THÁNG NÀY",
@@ -41,27 +43,31 @@
     "paymentSources": "Nguồn thanh toán",
     "recentTransactions": "Giao dịch gần đây",
     "email": "Email",
-    "amount": "Amount",
-    "method": "Method",
+    "amount": "Số tiền",
+    "method": "Phương thức",
     "viewAll": "Xem tất cả giao dịch",
     "orders": {
-      "title": "Payment Orders",
+      "title": "Đơn thanh toán",
       "subtitle": "Quản lý và theo dõi các giao dịch thanh toán trong hệ thống.",
       "exportCsv": "Xuất CSV",
       "totalSuccess": "Tổng giao dịch thành công",
       "totalRevenue": "Tổng doanh thu",
       "filter": {
         "status": "Trạng thái",
-        "provider": "Provider",
+        "provider": "Nhà cung cấp",
         "fromDate": "Từ ngày",
         "toDate": "Đến ngày",
-        "searchEmail": "Tìm kiếm email"
+        "searchEmail": "Tìm kiếm email",
+        "all": "Tất cả",
+        "completed": "Hoàn tất",
+        "pending": "Đang chờ",
+        "failed": "Thất bại"
       },
       "table": {
         "date": "Ngày",
-        "user": "User",
+        "user": "Người dùng",
         "amount": "Số tiền",
-        "provider": "Provider",
+        "provider": "Nhà cung cấp",
         "code": "Mã",
         "status": "Trạng thái"
       },
@@ -69,32 +75,36 @@
     }
   },
   "aiCost": {
-    "title": "AI Cost by Pipeline",
+    "title": "Chi phí AI theo quy trình",
     "monthLabel": "Tháng",
     "totalLabel": "Tổng",
-    "pipelineA": "Pipeline A",
-    "pipelineB": "Pipeline B",
+    "pipelineA": "Quy trình A",
+    "pipelineB": "Quy trình B",
     "currentMonth": "Tháng hiện tại",
     "allTime": "Tất cả thời gian",
     "netProfitTitle": "Lợi nhuận ròng",
     "totalRevenue": "Tổng doanh thu",
     "totalAiCost": "Chi phí AI (Tổng)",
-    "netProfit": "Lợi nhuận (Net)",
+    "netProfit": "Lợi nhuận ròng",
     "financialReport": "Xem báo cáo tài chính"
   },
   "affiliate": {
-    "title": "Affiliate Stats",
+    "title": "Thống kê liên kết",
     "phase": "(Phase 1)",
     "subtitle": "Dữ liệu liên kết chương trình đối tác",
-    "totalClicks": "Total Clicks",
-    "conversions": "Conversions",
-    "revenue": "Revenue",
-    "noData": "Chưa có dữ liệu thống kê"
+    "totalClicks": "Tổng lượt nhấp",
+    "conversions": "Chuyển đổi",
+    "revenue": "Doanh thu",
+    "noData": "Chưa có dữ liệu thống kê",
+    "placeholderTitle": "Khu vực liên kết đang chờ số liệu từ máy chủ",
+    "placeholderDescription": "Giao diện đã hoàn thiện khung quản trị cho mô-đun liên kết. Khi máy chủ cung cấp số liệu và nhật ký lượt nhấp, khu vực này sẽ hiển thị số liệu thật cùng phần xem chi tiết tương ứng.",
+    "placeholderCta": "Theo dõi việc còn lại của mô-đun liên kết",
+    "phaseNote": "Hiện đang giữ ở khung sẵn sàng cho giai đoạn này để tránh hiển thị số liệu giả."
   },
   "resources": {
     "title": "Quản lý Tài nguyên",
     "breadcrumb": "Tài nguyên học thuật",
-    "addResource": "Thêm Resource",
+    "addResource": "Thêm tài nguyên",
     "filter": {
       "search": "Tìm theo tiêu đề, tác giả...",
       "type": "Loại tài nguyên",
@@ -126,27 +136,32 @@
       "totalIncrease": "+12% tháng này",
       "pending": "Đang chờ duyệt",
       "pendingDesc": "Yêu cầu mới cần xử lý",
-      "freeRatio": "Tỷ lệ Tài liệu Free"
+      "freeRatio": "Tỷ lệ tài nguyên miễn phí"
     },
     "banner": {
       "title": "Hệ thống Tối ưu hóa",
       "subtitle": "Edu-Bridge cam kết cung cấp nguồn tài nguyên học thuật chính thống, được kiểm duyệt nghiêm ngặt bởi đội ngũ chuyên gia."
+    },
+    "subtitle": "Quản lý tài nguyên học tập và duyệt mục do AI tạo.",
+    "actions": {
+      "reject": "Từ chối",
+      "approve": "Duyệt"
     }
   },
   "rag": {
-    "title": "Quản lý RAG Documents",
+    "title": "Quản lý tài liệu RAG",
     "description": "Quản lý kho tri thức của hệ thống bằng cách tải lên các tài liệu PDF để trích xuất thông tin thông qua RAG.",
-    "uploadButton": "Upload tài liệu",
+    "uploadButton": "Tải tài liệu lên",
     "table": {
       "title": "Tiêu đề",
       "sourceType": "Loại nguồn",
-      "chunks": "Chunks",
+      "chunks": "Đoạn dữ liệu",
       "status": "Trạng thái",
       "actions": "Thao tác",
       "uploadedAt": "Tải lên: ",
-      "statusCompleted": "completed",
-      "statusProcessing": "processing",
-      "statusPending": "pending"
+      "statusCompleted": "hoàn tất",
+      "statusProcessing": "đang xử lý",
+      "statusPending": "đang chờ"
     },
     "form": {
       "title": "Thêm tài liệu mới",
@@ -162,14 +177,17 @@
         "slide": "Slide bài giảng",
         "other": "Khác"
       },
-      "skills": "Skill IDs liên quan",
-      "skillsPlaceholder": "Gõ để tìm skill...",
+      "skills": "ID kỹ năng liên quan",
+      "skillsPlaceholder": "Gõ để tìm kỹ năng...",
       "submit": "Hoàn tất tải lên"
     },
     "summary": {
       "title": "Tóm tắt hệ thống",
       "totalDocs": "Tổng tài liệu",
-      "totalChunks": "Tổng Chunks"
+      "totalChunks": "Tổng đoạn dữ liệu"
+    },
+    "actions": {
+      "delete": "Xoá"
     }
   },
   "users": {
@@ -182,10 +200,11 @@
       "searchPlaceholder": "Email hoặc tên...",
       "tierLabel": "Phân hạng (Tier)",
       "tiers": {
-        "all": "Tất cả các hạng",
-        "free": "Free",
+        "all": "Tất cả các gói",
+        "free": "Miễn phí",
+        "student": "Sinh viên",
         "pro": "Pro",
-        "enterprise": "Enterprise"
+        "enterprise": "Doanh nghiệp"
       },
       "statusLabel": "Trạng thái Khóa",
       "statuses": {
@@ -208,8 +227,8 @@
       "indefinite": "Vô thời hạn",
       "normal": "Bình thường",
       "banned": "Đã khóa",
-      "banAction": "Ban Account",
-      "unbanAction": "Unban",
+      "banAction": "Khóa tài khoản",
+      "unbanAction": "Mở khóa",
       "viewAction": "Xem chi tiết"
     },
     "pagination": "Đang hiển thị <1>{{start}}</1> trên <2>{{total}}</2> người dùng"
@@ -219,10 +238,16 @@
     "subtitle": "Thiết lập hạn mức và quyền lợi cho từng cấp bậc tài khoản người dùng. Những thay đổi này sẽ áp dụng ngay lập tức cho các thuê bao mới.",
     "default": "Mặc định",
     "popular": "Phổ biến nhất",
-    "quota": "Hạn mức JD (JD Quota)",
+    "quota": "Hạn mức JD",
     "roadmap": "Lộ trình hoạt động",
-    "assessment": "Lượt kiểm tra (Assessment)",
+    "assessment": "Lượt đánh giá",
     "tracking": "Theo dõi nghề nghiệp",
+    "priceMonthly": "Giá / tháng",
+    "portfolioProjects": "Dự án hồ sơ",
+    "portfolioCertificates": "Chứng chỉ hồ sơ",
+    "fullGapHistory": "Toàn bộ lịch sử phân tích khoảng cách",
+    "activeTier": "Gói đang hoạt động",
+    "saved": "Đã lưu {{name}}.",
     "save": "Lưu thay đổi",
     "unlimited": "(-1 = Không giới hạn)",
     "alertTitle": "Lưu ý về thay đổi hạ tầng",
@@ -231,12 +256,12 @@
     "changelog": "Nhật ký thay đổi"
   },
   "jdLogs": {
-    "title": "JD Logs",
+    "title": "Nhật ký JD",
     "subtitle": "Theo dõi và quản lý trạng thái phân tích mô tả công việc.",
     "newAnalysis": "Phân tích mới",
     "breadcrumb": {
       "system": "Hệ thống",
-      "current": "JD Logs"
+      "current": "Nhật ký JD"
     },
     "filter": {
       "searchPlaceholder": "Tìm kiếm JD, Email...",
@@ -244,8 +269,8 @@
     },
     "table": {
       "date": "Ngày",
-      "email": "User Email",
-      "jdTitle": "JD Title",
+      "email": "Email người dùng",
+      "jdTitle": "Tiêu đề JD",
       "source": "Nguồn",
       "status": "Trạng thái",
       "actions": "Hành động"
@@ -260,30 +285,35 @@
       "totalProcessed": "Tổng JD đã xử lý",
       "success24h": "Thành công (24h)",
       "systemErrors": "Lỗi hệ thống"
+    },
+    "status": {
+      "failed": "Thất bại",
+      "completed": "Hoàn tất",
+      "pending": "Đang chờ"
     }
   },
   "jdLogDetail": {
     "breadcrumb": {
       "admin": "Admin",
-      "failedLogs": "JD Failed Logs",
+      "failedLogs": "Nhật ký JD lỗi",
       "detail": "Chi tiết lỗi #{{id}}"
     },
     "back": "Quay lại",
     "status": {
-      "failed": "Failed"
+      "failed": "Thất bại"
     },
     "recordedAt": "Ghi nhận hệ thống vào lúc {{time}}",
     "userInfo": {
       "title": "Thông tin người dùng",
-      "email": "User Email",
-      "logId": "Log ID",
-      "creationDate": "Creation Date"
+      "email": "Email người dùng",
+      "logId": "Mã log",
+      "creationDate": "Ngày tạo"
     },
     "diagnosis": {
       "title": "Chẩn đoán lỗi",
-      "errorType": "Error Type",
-      "technicalMessage": "Technical Message",
-      "retryCount": "Retry Count"
+      "errorType": "Loại lỗi",
+      "technicalMessage": "Thông điệp kỹ thuật",
+      "retryCount": "Số lần thử lại"
     },
     "rawSource": {
       "title": "Dữ liệu đầu vào (Raw Source)",
@@ -307,16 +337,16 @@
       "title": "Thông tin người dùng",
       "createdDate": "Tạo ngày: {{date}}",
       "lastLogin": "Login cuối: {{date}}",
-      "ban": "Ban User",
-      "unban": "Unban User"
+      "ban": "Khóa người dùng",
+      "unban": "Mở khóa người dùng"
     },
     "subscription": {
-      "title": "Subscription Info",
-      "status": "Active",
+      "title": "Thông tin gói",
+      "status": "Đang hoạt động",
       "currentPlan": "Gói hiện tại",
       "startDate": "Ngày bắt đầu",
       "endDate": "Ngày hết hạn",
-      "autoRenew": "Auto-renew",
+      "autoRenew": "Tự gia hạn",
       "yes": "Có",
       "no": "Không",
       "activate": "Kích hoạt Student",
@@ -332,14 +362,65 @@
       "table": {
         "date": "Ngày",
         "amount": "Số tiền",
-        "provider": "Provider",
+        "provider": "Nhà cung cấp",
         "code": "Mã GD",
-        "status": "Status"
-      }
+        "status": "Trạng thái"
+      },
+      "empty": "Chưa có giao dịch nào được ghi nhận."
+    }
+  },
+  "adminCommon": {
+    "loading": "Đang tải dữ liệu...",
+    "empty": "Không có dữ liệu.",
+    "submitting": "Đang gửi...",
+    "pagination": "Trang {{page}} / {{totalPages}} · {{total}} mục",
+    "prev": "Trước",
+    "next": "Sau",
+    "adminAvatar": "Ảnh đại diện quản trị viên"
+  },
+  "adminOverview": {
+    "revenue": "Doanh thu (VND)",
+    "aiCost": "Ước tính chi phí AI",
+    "aiCostBadge": "ƯỚC TÍNH",
+    "activeSubscriptions": "Thuê bao đang hoạt động"
+  },
+  "skillsQueue": {
+    "title": "Hàng đợi duyệt kỹ năng",
+    "subtitle": "Xem duyệt các kỹ năng đang chờ trước khi đưa vào hệ thống.",
+    "helper": "Duyệt để xuất bản kỹ năng, chỉnh siêu dữ liệu trước khi duyệt, hoặc từ chối bằng cách vô hiệu hoá kỹ năng khỏi hàng đợi.",
+    "errors": {
+      "load": "Không thể tải hàng đợi kỹ năng.",
+      "approve": "Không thể duyệt kỹ năng.",
+      "update": "Không thể cập nhật kỹ năng.",
+      "reject": "Không thể từ chối kỹ năng."
+    },
+    "approve": "Duyệt",
+    "reject": "Từ chối",
+    "edit": "Sửa",
+    "save": "Lưu",
+    "cancel": "Huỷ",
+    "noDescription": "Chưa có mô tả.",
+    "uncategorized": "Chưa phân loại",
+    "aiGeneratedDescription": "Kỹ năng được AI tạo từ bộ sinh lộ trình. Quản trị viên cần kiểm tra tên, danh mục và ngành trước khi xuất bản.",
+    "filter": {
+      "search": "Tìm theo tên kỹ năng",
+      "major": "Lọc theo ngành"
+    },
+    "table": {
+      "skill": "Kỹ năng",
+      "category": "Danh mục",
+      "description": "Mô tả",
+      "status": "Trạng thái",
+      "actions": "Thao tác"
+    },
+    "status": {
+      "pending": "Đang chờ",
+      "approved": "Đã duyệt",
+      "rejected": "Đã từ chối"
     }
   },
   "footer": {
-    "copyright": "© 2026 Edu-Nexus Admin. System control panel.",
+    "copyright": "© 2026 Edu-Nexus Admin. Bảng điều khiển hệ thống.",
     "support": "Hỗ trợ",
     "privacy": "Bảo mật",
     "terms": "Điều khoản"
