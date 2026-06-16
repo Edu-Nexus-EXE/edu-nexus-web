@@ -14,11 +14,46 @@ type Skill = {
 }
 
 const SKILLS: Skill[] = [
-  { nameKey: 'skills.s1Name', descKey: 'skills.s1Desc', icon: 'psychology', badge: '+24%', badgeTone: 'success', cardTone: 'primary' },
-  { nameKey: 'skills.s2Name', descKey: 'skills.s2Desc', icon: 'database', badge: '+18%', badgeTone: 'success', cardTone: 'success' },
-  { nameKey: 'skills.s3Name', descKey: 'skills.s3Desc', icon: 'code', badge: 'skills.s3Badge', badgeTone: 'muted', cardTone: 'primary' },
-  { nameKey: 'skills.s4Name', descKey: 'skills.s4Desc', icon: 'cloud_queue', badge: '+12%', badgeTone: 'success', cardTone: 'primary' },
-  { nameKey: 'skills.s5Name', descKey: 'skills.s5Desc', icon: 'security', badge: '+31%', badgeTone: 'success', cardTone: 'success' },
+  {
+    nameKey: 'skills.s1Name',
+    descKey: 'skills.s1Desc',
+    icon: 'psychology',
+    badge: '+24%',
+    badgeTone: 'success',
+    cardTone: 'primary'
+  },
+  {
+    nameKey: 'skills.s2Name',
+    descKey: 'skills.s2Desc',
+    icon: 'database',
+    badge: '+18%',
+    badgeTone: 'success',
+    cardTone: 'success'
+  },
+  {
+    nameKey: 'skills.s3Name',
+    descKey: 'skills.s3Desc',
+    icon: 'code',
+    badge: 'skills.s3Badge',
+    badgeTone: 'muted',
+    cardTone: 'primary'
+  },
+  {
+    nameKey: 'skills.s4Name',
+    descKey: 'skills.s4Desc',
+    icon: 'cloud_queue',
+    badge: '+12%',
+    badgeTone: 'success',
+    cardTone: 'primary'
+  },
+  {
+    nameKey: 'skills.s5Name',
+    descKey: 'skills.s5Desc',
+    icon: 'security',
+    badge: '+31%',
+    badgeTone: 'success',
+    cardTone: 'success'
+  }
 ]
 
 export function DashboardSkills() {
@@ -47,7 +82,10 @@ export function DashboardSkills() {
           return (
             <div
               key={s.nameKey}
-              className={cn('p-4 rounded-xl border transition-all cursor-pointer', DASHBOARD_TONE_STYLES[s.cardTone].card)}
+              className={cn(
+                'p-4 rounded-xl border transition-all cursor-pointer',
+                DASHBOARD_TONE_STYLES[s.cardTone].card
+              )}
             >
               <div className='flex justify-between items-start mb-2'>
                 <span className={cn('p-2 bg-card rounded-lg shadow-sm', DASHBOARD_TONE_STYLES[s.cardTone].text)}>

@@ -20,7 +20,7 @@ export function DashboardStats() {
         const tier = user?.subscription?.tierCode?.toLowerCase() ?? 'free'
         setCertificates(String(user?.portfolioUrlSlug ? 1 : 0))
         setStudyHours(tier === 'premium' ? '20+' : tier === 'pro' ? '10-20' : '5-10')
-        setReadiness(String(Math.min(100, Math.max(50, (roadmaps.data?.[0]?.progress ?? 65)))))
+        setReadiness(String(Math.min(100, Math.max(50, roadmaps.data?.[0]?.progress ?? 65))))
         setClassRank(tier === 'premium' ? 'A' : tier === 'pro' ? 'B' : 'C')
       })
       .catch(() => {
@@ -37,10 +37,31 @@ export function DashboardStats() {
   }, [])
 
   const stats = [
-    { icon: 'verified', labelKey: 'stats.certificates', value: certificates, badge: 'stats.certificatesNew', badgeTone: 'success' as const, tone: 'info' as const },
-    { icon: 'schedule', labelKey: 'stats.studyHours', value: studyHours, badge: 'stats.studyHoursMonth', badgeTone: 'muted' as const, tone: 'primary' as const },
+    {
+      icon: 'verified',
+      labelKey: 'stats.certificates',
+      value: certificates,
+      badge: 'stats.certificatesNew',
+      badgeTone: 'success' as const,
+      tone: 'info' as const
+    },
+    {
+      icon: 'schedule',
+      labelKey: 'stats.studyHours',
+      value: studyHours,
+      badge: 'stats.studyHoursMonth',
+      badgeTone: 'muted' as const,
+      tone: 'primary' as const
+    },
     { icon: 'rocket_launch', labelKey: 'stats.readiness', value: readiness, tone: 'success' as const },
-    { icon: 'stars', labelKey: 'stats.classRank', value: classRank, badge: 'stats.rank', badgeTone: 'muted' as const, tone: 'warning' as const },
+    {
+      icon: 'stars',
+      labelKey: 'stats.classRank',
+      value: classRank,
+      badge: 'stats.rank',
+      badgeTone: 'muted' as const,
+      tone: 'warning' as const
+    }
   ]
 
   return (
@@ -52,7 +73,9 @@ export function DashboardStats() {
               <span className='material-icons'>{s.icon}</span>
             </div>
             {s.badge ? (
-              <span className='text-xs font-medium px-2 py-1 rounded-full text-muted-foreground bg-muted'>{t(s.badge)}</span>
+              <span className='text-xs font-medium px-2 py-1 rounded-full text-muted-foreground bg-muted'>
+                {t(s.badge)}
+              </span>
             ) : null}
           </div>
           <p className='text-muted-foreground text-sm'>{t(s.labelKey)}</p>

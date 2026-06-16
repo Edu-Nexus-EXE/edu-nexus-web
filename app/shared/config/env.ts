@@ -26,7 +26,7 @@ export const env = {
   GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '',
   IS_DEV: import.meta.env.DEV,
   IS_PROD: import.meta.env.PROD,
-  IS_SSR: import.meta.env.SSR,
+  IS_SSR: import.meta.env.SSR
 } as const
 
 export type Env = typeof env

@@ -1,2 +1,2 @@
-export * from "./course.factory";
-export * from "./user.factory";
+export * from './course.factory'
+export * from './user.factory'

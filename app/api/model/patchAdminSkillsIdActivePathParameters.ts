@@ -6,5 +6,5 @@
  */
 
 export type PatchAdminSkillsIdActivePathParameters = {
- id: string,
- }
+  id: string
+}

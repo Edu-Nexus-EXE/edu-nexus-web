@@ -8,80 +8,70 @@ import type {
   GetJdSubmissionsJdIdGapAnalysisParams,
   GetJdSubmissionsJdIdGapAnalysisPathParameters,
   PostJdSubmissionsJdIdGapAnalysisPathParameters
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type postJdSubmissionsJdIdGapAnalysisResponse200 = {
   data: void
   status: 200
 }
-    
-export type postJdSubmissionsJdIdGapAnalysisResponseSuccess = (postJdSubmissionsJdIdGapAnalysisResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postJdSubmissionsJdIdGapAnalysisResponse = (postJdSubmissionsJdIdGapAnalysisResponseSuccess)
+export type postJdSubmissionsJdIdGapAnalysisResponseSuccess = postJdSubmissionsJdIdGapAnalysisResponse200 & {
+  headers: Headers
+}
+export type postJdSubmissionsJdIdGapAnalysisResponse = postJdSubmissionsJdIdGapAnalysisResponseSuccess
 
-export const getPostJdSubmissionsJdIdGapAnalysisUrl = ({ jdId }: PostJdSubmissionsJdIdGapAnalysisPathParameters,) => {
-
-
-  
-
+export const getPostJdSubmissionsJdIdGapAnalysisUrl = ({ jdId }: PostJdSubmissionsJdIdGapAnalysisPathParameters) => {
   return `/jd-submissions/${jdId}/gap-analysis`
 }
 
-export const postJdSubmissionsJdIdGapAnalysis = async ({ jdId }: PostJdSubmissionsJdIdGapAnalysisPathParameters, options?: RequestInit): Promise<postJdSubmissionsJdIdGapAnalysisResponse> => {
-  
-  return customFetch<postJdSubmissionsJdIdGapAnalysisResponse>(getPostJdSubmissionsJdIdGapAnalysisUrl({ jdId }),
-  {      
+export const postJdSubmissionsJdIdGapAnalysis = async (
+  { jdId }: PostJdSubmissionsJdIdGapAnalysisPathParameters,
+  options?: RequestInit
+): Promise<postJdSubmissionsJdIdGapAnalysisResponse> => {
+  return customFetch<postJdSubmissionsJdIdGapAnalysisResponse>(getPostJdSubmissionsJdIdGapAnalysisUrl({ jdId }), {
     ...options,
     method: 'POST'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type getJdSubmissionsJdIdGapAnalysisResponse200 = {
   data: void
   status: 200
 }
-    
-export type getJdSubmissionsJdIdGapAnalysisResponseSuccess = (getJdSubmissionsJdIdGapAnalysisResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getJdSubmissionsJdIdGapAnalysisResponse = (getJdSubmissionsJdIdGapAnalysisResponseSuccess)
+export type getJdSubmissionsJdIdGapAnalysisResponseSuccess = getJdSubmissionsJdIdGapAnalysisResponse200 & {
+  headers: Headers
+}
+export type getJdSubmissionsJdIdGapAnalysisResponse = getJdSubmissionsJdIdGapAnalysisResponseSuccess
 
-export const getGetJdSubmissionsJdIdGapAnalysisUrl = ({ jdId }: GetJdSubmissionsJdIdGapAnalysisPathParameters,
-    params?: GetJdSubmissionsJdIdGapAnalysisParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetJdSubmissionsJdIdGapAnalysisUrl = (
+  { jdId }: GetJdSubmissionsJdIdGapAnalysisPathParameters,
+  params?: GetJdSubmissionsJdIdGapAnalysisParams
+) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/jd-submissions/${jdId}/gap-analysis?${stringifiedParams}` : `/jd-submissions/${jdId}/gap-analysis`
+  return stringifiedParams.length > 0
+    ? `/jd-submissions/${jdId}/gap-analysis?${stringifiedParams}`
+    : `/jd-submissions/${jdId}/gap-analysis`
 }
 
-export const getJdSubmissionsJdIdGapAnalysis = async ({ jdId }: GetJdSubmissionsJdIdGapAnalysisPathParameters,
-    params?: GetJdSubmissionsJdIdGapAnalysisParams, options?: RequestInit): Promise<getJdSubmissionsJdIdGapAnalysisResponse> => {
-  
-  return customFetch<getJdSubmissionsJdIdGapAnalysisResponse>(getGetJdSubmissionsJdIdGapAnalysisUrl({ jdId },params),
-  {      
+export const getJdSubmissionsJdIdGapAnalysis = async (
+  { jdId }: GetJdSubmissionsJdIdGapAnalysisPathParameters,
+  params?: GetJdSubmissionsJdIdGapAnalysisParams,
+  options?: RequestInit
+): Promise<getJdSubmissionsJdIdGapAnalysisResponse> => {
+  return customFetch<getJdSubmissionsJdIdGapAnalysisResponse>(getGetJdSubmissionsJdIdGapAnalysisUrl({ jdId }, params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
-
+  })
+}

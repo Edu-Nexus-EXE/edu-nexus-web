@@ -31,7 +31,7 @@ export function QuotaExceededModal() {
         quotaType: reason.quotaType,
         current: reason.current,
         limit: reason.limit,
-        upgradeUrl: reason.upgradeUrl || '/pricing',
+        upgradeUrl: reason.upgradeUrl || '/pricing'
       })
     }
 
@@ -46,7 +46,7 @@ export function QuotaExceededModal() {
         quotaType: err.quotaType,
         current: err.current,
         limit: err.limit,
-        upgradeUrl: err.upgradeUrl || '/pricing',
+        upgradeUrl: err.upgradeUrl || '/pricing'
       })
     }
 
@@ -79,13 +79,23 @@ export function QuotaExceededModal() {
               <div className='mt-3 text-xs text-muted-foreground space-y-1'>
                 {state.quotaType ? (
                   <p>
-                    {t('quotaExceeded.quotaType')} <span className='font-semibold text-foreground'>{state.quotaType}</span>
+                    {t('quotaExceeded.quotaType')}{' '}
+                    <span className='font-semibold text-foreground'>{state.quotaType}</span>
                   </p>
                 ) : null}
                 {state.limit !== undefined ? (
                   <p>
                     {t('quotaExceeded.usage')}{' '}
-                    <span className='font-semibold text-foreground'>{state.current ?? '-'}</span> / <span className='font-semibold text-foreground'>{state.limit}</span>
+                    <span className='font-semibold text-foreground'>{state.current ?? '-'}</span>
+                    {state.limit < 0 ? null : (
+                      <>
+                        {' / '}
+                        <span className='font-semibold text-foreground'>{state.limit}</span>
+                      </>
+                    )}
+                    {state.limit < 0 ? (
+                      <span className='ml-1 font-semibold text-foreground'>{t('quotaExceeded.unlimited')}</span>
+                    ) : null}
                   </p>
                 ) : null}
               </div>

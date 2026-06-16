@@ -6,11 +6,11 @@
  */
 
 export type GetAdminPaymentOrdersParams = {
-status?: string;
-provider?: string;
-fromDate?: string;
-toDate?: string;
-search?: string;
-page?: number;
-pageSize?: number;
-};
+  status?: string
+  provider?: string
+  fromDate?: string
+  toDate?: string
+  search?: string
+  page?: number
+  pageSize?: number
+}

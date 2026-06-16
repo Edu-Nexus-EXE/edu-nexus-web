@@ -14,7 +14,7 @@ import {
   triggerRoadmapRegenerate,
   type GapAnalysisMetaView,
   type GapAnalysisSkillView,
-  type RoadmapView,
+  type RoadmapView
 } from '../lib/sprint2-api'
 
 const EMPTY_META: GapAnalysisMetaView = {
@@ -23,7 +23,7 @@ const EMPTY_META: GapAnalysisMetaView = {
   scorePercent: null,
   status: 'pending',
   jdId: null,
-  gapAnalysisId: null,
+  gapAnalysisId: null
 }
 
 function shouldContinuePolling(status: string) {
@@ -92,7 +92,11 @@ export function GapAnalysisPage() {
         return firstSkillId
       })
 
-      if (!nextSkills.length && !shouldContinuePolling(nextMeta.status) && (!jdIdFromQuery || jdIdFromQuery === 'latest')) {
+      if (
+        !nextSkills.length &&
+        !shouldContinuePolling(nextMeta.status) &&
+        (!jdIdFromQuery || jdIdFromQuery === 'latest')
+      ) {
         setError((current) => current || t('learningPath.gapAnalysis.empty'))
       }
 
@@ -171,7 +175,7 @@ export function GapAnalysisPage() {
   const currentRoadmap = useMemo(() => roadmapChoices.find(isCurrentRoadmap) ?? null, [roadmapChoices])
   const archivedRoadmap = useMemo(
     () => roadmapChoices.find((item) => item.status.toLowerCase() === 'archived') ?? null,
-    [roadmapChoices],
+    [roadmapChoices]
   )
 
   const formattedUpdatedDate = useMemo(() => {
@@ -183,7 +187,7 @@ export function GapAnalysisPage() {
     return new Intl.DateTimeFormat(undefined, {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
+      year: 'numeric'
     }).format(date)
   }, [meta.completedAt])
 
@@ -305,7 +309,9 @@ export function GapAnalysisPage() {
             <span className='material-symbols-outlined text-sm'>arrow_back</span>
             {t('learningPath.gapAnalysis.back')}
           </button>
-          <h1 className='mb-3 font-display text-3xl font-bold text-foreground md:text-4xl'>{t('learningPath.gapAnalysis.title')}</h1>
+          <h1 className='mb-3 font-display text-3xl font-bold text-foreground md:text-4xl'>
+            {t('learningPath.gapAnalysis.title')}
+          </h1>
           <div className='flex flex-wrap items-center gap-4 text-sm text-muted-foreground'>
             <span className='rounded-full bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-primary'>
               {t('learningPath.gapAnalysis.version', { version: meta.version })}
@@ -318,7 +324,9 @@ export function GapAnalysisPage() {
               <span className='material-symbols-outlined text-base'>analytics</span>
               {t('learningPath.gapAnalysis.source', { percent: meta.scorePercent ?? 0 })}
             </span>
-            {polling ? <span className='font-semibold text-primary'>{t('learningPath.gapAnalysis.loading')}</span> : null}
+            {polling ? (
+              <span className='font-semibold text-primary'>{t('learningPath.gapAnalysis.loading')}</span>
+            ) : null}
           </div>
         </div>
         <div className='flex shrink-0 gap-3'>
@@ -359,13 +367,13 @@ export function GapAnalysisPage() {
                     t={t}
                     i18nKey='learningPath.gapAnalysis.summaryDesc'
                     components={{
-                      1: <span className='font-bold text-primary' />,
+                      1: <span className='font-bold text-primary' />
                     }}
                     values={{
                       total: summary.total,
                       missing: summary.missing,
                       upgrade: summary.upgrade,
-                      have: summary.have,
+                      have: summary.have
                     }}
                   />
                 </p>
@@ -410,7 +418,12 @@ export function GapAnalysisPage() {
               </thead>
               <tbody className='divide-y divide-border'>
                 {skills.map((skill) => (
-                  <SkillRow key={skill.id} skill={skill} isExpanded={expandedSkill === skill.id} onToggle={toggleDetails} />
+                  <SkillRow
+                    key={skill.id}
+                    skill={skill}
+                    isExpanded={expandedSkill === skill.id}
+                    onToggle={toggleDetails}
+                  />
                 ))}
               </tbody>
             </table>
@@ -429,23 +442,25 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
-          <button
-            onClick={() => void onCreateRoadmap()}
-            disabled={checkingRoadmap || creatingRoadmap || !hasData || shouldContinuePolling(meta.status)}
-            className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
-          >
-            {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
-          </button>
-          {currentRoadmap ? (
+        {hasData ? (
+          <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
             <button
-              onClick={() => navigate(`/roadmaps?roadmapId=${encodeURIComponent(currentRoadmap.id)}`)}
-              className='cursor-pointer rounded-xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary transition-all hover:bg-primary/5 active:scale-95'
+              onClick={() => void onCreateRoadmap()}
+              disabled={checkingRoadmap || creatingRoadmap || shouldContinuePolling(meta.status)}
+              className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
             >
-              {t('learningPath.gapAnalysis.viewCurrentRoadmap')}
+              {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
             </button>
-          ) : null}
-        </div>
+            {currentRoadmap ? (
+              <button
+                onClick={() => navigate(`/roadmaps?roadmapId=${encodeURIComponent(currentRoadmap.id)}`)}
+                className='cursor-pointer rounded-xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary transition-all hover:bg-primary/5 active:scale-95'
+              >
+                {t('learningPath.gapAnalysis.viewCurrentRoadmap')}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       {releaseRoadmap ? (

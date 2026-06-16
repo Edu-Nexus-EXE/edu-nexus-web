@@ -6,6 +6,6 @@
  */
 
 export type GetAdminRagDocumentsParams = {
-page?: number;
-pageSize?: number;
-};
+  page?: number
+  pageSize?: number
+}

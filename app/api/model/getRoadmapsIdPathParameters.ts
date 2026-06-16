@@ -6,5 +6,5 @@
  */
 
 export type GetRoadmapsIdPathParameters = {
- id: string,
- }
+  id: string
+}

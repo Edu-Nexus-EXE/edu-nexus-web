@@ -6,8 +6,8 @@
  */
 
 export type PostAdminRagDocumentsBody = {
-  file?: Blob;
-  title?: string;
-  sourceType?: string;
-  relatedSkillIds?: string[];
-};
+  file?: Blob
+  title?: string
+  sourceType?: string
+  relatedSkillIds?: string[]
+}

@@ -6,7 +6,7 @@
  */
 
 export interface SubmitAnswerDto {
-  questionId?: string;
+  questionId?: string
   /** @nullable */
-  selectedOption?: string | null;
+  selectedOption?: string | null
 }

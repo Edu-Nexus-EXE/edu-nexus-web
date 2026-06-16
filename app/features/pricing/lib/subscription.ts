@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react'
 import type { CreateOrderRequest } from '~/api/model'
 import { customFetch } from '~/api/mutator/custom-fetch'
 import { getAdminSubscriptionTiers } from '~/api/operations/admin-subscription-tiers/admin-subscription-tiers'
-import { getSubscriptionMe, getSubscriptionTiers, postSubscriptionOrders } from '~/api/operations/subscription/subscription'
+import {
+  getSubscriptionMe,
+  getSubscriptionTiers,
+  postSubscriptionOrders
+} from '~/api/operations/subscription/subscription'
 
 export function unwrapData<T>(response: unknown): T | null {
   const data = (response as { data?: unknown })?.data
@@ -53,7 +57,18 @@ export type SubscriptionView = {
   displayName: string
   status: string
   expiresAt: string | null
-  quotas: Partial<Record<'jd' | 'gapAnalysis' | 'assessment' | 'roadmapActive' | 'careerTrack' | 'portfolioCertificate' | 'portfolioProject', SubscriptionQuotaUsage>>
+  quotas: Partial<
+    Record<
+      | 'jd'
+      | 'gapAnalysis'
+      | 'assessment'
+      | 'roadmapActive'
+      | 'careerTrack'
+      | 'portfolioCertificate'
+      | 'portfolioProject',
+      SubscriptionQuotaUsage
+    >
+  >
 }
 
 export type SubscriptionOrderView = {
@@ -92,7 +107,7 @@ function defaultTiers(): PricingTierView[] {
       portfolioProjectQuota: 3,
       portfolioCertificateQuota: 3,
       fullGapHistory: false,
-      active: true,
+      active: true
     },
     {
       code: 'student',
@@ -106,8 +121,8 @@ function defaultTiers(): PricingTierView[] {
       portfolioProjectQuota: -1,
       portfolioCertificateQuota: -1,
       fullGapHistory: true,
-      active: true,
-    },
+      active: true
+    }
   ]
 }
 
@@ -131,9 +146,13 @@ export function parseTier(item: unknown, fallback: PricingTierView): PricingTier
     roadmapQuota: num(q.roadmapActive, raw.roadmapActiveQuota ?? raw.roadmapQuota, fallback.roadmapQuota),
     careerTrackQuota: num(q.careerTrack, raw.careerTrackQuota, fallback.careerTrackQuota),
     portfolioProjectQuota: num(q.portfolioProject, raw.portfolioProjectQuota, fallback.portfolioProjectQuota),
-    portfolioCertificateQuota: num(q.portfolioCertificate, raw.portfolioCertificateQuota, fallback.portfolioCertificateQuota),
+    portfolioCertificateQuota: num(
+      q.portfolioCertificate,
+      raw.portfolioCertificateQuota,
+      fallback.portfolioCertificateQuota
+    ),
     fullGapHistory: toBooleanValue(q.fullGapHistory ?? raw.fullGapHistory, fallback.fullGapHistory),
-    active: toBooleanValue(raw.isActive ?? raw.active, fallback.active),
+    active: toBooleanValue(raw.isActive ?? raw.active, fallback.active)
   }
 }
 
@@ -188,12 +207,19 @@ export async function loadCurrentSubscription(): Promise<SubscriptionView | null
 
     const root = isObject(data.subscription) ? data.subscription : data
     const tierRoot = isObject(root.tier) ? root.tier : root
-    const quotasRoot = isObject(root.usage) ? root.usage : isObject(data.quotas) ? data.quotas : isObject(root.quotas) ? root.quotas : null
+    const quotasRoot = isObject(root.usage)
+      ? root.usage
+      : isObject(data.quotas)
+        ? data.quotas
+        : isObject(root.quotas)
+          ? root.quotas
+          : null
     const parseQuota = (value: unknown): SubscriptionQuotaUsage | undefined => {
       if (!isObject(value)) return undefined
       const used = toNumberValue(value.used, 0)
       const limit = toNumberValue(value.limit, 0)
-      const nearLimit = typeof value.nearLimit === 'boolean' ? value.nearLimit : limit > 0 ? used >= limit * (2 / 3) : false
+      const nearLimit =
+        typeof value.nearLimit === 'boolean' ? value.nearLimit : limit > 0 ? used >= limit * (2 / 3) : false
       return { used, limit, nearLimit }
     }
 
@@ -209,8 +235,8 @@ export async function loadCurrentSubscription(): Promise<SubscriptionView | null
         roadmapActive: parseQuota(quotasRoot?.roadmapActive),
         careerTrack: parseQuota(quotasRoot?.careerTrack),
         portfolioCertificate: parseQuota(quotasRoot?.portfolioCertificate),
-        portfolioProject: parseQuota(quotasRoot?.portfolioProject),
-      },
+        portfolioProject: parseQuota(quotasRoot?.portfolioProject)
+      }
     }
   } catch {
     return null
@@ -230,9 +256,14 @@ export function parseOrders(root: Record<string, unknown>): SubscriptionOrderVie
       status: toStringValue(raw.status, 'pending'),
       paymentMethod: toStringValue(raw.paymentMethod ?? raw.paymentProvider ?? raw.provider, 'Online'),
       createdAt: toStringValue(raw.createdAt ?? raw.createdOn, new Date().toISOString()),
-      paymentUrl: typeof raw.paymentUrl === 'string' ? raw.paymentUrl : typeof raw.checkoutUrl === 'string' ? raw.checkoutUrl : null,
+      paymentUrl:
+        typeof raw.paymentUrl === 'string'
+          ? raw.paymentUrl
+          : typeof raw.checkoutUrl === 'string'
+            ? raw.checkoutUrl
+            : null,
       currency: typeof raw.currency === 'string' ? raw.currency : null,
-      provider: toStringValue(raw.paymentProvider ?? raw.provider, '') || null,
+      provider: toStringValue(raw.paymentProvider ?? raw.provider, '') || null
     }
   })
 }
@@ -252,27 +283,30 @@ export async function loadSubscriptionOrders(): Promise<SubscriptionOrderView[]>
   }
 }
 
-export async function createSubscriptionOrder(payload: CreateOrderRequest): Promise<{ paymentUrl: string | null; orderId: string | null; amount: number | null; currency: string | null; paymentProvider: string | null; status: string | null }> {
+export async function createSubscriptionOrder(payload: CreateOrderRequest): Promise<{
+  orderId: string | null
+  amount: number | null
+  currency: string | null
+  transferContent: string | null
+  bankAccount: string | null
+  bankCode: string | null
+  accountName: string | null
+  qrImageUrl: string | null
+  status: string | null
+}> {
   const res = await postSubscriptionOrders(payload)
   const data = unwrapData<unknown>(res)
   const root = isObject(data) ? data : null
   return {
-    paymentUrl:
-      typeof root?.paymentUrl === 'string'
-        ? root.paymentUrl
-        : typeof root?.checkoutUrl === 'string'
-          ? root.checkoutUrl
-          : null,
     orderId: typeof root?.orderId === 'string' ? root.orderId : typeof root?.id === 'string' ? root.id : null,
-    amount: typeof root?.amount === 'number' ? root.amount : typeof root?.totalAmount === 'number' ? root.totalAmount : null,
+    amount: typeof root?.amount === 'number' ? root.amount : null,
     currency: typeof root?.currency === 'string' ? root.currency : null,
-    paymentProvider:
-      typeof root?.paymentProvider === 'string'
-        ? root.paymentProvider
-        : typeof root?.provider === 'string'
-          ? root.provider
-          : null,
-    status: typeof root?.status === 'string' ? root.status : null,
+    transferContent: typeof root?.transferContent === 'string' ? root.transferContent : null,
+    bankAccount: typeof root?.bankAccount === 'string' ? root.bankAccount : null,
+    bankCode: typeof root?.bankCode === 'string' ? root.bankCode : null,
+    accountName: typeof root?.accountName === 'string' ? root.accountName : null,
+    qrImageUrl: typeof root?.qrImageUrl === 'string' ? root.qrImageUrl : null,
+    status: typeof root?.status === 'string' ? root.status : null
   }
 }
 
@@ -282,7 +316,10 @@ export function buildQuotaSummary(
   t: ReturnType<typeof useTranslation>['t']
 ): DashboardQuotaSummary {
   const tierCode = subscription?.tierCode?.toLowerCase() || 'free'
-  const matchedTier = tiers.find((tier) => tier.code === tierCode) ?? defaultTiers().find((tier) => tier.code === tierCode) ?? defaultTiers()[0]
+  const matchedTier =
+    tiers.find((tier) => tier.code === tierCode) ??
+    defaultTiers().find((tier) => tier.code === tierCode) ??
+    defaultTiers()[0]
 
   const prioritizedQuota =
     subscription?.quotas.jd ??
@@ -292,23 +329,33 @@ export function buildQuotaSummary(
     subscription?.quotas.portfolioProject ??
     null
 
-  const usageRatio = prioritizedQuota && prioritizedQuota.limit > 0 ? prioritizedQuota.used / prioritizedQuota.limit : matchedTier.jdQuota >= 999 ? null : 0
+  const usageRatio =
+    prioritizedQuota && prioritizedQuota.limit > 0
+      ? prioritizedQuota.used / prioritizedQuota.limit
+      : matchedTier.jdQuota < 0
+        ? null
+        : 0
   const nearLimit = prioritizedQuota ? prioritizedQuota.nearLimit : usageRatio !== null && usageRatio >= 0.8
   const upgradeRequired = tierCode === 'free'
-  const quotaCount = prioritizedQuota && prioritizedQuota.limit > 0 ? `${prioritizedQuota.used}/${prioritizedQuota.limit}` : matchedTier.jdQuota >= 999 ? t('quota.unlimited', { ns: 'dashboard' }) : matchedTier.jdQuota
+  const quotaCount =
+    prioritizedQuota && prioritizedQuota.limit > 0
+      ? `${prioritizedQuota.used}/${prioritizedQuota.limit}`
+      : matchedTier.jdQuota < 0
+        ? t('quota.unlimited', { ns: 'dashboard' })
+        : matchedTier.jdQuota
 
   return {
     tierCode,
     tierLabel: subscription?.displayName || matchedTier.name,
     quotaText: t('quota.dynamic.jdQuota', {
       ns: 'dashboard',
-      count: quotaCount,
+      count: quotaCount
     }),
     status: subscription?.status || 'active',
     expiresAt: subscription?.expiresAt ?? null,
     usageRatio,
     nearLimit,
-    upgradeRequired,
+    upgradeRequired
   }
 }
 

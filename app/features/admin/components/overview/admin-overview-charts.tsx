@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { loadAdminDashboardStats, loadAdminPaymentOrders, type AdminDashboardStatsView, type AdminPaymentOrderView } from '../../lib/admin-data'
+import {
+  loadAdminDashboardStats,
+  loadAdminPaymentOrders,
+  type AdminDashboardStatsView,
+  type AdminPaymentOrderView
+} from '../../lib/admin-data'
 
 const emptyStats: AdminDashboardStatsView = {
   totalUsers: 0,
@@ -16,7 +21,7 @@ const emptyStats: AdminDashboardStatsView = {
   activeSubscriptions: 0,
   affiliateClicks: 0,
   affiliateConversions: 0,
-  affiliateRevenue: 0,
+  affiliateRevenue: 0
 }
 
 function formatCurrency(value: number) {
@@ -55,7 +60,7 @@ function recentMonths(orders: AdminPaymentOrderView[], monthCount = 6) {
     return {
       key: `${date.getFullYear()}-${date.getMonth()}`,
       label: `T${date.getMonth() + 1}`,
-      value: 0,
+      value: 0
     }
   })
   const byKey = new Map(months.map((month) => [month.key, month]))
@@ -119,7 +124,7 @@ export function AdminOverviewCharts() {
     if (fromApi.length) return fromApi
     return [
       { key: 'free', value: Math.max(0, stats.totalUsers - stats.activeSubscriptions) },
-      { key: 'student', value: stats.activeSubscriptions },
+      { key: 'student', value: stats.activeSubscriptions }
     ].filter((item) => item.value > 0)
   }, [stats.activeSubscriptions, stats.totalUsers, stats.usersByTier])
   const providerItems = useMemo(() => {
@@ -133,7 +138,10 @@ export function AdminOverviewCharts() {
   const trendValues = monthlyTrend.map((item) => item.value)
   const hasRevenueTrend = trendValues.some((value) => value > 0)
   const maxTrend = Math.max(...trendValues, 1)
-  const studentPercent = totalTier > 0 ? Math.round(((tierItems.find((item) => item.key.toLowerCase() === 'student')?.value ?? 0) / totalTier) * 100) : 0
+  const studentPercent =
+    totalTier > 0
+      ? Math.round(((tierItems.find((item) => item.key.toLowerCase() === 'student')?.value ?? 0) / totalTier) * 100)
+      : 0
 
   if (loading) {
     return (
@@ -150,18 +158,29 @@ export function AdminOverviewCharts() {
         <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
           <div>
             <p className='text-xs font-bold uppercase tracking-widest text-primary'>{label('Doanh thu', 'Revenue')}</p>
-            <h2 className='mt-1 text-2xl font-black text-foreground'>{label('Xu hướng doanh thu 6 tháng', '6-month revenue trend')}</h2>
-            <p className='mt-1 text-sm text-muted-foreground'>{label('Dựa trên các đơn thanh toán đã hoàn tất.', 'Based on completed payment orders.')}</p>
+            <h2 className='mt-1 text-2xl font-black text-foreground'>
+              {label('Xu hướng doanh thu 6 tháng', '6-month revenue trend')}
+            </h2>
+            <p className='mt-1 text-sm text-muted-foreground'>
+              {label('Dựa trên các đơn thanh toán đã hoàn tất.', 'Based on completed payment orders.')}
+            </p>
           </div>
           <div className='rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 text-right'>
-            <p className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>{label('Tổng doanh thu', 'Total revenue')}</p>
+            <p className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+              {label('Tổng doanh thu', 'Total revenue')}
+            </p>
             <p className='text-xl font-black text-foreground'>{formatCurrency(stats.revenue)}</p>
           </div>
         </div>
 
         {hasRevenueTrend ? (
           <div className='mt-8'>
-            <svg viewBox='0 0 640 240' className='h-64 w-full overflow-visible' role='img' aria-label={label('Biểu đồ doanh thu 6 tháng', '6-month revenue chart')}>
+            <svg
+              viewBox='0 0 640 240'
+              className='h-64 w-full overflow-visible'
+              role='img'
+              aria-label={label('Biểu đồ doanh thu 6 tháng', '6-month revenue chart')}
+            >
               <defs>
                 <linearGradient id='admin-revenue-area' x1='0' x2='0' y1='0' y2='1'>
                   <stop offset='0%' stopColor='var(--color-primary)' stopOpacity='0.28' />
@@ -169,18 +188,52 @@ export function AdminOverviewCharts() {
                 </linearGradient>
               </defs>
               {[0, 1, 2, 3].map((line) => (
-                <line key={line} x1='0' x2='640' y1={line * 60} y2={line * 60} stroke='var(--color-border)' strokeDasharray='4 8' />
+                <line
+                  key={line}
+                  x1='0'
+                  x2='640'
+                  y1={line * 60}
+                  y2={line * 60}
+                  stroke='var(--color-border)'
+                  strokeDasharray='4 8'
+                />
               ))}
               <path d={areaPath(trendValues, 640, 210)} transform='translate(0 15)' fill='url(#admin-revenue-area)' />
-              <path d={linePath(trendValues, 640, 210)} transform='translate(0 15)' fill='none' stroke='var(--color-primary)' strokeWidth='5' strokeLinecap='round' strokeLinejoin='round' />
+              <path
+                d={linePath(trendValues, 640, 210)}
+                transform='translate(0 15)'
+                fill='none'
+                stroke='var(--color-primary)'
+                strokeWidth='5'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
               {monthlyTrend.map((point, index) => {
                 const x = monthlyTrend.length <= 1 ? 0 : (index / (monthlyTrend.length - 1)) * 640
                 const y = 225 - (point.value / maxTrend) * 210
                 return (
                   <g key={point.key}>
-                    <circle cx={x} cy={y} r='6' fill='var(--color-card)' stroke='var(--color-primary)' strokeWidth='4' />
-                    <text x={x} y='238' textAnchor='middle' className='fill-muted-foreground text-[11px] font-bold'>{point.label}</text>
-                    {point.value > 0 ? <text x={x} y={Math.max(14, y - 14)} textAnchor='middle' className='fill-foreground text-[11px] font-bold'>{shortCurrency(point.value)}</text> : null}
+                    <circle
+                      cx={x}
+                      cy={y}
+                      r='6'
+                      fill='var(--color-card)'
+                      stroke='var(--color-primary)'
+                      strokeWidth='4'
+                    />
+                    <text x={x} y='238' textAnchor='middle' className='fill-muted-foreground text-[11px] font-bold'>
+                      {point.label}
+                    </text>
+                    {point.value > 0 ? (
+                      <text
+                        x={x}
+                        y={Math.max(14, y - 14)}
+                        textAnchor='middle'
+                        className='fill-foreground text-[11px] font-bold'
+                      >
+                        {shortCurrency(point.value)}
+                      </text>
+                    ) : null}
                   </g>
                 )
               })}
@@ -196,9 +249,13 @@ export function AdminOverviewCharts() {
       <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-5'>
         <div className='flex items-start justify-between gap-4'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-widest text-primary'>{label('Gói người dùng', 'User tiers')}</p>
+            <p className='text-xs font-bold uppercase tracking-widest text-primary'>
+              {label('Gói người dùng', 'User tiers')}
+            </p>
             <h2 className='mt-1 text-2xl font-black text-foreground'>{label('Phân bổ gói', 'Tier mix')}</h2>
-            <p className='mt-1 text-sm text-muted-foreground'>{stats.totalUsers} {label('người dùng', 'users')} · Student {studentPercent}%</p>
+            <p className='mt-1 text-sm text-muted-foreground'>
+              {stats.totalUsers} {label('người dùng', 'users')} · Student {studentPercent}%
+            </p>
           </div>
           <span className='material-symbols-outlined text-primary'>donut_large</span>
         </div>
@@ -207,9 +264,10 @@ export function AdminOverviewCharts() {
           <div
             className='mx-auto grid h-44 w-44 place-items-center rounded-full border border-border shadow-inner'
             style={{
-              background: totalTier > 0
-                ? `conic-gradient(var(--color-primary) 0 ${studentPercent}%, color-mix(in srgb, var(--color-primary) 22%, var(--color-muted)) ${studentPercent}% 100%)`
-                : 'var(--color-muted)',
+              background:
+                totalTier > 0
+                  ? `conic-gradient(var(--color-primary) 0 ${studentPercent}%, color-mix(in srgb, var(--color-primary) 22%, var(--color-muted)) ${studentPercent}% 100%)`
+                  : 'var(--color-muted)'
             }}
           >
             <div className='grid h-24 w-24 place-items-center rounded-full bg-card text-center shadow-sm'>
@@ -248,8 +306,12 @@ export function AdminOverviewCharts() {
       <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-7'>
         <div className='flex items-start justify-between gap-4'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-widest text-success'>{label('Thanh toán', 'Payments')}</p>
-            <h2 className='mt-1 text-2xl font-black text-foreground'>{label('Doanh thu theo kênh', 'Revenue by provider')}</h2>
+            <p className='text-xs font-bold uppercase tracking-widest text-success'>
+              {label('Thanh toán', 'Payments')}
+            </p>
+            <h2 className='mt-1 text-2xl font-black text-foreground'>
+              {label('Doanh thu theo kênh', 'Revenue by provider')}
+            </h2>
           </div>
           <span className='material-symbols-outlined text-success'>bar_chart</span>
         </div>
@@ -261,15 +323,22 @@ export function AdminOverviewCharts() {
             </div>
           ) : (
             providerItems.map((item) => {
-              const percent = Math.round((item.value / Math.max(...providerItems.map((provider) => provider.value), 1)) * 100)
+              const percent = Math.round(
+                (item.value / Math.max(...providerItems.map((provider) => provider.value), 1)) * 100
+              )
               return (
                 <div key={item.key}>
                   <div className='mb-2 flex items-center justify-between gap-4 text-sm'>
-                    <span className='font-bold uppercase tracking-wide text-foreground'>{item.key.replaceAll('_', ' ')}</span>
+                    <span className='font-bold uppercase tracking-wide text-foreground'>
+                      {item.key.replaceAll('_', ' ')}
+                    </span>
                     <span className='font-black text-foreground'>{formatCurrency(item.value)}</span>
                   </div>
                   <div className='h-4 overflow-hidden rounded-full bg-muted'>
-                    <div className='h-full rounded-full bg-success shadow-[0_0_18px_color-mix(in_srgb,var(--color-success)_35%,transparent)]' style={{ width: `${Math.max(5, percent)}%` }} />
+                    <div
+                      className='h-full rounded-full bg-success shadow-[0_0_18px_color-mix(in_srgb,var(--color-success)_35%,transparent)]'
+                      style={{ width: `${Math.max(5, percent)}%` }}
+                    />
                   </div>
                 </div>
               )
@@ -283,7 +352,9 @@ export function AdminOverviewCharts() {
           <div className='flex items-start justify-between gap-4'>
             <div>
               <p className='text-xs font-bold uppercase tracking-widest text-warning'>{label('AI', 'AI')}</p>
-              <h2 className='mt-1 text-2xl font-black text-foreground'>{label('Chi phí theo pipeline', 'Cost by pipeline')}</h2>
+              <h2 className='mt-1 text-2xl font-black text-foreground'>
+                {label('Chi phí theo pipeline', 'Cost by pipeline')}
+              </h2>
               <p className='mt-1 text-sm text-muted-foreground'>{formatCurrency(stats.aiCost)}</p>
             </div>
             <span className='material-symbols-outlined text-warning'>query_stats</span>
@@ -294,7 +365,9 @@ export function AdminOverviewCharts() {
               return (
                 <div key={item.key} className='flex min-w-0 flex-1 flex-col items-center gap-2'>
                   <div className='w-full rounded-t-xl bg-warning' style={{ height: `${Math.max(8, height)}%` }} />
-                  <span className='w-full truncate text-center text-[10px] font-bold uppercase text-muted-foreground'>{item.key.replaceAll('_', ' ')}</span>
+                  <span className='w-full truncate text-center text-[10px] font-bold uppercase text-muted-foreground'>
+                    {item.key.replaceAll('_', ' ')}
+                  </span>
                 </div>
               )
             })}

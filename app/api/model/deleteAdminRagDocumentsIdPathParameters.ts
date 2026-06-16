@@ -6,5 +6,5 @@
  */
 
 export type DeleteAdminRagDocumentsIdPathParameters = {
- id: string,
- }
+  id: string
+}

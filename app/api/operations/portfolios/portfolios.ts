@@ -16,370 +16,288 @@ import type {
   PutPortfolioProjectsIdPathParameters,
   ToggleVisibilityRequest,
   UpdatePortfolioRequest
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getPortfolioResponse200 = {
   data: void
   status: 200
 }
-    
-export type getPortfolioResponseSuccess = (getPortfolioResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getPortfolioResponse = (getPortfolioResponseSuccess)
+export type getPortfolioResponseSuccess = getPortfolioResponse200 & {
+  headers: Headers
+}
+export type getPortfolioResponse = getPortfolioResponseSuccess
 
 export const getGetPortfolioUrl = () => {
-
-
-  
-
   return `/portfolio`
 }
 
-export const getPortfolio = async ( options?: RequestInit): Promise<getPortfolioResponse> => {
-  
-  return customFetch<getPortfolioResponse>(getGetPortfolioUrl(),
-  {      
+export const getPortfolio = async (options?: RequestInit): Promise<getPortfolioResponse> => {
+  return customFetch<getPortfolioResponse>(getGetPortfolioUrl(), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type putPortfolioResponse200 = {
   data: void
   status: 200
 }
-    
-export type putPortfolioResponseSuccess = (putPortfolioResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putPortfolioResponse = (putPortfolioResponseSuccess)
+export type putPortfolioResponseSuccess = putPortfolioResponse200 & {
+  headers: Headers
+}
+export type putPortfolioResponse = putPortfolioResponseSuccess
 
 export const getPutPortfolioUrl = () => {
-
-
-  
-
   return `/portfolio`
 }
 
-export const putPortfolio = async (updatePortfolioRequest: UpdatePortfolioRequest, options?: RequestInit): Promise<putPortfolioResponse> => {
-  
-  return customFetch<putPortfolioResponse>(getPutPortfolioUrl(),
-  {      
+export const putPortfolio = async (
+  updatePortfolioRequest: UpdatePortfolioRequest,
+  options?: RequestInit
+): Promise<putPortfolioResponse> => {
+  return customFetch<putPortfolioResponse>(getPutPortfolioUrl(), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updatePortfolioRequest,)
-  }
-);}
-
+    body: JSON.stringify(updatePortfolioRequest)
+  })
+}
 
 export type getPSlugResponse200 = {
   data: void
   status: 200
 }
-    
-export type getPSlugResponseSuccess = (getPSlugResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getPSlugResponse = (getPSlugResponseSuccess)
+export type getPSlugResponseSuccess = getPSlugResponse200 & {
+  headers: Headers
+}
+export type getPSlugResponse = getPSlugResponseSuccess
 
-export const getGetPSlugUrl = ({ slug }: GetPSlugPathParameters,) => {
-
-
-  
-
+export const getGetPSlugUrl = ({ slug }: GetPSlugPathParameters) => {
   return `/p/${slug}`
 }
 
 export const getPSlug = async ({ slug }: GetPSlugPathParameters, options?: RequestInit): Promise<getPSlugResponse> => {
-  
-  return customFetch<getPSlugResponse>(getGetPSlugUrl({ slug }),
-  {      
+  return customFetch<getPSlugResponse>(getGetPSlugUrl({ slug }), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type postPortfolioCertificatesResponse200 = {
   data: void
   status: 200
 }
-    
-export type postPortfolioCertificatesResponseSuccess = (postPortfolioCertificatesResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postPortfolioCertificatesResponse = (postPortfolioCertificatesResponseSuccess)
+export type postPortfolioCertificatesResponseSuccess = postPortfolioCertificatesResponse200 & {
+  headers: Headers
+}
+export type postPortfolioCertificatesResponse = postPortfolioCertificatesResponseSuccess
 
 export const getPostPortfolioCertificatesUrl = () => {
-
-
-  
-
   return `/portfolio/certificates`
 }
 
-export const postPortfolioCertificates = async (addCertificateRequest: AddCertificateRequest, options?: RequestInit): Promise<postPortfolioCertificatesResponse> => {
-  
-  return customFetch<postPortfolioCertificatesResponse>(getPostPortfolioCertificatesUrl(),
-  {      
+export const postPortfolioCertificates = async (
+  addCertificateRequest: AddCertificateRequest,
+  options?: RequestInit
+): Promise<postPortfolioCertificatesResponse> => {
+  return customFetch<postPortfolioCertificatesResponse>(getPostPortfolioCertificatesUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addCertificateRequest,)
-  }
-);}
-
+    body: JSON.stringify(addCertificateRequest)
+  })
+}
 
 export type putPortfolioCertificatesIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type putPortfolioCertificatesIdResponseSuccess = (putPortfolioCertificatesIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putPortfolioCertificatesIdResponse = (putPortfolioCertificatesIdResponseSuccess)
+export type putPortfolioCertificatesIdResponseSuccess = putPortfolioCertificatesIdResponse200 & {
+  headers: Headers
+}
+export type putPortfolioCertificatesIdResponse = putPortfolioCertificatesIdResponseSuccess
 
-export const getPutPortfolioCertificatesIdUrl = ({ id }: PutPortfolioCertificatesIdPathParameters,) => {
-
-
-  
-
+export const getPutPortfolioCertificatesIdUrl = ({ id }: PutPortfolioCertificatesIdPathParameters) => {
   return `/portfolio/certificates/${id}`
 }
 
-export const putPortfolioCertificatesId = async ({ id }: PutPortfolioCertificatesIdPathParameters,
-    addCertificateRequest: AddCertificateRequest, options?: RequestInit): Promise<putPortfolioCertificatesIdResponse> => {
-  
-  return customFetch<putPortfolioCertificatesIdResponse>(getPutPortfolioCertificatesIdUrl({ id }),
-  {      
+export const putPortfolioCertificatesId = async (
+  { id }: PutPortfolioCertificatesIdPathParameters,
+  addCertificateRequest: AddCertificateRequest,
+  options?: RequestInit
+): Promise<putPortfolioCertificatesIdResponse> => {
+  return customFetch<putPortfolioCertificatesIdResponse>(getPutPortfolioCertificatesIdUrl({ id }), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addCertificateRequest,)
-  }
-);}
-
+    body: JSON.stringify(addCertificateRequest)
+  })
+}
 
 export type deletePortfolioCertificatesIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type deletePortfolioCertificatesIdResponseSuccess = (deletePortfolioCertificatesIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type deletePortfolioCertificatesIdResponse = (deletePortfolioCertificatesIdResponseSuccess)
+export type deletePortfolioCertificatesIdResponseSuccess = deletePortfolioCertificatesIdResponse200 & {
+  headers: Headers
+}
+export type deletePortfolioCertificatesIdResponse = deletePortfolioCertificatesIdResponseSuccess
 
-export const getDeletePortfolioCertificatesIdUrl = ({ id }: DeletePortfolioCertificatesIdPathParameters,) => {
-
-
-  
-
+export const getDeletePortfolioCertificatesIdUrl = ({ id }: DeletePortfolioCertificatesIdPathParameters) => {
   return `/portfolio/certificates/${id}`
 }
 
-export const deletePortfolioCertificatesId = async ({ id }: DeletePortfolioCertificatesIdPathParameters, options?: RequestInit): Promise<deletePortfolioCertificatesIdResponse> => {
-  
-  return customFetch<deletePortfolioCertificatesIdResponse>(getDeletePortfolioCertificatesIdUrl({ id }),
-  {      
+export const deletePortfolioCertificatesId = async (
+  { id }: DeletePortfolioCertificatesIdPathParameters,
+  options?: RequestInit
+): Promise<deletePortfolioCertificatesIdResponse> => {
+  return customFetch<deletePortfolioCertificatesIdResponse>(getDeletePortfolioCertificatesIdUrl({ id }), {
     ...options,
     method: 'DELETE'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type patchPortfolioCertificatesIdVisibilityResponse200 = {
   data: void
   status: 200
 }
-    
-export type patchPortfolioCertificatesIdVisibilityResponseSuccess = (patchPortfolioCertificatesIdVisibilityResponse200) & {
-  headers: Headers;
-};
-;
 
-export type patchPortfolioCertificatesIdVisibilityResponse = (patchPortfolioCertificatesIdVisibilityResponseSuccess)
+export type patchPortfolioCertificatesIdVisibilityResponseSuccess =
+  patchPortfolioCertificatesIdVisibilityResponse200 & {
+    headers: Headers
+  }
+export type patchPortfolioCertificatesIdVisibilityResponse = patchPortfolioCertificatesIdVisibilityResponseSuccess
 
-export const getPatchPortfolioCertificatesIdVisibilityUrl = ({ id }: PatchPortfolioCertificatesIdVisibilityPathParameters,) => {
-
-
-  
-
+export const getPatchPortfolioCertificatesIdVisibilityUrl = ({
+  id
+}: PatchPortfolioCertificatesIdVisibilityPathParameters) => {
   return `/portfolio/certificates/${id}/visibility`
 }
 
-export const patchPortfolioCertificatesIdVisibility = async ({ id }: PatchPortfolioCertificatesIdVisibilityPathParameters,
-    toggleVisibilityRequest: ToggleVisibilityRequest, options?: RequestInit): Promise<patchPortfolioCertificatesIdVisibilityResponse> => {
-  
-  return customFetch<patchPortfolioCertificatesIdVisibilityResponse>(getPatchPortfolioCertificatesIdVisibilityUrl({ id }),
-  {      
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      toggleVisibilityRequest,)
-  }
-);}
-
+export const patchPortfolioCertificatesIdVisibility = async (
+  { id }: PatchPortfolioCertificatesIdVisibilityPathParameters,
+  toggleVisibilityRequest: ToggleVisibilityRequest,
+  options?: RequestInit
+): Promise<patchPortfolioCertificatesIdVisibilityResponse> => {
+  return customFetch<patchPortfolioCertificatesIdVisibilityResponse>(
+    getPatchPortfolioCertificatesIdVisibilityUrl({ id }),
+    {
+      ...options,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      body: JSON.stringify(toggleVisibilityRequest)
+    }
+  )
+}
 
 export type postPortfolioProjectsResponse200 = {
   data: void
   status: 200
 }
-    
-export type postPortfolioProjectsResponseSuccess = (postPortfolioProjectsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postPortfolioProjectsResponse = (postPortfolioProjectsResponseSuccess)
+export type postPortfolioProjectsResponseSuccess = postPortfolioProjectsResponse200 & {
+  headers: Headers
+}
+export type postPortfolioProjectsResponse = postPortfolioProjectsResponseSuccess
 
 export const getPostPortfolioProjectsUrl = () => {
-
-
-  
-
   return `/portfolio/projects`
 }
 
-export const postPortfolioProjects = async (addProjectRequest: AddProjectRequest, options?: RequestInit): Promise<postPortfolioProjectsResponse> => {
-  
-  return customFetch<postPortfolioProjectsResponse>(getPostPortfolioProjectsUrl(),
-  {      
+export const postPortfolioProjects = async (
+  addProjectRequest: AddProjectRequest,
+  options?: RequestInit
+): Promise<postPortfolioProjectsResponse> => {
+  return customFetch<postPortfolioProjectsResponse>(getPostPortfolioProjectsUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addProjectRequest,)
-  }
-);}
-
+    body: JSON.stringify(addProjectRequest)
+  })
+}
 
 export type putPortfolioProjectsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type putPortfolioProjectsIdResponseSuccess = (putPortfolioProjectsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putPortfolioProjectsIdResponse = (putPortfolioProjectsIdResponseSuccess)
+export type putPortfolioProjectsIdResponseSuccess = putPortfolioProjectsIdResponse200 & {
+  headers: Headers
+}
+export type putPortfolioProjectsIdResponse = putPortfolioProjectsIdResponseSuccess
 
-export const getPutPortfolioProjectsIdUrl = ({ id }: PutPortfolioProjectsIdPathParameters,) => {
-
-
-  
-
+export const getPutPortfolioProjectsIdUrl = ({ id }: PutPortfolioProjectsIdPathParameters) => {
   return `/portfolio/projects/${id}`
 }
 
-export const putPortfolioProjectsId = async ({ id }: PutPortfolioProjectsIdPathParameters,
-    addProjectRequest: AddProjectRequest, options?: RequestInit): Promise<putPortfolioProjectsIdResponse> => {
-  
-  return customFetch<putPortfolioProjectsIdResponse>(getPutPortfolioProjectsIdUrl({ id }),
-  {      
+export const putPortfolioProjectsId = async (
+  { id }: PutPortfolioProjectsIdPathParameters,
+  addProjectRequest: AddProjectRequest,
+  options?: RequestInit
+): Promise<putPortfolioProjectsIdResponse> => {
+  return customFetch<putPortfolioProjectsIdResponse>(getPutPortfolioProjectsIdUrl({ id }), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addProjectRequest,)
-  }
-);}
-
+    body: JSON.stringify(addProjectRequest)
+  })
+}
 
 export type deletePortfolioProjectsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type deletePortfolioProjectsIdResponseSuccess = (deletePortfolioProjectsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type deletePortfolioProjectsIdResponse = (deletePortfolioProjectsIdResponseSuccess)
+export type deletePortfolioProjectsIdResponseSuccess = deletePortfolioProjectsIdResponse200 & {
+  headers: Headers
+}
+export type deletePortfolioProjectsIdResponse = deletePortfolioProjectsIdResponseSuccess
 
-export const getDeletePortfolioProjectsIdUrl = ({ id }: DeletePortfolioProjectsIdPathParameters,) => {
-
-
-  
-
+export const getDeletePortfolioProjectsIdUrl = ({ id }: DeletePortfolioProjectsIdPathParameters) => {
   return `/portfolio/projects/${id}`
 }
 
-export const deletePortfolioProjectsId = async ({ id }: DeletePortfolioProjectsIdPathParameters, options?: RequestInit): Promise<deletePortfolioProjectsIdResponse> => {
-  
-  return customFetch<deletePortfolioProjectsIdResponse>(getDeletePortfolioProjectsIdUrl({ id }),
-  {      
+export const deletePortfolioProjectsId = async (
+  { id }: DeletePortfolioProjectsIdPathParameters,
+  options?: RequestInit
+): Promise<deletePortfolioProjectsIdResponse> => {
+  return customFetch<deletePortfolioProjectsIdResponse>(getDeletePortfolioProjectsIdUrl({ id }), {
     ...options,
     method: 'DELETE'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type patchPortfolioProjectsIdVisibilityResponse200 = {
   data: void
   status: 200
 }
-    
-export type patchPortfolioProjectsIdVisibilityResponseSuccess = (patchPortfolioProjectsIdVisibilityResponse200) & {
-  headers: Headers;
-};
-;
 
-export type patchPortfolioProjectsIdVisibilityResponse = (patchPortfolioProjectsIdVisibilityResponseSuccess)
+export type patchPortfolioProjectsIdVisibilityResponseSuccess = patchPortfolioProjectsIdVisibilityResponse200 & {
+  headers: Headers
+}
+export type patchPortfolioProjectsIdVisibilityResponse = patchPortfolioProjectsIdVisibilityResponseSuccess
 
-export const getPatchPortfolioProjectsIdVisibilityUrl = ({ id }: PatchPortfolioProjectsIdVisibilityPathParameters,) => {
-
-
-  
-
+export const getPatchPortfolioProjectsIdVisibilityUrl = ({ id }: PatchPortfolioProjectsIdVisibilityPathParameters) => {
   return `/portfolio/projects/${id}/visibility`
 }
 
-export const patchPortfolioProjectsIdVisibility = async ({ id }: PatchPortfolioProjectsIdVisibilityPathParameters,
-    toggleVisibilityRequest: ToggleVisibilityRequest, options?: RequestInit): Promise<patchPortfolioProjectsIdVisibilityResponse> => {
-  
-  return customFetch<patchPortfolioProjectsIdVisibilityResponse>(getPatchPortfolioProjectsIdVisibilityUrl({ id }),
-  {      
+export const patchPortfolioProjectsIdVisibility = async (
+  { id }: PatchPortfolioProjectsIdVisibilityPathParameters,
+  toggleVisibilityRequest: ToggleVisibilityRequest,
+  options?: RequestInit
+): Promise<patchPortfolioProjectsIdVisibilityResponse> => {
+  return customFetch<patchPortfolioProjectsIdVisibilityResponse>(getPatchPortfolioProjectsIdVisibilityUrl({ id }), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      toggleVisibilityRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(toggleVisibilityRequest)
+  })
+}

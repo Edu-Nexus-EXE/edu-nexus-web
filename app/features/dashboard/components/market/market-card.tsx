@@ -29,7 +29,7 @@ export function MarketCard({
   matchTone,
   strengths,
   missing,
-  aiSuggestion,
+  aiSuggestion
 }: ScholarshipCardProps) {
   const { t } = useTranslation('dashboard')
   const [remindMe, setRemindMe] = useState(false)
@@ -58,7 +58,9 @@ export function MarketCard({
             <span className='material-symbols-outlined'>bookmark_border</span>
           </button>
           <div className='flex items-center gap-1.5 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full'>
-            <span className={cn('material-symbols-outlined text-xs text-primary', isUrgent && 'animate-pulse')}>timer</span>
+            <span className={cn('material-symbols-outlined text-xs text-primary', isUrgent && 'animate-pulse')}>
+              timer
+            </span>
             <span className='text-[10px] font-bold text-primary uppercase tracking-wider'>{endsIn}</span>
           </div>
         </div>
@@ -89,7 +91,9 @@ export function MarketCard({
             </svg>
             <div className='absolute inset-0 flex flex-col items-center justify-center'>
               <span className='text-2xl font-black text-foreground'>{matchPercent}%</span>
-              <span className='text-[8px] font-bold text-muted-foreground uppercase tracking-widest'>{t('market.card.match')}</span>
+              <span className='text-[8px] font-bold text-muted-foreground uppercase tracking-widest'>
+                {t('market.card.match')}
+              </span>
             </div>
           </div>
         </div>
@@ -139,7 +143,12 @@ export function MarketCard({
       {/* Reminder Toggle */}
       <div className='flex justify-end items-center mb-6 border-t border-border pt-4'>
         <label className='flex items-center gap-3 text-[11px] font-bold uppercase tracking-wider cursor-pointer group/reminder text-muted-foreground hover:text-primary transition-colors'>
-          <span className={cn('material-symbols-outlined text-lg', remindMe ? 'text-primary animate-pulse' : 'group-hover/reminder:animate-bounce')}>
+          <span
+            className={cn(
+              'material-symbols-outlined text-lg',
+              remindMe ? 'text-primary animate-pulse' : 'group-hover/reminder:animate-bounce'
+            )}
+          >
             {remindMe ? 'notifications_active' : 'notifications_none'}
           </span>
           <span className={remindMe ? 'text-primary' : ''}>

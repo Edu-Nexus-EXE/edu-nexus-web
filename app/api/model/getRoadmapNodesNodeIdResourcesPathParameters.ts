@@ -6,5 +6,5 @@
  */
 
 export type GetRoadmapNodesNodeIdResourcesPathParameters = {
- nodeId: string,
- }
+  nodeId: string
+}

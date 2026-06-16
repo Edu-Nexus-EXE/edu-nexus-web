@@ -6,5 +6,5 @@
  */
 
 export interface AddPrerequisiteRequest {
-  prerequisiteSkillId?: string;
+  prerequisiteSkillId?: string
 }

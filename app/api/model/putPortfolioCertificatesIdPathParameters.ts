@@ -6,5 +6,5 @@
  */
 
 export type PutPortfolioCertificatesIdPathParameters = {
- id: string,
- }
+  id: string
+}

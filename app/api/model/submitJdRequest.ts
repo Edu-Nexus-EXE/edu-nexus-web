@@ -7,9 +7,9 @@
 
 export interface SubmitJdRequest {
   /** @nullable */
-  sourceType?: string | null;
+  sourceType?: string | null
   /** @nullable */
-  sourceUrl?: string | null;
+  sourceUrl?: string | null
   /** @nullable */
-  rawContent?: string | null;
+  rawContent?: string | null
 }

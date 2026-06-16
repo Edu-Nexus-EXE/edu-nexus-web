@@ -6,5 +6,5 @@
  */
 
 export type PostAdminSkillsIdApprovePathParameters = {
- id: string,
- }
+  id: string
+}

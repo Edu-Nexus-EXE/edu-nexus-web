@@ -6,5 +6,5 @@
  */
 
 export type PostAdminUsersIdRevokeSubscriptionPathParameters = {
- id: string,
- }
+  id: string
+}

@@ -6,22 +6,22 @@
  */
 
 export interface SepayWebhookPayload {
-  id?: number;
+  id?: number
   /** @nullable */
-  gateway?: string | null;
+  gateway?: string | null
   /** @nullable */
-  transactionDate?: string | null;
+  transactionDate?: string | null
   /** @nullable */
-  accountNumber?: string | null;
+  accountNumber?: string | null
   /** @nullable */
-  code?: string | null;
+  code?: string | null
   /** @nullable */
-  content?: string | null;
-  transferType?: number;
-  transferAmount?: number;
-  accumulated?: number;
+  content?: string | null
+  transferType?: number
+  transferAmount?: number
+  accumulated?: number
   /** @nullable */
-  referenceCode?: string | null;
+  referenceCode?: string | null
   /** @nullable */
-  description?: string | null;
+  description?: string | null
 }

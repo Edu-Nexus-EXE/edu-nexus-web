@@ -7,19 +7,19 @@
 
 export interface SubmitOnboardingRequest {
   /** @nullable */
-  academicYear?: string | null;
+  academicYear?: string | null
   /** @nullable */
-  major?: string | null;
+  major?: string | null
   /** @nullable */
-  primaryGoal?: string | null;
+  primaryGoal?: string | null
   /** @nullable */
-  weeklyStudyHours?: string | null;
+  weeklyStudyHours?: string | null
   /** @nullable */
-  proficiencyLevel?: string | null;
+  proficiencyLevel?: string | null
   /** @nullable */
-  learningPriority?: string | null;
+  learningPriority?: string | null
   /** @nullable */
-  learningBudget?: string | null;
+  learningBudget?: string | null
   /** @nullable */
-  preferredChannel?: string | null;
+  preferredChannel?: string | null
 }

@@ -7,22 +7,22 @@
 
 export interface AddProjectRequest {
   /** @nullable */
-  title?: string | null;
+  title?: string | null
   /** @nullable */
-  description?: string | null;
+  description?: string | null
   /** @nullable */
-  repoUrl?: string | null;
+  repoUrl?: string | null
   /** @nullable */
-  liveUrl?: string | null;
+  liveUrl?: string | null
   /** @nullable */
-  imageUrl?: string | null;
+  imageUrl?: string | null
   /** @nullable */
-  techStack?: string[] | null;
+  techStack?: string[] | null
   /** @nullable */
-  role?: string | null;
+  role?: string | null
   /** @nullable */
-  startedDate?: string | null;
+  startedDate?: string | null
   /** @nullable */
-  completedDate?: string | null;
-  isVisible?: boolean;
+  completedDate?: string | null
+  isVisible?: boolean
 }

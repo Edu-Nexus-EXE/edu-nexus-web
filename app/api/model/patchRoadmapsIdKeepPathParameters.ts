@@ -6,5 +6,5 @@
  */
 
 export type PatchRoadmapsIdKeepPathParameters = {
- id: string,
- }
+  id: string
+}

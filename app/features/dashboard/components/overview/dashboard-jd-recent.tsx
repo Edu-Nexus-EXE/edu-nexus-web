@@ -25,9 +25,9 @@ function parseJdRows(res: unknown): JdRecentItem[] {
   const rows = Array.isArray(data)
     ? (data as unknown[])
     : Array.isArray((data as { items?: unknown[] } | null)?.items)
-      ? ((data as { items: unknown[] }).items)
+      ? (data as { items: unknown[] }).items
       : Array.isArray((data as { rows?: unknown[] } | null)?.rows)
-        ? ((data as { rows: unknown[] }).rows)
+        ? (data as { rows: unknown[] }).rows
         : []
 
   return rows
@@ -39,7 +39,7 @@ function parseJdRows(res: unknown): JdRecentItem[] {
         id: String(r.id ?? ''),
         jobTitle,
         parseStatus,
-        createdAt: typeof r.createdAt === 'string' ? r.createdAt : undefined,
+        createdAt: typeof r.createdAt === 'string' ? r.createdAt : undefined
       }
     })
     .filter((r) => Boolean(r.id))
@@ -110,7 +110,9 @@ export function DashboardJdRecent() {
       </div>
 
       {error ? (
-        <div className='mb-4 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-destructive text-sm'>{error}</div>
+        <div className='mb-4 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-destructive text-sm'>
+          {error}
+        </div>
       ) : null}
 
       {loading ? (
@@ -133,7 +135,9 @@ export function DashboardJdRecent() {
               <Link
                 key={r.id}
                 to={`/dashboard/jd/${encodeURIComponent(r.id)}`}
-                className={cn('block rounded-xl border border-border bg-background p-4 transition-colors hover:bg-muted/20 hover:border-primary/30')}
+                className={cn(
+                  'block rounded-xl border border-border bg-background p-4 transition-colors hover:bg-muted/20 hover:border-primary/30'
+                )}
               >
                 <div className='flex items-start justify-between gap-4'>
                   <div>
@@ -141,7 +145,9 @@ export function DashboardJdRecent() {
                     <p className='text-xs text-muted-foreground mt-1'>
                       {t('jdRecent.idLabel')}: {r.id}
                     </p>
-                    {r.createdAt ? <p className='text-xs text-muted-foreground mt-1'>{formatDateTime(r.createdAt, i18n.language)}</p> : null}
+                    {r.createdAt ? (
+                      <p className='text-xs text-muted-foreground mt-1'>{formatDateTime(r.createdAt, i18n.language)}</p>
+                    ) : null}
                   </div>
                   <Badge variant={tone.variant}>{tone.label}</Badge>
                 </div>

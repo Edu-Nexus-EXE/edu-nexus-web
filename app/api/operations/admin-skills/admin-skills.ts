@@ -19,320 +19,274 @@ import type {
   PutAdminSkillsIdPathParameters,
   ToggleSkillActiveRequest,
   UpdateSkillRequest
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminSkillsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminSkillsResponseSuccess = (getAdminSkillsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminSkillsResponse = (getAdminSkillsResponseSuccess)
+export type getAdminSkillsResponseSuccess = getAdminSkillsResponse200 & {
+  headers: Headers
+}
+export type getAdminSkillsResponse = getAdminSkillsResponseSuccess
 
-export const getGetAdminSkillsUrl = (params?: GetAdminSkillsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminSkillsUrl = (params?: GetAdminSkillsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/admin/skills?${stringifiedParams}` : `/admin/skills`
 }
 
-export const getAdminSkills = async (params?: GetAdminSkillsParams, options?: RequestInit): Promise<getAdminSkillsResponse> => {
-  
-  return customFetch<getAdminSkillsResponse>(getGetAdminSkillsUrl(params),
-  {      
+export const getAdminSkills = async (
+  params?: GetAdminSkillsParams,
+  options?: RequestInit
+): Promise<getAdminSkillsResponse> => {
+  return customFetch<getAdminSkillsResponse>(getGetAdminSkillsUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type postAdminSkillsResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminSkillsResponseSuccess = (postAdminSkillsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminSkillsResponse = (postAdminSkillsResponseSuccess)
+export type postAdminSkillsResponseSuccess = postAdminSkillsResponse200 & {
+  headers: Headers
+}
+export type postAdminSkillsResponse = postAdminSkillsResponseSuccess
 
 export const getPostAdminSkillsUrl = () => {
-
-
-  
-
   return `/admin/skills`
 }
 
-export const postAdminSkills = async (createSkillRequest: CreateSkillRequest, options?: RequestInit): Promise<postAdminSkillsResponse> => {
-  
-  return customFetch<postAdminSkillsResponse>(getPostAdminSkillsUrl(),
-  {      
+export const postAdminSkills = async (
+  createSkillRequest: CreateSkillRequest,
+  options?: RequestInit
+): Promise<postAdminSkillsResponse> => {
+  return customFetch<postAdminSkillsResponse>(getPostAdminSkillsUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createSkillRequest,)
-  }
-);}
-
+    body: JSON.stringify(createSkillRequest)
+  })
+}
 
 export type getAdminSkillsPendingReviewResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminSkillsPendingReviewResponseSuccess = (getAdminSkillsPendingReviewResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminSkillsPendingReviewResponse = (getAdminSkillsPendingReviewResponseSuccess)
+export type getAdminSkillsPendingReviewResponseSuccess = getAdminSkillsPendingReviewResponse200 & {
+  headers: Headers
+}
+export type getAdminSkillsPendingReviewResponse = getAdminSkillsPendingReviewResponseSuccess
 
-export const getGetAdminSkillsPendingReviewUrl = (params?: GetAdminSkillsPendingReviewParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminSkillsPendingReviewUrl = (params?: GetAdminSkillsPendingReviewParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/admin/skills/pending-review?${stringifiedParams}` : `/admin/skills/pending-review`
+  return stringifiedParams.length > 0
+    ? `/admin/skills/pending-review?${stringifiedParams}`
+    : `/admin/skills/pending-review`
 }
 
-export const getAdminSkillsPendingReview = async (params?: GetAdminSkillsPendingReviewParams, options?: RequestInit): Promise<getAdminSkillsPendingReviewResponse> => {
-  
-  return customFetch<getAdminSkillsPendingReviewResponse>(getGetAdminSkillsPendingReviewUrl(params),
-  {      
+export const getAdminSkillsPendingReview = async (
+  params?: GetAdminSkillsPendingReviewParams,
+  options?: RequestInit
+): Promise<getAdminSkillsPendingReviewResponse> => {
+  return customFetch<getAdminSkillsPendingReviewResponse>(getGetAdminSkillsPendingReviewUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type putAdminSkillsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type putAdminSkillsIdResponseSuccess = (putAdminSkillsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putAdminSkillsIdResponse = (putAdminSkillsIdResponseSuccess)
+export type putAdminSkillsIdResponseSuccess = putAdminSkillsIdResponse200 & {
+  headers: Headers
+}
+export type putAdminSkillsIdResponse = putAdminSkillsIdResponseSuccess
 
-export const getPutAdminSkillsIdUrl = ({ id }: PutAdminSkillsIdPathParameters,) => {
-
-
-  
-
+export const getPutAdminSkillsIdUrl = ({ id }: PutAdminSkillsIdPathParameters) => {
   return `/admin/skills/${id}`
 }
 
-export const putAdminSkillsId = async ({ id }: PutAdminSkillsIdPathParameters,
-    updateSkillRequest: UpdateSkillRequest, options?: RequestInit): Promise<putAdminSkillsIdResponse> => {
-  
-  return customFetch<putAdminSkillsIdResponse>(getPutAdminSkillsIdUrl({ id }),
-  {      
+export const putAdminSkillsId = async (
+  { id }: PutAdminSkillsIdPathParameters,
+  updateSkillRequest: UpdateSkillRequest,
+  options?: RequestInit
+): Promise<putAdminSkillsIdResponse> => {
+  return customFetch<putAdminSkillsIdResponse>(getPutAdminSkillsIdUrl({ id }), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateSkillRequest,)
-  }
-);}
-
+    body: JSON.stringify(updateSkillRequest)
+  })
+}
 
 export type patchAdminSkillsIdActiveResponse200 = {
   data: void
   status: 200
 }
-    
-export type patchAdminSkillsIdActiveResponseSuccess = (patchAdminSkillsIdActiveResponse200) & {
-  headers: Headers;
-};
-;
 
-export type patchAdminSkillsIdActiveResponse = (patchAdminSkillsIdActiveResponseSuccess)
+export type patchAdminSkillsIdActiveResponseSuccess = patchAdminSkillsIdActiveResponse200 & {
+  headers: Headers
+}
+export type patchAdminSkillsIdActiveResponse = patchAdminSkillsIdActiveResponseSuccess
 
-export const getPatchAdminSkillsIdActiveUrl = ({ id }: PatchAdminSkillsIdActivePathParameters,) => {
-
-
-  
-
+export const getPatchAdminSkillsIdActiveUrl = ({ id }: PatchAdminSkillsIdActivePathParameters) => {
   return `/admin/skills/${id}/active`
 }
 
-export const patchAdminSkillsIdActive = async ({ id }: PatchAdminSkillsIdActivePathParameters,
-    toggleSkillActiveRequest: ToggleSkillActiveRequest, options?: RequestInit): Promise<patchAdminSkillsIdActiveResponse> => {
-  
-  return customFetch<patchAdminSkillsIdActiveResponse>(getPatchAdminSkillsIdActiveUrl({ id }),
-  {      
+export const patchAdminSkillsIdActive = async (
+  { id }: PatchAdminSkillsIdActivePathParameters,
+  toggleSkillActiveRequest: ToggleSkillActiveRequest,
+  options?: RequestInit
+): Promise<patchAdminSkillsIdActiveResponse> => {
+  return customFetch<patchAdminSkillsIdActiveResponse>(getPatchAdminSkillsIdActiveUrl({ id }), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      toggleSkillActiveRequest,)
-  }
-);}
-
+    body: JSON.stringify(toggleSkillActiveRequest)
+  })
+}
 
 export type postAdminSkillsIdPrerequisitesResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminSkillsIdPrerequisitesResponseSuccess = (postAdminSkillsIdPrerequisitesResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminSkillsIdPrerequisitesResponse = (postAdminSkillsIdPrerequisitesResponseSuccess)
+export type postAdminSkillsIdPrerequisitesResponseSuccess = postAdminSkillsIdPrerequisitesResponse200 & {
+  headers: Headers
+}
+export type postAdminSkillsIdPrerequisitesResponse = postAdminSkillsIdPrerequisitesResponseSuccess
 
-export const getPostAdminSkillsIdPrerequisitesUrl = ({ id }: PostAdminSkillsIdPrerequisitesPathParameters,) => {
-
-
-  
-
+export const getPostAdminSkillsIdPrerequisitesUrl = ({ id }: PostAdminSkillsIdPrerequisitesPathParameters) => {
   return `/admin/skills/${id}/prerequisites`
 }
 
-export const postAdminSkillsIdPrerequisites = async ({ id }: PostAdminSkillsIdPrerequisitesPathParameters,
-    addPrerequisiteRequest: AddPrerequisiteRequest, options?: RequestInit): Promise<postAdminSkillsIdPrerequisitesResponse> => {
-  
-  return customFetch<postAdminSkillsIdPrerequisitesResponse>(getPostAdminSkillsIdPrerequisitesUrl({ id }),
-  {      
+export const postAdminSkillsIdPrerequisites = async (
+  { id }: PostAdminSkillsIdPrerequisitesPathParameters,
+  addPrerequisiteRequest: AddPrerequisiteRequest,
+  options?: RequestInit
+): Promise<postAdminSkillsIdPrerequisitesResponse> => {
+  return customFetch<postAdminSkillsIdPrerequisitesResponse>(getPostAdminSkillsIdPrerequisitesUrl({ id }), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addPrerequisiteRequest,)
-  }
-);}
-
+    body: JSON.stringify(addPrerequisiteRequest)
+  })
+}
 
 export type deleteAdminSkillsIdPrerequisitesPrereqIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type deleteAdminSkillsIdPrerequisitesPrereqIdResponseSuccess = (deleteAdminSkillsIdPrerequisitesPrereqIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type deleteAdminSkillsIdPrerequisitesPrereqIdResponse = (deleteAdminSkillsIdPrerequisitesPrereqIdResponseSuccess)
+export type deleteAdminSkillsIdPrerequisitesPrereqIdResponseSuccess =
+  deleteAdminSkillsIdPrerequisitesPrereqIdResponse200 & {
+    headers: Headers
+  }
+export type deleteAdminSkillsIdPrerequisitesPrereqIdResponse = deleteAdminSkillsIdPrerequisitesPrereqIdResponseSuccess
 
-export const getDeleteAdminSkillsIdPrerequisitesPrereqIdUrl = ({ id, prereqId }: DeleteAdminSkillsIdPrerequisitesPrereqIdPathParameters,) => {
-
-
-  
-
+export const getDeleteAdminSkillsIdPrerequisitesPrereqIdUrl = ({
+  id,
+  prereqId
+}: DeleteAdminSkillsIdPrerequisitesPrereqIdPathParameters) => {
   return `/admin/skills/${id}/prerequisites/${prereqId}`
 }
 
-export const deleteAdminSkillsIdPrerequisitesPrereqId = async ({ id, prereqId }: DeleteAdminSkillsIdPrerequisitesPrereqIdPathParameters, options?: RequestInit): Promise<deleteAdminSkillsIdPrerequisitesPrereqIdResponse> => {
-  
-  return customFetch<deleteAdminSkillsIdPrerequisitesPrereqIdResponse>(getDeleteAdminSkillsIdPrerequisitesPrereqIdUrl({ id, prereqId }),
-  {      
-    ...options,
-    method: 'DELETE'
-    
-    
-  }
-);}
-
+export const deleteAdminSkillsIdPrerequisitesPrereqId = async (
+  { id, prereqId }: DeleteAdminSkillsIdPrerequisitesPrereqIdPathParameters,
+  options?: RequestInit
+): Promise<deleteAdminSkillsIdPrerequisitesPrereqIdResponse> => {
+  return customFetch<deleteAdminSkillsIdPrerequisitesPrereqIdResponse>(
+    getDeleteAdminSkillsIdPrerequisitesPrereqIdUrl({ id, prereqId }),
+    {
+      ...options,
+      method: 'DELETE'
+    }
+  )
+}
 
 export type postAdminSkillsIdApproveResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminSkillsIdApproveResponseSuccess = (postAdminSkillsIdApproveResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminSkillsIdApproveResponse = (postAdminSkillsIdApproveResponseSuccess)
+export type postAdminSkillsIdApproveResponseSuccess = postAdminSkillsIdApproveResponse200 & {
+  headers: Headers
+}
+export type postAdminSkillsIdApproveResponse = postAdminSkillsIdApproveResponseSuccess
 
-export const getPostAdminSkillsIdApproveUrl = ({ id }: PostAdminSkillsIdApprovePathParameters,) => {
-
-
-  
-
+export const getPostAdminSkillsIdApproveUrl = ({ id }: PostAdminSkillsIdApprovePathParameters) => {
   return `/admin/skills/${id}/approve`
 }
 
-export const postAdminSkillsIdApprove = async ({ id }: PostAdminSkillsIdApprovePathParameters,
-    approveSkillRequest: ApproveSkillRequest, options?: RequestInit): Promise<postAdminSkillsIdApproveResponse> => {
-  
-  return customFetch<postAdminSkillsIdApproveResponse>(getPostAdminSkillsIdApproveUrl({ id }),
-  {      
+export const postAdminSkillsIdApprove = async (
+  { id }: PostAdminSkillsIdApprovePathParameters,
+  approveSkillRequest: ApproveSkillRequest,
+  options?: RequestInit
+): Promise<postAdminSkillsIdApproveResponse> => {
+  return customFetch<postAdminSkillsIdApproveResponse>(getPostAdminSkillsIdApproveUrl({ id }), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      approveSkillRequest,)
-  }
-);}
-
+    body: JSON.stringify(approveSkillRequest)
+  })
+}
 
 export type postAdminSkillsOldIdMergeToNewIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminSkillsOldIdMergeToNewIdResponseSuccess = (postAdminSkillsOldIdMergeToNewIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminSkillsOldIdMergeToNewIdResponse = (postAdminSkillsOldIdMergeToNewIdResponseSuccess)
+export type postAdminSkillsOldIdMergeToNewIdResponseSuccess = postAdminSkillsOldIdMergeToNewIdResponse200 & {
+  headers: Headers
+}
+export type postAdminSkillsOldIdMergeToNewIdResponse = postAdminSkillsOldIdMergeToNewIdResponseSuccess
 
-export const getPostAdminSkillsOldIdMergeToNewIdUrl = ({ oldId, newId }: PostAdminSkillsOldIdMergeToNewIdPathParameters,) => {
-
-
-  
-
+export const getPostAdminSkillsOldIdMergeToNewIdUrl = ({
+  oldId,
+  newId
+}: PostAdminSkillsOldIdMergeToNewIdPathParameters) => {
   return `/admin/skills/${oldId}/merge-to/${newId}`
 }
 
-export const postAdminSkillsOldIdMergeToNewId = async ({ oldId, newId }: PostAdminSkillsOldIdMergeToNewIdPathParameters,
-    mergeSkillRequest: MergeSkillRequest, options?: RequestInit): Promise<postAdminSkillsOldIdMergeToNewIdResponse> => {
-  
-  return customFetch<postAdminSkillsOldIdMergeToNewIdResponse>(getPostAdminSkillsOldIdMergeToNewIdUrl({ oldId, newId }),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      mergeSkillRequest,)
-  }
-);}
-
-
+export const postAdminSkillsOldIdMergeToNewId = async (
+  { oldId, newId }: PostAdminSkillsOldIdMergeToNewIdPathParameters,
+  mergeSkillRequest: MergeSkillRequest,
+  options?: RequestInit
+): Promise<postAdminSkillsOldIdMergeToNewIdResponse> => {
+  return customFetch<postAdminSkillsOldIdMergeToNewIdResponse>(
+    getPostAdminSkillsOldIdMergeToNewIdUrl({ oldId, newId }),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      body: JSON.stringify(mergeSkillRequest)
+    }
+  )
+}

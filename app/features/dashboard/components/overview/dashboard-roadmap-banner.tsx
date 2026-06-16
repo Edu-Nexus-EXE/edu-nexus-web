@@ -35,7 +35,9 @@ export function DashboardRoadmapBanner() {
       <div className='relative z-10 flex flex-col md:flex-row items-center justify-between gap-8'>
         <div className='max-w-xl'>
           <h2 className='text-xl font-bold mb-4 text-foreground'>{t('roadmap.title')}</h2>
-          <p className='text-muted-foreground mb-6'>{hasRoadmap ? t('roadmap.description') : t('roadmap.emptyDescription')}</p>
+          <p className='text-muted-foreground mb-6'>
+            {hasRoadmap ? t('roadmap.description') : t('roadmap.emptyDescription')}
+          </p>
           <div className='flex items-center gap-4'>
             <button
               type='button'

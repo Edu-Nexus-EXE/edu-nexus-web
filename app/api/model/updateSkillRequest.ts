@@ -7,14 +7,14 @@
 
 export interface UpdateSkillRequest {
   /** @nullable */
-  name?: string | null;
+  name?: string | null
   /** @nullable */
-  slug?: string | null;
+  slug?: string | null
   /** @nullable */
-  category?: string | null;
+  category?: string | null
   /** @nullable */
-  major?: string | null;
+  major?: string | null
   /** @nullable */
-  description?: string | null;
-  difficultyLevel?: number;
+  description?: string | null
+  difficultyLevel?: number
 }

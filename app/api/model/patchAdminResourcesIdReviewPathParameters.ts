@@ -6,5 +6,5 @@
  */
 
 export type PatchAdminResourcesIdReviewPathParameters = {
- id: string,
- }
+  id: string
+}

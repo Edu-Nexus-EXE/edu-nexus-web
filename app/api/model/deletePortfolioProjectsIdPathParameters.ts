@@ -6,5 +6,5 @@
  */
 
 export type DeletePortfolioProjectsIdPathParameters = {
- id: string,
- }
+  id: string
+}

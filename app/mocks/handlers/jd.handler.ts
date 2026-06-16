@@ -69,7 +69,7 @@ const db = {
   jd: new Map<string, SeedJd>(),
   session: new Map<string, Session>(),
   cv: new Map<string, CvState>(),
-  pathToJd: new Map<string, string>(),
+  pathToJd: new Map<string, string>()
 }
 
 let seq = 1
@@ -91,7 +91,7 @@ function seedJd(overrides?: Partial<SeedJd>): SeedJd {
     hardSkills: overrides?.hardSkills ?? ['Java', 'Spring Boot', 'SQL'],
     softSkills: overrides?.softSkills ?? ['Communication', 'Problem Solving'],
     assessmentPath: overrides?.assessmentPath,
-    __pollCount: overrides?.__pollCount ?? 0,
+    __pollCount: overrides?.__pollCount ?? 0
   }
 }
 
@@ -109,7 +109,7 @@ function ensureCv(pathId: string): CvState {
   const created: CvState = {
     status: 'not_uploaded',
     fileName: undefined,
-    __pollCount: 0,
+    __pollCount: 0
   }
   db.cv.set(pathId, created)
   return created
@@ -124,8 +124,8 @@ function seedQuestions(): Question[] {
         A: 'They allow multiple inheritance of implementation',
         B: 'They define contracts that classes can implement',
         C: 'They replace abstract classes entirely',
-        D: 'They improve JVM startup speed',
-      },
+        D: 'They improve JVM startup speed'
+      }
     },
     {
       id: id('q'),
@@ -134,8 +134,8 @@ function seedQuestions(): Question[] {
         A: 'spring-boot-starter-batch',
         B: 'spring-boot-starter-data-jpa',
         C: 'spring-boot-starter-web',
-        D: 'spring-boot-starter-test',
-      },
+        D: 'spring-boot-starter-test'
+      }
     },
     {
       id: id('q'),
@@ -144,8 +144,8 @@ function seedQuestions(): Question[] {
         A: 'They replace version control',
         B: 'They automate UI testing',
         C: 'They keep schema changes reproducible across environments',
-        D: 'They compile Java source code',
-      },
+        D: 'They compile Java source code'
+      }
     },
     {
       id: id('q'),
@@ -154,9 +154,9 @@ function seedQuestions(): Question[] {
         A: 'Run unit tests',
         B: 'Design Figma screens',
         C: 'Build Docker image',
-        D: 'Run database migrations',
-      },
-    },
+        D: 'Run database migrations'
+      }
+    }
   ]
 }
 
@@ -170,7 +170,7 @@ function ensureSession(sessionId: string, pathId: string): Session {
     questionsReadyAfter: 2,
     __pollCount: 0,
     questions: seedQuestions(),
-    submittedAnswers: [],
+    submittedAnswers: []
   }
   db.session.set(sessionId, created)
   return created
@@ -187,7 +187,7 @@ export const jdHandlers = [
       sourceType: body?.sourceType === 'url' ? 'url' : 'text',
       sourceUrl: body?.sourceUrl ?? null,
       rawContent: body?.rawContent ?? null,
-      __pollCount: 0,
+      __pollCount: 0
     })
 
     db.jd.set(jdId, jd)
@@ -215,7 +215,7 @@ export const jdHandlers = [
       hardSkills: jd.hardSkills,
       softSkills: jd.softSkills,
       assessmentPath: jd.assessmentPath,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     })
   }),
 
@@ -233,11 +233,11 @@ export const jdHandlers = [
         id: jd.id,
         parseStatus: jd.parseStatus,
         jobTitle: jd.jobTitle,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
       })),
       page,
       pageSize,
-      total: all.length,
+      total: all.length
     })
   }),
 
@@ -256,12 +256,30 @@ export const jdHandlers = [
 
   http.get('*/jd-submissions/:jdId/reusable-sessions', ({ params }) => {
     const jdId = String(params.jdId ?? '')
-    ensureJd(jdId)
+    const jd = ensureJd(jdId)
 
-    return ok([
-      { sessionId: id('sess'), scorePercent: 72, fromJdTitle: 'Backend Java Developer' },
-      { sessionId: id('sess'), scorePercent: 88, fromJdTitle: 'Java Spring Developer' },
-    ])
+    // Tính pathId thuộc về JD này (nếu chưa chọn path thì rỗng, không có session cũ).
+    const pathId = jd.assessmentPath?.id
+    if (!pathId) return ok([])
+
+    // Chỉ trả về các session đã từng chạy cho ĐÚNG pathId của JD hiện tại.
+    // Mỗi session thuộc về 1 pathId cụ thể; không được trộn session của JD khác
+    // vào danh sách reuse — tránh user tưởng nhầm là bộ câu hỏi của JD mới.
+    const sessions = Array.from(db.session.values()).filter((s) => s.pathId === pathId)
+    const data = sessions.map((s) => ({
+      sessionId: s.sessionId,
+      jdId, // gắn jdId để FE có thể filter defense-in-depth
+      scorePercent:
+        s.questions.length > 0 && s.submittedAnswers.length > 0
+          ? Math.round(
+              (s.submittedAnswers.filter((a, i) => a.selectedOption && s.questions[i]).length / s.questions.length) *
+                100
+            )
+          : 0,
+      fromJdTitle: jd.jobTitle
+    }))
+
+    return ok(data)
   }),
 
   http.post('*/assessment-paths/:pathId/sessions', async ({ params, request }) => {
@@ -287,7 +305,7 @@ export const jdHandlers = [
     return ok({
       sessionId: sess.sessionId,
       status: sess.status,
-      questions: ready ? sess.questions : [],
+      questions: ready ? sess.questions : []
     })
   }),
 
@@ -311,7 +329,7 @@ export const jdHandlers = [
       scorePercent,
       skillScores: [
         { skillName: 'Java OOP', score: 3, maxScore: 4, proficiencyLevel: 'intermediate' },
-        { skillName: 'Spring Boot', score: 2, maxScore: 3, proficiencyLevel: 'intermediate' },
+        { skillName: 'Spring Boot', score: 2, maxScore: 3, proficiencyLevel: 'intermediate' }
       ],
       results: sess.questions.map((q, i) => ({
         questionId: q.id,
@@ -319,10 +337,11 @@ export const jdHandlers = [
         selectedOption: sess.submittedAnswers[i]?.selectedOption ?? '',
         correctOption: 'B',
         isCorrect: i === 0,
-        explanation: i === 0
-          ? 'Correct! Interfaces support default methods since Java 8.'
-          : 'Incorrect. Spring Boot Actuator exposes metrics and health endpoints.',
-      })),
+        explanation:
+          i === 0
+            ? 'Correct! Interfaces support default methods since Java 8.'
+            : 'Incorrect. Spring Boot Actuator exposes metrics and health endpoints.'
+      }))
     })
   }),
 
@@ -342,7 +361,7 @@ export const jdHandlers = [
       sess.status === 'submitted'
         ? [
             { skillName: 'Java OOP', score: 3, maxScore: 4, proficiencyLevel: 'intermediate' },
-            { skillName: 'Spring Boot', score: 2, maxScore: 3, proficiencyLevel: 'intermediate' },
+            { skillName: 'Spring Boot', score: 2, maxScore: 3, proficiencyLevel: 'intermediate' }
           ]
         : []
 
@@ -354,9 +373,10 @@ export const jdHandlers = [
             selectedOption: sess.submittedAnswers[i]?.selectedOption ?? '',
             correctOption: 'B',
             isCorrect: i === 0,
-            explanation: i === 0
-              ? 'Correct! Interfaces support default methods since Java 8.'
-              : 'Incorrect. Spring Boot Actuator exposes metrics and health endpoints.',
+            explanation:
+              i === 0
+                ? 'Correct! Interfaces support default methods since Java 8.'
+                : 'Incorrect. Spring Boot Actuator exposes metrics and health endpoints.'
           }))
         : []
 
@@ -367,7 +387,7 @@ export const jdHandlers = [
       correctCount,
       scorePercent,
       skillScores,
-      results,
+      results
     })
   }),
 
@@ -385,7 +405,7 @@ export const jdHandlers = [
       uploaded: 'pending',
       processing: 'processing',
       completed: 'completed',
-      failed: 'failed',
+      failed: 'failed'
     }
     const parseStatus = statusMap[cv.status] ?? 'pending'
 
@@ -397,11 +417,16 @@ export const jdHandlers = [
         cv.status === 'completed'
           ? [
               { skillName: 'React', proficiencyLevel: 'Advanced', yearsExp: 3, evidence: '3 years building SPAs' },
-              { skillName: 'TypeScript', proficiencyLevel: 'Intermediate', yearsExp: 2, evidence: 'Type-safe codebase experience' },
+              {
+                skillName: 'TypeScript',
+                proficiencyLevel: 'Intermediate',
+                yearsExp: 2,
+                evidence: 'Type-safe codebase experience'
+              }
             ]
           : [],
       totalExperienceYears: cv.status === 'completed' ? 3 : undefined,
-      parsedAt: cv.status === 'completed' ? new Date().toISOString() : undefined,
+      parsedAt: cv.status === 'completed' ? new Date().toISOString() : undefined
     })
   }),
 
@@ -420,10 +445,10 @@ export const jdHandlers = [
           id: cv.id,
           fileName: cv.fileName,
           fileSize: 245000,
-          parseStatus: 'pending',
-        },
+          parseStatus: 'pending'
+        }
       },
-      { status: 202 },
+      { status: 202 }
     )
-  }),
+  })
 ]

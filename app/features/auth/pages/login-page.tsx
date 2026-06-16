@@ -32,7 +32,7 @@ export function LoginPage() {
             backgroundImage:
               'linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
-            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+            maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
           }}
         />
       </div>

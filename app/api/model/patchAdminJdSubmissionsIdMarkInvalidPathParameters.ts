@@ -6,5 +6,5 @@
  */
 
 export type PatchAdminJdSubmissionsIdMarkInvalidPathParameters = {
- id: string,
- }
+  id: string
+}

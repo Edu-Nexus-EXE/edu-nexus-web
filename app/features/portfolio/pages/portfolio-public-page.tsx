@@ -79,17 +79,25 @@ export function PortfolioPublicPage() {
       <section className='rounded-3xl border border-border bg-card p-10 shadow-sm'>
         <p className='text-xs font-semibold tracking-widest uppercase text-primary'>{t('public.badge')}</p>
         <h1 className='text-4xl font-black text-foreground mt-4'>{portfolio.overview.fullName}</h1>
-        <p className='text-lg font-semibold text-primary mt-2'>{portfolio.overview.headline || t('public.headlineFallback')}</p>
-        <p className='text-muted-foreground mt-5 whitespace-pre-line leading-7'>{portfolio.overview.bio || t('public.bioFallback')}</p>
+        <p className='text-lg font-semibold text-primary mt-2'>
+          {portfolio.overview.headline || t('public.headlineFallback')}
+        </p>
+        <p className='text-muted-foreground mt-5 whitespace-pre-line leading-7'>
+          {portfolio.overview.bio || t('public.bioFallback')}
+        </p>
         <div className='mt-6 grid gap-3 md:grid-cols-3'>
           <div className='rounded-2xl border border-border bg-background p-4'>
-            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>{t('public.visibility.skillsTitle')}</p>
+            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+              {t('public.visibility.skillsTitle')}
+            </p>
             <p className='mt-2 text-sm font-semibold text-foreground'>
               {portfolio.showCompletedSkills ? t('public.visibility.visible') : t('public.visibility.hidden')}
             </p>
           </div>
           <div className='rounded-2xl border border-border bg-background p-4'>
-            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>{t('public.visibility.certificatesTitle')}</p>
+            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+              {t('public.visibility.certificatesTitle')}
+            </p>
             <p className='mt-2 text-sm font-semibold text-foreground'>
               {portfolio.showCertificates
                 ? t('public.visibility.publicItems', { count: publicCertificates.length })
@@ -97,7 +105,9 @@ export function PortfolioPublicPage() {
             </p>
           </div>
           <div className='rounded-2xl border border-border bg-background p-4'>
-            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>{t('public.visibility.projectsTitle')}</p>
+            <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+              {t('public.visibility.projectsTitle')}
+            </p>
             <p className='mt-2 text-sm font-semibold text-foreground'>
               {portfolio.showProjects
                 ? t('public.visibility.publicItems', { count: publicProjects.length })
@@ -110,7 +120,10 @@ export function PortfolioPublicPage() {
           portfolio.overview.skills.length > 0 ? (
             <div className='flex flex-wrap gap-2 mt-6'>
               {portfolio.overview.skills.map((skill) => (
-                <span key={skill} className='rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary border border-primary/20'>
+                <span
+                  key={skill}
+                  className='rounded-full bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary border border-primary/20'
+                >
                   {skill}
                 </span>
               ))}
@@ -168,7 +181,10 @@ export function PortfolioPublicPage() {
                   <p className='text-sm text-muted-foreground mt-3'>{project.description}</p>
                   <div className='flex flex-wrap gap-2 mt-4'>
                     {project.techStack.map((tech) => (
-                      <span key={tech} className='rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground'>
+                      <span
+                        key={tech}
+                        className='rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground'
+                      >
                         {tech}
                       </span>
                     ))}

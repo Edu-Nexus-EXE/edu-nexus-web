@@ -4,65 +4,92 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import {
-  HttpResponse,
-  delay,
-  http
-} from 'msw';
-import type {
-  RequestHandlerOptions
-} from 'msw';
+import { HttpResponse, delay, http } from 'msw'
+import type { RequestHandlerOptions } from 'msw'
 
-
-
-export const getGetAdminUsersMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.get('*/admin/users', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getGetAdminUsersMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.get(
+    '*/admin/users',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getGetAdminUsersIdMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.get('*/admin/users/:id', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getGetAdminUsersIdMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.get(
+    '*/admin/users/:id',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getPatchAdminUsersIdBanMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.patch('*/admin/users/:id/ban', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getPatchAdminUsersIdBanMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.patch(
+    '*/admin/users/:id/ban',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getPostAdminUsersIdActivateSubscriptionMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.post('*/admin/users/:id/activate-subscription', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getPostAdminUsersIdActivateSubscriptionMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.post(
+    '*/admin/users/:id/activate-subscription',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getPostAdminUsersIdRevokeSubscriptionMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.post('*/admin/users/:id/revoke-subscription', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getPostAdminUsersIdRevokeSubscriptionMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.post(
+    '*/admin/users/:id/revoke-subscription',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 export const getAdminUsersMock = () => [
   getGetAdminUsersMockHandler(),

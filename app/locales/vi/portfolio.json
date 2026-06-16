@@ -75,10 +75,23 @@
       "added": "Đã thêm chứng chỉ thành công.",
       "empty": "Chưa có chứng chỉ nào.",
       "validation": "Tên chứng chỉ, đơn vị cấp và ngày cấp là bắt buộc.",
+      "showMore": "Xem thêm",
+      "showLess": "Thu gọn",
+      "showingOf": "Đang hiện {{count}} / {{total}}",
       "fields": {
         "name": "Tên chứng chỉ",
+        "namePlaceholder": "VD: AWS Cloud Practitioner",
         "issuer": "Đơn vị cấp",
-        "credentialUrl": "URL chứng chỉ"
+        "issuerPlaceholder": "VD: Amazon Web Services",
+        "issuedDate": "Ngày cấp",
+        "expiresDate": "Ngày hết hạn",
+        "credentialUrl": "URL chứng chỉ",
+        "credentialUrlPlaceholder": "https://credential.net/your-cert",
+        "fileUrl": "URL tệp đính kèm",
+        "fileUrlPlaceholder": "https://example.com/certificate.pdf",
+        "isVisible": "Hiển thị trên hồ sơ công khai",
+        "public": "Công khai",
+        "hidden": "Đang ẩn"
       }
     },
     "projects": {
@@ -88,18 +101,39 @@
       "added": "Đã thêm dự án thành công.",
       "empty": "Chưa có dự án nào.",
       "validation": "Tên dự án, mô tả và ngày bắt đầu là bắt buộc.",
+      "showMore": "Xem thêm",
+      "showLess": "Thu gọn",
+      "showingOf": "Đang hiện {{count}} / {{total}}",
       "fields": {
         "title": "Tên dự án",
-        "description": "Mô tả dự án",
-        "techStack": "Công nghệ sử dụng (phân tách bằng dấu phẩy)",
-        "demoUrl": "URL demo",
-        "repoUrl": "URL kho mã nguồn"
+        "titlePlaceholder": "VD: E-commerce API",
+        "description": "Mô tả",
+        "descriptionPlaceholder": "Mô tả ngắn gọn dự án làm gì, giải quyết vấn đề nào và đóng góp của bạn.",
+        "techStack": "Công nghệ sử dụng",
+        "techStackPlaceholder": "Java, Spring Boot, PostgreSQL",
+        "role": "Vai trò của bạn",
+        "rolePlaceholder": "VD: Backend Developer",
+        "startedDate": "Ngày bắt đầu",
+        "completedDate": "Ngày hoàn thành",
+        "repoUrl": "URL kho mã nguồn",
+        "repoUrlPlaceholder": "https://github.com/your-org/your-repo",
+        "liveUrl": "URL bản demo",
+        "liveUrlPlaceholder": "https://your-demo.com",
+        "imageUrl": "URL ảnh bìa",
+        "imageUrlPlaceholder": "https://example.com/preview.png",
+        "isVisible": "Hiển thị trên hồ sơ công khai",
+        "public": "Công khai",
+        "hidden": "Đang ẩn",
+        "inProgress": "Đang thực hiện"
       }
     },
     "actions": {
       "delete": "Xoá",
       "save": "Lưu hồ sơ",
       "saveItem": "Lưu mục",
+      "update": "Cập nhật",
+      "edit": "Sửa",
+      "cancel": "Huỷ",
       "show": "Hiện",
       "hide": "Ẩn"
     }

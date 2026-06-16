@@ -6,5 +6,5 @@
  */
 
 export interface ToggleSkillActiveRequest {
-  isActive?: boolean;
+  isActive?: boolean
 }

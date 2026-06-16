@@ -6,14 +6,12 @@ export function PricingFaq() {
   const faqs = [
     { q: t('faq.q1'), a: t('faq.a1'), defaultOpen: true },
     { q: t('faq.q2'), a: t('faq.a2') },
-    { q: t('faq.q3'), a: t('faq.a3') },
+    { q: t('faq.q3'), a: t('faq.a3') }
   ]
 
   return (
     <div className='w-full max-w-[800px] mt-24'>
-      <h2 className='text-foreground text-2xl font-bold text-center mb-10'>
-        {t('faq.title')}
-      </h2>
+      <h2 className='text-foreground text-2xl font-bold text-center mb-10'>{t('faq.title')}</h2>
 
       <div className='flex flex-col gap-4'>
         {faqs.map((faq, i) => (

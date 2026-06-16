@@ -6,5 +6,5 @@
  */
 
 export type PostCareerTracksIdJdsPathParameters = {
- id: string,
- }
+  id: string
+}

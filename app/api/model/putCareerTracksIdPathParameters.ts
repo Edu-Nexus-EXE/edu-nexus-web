@@ -6,5 +6,5 @@
  */
 
 export type PutCareerTracksIdPathParameters = {
- id: string,
- }
+  id: string
+}

@@ -4,45 +4,58 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import {
-  HttpResponse,
-  delay,
-  http
-} from 'msw';
-import type {
-  RequestHandlerOptions
-} from 'msw';
+import { HttpResponse, delay, http } from 'msw'
+import type { RequestHandlerOptions } from 'msw'
 
-
-
-export const getGetAdminJdSubmissionsMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.get('*/admin/jd-submissions', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getGetAdminJdSubmissionsMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.get(
+    '*/admin/jd-submissions',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getPostAdminJdSubmissionsIdReParseMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.post('*/admin/jd-submissions/:id/re-parse', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getPostAdminJdSubmissionsIdReParseMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.post(
+    '*/admin/jd-submissions/:id/re-parse',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 
-export const getPatchAdminJdSubmissionsIdMarkInvalidMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
-  return http.patch('*/admin/jd-submissions/:id/mark-invalid', async (info) => {await delay(1000);
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
-    return new HttpResponse(null,
-      { status: 200,
-        
-      })
-  }, options)
+export const getPatchAdminJdSubmissionsIdMarkInvalidMockHandler = (
+  overrideResponse?: void | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void),
+  options?: RequestHandlerOptions
+) => {
+  return http.patch(
+    '*/admin/jd-submissions/:id/mark-invalid',
+    async (info) => {
+      await delay(1000)
+      if (typeof overrideResponse === 'function') {
+        await overrideResponse(info)
+      }
+      return new HttpResponse(null, { status: 200 })
+    },
+    options
+  )
 }
 export const getAdminJdsMock = () => [
   getGetAdminJdSubmissionsMockHandler(),

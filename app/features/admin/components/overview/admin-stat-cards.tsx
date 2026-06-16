@@ -27,10 +27,34 @@ export function AdminStatCards() {
   }, [])
 
   const cards = [
-    { key: 'users', icon: 'group', label: t('stats.totalUsers'), value: loading ? '--' : String(stats.totalUsers), badge: t('stats.weeklyIncrease') },
-    { key: 'revenue', icon: 'payments', label: t('adminOverview.revenue'), value: loading ? '--' : formatCurrency(stats.revenue), badge: t('stats.monthlyIncrease') },
-    { key: 'aiCost', icon: 'memory', label: t('adminOverview.aiCost'), value: loading ? '--' : formatCurrency(stats.aiCost), badge: t('adminOverview.aiCostBadge') },
-    { key: 'subscriptions', icon: 'workspace_premium', label: t('adminOverview.activeSubscriptions'), value: loading ? '--' : String(stats.activeSubscriptions), badge: t('stats.conversionRate') },
+    {
+      key: 'users',
+      icon: 'group',
+      label: t('stats.totalUsers'),
+      value: loading ? '--' : String(stats.totalUsers),
+      badge: t('stats.weeklyIncrease')
+    },
+    {
+      key: 'revenue',
+      icon: 'payments',
+      label: t('adminOverview.revenue'),
+      value: loading ? '--' : formatCurrency(stats.revenue),
+      badge: t('stats.monthlyIncrease')
+    },
+    {
+      key: 'aiCost',
+      icon: 'memory',
+      label: t('adminOverview.aiCost'),
+      value: loading ? '--' : formatCurrency(stats.aiCost),
+      badge: t('adminOverview.aiCostBadge')
+    },
+    {
+      key: 'subscriptions',
+      icon: 'workspace_premium',
+      label: t('adminOverview.activeSubscriptions'),
+      value: loading ? '--' : String(stats.activeSubscriptions),
+      badge: t('stats.conversionRate')
+    }
   ]
 
   return (

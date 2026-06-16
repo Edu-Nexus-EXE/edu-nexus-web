@@ -12,178 +12,144 @@ import type {
   PostAdminUsersIdActivateSubscriptionPathParameters,
   PostAdminUsersIdRevokeSubscriptionPathParameters,
   SetUserBanRequest
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminUsersResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminUsersResponseSuccess = (getAdminUsersResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminUsersResponse = (getAdminUsersResponseSuccess)
+export type getAdminUsersResponseSuccess = getAdminUsersResponse200 & {
+  headers: Headers
+}
+export type getAdminUsersResponse = getAdminUsersResponseSuccess
 
-export const getGetAdminUsersUrl = (params?: GetAdminUsersParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminUsersUrl = (params?: GetAdminUsersParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/admin/users?${stringifiedParams}` : `/admin/users`
 }
 
-export const getAdminUsers = async (params?: GetAdminUsersParams, options?: RequestInit): Promise<getAdminUsersResponse> => {
-  
-  return customFetch<getAdminUsersResponse>(getGetAdminUsersUrl(params),
-  {      
+export const getAdminUsers = async (
+  params?: GetAdminUsersParams,
+  options?: RequestInit
+): Promise<getAdminUsersResponse> => {
+  return customFetch<getAdminUsersResponse>(getGetAdminUsersUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type getAdminUsersIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminUsersIdResponseSuccess = (getAdminUsersIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminUsersIdResponse = (getAdminUsersIdResponseSuccess)
+export type getAdminUsersIdResponseSuccess = getAdminUsersIdResponse200 & {
+  headers: Headers
+}
+export type getAdminUsersIdResponse = getAdminUsersIdResponseSuccess
 
-export const getGetAdminUsersIdUrl = ({ id }: GetAdminUsersIdPathParameters,) => {
-
-
-  
-
+export const getGetAdminUsersIdUrl = ({ id }: GetAdminUsersIdPathParameters) => {
   return `/admin/users/${id}`
 }
 
-export const getAdminUsersId = async ({ id }: GetAdminUsersIdPathParameters, options?: RequestInit): Promise<getAdminUsersIdResponse> => {
-  
-  return customFetch<getAdminUsersIdResponse>(getGetAdminUsersIdUrl({ id }),
-  {      
+export const getAdminUsersId = async (
+  { id }: GetAdminUsersIdPathParameters,
+  options?: RequestInit
+): Promise<getAdminUsersIdResponse> => {
+  return customFetch<getAdminUsersIdResponse>(getGetAdminUsersIdUrl({ id }), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type patchAdminUsersIdBanResponse200 = {
   data: void
   status: 200
 }
-    
-export type patchAdminUsersIdBanResponseSuccess = (patchAdminUsersIdBanResponse200) & {
-  headers: Headers;
-};
-;
 
-export type patchAdminUsersIdBanResponse = (patchAdminUsersIdBanResponseSuccess)
+export type patchAdminUsersIdBanResponseSuccess = patchAdminUsersIdBanResponse200 & {
+  headers: Headers
+}
+export type patchAdminUsersIdBanResponse = patchAdminUsersIdBanResponseSuccess
 
-export const getPatchAdminUsersIdBanUrl = ({ id }: PatchAdminUsersIdBanPathParameters,) => {
-
-
-  
-
+export const getPatchAdminUsersIdBanUrl = ({ id }: PatchAdminUsersIdBanPathParameters) => {
   return `/admin/users/${id}/ban`
 }
 
-export const patchAdminUsersIdBan = async ({ id }: PatchAdminUsersIdBanPathParameters,
-    setUserBanRequest: SetUserBanRequest, options?: RequestInit): Promise<patchAdminUsersIdBanResponse> => {
-  
-  return customFetch<patchAdminUsersIdBanResponse>(getPatchAdminUsersIdBanUrl({ id }),
-  {      
+export const patchAdminUsersIdBan = async (
+  { id }: PatchAdminUsersIdBanPathParameters,
+  setUserBanRequest: SetUserBanRequest,
+  options?: RequestInit
+): Promise<patchAdminUsersIdBanResponse> => {
+  return customFetch<patchAdminUsersIdBanResponse>(getPatchAdminUsersIdBanUrl({ id }), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      setUserBanRequest,)
-  }
-);}
-
+    body: JSON.stringify(setUserBanRequest)
+  })
+}
 
 export type postAdminUsersIdActivateSubscriptionResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminUsersIdActivateSubscriptionResponseSuccess = (postAdminUsersIdActivateSubscriptionResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminUsersIdActivateSubscriptionResponse = (postAdminUsersIdActivateSubscriptionResponseSuccess)
+export type postAdminUsersIdActivateSubscriptionResponseSuccess = postAdminUsersIdActivateSubscriptionResponse200 & {
+  headers: Headers
+}
+export type postAdminUsersIdActivateSubscriptionResponse = postAdminUsersIdActivateSubscriptionResponseSuccess
 
-export const getPostAdminUsersIdActivateSubscriptionUrl = ({ id }: PostAdminUsersIdActivateSubscriptionPathParameters,) => {
-
-
-  
-
+export const getPostAdminUsersIdActivateSubscriptionUrl = ({
+  id
+}: PostAdminUsersIdActivateSubscriptionPathParameters) => {
   return `/admin/users/${id}/activate-subscription`
 }
 
-export const postAdminUsersIdActivateSubscription = async ({ id }: PostAdminUsersIdActivateSubscriptionPathParameters,
-    activateUserSubscriptionRequest: ActivateUserSubscriptionRequest, options?: RequestInit): Promise<postAdminUsersIdActivateSubscriptionResponse> => {
-  
-  return customFetch<postAdminUsersIdActivateSubscriptionResponse>(getPostAdminUsersIdActivateSubscriptionUrl({ id }),
-  {      
+export const postAdminUsersIdActivateSubscription = async (
+  { id }: PostAdminUsersIdActivateSubscriptionPathParameters,
+  activateUserSubscriptionRequest: ActivateUserSubscriptionRequest,
+  options?: RequestInit
+): Promise<postAdminUsersIdActivateSubscriptionResponse> => {
+  return customFetch<postAdminUsersIdActivateSubscriptionResponse>(getPostAdminUsersIdActivateSubscriptionUrl({ id }), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      activateUserSubscriptionRequest,)
-  }
-);}
-
+    body: JSON.stringify(activateUserSubscriptionRequest)
+  })
+}
 
 export type postAdminUsersIdRevokeSubscriptionResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminUsersIdRevokeSubscriptionResponseSuccess = (postAdminUsersIdRevokeSubscriptionResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminUsersIdRevokeSubscriptionResponse = (postAdminUsersIdRevokeSubscriptionResponseSuccess)
+export type postAdminUsersIdRevokeSubscriptionResponseSuccess = postAdminUsersIdRevokeSubscriptionResponse200 & {
+  headers: Headers
+}
+export type postAdminUsersIdRevokeSubscriptionResponse = postAdminUsersIdRevokeSubscriptionResponseSuccess
 
-export const getPostAdminUsersIdRevokeSubscriptionUrl = ({ id }: PostAdminUsersIdRevokeSubscriptionPathParameters,) => {
-
-
-  
-
+export const getPostAdminUsersIdRevokeSubscriptionUrl = ({ id }: PostAdminUsersIdRevokeSubscriptionPathParameters) => {
   return `/admin/users/${id}/revoke-subscription`
 }
 
-export const postAdminUsersIdRevokeSubscription = async ({ id }: PostAdminUsersIdRevokeSubscriptionPathParameters, options?: RequestInit): Promise<postAdminUsersIdRevokeSubscriptionResponse> => {
-  
-  return customFetch<postAdminUsersIdRevokeSubscriptionResponse>(getPostAdminUsersIdRevokeSubscriptionUrl({ id }),
-  {      
+export const postAdminUsersIdRevokeSubscription = async (
+  { id }: PostAdminUsersIdRevokeSubscriptionPathParameters,
+  options?: RequestInit
+): Promise<postAdminUsersIdRevokeSubscriptionResponse> => {
+  return customFetch<postAdminUsersIdRevokeSubscriptionResponse>(getPostAdminUsersIdRevokeSubscriptionUrl({ id }), {
     ...options,
     method: 'POST'
-    
-    
-  }
-);}
-
-
+  })
+}

@@ -6,5 +6,5 @@
  */
 
 export type DeleteJdSubmissionsJdIdAssessmentPathPathParameters = {
- jdId: string,
- }
+  jdId: string
+}

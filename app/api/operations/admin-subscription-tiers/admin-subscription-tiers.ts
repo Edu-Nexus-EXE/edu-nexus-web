@@ -4,76 +4,56 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import type {
-  PutAdminSubscriptionTiersTierCodePathParameters,
-  UpdateSubscriptionTierRequest
-} from '../../model';
+import type { PutAdminSubscriptionTiersTierCodePathParameters, UpdateSubscriptionTierRequest } from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminSubscriptionTiersResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminSubscriptionTiersResponseSuccess = (getAdminSubscriptionTiersResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminSubscriptionTiersResponse = (getAdminSubscriptionTiersResponseSuccess)
+export type getAdminSubscriptionTiersResponseSuccess = getAdminSubscriptionTiersResponse200 & {
+  headers: Headers
+}
+export type getAdminSubscriptionTiersResponse = getAdminSubscriptionTiersResponseSuccess
 
 export const getGetAdminSubscriptionTiersUrl = () => {
-
-
-  
-
   return `/admin/subscription-tiers`
 }
 
-export const getAdminSubscriptionTiers = async ( options?: RequestInit): Promise<getAdminSubscriptionTiersResponse> => {
-  
-  return customFetch<getAdminSubscriptionTiersResponse>(getGetAdminSubscriptionTiersUrl(),
-  {      
+export const getAdminSubscriptionTiers = async (options?: RequestInit): Promise<getAdminSubscriptionTiersResponse> => {
+  return customFetch<getAdminSubscriptionTiersResponse>(getGetAdminSubscriptionTiersUrl(), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type putAdminSubscriptionTiersTierCodeResponse200 = {
   data: void
   status: 200
 }
-    
-export type putAdminSubscriptionTiersTierCodeResponseSuccess = (putAdminSubscriptionTiersTierCodeResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putAdminSubscriptionTiersTierCodeResponse = (putAdminSubscriptionTiersTierCodeResponseSuccess)
+export type putAdminSubscriptionTiersTierCodeResponseSuccess = putAdminSubscriptionTiersTierCodeResponse200 & {
+  headers: Headers
+}
+export type putAdminSubscriptionTiersTierCodeResponse = putAdminSubscriptionTiersTierCodeResponseSuccess
 
-export const getPutAdminSubscriptionTiersTierCodeUrl = ({ tierCode }: PutAdminSubscriptionTiersTierCodePathParameters,) => {
-
-
-  
-
+export const getPutAdminSubscriptionTiersTierCodeUrl = ({
+  tierCode
+}: PutAdminSubscriptionTiersTierCodePathParameters) => {
   return `/admin/subscription-tiers/${tierCode}`
 }
 
-export const putAdminSubscriptionTiersTierCode = async ({ tierCode }: PutAdminSubscriptionTiersTierCodePathParameters,
-    updateSubscriptionTierRequest: UpdateSubscriptionTierRequest, options?: RequestInit): Promise<putAdminSubscriptionTiersTierCodeResponse> => {
-  
-  return customFetch<putAdminSubscriptionTiersTierCodeResponse>(getPutAdminSubscriptionTiersTierCodeUrl({ tierCode }),
-  {      
+export const putAdminSubscriptionTiersTierCode = async (
+  { tierCode }: PutAdminSubscriptionTiersTierCodePathParameters,
+  updateSubscriptionTierRequest: UpdateSubscriptionTierRequest,
+  options?: RequestInit
+): Promise<putAdminSubscriptionTiersTierCodeResponse> => {
+  return customFetch<putAdminSubscriptionTiersTierCodeResponse>(getPutAdminSubscriptionTiersTierCodeUrl({ tierCode }), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateSubscriptionTierRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(updateSubscriptionTierRequest)
+  })
+}

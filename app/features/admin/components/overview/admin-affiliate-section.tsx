@@ -22,7 +22,7 @@ export function AdminAffiliateSection() {
           setStats({
             totalClicks: data.affiliateClicks,
             totalConversions: data.affiliateConversions,
-            estimatedRevenue: data.affiliateRevenue,
+            estimatedRevenue: data.affiliateRevenue
           })
         }
       })
@@ -37,7 +37,7 @@ export function AdminAffiliateSection() {
   const metrics = [
     { key: 'totalClicks', value: loading ? '—' : String(stats.totalClicks) },
     { key: 'conversions', value: loading ? '—' : String(stats.totalConversions) },
-    { key: 'revenue', value: loading ? '—' : `${stats.estimatedRevenue.toLocaleString('vi-VN')} VND` },
+    { key: 'revenue', value: loading ? '—' : `${stats.estimatedRevenue.toLocaleString('vi-VN')} VND` }
   ]
 
   return (
@@ -46,7 +46,8 @@ export function AdminAffiliateSection() {
         <div>
           <h2 className='flex items-center gap-2 text-xl font-bold text-foreground'>
             <span className='material-symbols-outlined text-primary'>handshake</span>
-            {t('affiliate.title')} <span className='text-sm font-normal text-muted-foreground'>{t('affiliate.phase')}</span>
+            {t('affiliate.title')}{' '}
+            <span className='text-sm font-normal text-muted-foreground'>{t('affiliate.phase')}</span>
           </h2>
           <p className='text-sm text-muted-foreground'>{t('affiliate.subtitle')}</p>
         </div>

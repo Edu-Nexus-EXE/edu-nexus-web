@@ -35,7 +35,10 @@ export function AdminRevenueSection() {
   }, [])
 
   const totalRevenue = useMemo(() => orders.reduce((sum, item) => sum + item.amount, 0), [orders])
-  const paidOrders = useMemo(() => orders.filter((item) => item.status.toLowerCase() === 'completed' || item.status.toLowerCase() === 'paid'), [orders])
+  const paidOrders = useMemo(
+    () => orders.filter((item) => item.status.toLowerCase() === 'completed' || item.status.toLowerCase() === 'paid'),
+    [orders]
+  )
   const monthlyRevenue = useMemo(() => {
     const now = new Date()
     return paidOrders
@@ -55,7 +58,7 @@ export function AdminRevenueSection() {
       .map(([provider, amount]) => ({
         provider,
         amount,
-        percent: totalRevenue > 0 ? Math.max(8, Math.round((amount / totalRevenue) * 100)) : 0,
+        percent: totalRevenue > 0 ? Math.max(8, Math.round((amount / totalRevenue) * 100)) : 0
       }))
       .sort((a, b) => b.amount - a.amount)
     return aggregate.slice(0, 3)
@@ -87,11 +90,15 @@ export function AdminRevenueSection() {
           ) : (
             <>
               <div className='p-6 bg-primary/5 border border-primary/10 rounded-2xl'>
-                <p className='text-xs font-bold text-primary uppercase tracking-widest mb-2'>{t('revenue.thisMonth')}</p>
+                <p className='text-xs font-bold text-primary uppercase tracking-widest mb-2'>
+                  {t('revenue.thisMonth')}
+                </p>
                 <h4 className='text-2xl font-bold text-foreground'>{formatCurrency(monthlyRevenue)}</h4>
               </div>
               <div className='p-6 bg-muted/50 border border-border rounded-2xl'>
-                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2'>{t('revenue.allTime')}</p>
+                <p className='text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2'>
+                  {t('revenue.allTime')}
+                </p>
                 <h4 className='text-2xl font-bold text-foreground'>{formatCurrency(totalRevenue)}</h4>
               </div>
             </>
@@ -110,7 +117,10 @@ export function AdminRevenueSection() {
             <div className='h-48 flex items-end gap-6 border-b border-border pb-4 px-4'>
               {providerShare.map((item) => (
                 <div key={item.provider} className='flex-1 flex flex-col items-center gap-3'>
-                  <div className='w-full bg-primary rounded-t-xl relative group transition-all hover:opacity-90' style={{ height: `${item.percent}%` }}>
+                  <div
+                    className='w-full bg-primary rounded-t-xl relative group transition-all hover:opacity-90'
+                    style={{ height: `${item.percent}%` }}
+                  >
                     <span className='absolute -top-8 left-1/2 -translate-x-1/2 bg-foreground text-background text-[10px] font-bold py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity'>
                       {item.percent}%
                     </span>
@@ -138,9 +148,15 @@ export function AdminRevenueSection() {
               {loading ? (
                 Array.from({ length: 5 }).map((_, index) => (
                   <tr key={index} className='animate-pulse'>
-                    <td className='py-4 pr-2'><div className='h-4 w-28 rounded bg-muted' /></td>
-                    <td className='py-4 px-2'><div className='ml-auto h-4 w-16 rounded bg-muted' /></td>
-                    <td className='py-4 pl-2'><div className='ml-auto h-5 w-16 rounded-full bg-muted' /></td>
+                    <td className='py-4 pr-2'>
+                      <div className='h-4 w-28 rounded bg-muted' />
+                    </td>
+                    <td className='py-4 px-2'>
+                      <div className='ml-auto h-4 w-16 rounded bg-muted' />
+                    </td>
+                    <td className='py-4 pl-2'>
+                      <div className='ml-auto h-5 w-16 rounded-full bg-muted' />
+                    </td>
                   </tr>
                 ))
               ) : recentOrders.length === 0 ? (
@@ -153,9 +169,13 @@ export function AdminRevenueSection() {
                 recentOrders.map((row) => (
                   <tr key={row.id} className='hover:bg-primary/5 transition-colors group'>
                     <td className='py-4 pr-2 text-xs font-medium text-foreground max-w-[120px] truncate'>{row.user}</td>
-                    <td className='py-4 px-2 text-xs font-bold text-right text-foreground'>{formatCurrency(row.amount)}</td>
+                    <td className='py-4 px-2 text-xs font-bold text-right text-foreground'>
+                      {formatCurrency(row.amount)}
+                    </td>
                     <td className='py-4 pl-2 text-right'>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${providerTone(row.provider)}`}>{row.provider}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${providerTone(row.provider)}`}>
+                        {row.provider}
+                      </span>
                     </td>
                   </tr>
                 ))
@@ -163,7 +183,10 @@ export function AdminRevenueSection() {
             </tbody>
           </table>
         </div>
-        <button type='button' className='mt-6 w-full py-3 border border-border text-muted-foreground font-bold text-xs rounded-xl hover:bg-muted hover:text-primary transition-all flex items-center justify-center gap-2'>
+        <button
+          type='button'
+          className='mt-6 w-full py-3 border border-border text-muted-foreground font-bold text-xs rounded-xl hover:bg-muted hover:text-primary transition-all flex items-center justify-center gap-2'
+        >
           {t('revenue.viewAll')}
           <span className='material-symbols-outlined text-sm'>arrow_forward</span>
         </button>

@@ -5,7 +5,7 @@ import {
   createAdminSkill,
   loadAdminSkillsList,
   uploadAdminRagDocument,
-  type AdminSkillRowView,
+  type AdminSkillRowView
 } from '../../lib/admin-data'
 
 type AdminRagUploadFormProps = {
@@ -49,13 +49,14 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
     loadAdminSkillsList({
       search: skillSearch.trim() || undefined,
       page: 1,
-      pageSize: 30,
+      pageSize: 30
     })
       .then((next) => {
         if (!cancelled) setSkillOptions(next.items)
       })
       .catch((err) => {
-        if (!cancelled) setError((err as Error).message || label('Không thể tải danh sách kỹ năng.', 'Failed to load skills.'))
+        if (!cancelled)
+          setError((err as Error).message || label('Không thể tải danh sách kỹ năng.', 'Failed to load skills.'))
       })
       .finally(() => {
         if (!cancelled) setSkillLoading(false)
@@ -90,9 +91,7 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
   }
 
   function toggleSkill(id: string) {
-    setSelectedSkillIds((current) => (
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
-    ))
+    setSelectedSkillIds((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]))
   }
 
   async function createQuickSkill() {
@@ -111,7 +110,7 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
         category: quickSkillCategory.trim() || 'uncategorized',
         major: quickSkillMajor.trim() || 'IT',
         description: null,
-        difficultyLevel: 3,
+        difficultyLevel: 3
       })
       const next = await loadAdminSkillsList({ search: name, page: 1, pageSize: 30 })
       setSkillOptions(next.items)
@@ -144,7 +143,7 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
         file,
         title: title.trim(),
         sourceType,
-        relatedSkillIds: selectedSkillIds,
+        relatedSkillIds: selectedSkillIds
       })
       resetForm()
       onClose()
@@ -165,33 +164,71 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
             <span className='material-symbols-outlined rounded-2xl bg-primary/10 p-3 text-primary'>add_circle</span>
             <div>
               <h3 className='text-xl font-bold text-foreground'>{t('rag.form.title')}</h3>
-              <p className='mt-1 text-sm text-muted-foreground'>{label('Tải PDF vào kho RAG và gắn với kỹ năng liên quan để AI truy xuất đúng ngữ cảnh.', 'Upload a PDF to the RAG library and map it to related skills for better retrieval.')}</p>
+              <p className='mt-1 text-sm text-muted-foreground'>
+                {label(
+                  'Tải PDF vào kho RAG và gắn với kỹ năng liên quan để AI truy xuất đúng ngữ cảnh.',
+                  'Upload a PDF to the RAG library and map it to related skills for better retrieval.'
+                )}
+              </p>
             </div>
           </div>
-          <button type='button' onClick={handleClose} className='rounded-full border border-border p-2 text-muted-foreground hover:bg-muted'>
+          <button
+            type='button'
+            onClick={handleClose}
+            className='rounded-full border border-border p-2 text-muted-foreground hover:bg-muted'
+          >
             <span className='material-symbols-outlined'>close</span>
           </button>
         </div>
 
-        {error ? <div className='mt-5 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>{error}</div> : null}
+        {error ? (
+          <div className='mt-5 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>
+            {error}
+          </div>
+        ) : null}
 
-        <form className='mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]' onSubmit={(e) => {
-          e.preventDefault()
-          void onSubmit()
-        }}>
+        <form
+          className='mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]'
+          onSubmit={(e) => {
+            e.preventDefault()
+            void onSubmit()
+          }}
+        >
           <div className='space-y-5'>
             <div>
-              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>{t('rag.form.fileLabel')}</label>
-              <input key={fileInputKey} type='file' accept='.pdf,application/pdf' onChange={(e) => setFile(e.target.files?.[0] ?? null)} className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground' />
+              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                {t('rag.form.fileLabel')}
+              </label>
+              <input
+                key={fileInputKey}
+                type='file'
+                accept='.pdf,application/pdf'
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground'
+              />
               {file ? <p className='mt-2 text-xs font-semibold text-primary'>{file.name}</p> : null}
             </div>
             <div>
-              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>{t('rag.form.docTitle')}</label>
-              <input className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground outline-none focus:border-primary' placeholder={t('rag.form.docTitlePlaceholder')} type='text' value={title} onChange={(e) => setTitle(e.target.value)} />
+              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                {t('rag.form.docTitle')}
+              </label>
+              <input
+                className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground outline-none focus:border-primary'
+                placeholder={t('rag.form.docTitlePlaceholder')}
+                type='text'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
             <div>
-              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>{t('rag.form.sourceType')}</label>
-              <select value={sourceType} onChange={(e) => setSourceType(e.target.value)} className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground outline-none focus:border-primary'>
+              <label className='mb-2 block text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                {t('rag.form.sourceType')}
+              </label>
+              <select
+                value={sourceType}
+                onChange={(e) => setSourceType(e.target.value)}
+                className='w-full rounded-xl border border-border bg-muted px-4 py-3 text-foreground outline-none focus:border-primary'
+              >
                 <option value='fptu_curriculum'>{isVi ? 'Chương trình học FPTU' : 'FPTU curriculum'}</option>
                 <option value='fptu_syllabus'>{isVi ? 'Đề cương môn học FPTU' : 'FPTU syllabus'}</option>
                 <option value='external_doc'>{isVi ? 'Tài liệu bên ngoài' : 'External document'}</option>
@@ -202,9 +239,16 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
               <div className='flex items-center justify-between gap-3'>
                 <div>
                   <h4 className='font-bold text-foreground'>{label('Kỹ năng liên quan', 'Related skills')}</h4>
-                  <p className='mt-1 text-xs text-muted-foreground'>{label('Chọn kỹ năng hiện có để gắn tài liệu với taxonomy.', 'Pick existing skills to map this document to the taxonomy.')}</p>
+                  <p className='mt-1 text-xs text-muted-foreground'>
+                    {label(
+                      'Chọn kỹ năng hiện có để gắn tài liệu với taxonomy.',
+                      'Pick existing skills to map this document to the taxonomy.'
+                    )}
+                  </p>
                 </div>
-                <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary'>{selectedSkillIds.length}</span>
+                <span className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary'>
+                  {selectedSkillIds.length}
+                </span>
               </div>
               <input
                 className='mt-4 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary'
@@ -214,16 +258,30 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
               />
               <div className='mt-3 max-h-56 space-y-2 overflow-y-auto pr-1'>
                 {skillLoading ? (
-                  Array.from({ length: 4 }).map((_, index) => <div key={index} className='h-12 animate-pulse rounded-xl bg-muted' />)
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <div key={index} className='h-12 animate-pulse rounded-xl bg-muted' />
+                  ))
                 ) : skillOptions.length === 0 ? (
-                  <p className='rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground'>{label('Chưa tìm thấy kỹ năng phù hợp.', 'No matching skills found.')}</p>
+                  <p className='rounded-xl border border-dashed border-border p-4 text-center text-sm text-muted-foreground'>
+                    {label('Chưa tìm thấy kỹ năng phù hợp.', 'No matching skills found.')}
+                  </p>
                 ) : (
                   skillOptions.map((skill) => (
-                    <label key={skill.id} className='flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background p-3 text-sm hover:border-primary/60'>
-                      <input type='checkbox' checked={selectedSkillIds.includes(skill.id)} onChange={() => toggleSkill(skill.id)} className='mt-1' />
+                    <label
+                      key={skill.id}
+                      className='flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-background p-3 text-sm hover:border-primary/60'
+                    >
+                      <input
+                        type='checkbox'
+                        checked={selectedSkillIds.includes(skill.id)}
+                        onChange={() => toggleSkill(skill.id)}
+                        className='mt-1'
+                      />
                       <span className='min-w-0'>
                         <span className='block font-bold text-foreground'>{skill.title}</span>
-                        <span className='block truncate text-xs text-muted-foreground'>{skill.subtitle} · {skill.major || 'IT'} · {skill.slug || skill.id}</span>
+                        <span className='block truncate text-xs text-muted-foreground'>
+                          {skill.subtitle} · {skill.major || 'IT'} · {skill.slug || skill.id}
+                        </span>
                       </span>
                     </label>
                   ))
@@ -237,10 +295,17 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
               <h4 className='font-bold text-foreground'>{label('Đã chọn', 'Selected')}</h4>
               <div className='mt-3 flex flex-wrap gap-2'>
                 {selectedSkills.length === 0 ? (
-                  <p className='text-sm text-muted-foreground'>{label('Chưa chọn kỹ năng nào.', 'No skills selected yet.')}</p>
+                  <p className='text-sm text-muted-foreground'>
+                    {label('Chưa chọn kỹ năng nào.', 'No skills selected yet.')}
+                  </p>
                 ) : (
                   selectedSkills.map((skill) => (
-                    <button key={skill.id} type='button' onClick={() => toggleSkill(skill.id)} className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/20'>
+                    <button
+                      key={skill.id}
+                      type='button'
+                      onClick={() => toggleSkill(skill.id)}
+                      className='rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary hover:bg-primary/20'
+                    >
                       {skill.title} ×
                     </button>
                   ))
@@ -250,24 +315,59 @@ export function AdminRagUploadForm({ open, onClose }: AdminRagUploadFormProps) {
 
             <section className='rounded-2xl border border-border bg-muted/20 p-4'>
               <h4 className='font-bold text-foreground'>{label('Tạo nhanh kỹ năng', 'Quick-create skill')}</h4>
-              <p className='mt-1 text-xs text-muted-foreground'>{label('Dùng khi tài liệu thuộc kỹ năng chưa có trong taxonomy.', 'Use this when the document maps to a skill not yet in the taxonomy.')}</p>
+              <p className='mt-1 text-xs text-muted-foreground'>
+                {label(
+                  'Dùng khi tài liệu thuộc kỹ năng chưa có trong taxonomy.',
+                  'Use this when the document maps to a skill not yet in the taxonomy.'
+                )}
+              </p>
               <div className='mt-4 space-y-3'>
-                <input value={quickSkillName} onChange={(e) => setQuickSkillName(e.target.value)} placeholder={label('Tên kỹ năng mới', 'New skill name')} className='w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary' />
+                <input
+                  value={quickSkillName}
+                  onChange={(e) => setQuickSkillName(e.target.value)}
+                  placeholder={label('Tên kỹ năng mới', 'New skill name')}
+                  className='w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary'
+                />
                 <div className='grid grid-cols-2 gap-3'>
-                  <input value={quickSkillCategory} onChange={(e) => setQuickSkillCategory(e.target.value)} placeholder='category' className='min-w-0 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary' />
-                  <input value={quickSkillMajor} onChange={(e) => setQuickSkillMajor(e.target.value)} placeholder='major' className='min-w-0 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary' />
+                  <input
+                    value={quickSkillCategory}
+                    onChange={(e) => setQuickSkillCategory(e.target.value)}
+                    placeholder='category'
+                    className='min-w-0 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary'
+                  />
+                  <input
+                    value={quickSkillMajor}
+                    onChange={(e) => setQuickSkillMajor(e.target.value)}
+                    placeholder='major'
+                    className='min-w-0 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary'
+                  />
                 </div>
-                <button type='button' disabled={creatingSkill || !quickSkillName.trim()} onClick={() => void createQuickSkill()} className='w-full rounded-xl border border-primary/40 px-4 py-3 text-sm font-bold text-primary disabled:opacity-50'>
-                  {creatingSkill ? t('adminCommon.submitting') : label('Tạo và chọn kỹ năng', 'Create and select skill')}
+                <button
+                  type='button'
+                  disabled={creatingSkill || !quickSkillName.trim()}
+                  onClick={() => void createQuickSkill()}
+                  className='w-full rounded-xl border border-primary/40 px-4 py-3 text-sm font-bold text-primary disabled:opacity-50'
+                >
+                  {creatingSkill
+                    ? t('adminCommon.submitting')
+                    : label('Tạo và chọn kỹ năng', 'Create and select skill')}
                 </button>
               </div>
             </section>
 
             <div className='flex gap-3'>
-              <button className='flex-1 rounded-xl bg-gradient-to-br from-primary to-primary/80 px-4 py-4 font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-60' type='submit' disabled={submitting || !file || !title.trim()}>
+              <button
+                className='flex-1 rounded-xl bg-gradient-to-br from-primary to-primary/80 px-4 py-4 font-bold text-primary-foreground shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-60'
+                type='submit'
+                disabled={submitting || !file || !title.trim()}
+              >
                 {submitting ? t('adminCommon.submitting') : t('rag.form.submit')}
               </button>
-              <button type='button' onClick={handleClose} className='rounded-xl border border-border px-4 py-4 font-bold text-foreground hover:bg-muted'>
+              <button
+                type='button'
+                onClick={handleClose}
+                className='rounded-xl border border-border px-4 py-4 font-bold text-foreground hover:bg-muted'
+              >
                 {label('Hủy', 'Cancel')}
               </button>
             </div>

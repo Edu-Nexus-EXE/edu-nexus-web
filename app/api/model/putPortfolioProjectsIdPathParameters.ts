@@ -6,5 +6,5 @@
  */
 
 export type PutPortfolioProjectsIdPathParameters = {
- id: string,
- }
+  id: string
+}

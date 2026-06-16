@@ -6,6 +6,6 @@
  */
 
 export type DeleteAdminSkillsIdPrerequisitesPrereqIdPathParameters = {
- id: string,
-    prereqId: string,
- }
+  id: string
+  prereqId: string
+}

@@ -4,9 +4,9 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import type { SubmitAnswerDto } from './submitAnswerDto';
+import type { SubmitAnswerDto } from './submitAnswerDto'
 
 export interface SubmitAssessmentSessionRequest {
   /** @nullable */
-  answers?: SubmitAnswerDto[] | null;
+  answers?: SubmitAnswerDto[] | null
 }

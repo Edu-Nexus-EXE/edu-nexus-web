@@ -16,8 +16,8 @@ const QUESTIONS = [
       { value: 'Năm 1', labelKey: 'questions.academicYear.options.year1' },
       { value: 'Năm 2', labelKey: 'questions.academicYear.options.year2' },
       { value: 'Năm 3', labelKey: 'questions.academicYear.options.year3' },
-      { value: 'Năm 4', labelKey: 'questions.academicYear.options.year4' },
-    ],
+      { value: 'Năm 4', labelKey: 'questions.academicYear.options.year4' }
+    ]
   },
   {
     key: 'major',
@@ -26,8 +26,8 @@ const QUESTIONS = [
       { value: 'IT', labelKey: 'questions.major.options.it' },
       { value: 'Marketing', labelKey: 'questions.major.options.marketing' },
       { value: 'Business', labelKey: 'questions.major.options.business' },
-      { value: 'Khác', labelKey: 'questions.major.options.other' },
-    ],
+      { value: 'Khác', labelKey: 'questions.major.options.other' }
+    ]
   },
   {
     key: 'primaryGoal',
@@ -36,8 +36,8 @@ const QUESTIONS = [
       { value: 'Khám phá hướng đi', labelKey: 'questions.primaryGoal.options.explore' },
       { value: 'Đã có target, cần lộ trình', labelKey: 'questions.primaryGoal.options.roadmap' },
       { value: 'Improve 1 kỹ năng cụ thể', labelKey: 'questions.primaryGoal.options.improveSkill' },
-      { value: 'Build portfolio để xin việc', labelKey: 'questions.primaryGoal.options.buildPortfolio' },
-    ],
+      { value: 'Build portfolio để xin việc', labelKey: 'questions.primaryGoal.options.buildPortfolio' }
+    ]
   },
   {
     key: 'weeklyStudyHours',
@@ -46,8 +46,8 @@ const QUESTIONS = [
       { value: '< 5h', labelKey: 'questions.weeklyStudyHours.options.lt5' },
       { value: '5-10h', labelKey: 'questions.weeklyStudyHours.options.5to10' },
       { value: '10-20h', labelKey: 'questions.weeklyStudyHours.options.10to20' },
-      { value: '> 20h', labelKey: 'questions.weeklyStudyHours.options.gt20' },
-    ],
+      { value: '> 20h', labelKey: 'questions.weeklyStudyHours.options.gt20' }
+    ]
   },
   {
     key: 'proficiencyLevel',
@@ -56,8 +56,8 @@ const QUESTIONS = [
       { value: 'Beginner', labelKey: 'questions.proficiencyLevel.options.beginner' },
       { value: 'Đã học cơ bản', labelKey: 'questions.proficiencyLevel.options.basic' },
       { value: 'Có kinh nghiệm dự án', labelKey: 'questions.proficiencyLevel.options.project' },
-      { value: 'Đã đi thực tập', labelKey: 'questions.proficiencyLevel.options.intern' },
-    ],
+      { value: 'Đã đi thực tập', labelKey: 'questions.proficiencyLevel.options.intern' }
+    ]
   },
   {
     key: 'learningPriority',
@@ -66,8 +66,8 @@ const QUESTIONS = [
       { value: 'Hard skill', labelKey: 'questions.learningPriority.options.hardSkill' },
       { value: 'Soft skill', labelKey: 'questions.learningPriority.options.softSkill' },
       { value: 'Certificate', labelKey: 'questions.learningPriority.options.certificate' },
-      { value: 'Portfolio project', labelKey: 'questions.learningPriority.options.portfolioProject' },
-    ],
+      { value: 'Portfolio project', labelKey: 'questions.learningPriority.options.portfolioProject' }
+    ]
   },
   {
     key: 'learningBudget',
@@ -76,8 +76,8 @@ const QUESTIONS = [
       { value: 'free', labelKey: 'questions.learningBudget.options.free' },
       { value: '< 500k', labelKey: 'questions.learningBudget.options.lt500k' },
       { value: '500k-2tr', labelKey: 'questions.learningBudget.options.500kto2m' },
-      { value: '> 2tr', labelKey: 'questions.learningBudget.options.gt2m' },
-    ],
+      { value: '> 2tr', labelKey: 'questions.learningBudget.options.gt2m' }
+    ]
   },
   {
     key: 'preferredChannel',
@@ -86,9 +86,9 @@ const QUESTIONS = [
       { value: 'Video', labelKey: 'questions.preferredChannel.options.video' },
       { value: 'Đọc tài liệu', labelKey: 'questions.preferredChannel.options.docs' },
       { value: 'Làm project thực tế', labelKey: 'questions.preferredChannel.options.projects' },
-      { value: 'Học có mentor', labelKey: 'questions.preferredChannel.options.mentor' },
-    ],
-  },
+      { value: 'Học có mentor', labelKey: 'questions.preferredChannel.options.mentor' }
+    ]
+  }
 ] as const
 
 type QuestionKey = (typeof QUESTIONS)[number]['key']
@@ -104,7 +104,8 @@ function parseOnboardingData(res: unknown): ParsedOnboarding | null {
   const raw = data as Record<string, unknown>
   return {
     completed: Boolean(raw.completed),
-    responses: raw.responses && typeof raw.responses === 'object' ? (raw.responses as SubmitOnboardingRequest) : undefined,
+    responses:
+      raw.responses && typeof raw.responses === 'object' ? (raw.responses as SubmitOnboardingRequest) : undefined
   }
 }
 
@@ -152,7 +153,7 @@ export default function OnboardingRoute() {
   const currentLabel = t(current.labelKey)
   const currentOptions = current.options.map((option) => ({
     value: option.value,
-    label: t(option.labelKey),
+    label: t(option.labelKey)
   }))
 
   useEffect(() => {
@@ -297,9 +298,7 @@ export default function OnboardingRoute() {
             )}
 
             <div className='mb-6'>
-              <p className='text-xs font-semibold text-primary uppercase tracking-wider mb-2'>
-                {t('questionBadge')}
-              </p>
+              <p className='text-xs font-semibold text-primary uppercase tracking-wider mb-2'>{t('questionBadge')}</p>
               <h2 className='text-xl md:text-2xl font-bold text-foreground'>{currentLabel}</h2>
             </div>
 
@@ -327,7 +326,11 @@ export default function OnboardingRoute() {
                       >
                         {checked && <span className='w-2.5 h-2.5 rounded-full bg-primary' />}
                       </span>
-                      <span className={cn('text-sm font-medium', checked ? 'text-foreground' : 'text-muted-foreground')}>{opt.label}</span>
+                      <span
+                        className={cn('text-sm font-medium', checked ? 'text-foreground' : 'text-muted-foreground')}
+                      >
+                        {opt.label}
+                      </span>
                     </div>
                   </button>
                 )

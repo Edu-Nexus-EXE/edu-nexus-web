@@ -7,7 +7,7 @@ function marketing() {
     route('checkout', 'routes/marketing/checkout.tsx'),
     route('checkout-success', 'routes/marketing/checkout-success.tsx'),
     route('contact', 'routes/marketing/contact.tsx'),
-    route('p/:slug', 'routes/marketing/portfolio-public.tsx'),
+    route('p/:slug', 'routes/marketing/portfolio-public.tsx')
   ]
 }
 
@@ -15,7 +15,7 @@ function auth() {
   return [
     route('signup', 'routes/auth/signup.tsx'),
     route('login', 'routes/auth/login.tsx'),
-    route('register', 'routes/auth/register-redirect.tsx'),
+    route('register', 'routes/auth/register-redirect.tsx')
   ]
 }
 
@@ -51,8 +51,8 @@ function dashboard() {
       route('settings', 'routes/dashboard/settings/index.tsx', { id: 'settings-spec-route' }),
       route('roadmaps', 'routes/dashboard/learning/roadmap.tsx', { id: 'roadmaps-spec-route' }),
       route('career-tracks', 'routes/dashboard/learning/career-track.tsx', { id: 'career-tracks-spec-route' }),
-      route('career-tracks/:id', 'routes/dashboard/learning/career-track.tsx', { id: 'career-track-detail-spec-route' }),
-    ]),
+      route('career-tracks/:id', 'routes/dashboard/learning/career-track.tsx', { id: 'career-track-detail-spec-route' })
+    ])
   ]
 }
 
@@ -71,9 +71,11 @@ function admin() {
       route('admin/jd-logs/:id', 'routes/admin/jd-log-detail.tsx'),
 
       route('admin/payment-orders', 'routes/admin/revenue.tsx', { id: 'admin-payment-orders-spec-route' }),
-      route('admin/subscription-config', 'routes/admin/subscriptions.tsx', { id: 'admin-subscription-config-spec-route' }),
-      route('admin/jd-failed', 'routes/admin/jd-logs.tsx', { id: 'admin-jd-failed-spec-route' }),
-    ]),
+      route('admin/subscription-config', 'routes/admin/subscriptions.tsx', {
+        id: 'admin-subscription-config-spec-route'
+      }),
+      route('admin/jd-failed', 'routes/admin/jd-logs.tsx', { id: 'admin-jd-failed-spec-route' })
+    ])
   ]
 }
 
@@ -86,5 +88,5 @@ export default [
   route('jd/new', 'routes/jd/jd-redirects.tsx', { id: 'jd-new-redirect' }),
   route('jd/:jdId', 'routes/jd/jd-redirects.tsx', { id: 'jd-detail-redirect' }),
   route('jd/:jdId/assessment', 'routes/jd/jd-redirects.tsx', { id: 'jd-assessment-redirect' }),
-  route('jd/:jdId/assessment/results', 'routes/jd/jd-redirects.tsx', { id: 'jd-assessment-results-redirect' }),
+  route('jd/:jdId/assessment/results', 'routes/jd/jd-redirects.tsx', { id: 'jd-assessment-results-redirect' })
 ] satisfies RouteConfig

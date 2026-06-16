@@ -6,9 +6,9 @@
  */
 
 export interface UpdateCareerTrackCommand {
-  id?: string;
+  id?: string
   /** @nullable */
-  name?: string | null;
+  name?: string | null
   /** @nullable */
-  description?: string | null;
+  description?: string | null
 }

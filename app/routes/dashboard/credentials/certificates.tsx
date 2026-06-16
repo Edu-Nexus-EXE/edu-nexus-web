@@ -8,8 +8,8 @@ export function meta({}: Route.MetaArgs) {
     { title: getMetaTitle('dashboard', 'certificates.title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'certificates.profile.centerDesc'),
-    },
+      content: getMetaTranslation('dashboard', 'certificates.profile.centerDesc')
+    }
   ]
 }
 

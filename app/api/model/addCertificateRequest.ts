@@ -7,16 +7,16 @@
 
 export interface AddCertificateRequest {
   /** @nullable */
-  name?: string | null;
+  name?: string | null
   /** @nullable */
-  issuer?: string | null;
+  issuer?: string | null
   /** @nullable */
-  issuedDate?: string | null;
+  issuedDate?: string | null
   /** @nullable */
-  expiresDate?: string | null;
+  expiresDate?: string | null
   /** @nullable */
-  credentialUrl?: string | null;
+  credentialUrl?: string | null
   /** @nullable */
-  fileUrl?: string | null;
-  isVisible?: boolean;
+  fileUrl?: string | null
+  isVisible?: boolean
 }

@@ -51,7 +51,7 @@ function parseParsedSkills(input: unknown): ParsedSkill[] {
       skillName: String(s.skillName ?? ''),
       proficiencyLevel: typeof s.proficiencyLevel === 'string' ? s.proficiencyLevel : undefined,
       yearsExp: typeof s.yearsExp === 'number' ? s.yearsExp : undefined,
-      evidence: typeof s.evidence === 'string' ? s.evidence : undefined,
+      evidence: typeof s.evidence === 'string' ? s.evidence : undefined
     }))
     .filter((s) => Boolean(s.skillName))
 }
@@ -68,9 +68,8 @@ function parseCvInfo(res: unknown): CvInfo | null {
     fileName: typeof dto.fileName === 'string' ? dto.fileName : undefined,
     createdAt: typeof dto.createdAt === 'string' ? dto.createdAt : undefined,
     parsedSkills: parseParsedSkills(dto.parsedSkills),
-    totalExperienceYears:
-      typeof dto.totalExperienceYears === 'number' ? dto.totalExperienceYears : undefined,
-    parseError: typeof dto.parseError === 'string' ? dto.parseError : undefined,
+    totalExperienceYears: typeof dto.totalExperienceYears === 'number' ? dto.totalExperienceYears : undefined,
+    parseError: typeof dto.parseError === 'string' ? dto.parseError : undefined
   }
 }
 
@@ -217,7 +216,9 @@ export function AssessmentCvPage() {
       </div>
 
       {error ? (
-        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{error}</div>
+        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {error}
+        </div>
       ) : null}
 
       <div className='bg-card border border-border rounded-2xl p-6 shadow-sm'>
@@ -317,7 +318,9 @@ export function AssessmentCvPage() {
 
                 {info.parseError ? (
                   <div className='mt-3 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-destructive text-sm'>
-                    {info.parseError.includes('Không thể đọc nội dung CV') ? t('cv.page.errors.scannedPdf') : info.parseError}
+                    {info.parseError.includes('Không thể đọc nội dung CV')
+                      ? t('cv.page.errors.scannedPdf')
+                      : info.parseError}
                   </div>
                 ) : null}
               </div>

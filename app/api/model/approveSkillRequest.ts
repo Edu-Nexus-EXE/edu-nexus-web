@@ -7,13 +7,13 @@
 
 export interface ApproveSkillRequest {
   /** @nullable */
-  name?: string | null;
+  name?: string | null
   /** @nullable */
-  category?: string | null;
+  category?: string | null
   /** @nullable */
-  major?: string | null;
+  major?: string | null
   /** @nullable */
-  difficultyLevel?: number | null;
+  difficultyLevel?: number | null
   /** @nullable */
-  description?: string | null;
+  description?: string | null
 }

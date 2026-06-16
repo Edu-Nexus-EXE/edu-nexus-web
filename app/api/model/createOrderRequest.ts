@@ -7,6 +7,6 @@
 
 export interface CreateOrderRequest {
   /** @nullable */
-  tierCode?: string | null;
-  durationMonths?: number;
+  tierCode?: string | null
+  durationMonths?: number
 }

@@ -10,12 +10,8 @@ export function AdminRagHeader({ onUploadClick }: AdminRagHeaderProps) {
   return (
     <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12'>
       <div>
-        <h2 className='font-display-lg text-4xl font-bold text-foreground mb-2'>
-          {t('rag.title')}
-        </h2>
-        <p className='text-muted-foreground font-body-lg max-w-2xl opacity-80'>
-          {t('rag.description')}
-        </p>
+        <h2 className='font-display-lg text-4xl font-bold text-foreground mb-2'>{t('rag.title')}</h2>
+        <p className='text-muted-foreground font-body-lg max-w-2xl opacity-80'>{t('rag.description')}</p>
       </div>
       <button
         type='button'

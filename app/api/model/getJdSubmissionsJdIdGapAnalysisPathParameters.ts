@@ -6,5 +6,5 @@
  */
 
 export type GetJdSubmissionsJdIdGapAnalysisPathParameters = {
- jdId: string,
- }
+  jdId: string
+}

@@ -1,4 +1,7 @@
-import { getJdSubmissionsJdIdGapAnalysis, postJdSubmissionsJdIdGapAnalysis } from '~/api/operations/gap-analysis/gap-analysis'
+import {
+  getJdSubmissionsJdIdGapAnalysis,
+  postJdSubmissionsJdIdGapAnalysis
+} from '~/api/operations/gap-analysis/gap-analysis'
 import {
   getRoadmapNodesNodeIdResources,
   getRoadmapsId,
@@ -7,7 +10,7 @@ import {
   patchRoadmapsIdArchive,
   patchRoadmapsIdKeep,
   postJdSubmissionsJdIdRoadmaps,
-  postRoadmapsIdRegenerate,
+  postRoadmapsIdRegenerate
 } from '~/api/operations/roadmaps/roadmaps'
 import { getCareerTracks, getCareerTracksId } from '~/api/operations/career-tracks/career-tracks'
 import type { GetJdSubmissionsJdIdGapAnalysisParams, GetUsersMeRoadmapsParams } from '~/api/model'

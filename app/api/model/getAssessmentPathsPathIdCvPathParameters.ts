@@ -6,5 +6,5 @@
  */
 
 export type GetAssessmentPathsPathIdCvPathParameters = {
- pathId: string,
- }
+  pathId: string
+}

@@ -6,5 +6,5 @@
  */
 
 export interface ActivateUserSubscriptionRequest {
-  durationMonths?: number;
+  durationMonths?: number
 }

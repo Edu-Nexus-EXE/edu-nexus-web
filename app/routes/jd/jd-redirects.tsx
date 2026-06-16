@@ -2,7 +2,9 @@ import { useEffect } from 'react'
 import { Navigate, useParams } from 'react-router'
 
 export function JdNewRedirect() {
-  useEffect(() => { /* component never renders — redirect only */ }, [])
+  useEffect(() => {
+    /* component never renders — redirect only */
+  }, [])
   return <Navigate to='/dashboard/jd/new' replace />
 }
 

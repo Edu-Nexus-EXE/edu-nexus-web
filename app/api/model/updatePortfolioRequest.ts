@@ -7,13 +7,13 @@
 
 export interface UpdatePortfolioRequest {
   /** @nullable */
-  headline?: string | null;
+  headline?: string | null
   /** @nullable */
-  bio?: string | null;
+  bio?: string | null
   /** @nullable */
-  coverImageUrl?: string | null;
-  showCompletedSkills?: boolean;
-  showCertificates?: boolean;
-  showProjects?: boolean;
-  isPublic?: boolean;
+  coverImageUrl?: string | null
+  showCompletedSkills?: boolean
+  showCertificates?: boolean
+  showProjects?: boolean
+  isPublic?: boolean
 }

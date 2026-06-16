@@ -6,5 +6,5 @@
  */
 
 export type DeleteCareerTracksIdPathParameters = {
- id: string,
- }
+  id: string
+}

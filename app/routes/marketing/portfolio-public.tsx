@@ -11,12 +11,12 @@ export function meta({ params }: Route.MetaArgs) {
     { title: getMetaTitle('portfolio', 'public.title') },
     {
       name: 'description',
-      content: getMetaTranslation('portfolio', 'public.subtitle'),
+      content: getMetaTranslation('portfolio', 'public.subtitle')
     },
     {
       name: 'robots',
-      content: params.slug ? 'index,follow' : 'noindex',
-    },
+      content: params.slug ? 'index,follow' : 'noindex'
+    }
   ]
 }
 

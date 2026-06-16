@@ -4,34 +4,34 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import type { AdminSkillMappingDto } from './adminSkillMappingDto';
+import type { AdminSkillMappingDto } from './adminSkillMappingDto'
 
 export interface AdminResourceUpsertRequest {
   /** @nullable */
-  title?: string | null;
+  title?: string | null
   /** @nullable */
-  type?: string | null;
+  type?: string | null
   /** @nullable */
-  provider?: string | null;
+  provider?: string | null
   /** @nullable */
-  url?: string | null;
+  url?: string | null
   /** @nullable */
-  description?: string | null;
-  isFree?: boolean;
+  description?: string | null
+  isFree?: boolean
   /** @nullable */
-  accessType?: string | null;
+  accessType?: string | null
   /** @nullable */
-  affiliateLabel?: string | null;
+  affiliateLabel?: string | null
   /** @nullable */
-  affiliateCommissionRate?: number | null;
+  affiliateCommissionRate?: number | null
   /** @nullable */
-  language?: string | null;
+  language?: string | null
   /** @nullable */
-  durationMinutes?: number | null;
+  durationMinutes?: number | null
   /** @nullable */
-  needsAdminReview?: boolean | null;
+  needsAdminReview?: boolean | null
   /** @nullable */
-  isActive?: boolean | null;
+  isActive?: boolean | null
   /** @nullable */
-  skillMappings?: AdminSkillMappingDto[] | null;
+  skillMappings?: AdminSkillMappingDto[] | null
 }

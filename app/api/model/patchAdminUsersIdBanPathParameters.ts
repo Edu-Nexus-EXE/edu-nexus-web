@@ -6,5 +6,5 @@
  */
 
 export type PatchAdminUsersIdBanPathParameters = {
- id: string,
- }
+  id: string
+}

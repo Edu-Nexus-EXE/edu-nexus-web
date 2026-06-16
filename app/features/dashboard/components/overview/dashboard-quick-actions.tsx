@@ -12,7 +12,7 @@ const ACTIONS: QuickAction[] = [
   { key: 'submitJd', to: '/dashboard/jd/new', icon: 'note_add', accent: 'from-primary/15 to-primary/5 text-primary' },
   { key: 'roadmap', to: '/roadmaps', icon: 'route', accent: 'from-info/15 to-info/5 text-info' },
   { key: 'careerTrack', to: '/career-tracks', icon: 'workspaces', accent: 'from-success/15 to-success/5 text-success' },
-  { key: 'portfolio', to: '/dashboard/portfolio', icon: 'badge', accent: 'from-warning/15 to-warning/5 text-warning' },
+  { key: 'portfolio', to: '/dashboard/portfolio', icon: 'badge', accent: 'from-warning/15 to-warning/5 text-warning' }
 ]
 
 export function DashboardQuickActions() {

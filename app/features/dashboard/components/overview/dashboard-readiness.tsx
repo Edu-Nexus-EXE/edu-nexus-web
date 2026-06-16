@@ -12,11 +12,24 @@ export function DashboardReadiness() {
         {/* Circular gauge */}
         <div className='relative w-48 h-48 flex items-center justify-center'>
           <svg className='w-full h-full' viewBox='0 0 192 192'>
-            <circle cx='96' cy='96' r='80' fill='transparent' stroke='currentColor' strokeWidth='12' className='text-muted/30' />
             <circle
-              cx='96' cy='96' r='80'
-              fill='transparent' stroke='currentColor' strokeWidth='12'
-              strokeDasharray='502.65' strokeDashoffset='125.66'
+              cx='96'
+              cy='96'
+              r='80'
+              fill='transparent'
+              stroke='currentColor'
+              strokeWidth='12'
+              className='text-muted/30'
+            />
+            <circle
+              cx='96'
+              cy='96'
+              r='80'
+              fill='transparent'
+              stroke='currentColor'
+              strokeWidth='12'
+              strokeDasharray='502.65'
+              strokeDashoffset='125.66'
               strokeLinecap='round'
               className='text-primary'
               style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%', transition: 'stroke-dashoffset 0.35s' }}

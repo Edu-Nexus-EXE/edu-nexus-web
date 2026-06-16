@@ -21,10 +21,18 @@ const NAV_ITEMS: NavItem[] = [
 const TIER_LABELS: Record<string, { vi: string; en: string }> = {
   free: { vi: 'Miễn phí', en: 'Free' },
   student: { vi: 'Sinh viên', en: 'Student' },
-  pro: { vi: 'Pro', en: 'Pro' },
+  pro: { vi: 'Pro', en: 'Pro' }
 }
 
-export function DashboardSidebar({ user, open, onOpenChange }: { user: AuthUser; open: boolean; onOpenChange: (open: boolean) => void }) {
+export function DashboardSidebar({
+  user,
+  open,
+  onOpenChange
+}: {
+  user: AuthUser
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
   const { t, i18n } = useTranslation('dashboard')
   const location = useLocation()
   const lang = i18n.language ?? 'vi'
@@ -32,12 +40,12 @@ export function DashboardSidebar({ user, open, onOpenChange }: { user: AuthUser;
   const tierCode = user.subscription?.tierCode?.toLowerCase()
   const tierEntry = TIER_LABELS[tierCode ?? '']
   const tierLabel = tierEntry
-    ? (lang === 'vi' ? tierEntry.vi : tierEntry.en)
+    ? lang === 'vi'
+      ? tierEntry.vi
+      : tierEntry.en
     : (user.subscription?.displayName ?? user.role ?? '—')
 
-  const collapsedTierLabel = tierEntry
-    ? (lang === 'vi' ? tierEntry.vi : tierEntry.en)
-    : 'PRO'
+  const collapsedTierLabel = tierEntry ? (lang === 'vi' ? tierEntry.vi : tierEntry.en) : 'PRO'
   const collapseLabel = open ? t('sidebar.collapse') : t('sidebar.expand')
 
   return (

@@ -6,5 +6,5 @@
  */
 
 export type DeleteJdSubmissionsIdPathParameters = {
- id: string,
- }
+  id: string
+}

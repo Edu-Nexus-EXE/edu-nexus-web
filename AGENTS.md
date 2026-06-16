@@ -17,19 +17,20 @@
 
 ## 2. Stack & phiên bản
 
-| Lớp | Công nghệ | Phiên bản |
-| --- | --- | --- |
-| Framework | React Router 7 (SSR) | `7.14.0` |
-| UI Runtime | React + React DOM | `^19.2.4` |
-| Ngôn ngữ | TypeScript (strict) | `^5.9.3` |
-| Build / Dev server | Vite | `^8.0.3` |
-| CSS | Tailwind CSS v4 (CSS-first) | `^4.2.2` |
-| i18n | i18next + react-i18next + browser-languagedetector | `^26.0.8` / `^17.0.6` |
-| Class merge util | clsx + tailwind-merge (`cn()`) | `^2.1.1` / `^3.5.0` |
-| Mock API | MSW + @faker-js/faker | `^2.14.2` / `^10.4.0` |
-| API codegen | Orval (OpenAPI → TypeScript) | `^7.13.2` |
+| Lớp                | Công nghệ                                          | Phiên bản             |
+| ------------------ | -------------------------------------------------- | --------------------- |
+| Framework          | React Router 7 (SSR)                               | `7.14.0`              |
+| UI Runtime         | React + React DOM                                  | `^19.2.4`             |
+| Ngôn ngữ           | TypeScript (strict)                                | `^5.9.3`              |
+| Build / Dev server | Vite                                               | `^8.0.3`              |
+| CSS                | Tailwind CSS v4 (CSS-first)                        | `^4.2.2`              |
+| i18n               | i18next + react-i18next + browser-languagedetector | `^26.0.8` / `^17.0.6` |
+| Class merge util   | clsx + tailwind-merge (`cn()`)                     | `^2.1.1` / `^3.5.0`   |
+| Mock API           | MSW + @faker-js/faker                              | `^2.14.2` / `^10.4.0` |
+| API codegen        | Orval (OpenAPI → TypeScript)                       | `^7.13.2`             |
 
 **Lưu ý quan trọng:**
+
 - Tailwind v4 dùng cấu hình CSS-first → **không có** `tailwind.config.*`. Token nằm trong `app/styles/theme.css`.
 - Dùng `react-router` v7, **không** dùng `react-router-dom`.
 - Path alias `~/*` → `./app/*`.
@@ -104,6 +105,7 @@ routes ─┬─► features ─┐
 ### 5.1 Route config
 
 Toàn bộ routes đăng ký trong `app/routes.ts`, nhóm bằng 5 hàm:
+
 - `marketing()` → public landing pages
 - `auth()` → `/signup`, `/login`, `/register`
 - `onboarding()` → `/onboarding`
@@ -116,6 +118,7 @@ Ngoài ra có redirect routes `jd/*` → `dashboard/jd/*` để tương thích U
 
 Route module trong `app/routes/**` **không** xử lý business logic.
 Route module chỉ:
+
 - export `meta` (nếu cần)
 - render page component từ `features/*`
 
@@ -154,12 +157,12 @@ app/routes/
 
 Một số URL không có prefix `dashboard/` được đăng ký với `id` riêng để tương thích đặc tả:
 
-| Spec URL | File thực tế | Route ID |
-| --- | --- | --- |
-| `/portfolio` | `routes/dashboard/portfolio/index.tsx` | `portfolio-spec-route` |
-| `/settings` | `routes/dashboard/settings/index.tsx` | `settings-spec-route` |
-| `/roadmaps` | `routes/dashboard/learning/roadmap.tsx` | `roadmaps-spec-route` |
-| `/career-tracks` | `routes/dashboard/learning/career-track.tsx` | `career-tracks-spec-route` |
+| Spec URL             | File thực tế                                 | Route ID                         |
+| -------------------- | -------------------------------------------- | -------------------------------- |
+| `/portfolio`         | `routes/dashboard/portfolio/index.tsx`       | `portfolio-spec-route`           |
+| `/settings`          | `routes/dashboard/settings/index.tsx`        | `settings-spec-route`            |
+| `/roadmaps`          | `routes/dashboard/learning/roadmap.tsx`      | `roadmaps-spec-route`            |
+| `/career-tracks`     | `routes/dashboard/learning/career-track.tsx` | `career-tracks-spec-route`       |
 | `/career-tracks/:id` | `routes/dashboard/learning/career-track.tsx` | `career-track-detail-spec-route` |
 
 ---
@@ -179,19 +182,19 @@ app/features/<feature>/
 
 ### Features hiện tại
 
-| Feature | Pages | Có components/ | Có hooks/ | Có lib/ |
-| --- | --- | --- | --- | --- |
-| `admin` | 10 | ✅ | — | ✅ |
-| `assessment` | 2 | — | — | — |
-| `auth` | 2 | ✅ | — | ✅ |
-| `cv` | 1 | — | — | — |
-| `dashboard` | 9 + layout | ✅ | ✅ | ✅ |
-| `jd` | 2 | ✅ | — | — |
-| `landing` | 4 + layout | ✅ | — | — |
-| `portfolio` | 2 | — | ✅ | ✅ |
-| `pricing` | 1 | ✅ | — | ✅ |
-| `sprint1` | (legacy) | — | — | — |
-| `welcome` | 1 | ✅ | — | — |
+| Feature      | Pages      | Có components/ | Có hooks/ | Có lib/ |
+| ------------ | ---------- | -------------- | --------- | ------- |
+| `admin`      | 10         | ✅             | —         | ✅      |
+| `assessment` | 2          | —              | —         | —       |
+| `auth`       | 2          | ✅             | —         | ✅      |
+| `cv`         | 1          | —              | —         | —       |
+| `dashboard`  | 9 + layout | ✅             | ✅        | ✅      |
+| `jd`         | 2          | ✅             | —         | —       |
+| `landing`    | 4 + layout | ✅             | —         | —       |
+| `portfolio`  | 2          | —              | ✅        | ✅      |
+| `pricing`    | 1          | ✅             | —         | ✅      |
+| `sprint1`    | (legacy)   | —              | —         | —       |
+| `welcome`    | 1          | ✅             | —         | —       |
 
 ---
 
@@ -199,52 +202,52 @@ app/features/<feature>/
 
 ### 7.1 `shared/lib/`
 
-| File | Công dụng |
-| --- | --- |
-| `auth-session.ts` | Quản lý `AuthSession` trong localStorage (getAuthSession, setAuthSession, clearAuthSession, getAccessToken, updateTokens) |
-| `cn.ts` | `cn(...inputs)` = clsx + tailwind-merge |
-| `format-date.ts` | Định dạng ngày tháng |
-| `get-meta-t.ts` | Helper tạo meta tags cho i18n (SSR-safe) |
-| `storage.ts` | Wrapper an toàn cho localStorage (`readStorage`, `writeStorage`, `removeStorage`) |
-| `sprint2-api-runtime.ts` | Thin API wrappers: gap-analysis, roadmap, career-tracks |
-| `assessment-api.ts` | Thin API wrappers: assessment sessions |
-| `i18n/index.ts` | i18next instance khởi tạo |
-| `i18n/resources.ts` | `NAMESPACES`, `resources`, `SUPPORTED_LANGUAGES`, `FALLBACK_LANGUAGE` |
+| File                     | Công dụng                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `auth-session.ts`        | Quản lý `AuthSession` trong localStorage (getAuthSession, setAuthSession, clearAuthSession, getAccessToken, updateTokens) |
+| `cn.ts`                  | `cn(...inputs)` = clsx + tailwind-merge                                                                                   |
+| `format-date.ts`         | Định dạng ngày tháng                                                                                                      |
+| `get-meta-t.ts`          | Helper tạo meta tags cho i18n (SSR-safe)                                                                                  |
+| `storage.ts`             | Wrapper an toàn cho localStorage (`readStorage`, `writeStorage`, `removeStorage`)                                         |
+| `sprint2-api-runtime.ts` | Thin API wrappers: gap-analysis, roadmap, career-tracks                                                                   |
+| `assessment-api.ts`      | Thin API wrappers: assessment sessions                                                                                    |
+| `i18n/index.ts`          | i18next instance khởi tạo                                                                                                 |
+| `i18n/resources.ts`      | `NAMESPACES`, `resources`, `SUPPORTED_LANGUAGES`, `FALLBACK_LANGUAGE`                                                     |
 
 ### 7.2 `shared/ui/` — Primitive components
 
-| Component | Mô tả |
-| --- | --- |
-| `button.tsx` | Button variants |
-| `input.tsx` | Text input |
-| `textarea.tsx` | Textarea |
-| `card.tsx` | Card container |
-| `badge.tsx` | Status badge |
+| Component      | Mô tả           |
+| -------------- | --------------- |
+| `button.tsx`   | Button variants |
+| `input.tsx`    | Text input      |
+| `textarea.tsx` | Textarea        |
+| `card.tsx`     | Card container  |
+| `badge.tsx`    | Status badge    |
 
 ### 7.3 `shared/components/` — Cross-feature components
 
-| Component | Mô tả |
-| --- | --- |
-| `language-switcher.tsx` | Toggle EN / VI |
-| `theme-toggle.tsx` | Toggle dark / light |
-| `toast-provider.tsx` | Toast notifications |
+| Component                  | Mô tả                |
+| -------------------------- | -------------------- |
+| `language-switcher.tsx`    | Toggle EN / VI       |
+| `theme-toggle.tsx`         | Toggle dark / light  |
+| `toast-provider.tsx`       | Toast notifications  |
 | `quota-exceeded-modal.tsx` | Modal khi vượt quota |
 
 ### 7.4 `shared/hooks/`
 
-| Hook | Mô tả |
-| --- | --- |
-| `use-click-outside.ts` | Detect click ngoài element |
-| `use-debounce.ts` | Debounce value |
-| `use-hydrated.ts` | SSR-safe: biết khi nào đã hydrate |
-| `use-media-query.ts` | Responsive breakpoint detection |
+| Hook                   | Mô tả                             |
+| ---------------------- | --------------------------------- |
+| `use-click-outside.ts` | Detect click ngoài element        |
+| `use-debounce.ts`      | Debounce value                    |
+| `use-hydrated.ts`      | SSR-safe: biết khi nào đã hydrate |
+| `use-media-query.ts`   | Responsive breakpoint detection   |
 
 ### 7.5 `shared/config/`
 
-| File | Nội dung |
-| --- | --- |
-| `env.ts` | Typed Vite env vars: `VITE_API_URL`, `VITE_APP_ENV`, `VITE_ENABLE_MOCK`, `VITE_ENABLE_GOOGLE_LOGIN`, `VITE_GOOGLE_CLIENT_ID` |
-| `site.ts` | `STORAGE_KEYS` và hằng số site-wide |
+| File      | Nội dung                                                                                                                     |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `env.ts`  | Typed Vite env vars: `VITE_API_URL`, `VITE_APP_ENV`, `VITE_ENABLE_MOCK`, `VITE_ENABLE_GOOGLE_LOGIN`, `VITE_GOOGLE_CLIENT_ID` |
+| `site.ts` | `STORAGE_KEYS` và hằng số site-wide                                                                                          |
 
 ---
 
@@ -267,6 +270,7 @@ dashboard | settings | admin | jd | assessment | cv | onboarding | portfolio
 ### 8.3 Đăng ký namespace mới
 
 Sửa file `app/shared/lib/i18n/resources.ts`:
+
 1. Import `en<Name>` và `vi<Name>` từ `~/locales/en/<name>.json`.
 2. Thêm vào `NAMESPACES` array.
 3. Thêm vào `resources.en` và `resources.vi`.
@@ -381,6 +385,7 @@ pnpm run lint
 ## 14. DO / DON'T
 
 ### ✅ DO
+
 - Route module phải THIN — chỉ import page từ feature.
 - Feature export **chỉ qua** `features/<feature>/index.ts`.
 - Thêm i18n key ở cả EN+VI, đúng namespace.
@@ -390,6 +395,7 @@ pnpm run lint
 - Chạy typecheck trước khi kết thúc task.
 
 ### ❌ DON'T
+
 - Không tạo `tailwind.config.*`.
 - Không import chéo `features/*`.
 - Không import locales JSON trực tiếp trong component (phải dùng `useTranslation`).

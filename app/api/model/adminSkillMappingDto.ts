@@ -6,8 +6,8 @@
  */
 
 export interface AdminSkillMappingDto {
-  skillId?: string;
-  isPrimary?: boolean;
+  skillId?: string
+  isPrimary?: boolean
   /** @nullable */
-  sequenceOrder?: number | null;
+  sequenceOrder?: number | null
 }

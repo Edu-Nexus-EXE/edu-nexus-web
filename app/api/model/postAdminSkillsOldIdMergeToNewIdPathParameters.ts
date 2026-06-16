@@ -6,6 +6,6 @@
  */
 
 export type PostAdminSkillsOldIdMergeToNewIdPathParameters = {
- oldId: string,
-    newId: string,
- }
+  oldId: string
+  newId: string
+}

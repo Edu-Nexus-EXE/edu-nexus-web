@@ -9,112 +9,93 @@ import type {
   MarkJdInvalidRequest,
   PatchAdminJdSubmissionsIdMarkInvalidPathParameters,
   PostAdminJdSubmissionsIdReParsePathParameters
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminJdSubmissionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminJdSubmissionsResponseSuccess = (getAdminJdSubmissionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminJdSubmissionsResponse = (getAdminJdSubmissionsResponseSuccess)
+export type getAdminJdSubmissionsResponseSuccess = getAdminJdSubmissionsResponse200 & {
+  headers: Headers
+}
+export type getAdminJdSubmissionsResponse = getAdminJdSubmissionsResponseSuccess
 
-export const getGetAdminJdSubmissionsUrl = (params?: GetAdminJdSubmissionsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminJdSubmissionsUrl = (params?: GetAdminJdSubmissionsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/admin/jd-submissions?${stringifiedParams}` : `/admin/jd-submissions`
 }
 
-export const getAdminJdSubmissions = async (params?: GetAdminJdSubmissionsParams, options?: RequestInit): Promise<getAdminJdSubmissionsResponse> => {
-  
-  return customFetch<getAdminJdSubmissionsResponse>(getGetAdminJdSubmissionsUrl(params),
-  {      
+export const getAdminJdSubmissions = async (
+  params?: GetAdminJdSubmissionsParams,
+  options?: RequestInit
+): Promise<getAdminJdSubmissionsResponse> => {
+  return customFetch<getAdminJdSubmissionsResponse>(getGetAdminJdSubmissionsUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type postAdminJdSubmissionsIdReParseResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminJdSubmissionsIdReParseResponseSuccess = (postAdminJdSubmissionsIdReParseResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminJdSubmissionsIdReParseResponse = (postAdminJdSubmissionsIdReParseResponseSuccess)
+export type postAdminJdSubmissionsIdReParseResponseSuccess = postAdminJdSubmissionsIdReParseResponse200 & {
+  headers: Headers
+}
+export type postAdminJdSubmissionsIdReParseResponse = postAdminJdSubmissionsIdReParseResponseSuccess
 
-export const getPostAdminJdSubmissionsIdReParseUrl = ({ id }: PostAdminJdSubmissionsIdReParsePathParameters,) => {
-
-
-  
-
+export const getPostAdminJdSubmissionsIdReParseUrl = ({ id }: PostAdminJdSubmissionsIdReParsePathParameters) => {
   return `/admin/jd-submissions/${id}/re-parse`
 }
 
-export const postAdminJdSubmissionsIdReParse = async ({ id }: PostAdminJdSubmissionsIdReParsePathParameters, options?: RequestInit): Promise<postAdminJdSubmissionsIdReParseResponse> => {
-  
-  return customFetch<postAdminJdSubmissionsIdReParseResponse>(getPostAdminJdSubmissionsIdReParseUrl({ id }),
-  {      
+export const postAdminJdSubmissionsIdReParse = async (
+  { id }: PostAdminJdSubmissionsIdReParsePathParameters,
+  options?: RequestInit
+): Promise<postAdminJdSubmissionsIdReParseResponse> => {
+  return customFetch<postAdminJdSubmissionsIdReParseResponse>(getPostAdminJdSubmissionsIdReParseUrl({ id }), {
     ...options,
     method: 'POST'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type patchAdminJdSubmissionsIdMarkInvalidResponse200 = {
   data: void
   status: 200
 }
-    
-export type patchAdminJdSubmissionsIdMarkInvalidResponseSuccess = (patchAdminJdSubmissionsIdMarkInvalidResponse200) & {
-  headers: Headers;
-};
-;
 
-export type patchAdminJdSubmissionsIdMarkInvalidResponse = (patchAdminJdSubmissionsIdMarkInvalidResponseSuccess)
+export type patchAdminJdSubmissionsIdMarkInvalidResponseSuccess = patchAdminJdSubmissionsIdMarkInvalidResponse200 & {
+  headers: Headers
+}
+export type patchAdminJdSubmissionsIdMarkInvalidResponse = patchAdminJdSubmissionsIdMarkInvalidResponseSuccess
 
-export const getPatchAdminJdSubmissionsIdMarkInvalidUrl = ({ id }: PatchAdminJdSubmissionsIdMarkInvalidPathParameters,) => {
-
-
-  
-
+export const getPatchAdminJdSubmissionsIdMarkInvalidUrl = ({
+  id
+}: PatchAdminJdSubmissionsIdMarkInvalidPathParameters) => {
   return `/admin/jd-submissions/${id}/mark-invalid`
 }
 
-export const patchAdminJdSubmissionsIdMarkInvalid = async ({ id }: PatchAdminJdSubmissionsIdMarkInvalidPathParameters,
-    markJdInvalidRequest: MarkJdInvalidRequest, options?: RequestInit): Promise<patchAdminJdSubmissionsIdMarkInvalidResponse> => {
-  
-  return customFetch<patchAdminJdSubmissionsIdMarkInvalidResponse>(getPatchAdminJdSubmissionsIdMarkInvalidUrl({ id }),
-  {      
+export const patchAdminJdSubmissionsIdMarkInvalid = async (
+  { id }: PatchAdminJdSubmissionsIdMarkInvalidPathParameters,
+  markJdInvalidRequest: MarkJdInvalidRequest,
+  options?: RequestInit
+): Promise<patchAdminJdSubmissionsIdMarkInvalidResponse> => {
+  return customFetch<patchAdminJdSubmissionsIdMarkInvalidResponse>(getPatchAdminJdSubmissionsIdMarkInvalidUrl({ id }), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      markJdInvalidRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(markJdInvalidRequest)
+  })
+}

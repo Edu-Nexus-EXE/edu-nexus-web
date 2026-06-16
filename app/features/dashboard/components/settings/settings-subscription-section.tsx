@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
 import type { AuthUser } from '~/shared/lib/auth-session'
+import { formatDate } from '~/shared/lib/format-date'
 
 type SettingsSubscriptionSectionProps = {
   user: AuthUser
@@ -21,15 +22,17 @@ function getSubscriptionStatusLabel(status: string | null | undefined, t: Return
   const normalized = status?.toLowerCase()
   if (normalized === 'active') return t('currentPlan.status.active', { ns: 'subscription', defaultValue: 'active' })
   if (normalized === 'pending') return t('currentPlan.status.pending', { ns: 'subscription', defaultValue: 'pending' })
-  if (normalized === 'expired' || normalized === 'cancelled') return t('currentPlan.status.expired', { ns: 'subscription', defaultValue: 'expired' })
+  if (normalized === 'expired' || normalized === 'cancelled')
+    return t('currentPlan.status.expired', { ns: 'subscription', defaultValue: 'expired' })
   return status ?? t('currentPlan.status.active', { ns: 'subscription', defaultValue: 'active' })
 }
 
 export function SettingsSubscriptionSection({ user }: SettingsSubscriptionSectionProps) {
-  const { t } = useTranslation(['settings', 'subscription'])
+  const { t, i18n } = useTranslation(['settings', 'subscription'])
   const subscription = user.subscription
   const tierCode = subscription?.tierCode?.toLowerCase() ?? 'free'
   const tone = getTierTone(tierCode)
+  const locale = i18n.language ?? 'vi'
 
   return (
     <section className='bg-card p-8 rounded-2xl border border-border shadow-sm'>
@@ -49,19 +52,25 @@ export function SettingsSubscriptionSection({ user }: SettingsSubscriptionSectio
       <div className='mt-6 grid gap-4 md:grid-cols-3'>
         <div className={`rounded-2xl border px-4 py-4 ${tone}`}>
           <p className='text-xs font-semibold uppercase tracking-wider'>{t('subscription.currentPlan')}</p>
-          <p className='mt-2 text-lg font-bold'>{subscription?.displayName || t('currentPlan.freeFallback', { ns: 'subscription' })}</p>
+          <p className='mt-2 text-lg font-bold'>
+            {subscription?.displayName || t('currentPlan.freeFallback', { ns: 'subscription' })}
+          </p>
         </div>
         <div className='rounded-2xl border border-border bg-muted/20 px-4 py-4'>
-          <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>{t('subscription.status')}</p>
+          <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+            {t('subscription.status')}
+          </p>
           <p className='mt-2 text-lg font-bold text-foreground'>
             {getSubscriptionStatusLabel(subscription?.status, t)}
           </p>
         </div>
         <div className='rounded-2xl border border-border bg-muted/20 px-4 py-4'>
-          <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>{t('subscription.expiresAt')}</p>
+          <p className='text-xs font-semibold uppercase tracking-wider text-muted-foreground'>
+            {t('subscription.expiresAt')}
+          </p>
           <p className='mt-2 text-lg font-bold text-foreground'>
             {subscription?.expiresAt
-              ? t('currentPlan.expiresAt', { ns: 'subscription', date: subscription.expiresAt })
+              ? t('currentPlan.expiresAt', { ns: 'subscription', date: formatDate(subscription.expiresAt, locale) })
               : t('currentPlan.noExpiry', { ns: 'subscription' })}
           </p>
         </div>

@@ -6,5 +6,5 @@
  */
 
 export type GetAssessmentSessionsSessionIdQuestionsPathParameters = {
- sessionId: string,
- }
+  sessionId: string
+}

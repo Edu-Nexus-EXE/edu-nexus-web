@@ -54,7 +54,7 @@ export function SignupForm() {
 
       setAuthSession({
         user: mapAuthResponseToUser(data),
-        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken }
       })
 
       toast.success(t('signup.success'))

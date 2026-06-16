@@ -1,4 +1,4 @@
-import type { RequestHandler } from "msw";
+import type { RequestHandler } from 'msw'
 
 /**
  * Tổng hợp TẤT CẢ mock handlers.
@@ -15,10 +15,11 @@ import type { RequestHandler } from "msw";
  */
 
 // Handler viết tay (placeholder — xoá khi orval generate được)
-import { exampleHandlers } from "./example.handler";
+import { exampleHandlers } from './example.handler'
 
 // Domain mocks used by dashboard routes
 import { jdHandlers } from './jd.handler'
+import { subscriptionHandlers } from './subscription.handler'
 
 // Orval generated handlers
 import {
@@ -31,14 +32,18 @@ import {
   getJdSubmissionsMock,
   getOnboardingMock,
   getRoadmapsMock,
-  getUsersMock,
-} from "~/api/operations/index.msw";
+  getUsersMock
+} from '~/api/operations/index.msw'
 
 export const handlers: RequestHandler[] = [
   ...exampleHandlers,
 
   // Stateful mocks (to support polling UIs)
   ...jdHandlers,
+
+  // Subscription mocks (return spec-shaped bodies so the pricing flow can
+  // create orders, simulate redirect URLs, and poll order history).
+  ...subscriptionHandlers,
 
   ...getAuthMock(),
   ...getUsersMock(),
@@ -49,5 +54,5 @@ export const handlers: RequestHandler[] = [
   ...getAssessmentSessionsMock(),
   ...getGapAnalysisMock(),
   ...getRoadmapsMock(),
-  ...getCareerTracksMock(),
-];
+  ...getCareerTracksMock()
+]

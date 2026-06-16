@@ -121,8 +121,11 @@
       "pathCvFailedHelper": "A CV was uploaded but parsing did not finish successfully. Open it to see the error and retry.",
       "pathCvMissingHelper": "The CV path is selected but no file has been uploaded yet. Open it to upload a CV now.",
       "confirmDeletePath": "Are you sure you want to remove the current assessment path and choose another one?",
+      "confirmDeletePathTitle": "Re-choose assessment path?",
       "confirmDeleteJd": "Are you sure you want to delete this JD and free its quota slot?",
+      "confirmDeleteJdTitle": "Delete this JD?",
       "deletePath": "Delete path",
+      "cancel": "Cancel",
       "cvStatus": {
         "loading": "Checking CV status...",
         "missing": "No CV uploaded yet",
@@ -168,7 +171,10 @@
         "title": "Progress pipeline",
         "jd": {
           "label": "JD analyzed",
-          "doneHint": "The JD has been submitted and parsed."
+          "doneHint": "The JD has been submitted and parsed.",
+          "processingHint": "AI is analyzing your JD. This may take a few minutes.",
+          "failedHint": "JD analysis failed. Please resubmit a new JD to try again.",
+          "lockedHint": "Loading JD information."
         },
         "path": {
           "label": "Assessment path",

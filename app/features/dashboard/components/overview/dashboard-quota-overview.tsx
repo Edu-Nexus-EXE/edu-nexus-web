@@ -12,7 +12,7 @@ const QUOTA_ICONS: Record<string, string> = {
   roadmapActive: 'route',
   careerTrack: 'workspaces',
   portfolioCertificate: 'workspace_premium',
-  portfolioProject: 'folder_special',
+  portfolioProject: 'folder_special'
 }
 
 export function DashboardQuotaOverview() {
@@ -54,7 +54,8 @@ export function DashboardQuotaOverview() {
       ) : (
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
           {items.map((item) => {
-            const ratio = item.unlimited || item.limit <= 0 ? 0 : Math.min(100, Math.round((item.used / item.limit) * 100))
+            const ratio =
+              item.unlimited || item.limit <= 0 ? 0 : Math.min(100, Math.round((item.used / item.limit) * 100))
             const usageText = item.unlimited
               ? t('quotaOverview.usageUnlimited', { used: item.used })
               : t('quotaOverview.usage', { used: item.used, limit: item.limit })
@@ -63,8 +64,12 @@ export function DashboardQuotaOverview() {
               <div key={item.key} className='rounded-xl border border-border bg-background p-4'>
                 <div className='flex items-center justify-between gap-3'>
                   <div className='flex items-center gap-2 min-w-0'>
-                    <span className='material-icons text-base text-muted-foreground'>{QUOTA_ICONS[item.key] ?? 'tune'}</span>
-                    <p className='text-sm font-semibold text-foreground truncate'>{t(`quotaOverview.labels.${item.key}`)}</p>
+                    <span className='material-icons text-base text-muted-foreground'>
+                      {QUOTA_ICONS[item.key] ?? 'tune'}
+                    </span>
+                    <p className='text-sm font-semibold text-foreground truncate'>
+                      {t(`quotaOverview.labels.${item.key}`)}
+                    </p>
                   </div>
                   {item.nearLimit ? (
                     <span className='shrink-0 rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-warning'>

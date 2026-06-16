@@ -46,7 +46,9 @@ export function AdminRagSummary() {
           </div>
         </div>
       </div>
-      <span className='material-symbols-outlined absolute -bottom-4 -right-4 text-9xl text-white/10 select-none pointer-events-none'>data_object</span>
+      <span className='material-symbols-outlined absolute -bottom-4 -right-4 text-9xl text-white/10 select-none pointer-events-none'>
+        data_object
+      </span>
     </div>
   )
 }

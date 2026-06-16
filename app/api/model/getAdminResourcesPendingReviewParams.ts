@@ -6,6 +6,6 @@
  */
 
 export type GetAdminResourcesPendingReviewParams = {
-page?: number;
-pageSize?: number;
-};
+  page?: number
+  pageSize?: number
+}

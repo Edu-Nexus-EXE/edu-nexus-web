@@ -6,5 +6,5 @@
  */
 
 export type GetJdSubmissionsIdPathParameters = {
- id: string,
- }
+  id: string
+}

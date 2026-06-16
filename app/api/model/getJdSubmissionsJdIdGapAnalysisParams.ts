@@ -6,5 +6,5 @@
  */
 
 export type GetJdSubmissionsJdIdGapAnalysisParams = {
-all?: boolean;
-};
+  all?: boolean
+}

@@ -4,80 +4,61 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import type {
-  GetAdminPaymentOrdersParams
-} from '../../model';
+import type { GetAdminPaymentOrdersParams } from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminPaymentOrdersResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminPaymentOrdersResponseSuccess = (getAdminPaymentOrdersResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminPaymentOrdersResponse = (getAdminPaymentOrdersResponseSuccess)
+export type getAdminPaymentOrdersResponseSuccess = getAdminPaymentOrdersResponse200 & {
+  headers: Headers
+}
+export type getAdminPaymentOrdersResponse = getAdminPaymentOrdersResponseSuccess
 
-export const getGetAdminPaymentOrdersUrl = (params?: GetAdminPaymentOrdersParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminPaymentOrdersUrl = (params?: GetAdminPaymentOrdersParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/admin/payment-orders?${stringifiedParams}` : `/admin/payment-orders`
 }
 
-export const getAdminPaymentOrders = async (params?: GetAdminPaymentOrdersParams, options?: RequestInit): Promise<getAdminPaymentOrdersResponse> => {
-  
-  return customFetch<getAdminPaymentOrdersResponse>(getGetAdminPaymentOrdersUrl(params),
-  {      
+export const getAdminPaymentOrders = async (
+  params?: GetAdminPaymentOrdersParams,
+  options?: RequestInit
+): Promise<getAdminPaymentOrdersResponse> => {
+  return customFetch<getAdminPaymentOrdersResponse>(getGetAdminPaymentOrdersUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type getAdminDashboardStatsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminDashboardStatsResponseSuccess = (getAdminDashboardStatsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminDashboardStatsResponse = (getAdminDashboardStatsResponseSuccess)
+export type getAdminDashboardStatsResponseSuccess = getAdminDashboardStatsResponse200 & {
+  headers: Headers
+}
+export type getAdminDashboardStatsResponse = getAdminDashboardStatsResponseSuccess
 
 export const getGetAdminDashboardStatsUrl = () => {
-
-
-  
-
   return `/admin/dashboard/stats`
 }
 
-export const getAdminDashboardStats = async ( options?: RequestInit): Promise<getAdminDashboardStatsResponse> => {
-  
-  return customFetch<getAdminDashboardStatsResponse>(getGetAdminDashboardStatsUrl(),
-  {      
+export const getAdminDashboardStats = async (options?: RequestInit): Promise<getAdminDashboardStatsResponse> => {
+  return customFetch<getAdminDashboardStatsResponse>(getGetAdminDashboardStatsUrl(), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
-
+  })
+}

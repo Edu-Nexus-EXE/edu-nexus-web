@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { getAssessmentSessionsSessionIdQuestions } from '~/api/operations/assessment-sessions/assessment-sessions'
 import { getAssessmentSessionResult, parseAutoTriggered, type AutoTriggered } from '~/shared/lib/assessment-api'
+import { formatOptionLabel, readOptionsForSession, type CachedOptions } from '~/shared/lib/assessment-options-cache'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 import { Badge } from '~/shared/ui/badge'
@@ -99,7 +100,7 @@ function parseSkillScores(input: unknown): SkillScore[] {
         skillName: String(s.skillName ?? ''),
         scorePercent,
         correctCount: score,
-        totalCount: maxScore,
+        totalCount: maxScore
       }
     })
     .filter((s) => Boolean(s.skillName))
@@ -135,13 +136,9 @@ function parseQuestionReviews(input: unknown): QuestionReview[] {
               ? r.answer
               : undefined,
       isCorrect:
-        typeof r.isCorrect === 'boolean'
-          ? r.isCorrect
-          : typeof r.is_correct === 'boolean'
-            ? r.is_correct
-            : undefined,
+        typeof r.isCorrect === 'boolean' ? r.isCorrect : typeof r.is_correct === 'boolean' ? r.is_correct : undefined,
       explanation: typeof r.explanation === 'string' ? r.explanation : undefined,
-      sequenceOrder: undefined,
+      sequenceOrder: undefined
     }))
     .filter((r) => Boolean(r.questionId))
 }
@@ -158,7 +155,9 @@ type SessionQuestionsDto = {
   questions?: unknown
 }
 
-function parseSessionQuestions(res: unknown): Array<{ questionId: string; questionText?: string; sequenceOrder: number }> {
+function parseSessionQuestions(
+  res: unknown
+): Array<{ questionId: string; questionText?: string; sequenceOrder: number }> {
   const dto = ((res as ResponseWithData<SessionQuestionsDto>)?.data ?? {}) as SessionQuestionsDto
   const rows = Array.isArray(dto.questions) ? (dto.questions as SessionQuestionDto[]) : []
 
@@ -171,7 +170,7 @@ function parseSessionQuestions(res: unknown): Array<{ questionId: string; questi
           : typeof row.question_text === 'string'
             ? row.question_text
             : undefined,
-      sequenceOrder: Number(row.sequenceOrder ?? row.sequence_order ?? 0),
+      sequenceOrder: Number(row.sequenceOrder ?? row.sequence_order ?? 0)
     }))
     .filter((row) => Boolean(row.questionId))
 }
@@ -183,7 +182,11 @@ function parseResult(res: unknown): Result {
   const correctCount = Number(dto.correctCount ?? dto.correct_count ?? 0)
   const rawScorePercent = Number(dto.scorePercent ?? dto.score_percent ?? Number.NaN)
   const derivedScorePercent =
-    totalCount > 0 ? (correctCount / totalCount) * 100 : parsedResults.length > 0 ? (parsedResults.filter((item) => item.isCorrect === true).length / parsedResults.length) * 100 : 0
+    totalCount > 0
+      ? (correctCount / totalCount) * 100
+      : parsedResults.length > 0
+        ? (parsedResults.filter((item) => item.isCorrect === true).length / parsedResults.length) * 100
+        : 0
 
   return {
     sessionId: String(dto.sessionId ?? ''),
@@ -193,8 +196,15 @@ function parseResult(res: unknown): Result {
     totalCount,
     skillScores: parseSkillScores(dto.skillScores ?? dto.skill_scores),
     results: parsedResults,
-    autoTriggered: parseAutoTriggered(dto.autoTriggered),
+    autoTriggered: parseAutoTriggered(dto.autoTriggered)
   }
+}
+
+function renderOption(key: string | undefined, questionId: string, optionsByQuestion: CachedOptions | null): string {
+  if (!key) return '—'
+  if (!optionsByQuestion) return key
+  const text = optionsByQuestion[questionId]?.[key as 'A' | 'B' | 'C' | 'D']
+  return formatOptionLabel(key, text)
 }
 
 export function AssessmentResultsPage() {
@@ -210,6 +220,7 @@ export function AssessmentResultsPage() {
   const [loading, setLoading] = useState(Boolean(sessionId))
   const [error, setError] = useState('')
   const [result, setResult] = useState<Result | null>(null)
+  const [optionsForSession, setOptionsForSession] = useState<CachedOptions | null>(null)
 
   useEffect(() => {
     if (!sessionId) {
@@ -229,9 +240,8 @@ export function AssessmentResultsPage() {
             const questionsRes = await getAssessmentSessionsSessionIdQuestions({ sessionId })
             if (cancelled) return
 
-            const questionMap = new Map(
-              parseSessionQuestions(questionsRes).map((item) => [item.questionId, item] as const)
-            )
+            const questionList = parseSessionQuestions(questionsRes)
+            const questionMap = new Map(questionList.map((item) => [item.questionId, item] as const))
 
             parsedResult.results = parsedResult.results.map((item) => {
               const matched = questionMap.get(item.questionId)
@@ -239,7 +249,7 @@ export function AssessmentResultsPage() {
                 ? {
                     ...item,
                     questionText: item.questionText || matched.questionText,
-                    sequenceOrder: matched.sequenceOrder,
+                    sequenceOrder: matched.sequenceOrder
                   }
                 : item
             })
@@ -250,6 +260,39 @@ export function AssessmentResultsPage() {
 
         setResult(parsedResult)
         setError('')
+
+        // Load options cache để render selected/correct option với text đầy đủ.
+        // Nếu cache miss (vd user mở trực tiếp tab results) thì fetch lại questions
+        // và build cache ngay, tránh hiển thị mỗi "A" không có nghĩa.
+        const cached = readOptionsForSession(sessionId)
+        if (cached) {
+          setOptionsForSession(cached)
+        } else {
+          try {
+            const questionsRes = await getAssessmentSessionsSessionIdQuestions({ sessionId })
+            if (cancelled) return
+            const dto = ((questionsRes as ResponseWithData<SessionQuestionsDto>)?.data ?? {}) as SessionQuestionsDto
+            const rows = Array.isArray(dto.questions) ? (dto.questions as Array<Record<string, unknown>>) : []
+            const map: CachedOptions = {}
+            for (const row of rows) {
+              const qid = String(row.id ?? '')
+              if (!qid) continue
+              const rawOptions =
+                row.options && typeof row.options === 'object' && !Array.isArray(row.options)
+                  ? (row.options as Record<string, unknown>)
+                  : {}
+              map[qid] = {
+                A: typeof rawOptions.A === 'string' ? rawOptions.A : '',
+                B: typeof rawOptions.B === 'string' ? rawOptions.B : '',
+                C: typeof rawOptions.C === 'string' ? rawOptions.C : '',
+                D: typeof rawOptions.D === 'string' ? rawOptions.D : ''
+              }
+            }
+            setOptionsForSession(map)
+          } catch {
+            setOptionsForSession(null)
+          }
+        }
       })
       .catch((e) => {
         if (cancelled) return
@@ -300,7 +343,9 @@ export function AssessmentResultsPage() {
 
       <div className='mb-8 flex items-center justify-between gap-4'>
         <div>
-          <p className='text-xs font-semibold tracking-widest uppercase text-muted-foreground'>{t('assessment.results.badge')}</p>
+          <p className='text-xs font-semibold tracking-widest uppercase text-muted-foreground'>
+            {t('assessment.results.badge')}
+          </p>
           <h1 className='text-3xl md:text-4xl font-bold text-foreground'>{t('assessment.results.title')}</h1>
           <p className='text-sm text-muted-foreground mt-1'>{t('assessment.results.sessionLabel', { sessionId })}</p>
         </div>
@@ -310,7 +355,9 @@ export function AssessmentResultsPage() {
       </div>
 
       {error ? (
-        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{error}</div>
+        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {error}
+        </div>
       ) : null}
 
       {result?.autoTriggered ? (
@@ -320,7 +367,11 @@ export function AssessmentResultsPage() {
             <p className='text-muted-foreground'>{t('assessment.results.autoTriggered.message')}</p>
           </div>
           <Link
-            to={jdId ? `/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(jdId)}` : '/dashboard/analytics/gap-analysis'}
+            to={
+              jdId
+                ? `/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(jdId)}`
+                : '/dashboard/analytics/gap-analysis'
+            }
             className='inline-flex items-center justify-center gap-2 rounded-lg border border-primary/30 bg-card px-3 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors shrink-0'
           >
             {t('assessment.results.autoTriggered.link')}
@@ -359,18 +410,14 @@ export function AssessmentResultsPage() {
           </div>
 
           <div className='bg-card border border-border rounded-2xl p-6 shadow-sm'>
-            <h2 className='text-lg font-semibold text-foreground mb-4'>
-              {t('assessment.results.skillBreakdown')}
-            </h2>
+            <h2 className='text-lg font-semibold text-foreground mb-4'>{t('assessment.results.skillBreakdown')}</h2>
 
             {loading ? (
               <p className='text-sm text-muted-foreground'>{t('assessment.results.loading')}</p>
             ) : !result ? (
               <p className='text-sm text-muted-foreground'>{t('assessment.results.noData')}</p>
             ) : result.skillScores.length === 0 ? (
-              <p className='text-sm text-muted-foreground'>
-                {t('assessment.results.noSkillScores')}
-              </p>
+              <p className='text-sm text-muted-foreground'>{t('assessment.results.noSkillScores')}</p>
             ) : (
               <div className='space-y-3'>
                 {result.skillScores
@@ -387,12 +434,17 @@ export function AssessmentResultsPage() {
                             </p>
                           ) : null}
                         </div>
-                        {typeof s.scorePercent === 'number' ? <Badge variant='outline'>{Math.round(s.scorePercent)}%</Badge> : null}
+                        {typeof s.scorePercent === 'number' ? (
+                          <Badge variant='outline'>{Math.round(s.scorePercent)}%</Badge>
+                        ) : null}
                       </div>
 
                       {typeof s.scorePercent === 'number' ? (
                         <div className='mt-3 h-2 w-full rounded-full bg-muted overflow-hidden'>
-                          <div className='h-full bg-primary' style={{ width: `${Math.min(100, Math.max(0, s.scorePercent))}%` }} />
+                          <div
+                            className='h-full bg-primary'
+                            style={{ width: `${Math.min(100, Math.max(0, s.scorePercent))}%` }}
+                          />
                         </div>
                       ) : null}
                     </div>
@@ -402,9 +454,7 @@ export function AssessmentResultsPage() {
           </div>
 
           <div className='bg-card border border-border rounded-2xl p-6 shadow-sm'>
-            <h2 className='text-lg font-semibold text-foreground mb-2'>
-              {t('assessment.results.review')}
-            </h2>
+            <h2 className='text-lg font-semibold text-foreground mb-2'>{t('assessment.results.review')}</h2>
             <p className='mb-4 text-sm text-muted-foreground'>{t('assessment.results.reviewHint')}</p>
 
             {loading ? (
@@ -417,42 +467,49 @@ export function AssessmentResultsPage() {
               <div className='space-y-3'>
                 {result.results
                   .slice()
-                  .sort((a, b) => (a.sequenceOrder ?? Number.MAX_SAFE_INTEGER) - (b.sequenceOrder ?? Number.MAX_SAFE_INTEGER))
+                  .sort(
+                    (a, b) =>
+                      (a.sequenceOrder ?? Number.MAX_SAFE_INTEGER) - (b.sequenceOrder ?? Number.MAX_SAFE_INTEGER)
+                  )
                   .map((r, idx) => {
-                  const isCorrect = r.isCorrect
-                  return (
-                    <div key={r.questionId} className='rounded-xl border border-border bg-background p-4'>
-                      <div className='flex items-start justify-between gap-4'>
-                        <p className='text-sm font-semibold text-foreground whitespace-pre-wrap'>
-                          {idx + 1}. {r.questionText ?? '—'}
-                        </p>
-                        {typeof isCorrect === 'boolean' ? (
-                          <Badge variant={isCorrect ? 'success' : 'destructive'}>
-                            {isCorrect ? t('assessment.results.correct') : t('assessment.results.wrong')}
-                          </Badge>
+                    const isCorrect = r.isCorrect
+                    return (
+                      <div key={r.questionId} className='rounded-xl border border-border bg-background p-4'>
+                        <div className='flex items-start justify-between gap-4'>
+                          <p className='text-sm font-semibold text-foreground whitespace-pre-wrap'>
+                            {idx + 1}. {r.questionText ?? '—'}
+                          </p>
+                          {typeof isCorrect === 'boolean' ? (
+                            <Badge variant={isCorrect ? 'success' : 'destructive'}>
+                              {isCorrect ? t('assessment.results.correct') : t('assessment.results.wrong')}
+                            </Badge>
+                          ) : null}
+                        </div>
+
+                        <div className='mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm'>
+                          <div className='rounded-lg border border-border bg-muted/10 p-3'>
+                            <p className='text-xs text-muted-foreground'>{t('assessment.results.selected')}</p>
+                            <p className='font-semibold text-foreground mt-1 whitespace-pre-wrap'>
+                              {renderOption(r.selectedOption, r.questionId, optionsForSession)}
+                            </p>
+                          </div>
+                          <div className='rounded-lg border border-border bg-muted/10 p-3'>
+                            <p className='text-xs text-muted-foreground'>{t('assessment.results.correctOption')}</p>
+                            <p className='font-semibold text-foreground mt-1 whitespace-pre-wrap'>
+                              {renderOption(r.correctOption, r.questionId, optionsForSession)}
+                            </p>
+                          </div>
+                        </div>
+
+                        {r.explanation ? (
+                          <div className='mt-3 rounded-lg border border-border bg-muted/5 p-3'>
+                            <p className='text-xs text-muted-foreground'>{t('assessment.results.explanation')}</p>
+                            <p className='text-sm text-foreground mt-1 whitespace-pre-wrap'>{r.explanation}</p>
+                          </div>
                         ) : null}
                       </div>
-
-                      <div className='mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm'>
-                        <div className='rounded-lg border border-border bg-muted/10 p-3'>
-                          <p className='text-xs text-muted-foreground'>{t('assessment.results.selected')}</p>
-                          <p className='font-semibold text-foreground mt-1'>{r.selectedOption ?? '—'}</p>
-                        </div>
-                        <div className='rounded-lg border border-border bg-muted/10 p-3'>
-                          <p className='text-xs text-muted-foreground'>{t('assessment.results.correctOption')}</p>
-                          <p className='font-semibold text-foreground mt-1'>{r.correctOption ?? '—'}</p>
-                        </div>
-                      </div>
-
-                      {r.explanation ? (
-                        <div className='mt-3 rounded-lg border border-border bg-muted/5 p-3'>
-                          <p className='text-xs text-muted-foreground'>{t('assessment.results.explanation')}</p>
-                          <p className='text-sm text-foreground mt-1 whitespace-pre-wrap'>{r.explanation}</p>
-                        </div>
-                      ) : null}
-                    </div>
-                  )
-                })}
+                    )
+                  })}
               </div>
             )}
           </div>
@@ -471,7 +528,11 @@ export function AssessmentResultsPage() {
                 <span className='material-symbols-outlined text-base'>arrow_upward</span>
               </button>
               <Link
-                to={jdId ? `/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(jdId)}` : '/dashboard/analytics/gap-analysis'}
+                to={
+                  jdId
+                    ? `/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(jdId)}`
+                    : '/dashboard/analytics/gap-analysis'
+                }
                 className='flex items-center justify-between rounded-xl border border-border px-4 py-3 hover:bg-muted/30 transition-colors'
               >
                 <span>{t('assessment.results.viewRoadmap')}</span>

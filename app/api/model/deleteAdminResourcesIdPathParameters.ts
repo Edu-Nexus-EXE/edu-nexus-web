@@ -6,5 +6,5 @@
  */
 
 export type DeleteAdminResourcesIdPathParameters = {
- id: string,
- }
+  id: string
+}

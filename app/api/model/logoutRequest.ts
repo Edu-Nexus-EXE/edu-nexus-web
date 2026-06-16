@@ -7,5 +7,5 @@
 
 export interface LogoutRequest {
   /** @nullable */
-  refreshToken?: string | null;
+  refreshToken?: string | null
 }

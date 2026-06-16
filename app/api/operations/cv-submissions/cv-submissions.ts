@@ -8,77 +8,61 @@ import type {
   GetAssessmentPathsPathIdCvPathParameters,
   PostAssessmentPathsPathIdCvBody,
   PostAssessmentPathsPathIdCvPathParameters
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type postAssessmentPathsPathIdCvResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAssessmentPathsPathIdCvResponseSuccess = (postAssessmentPathsPathIdCvResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAssessmentPathsPathIdCvResponse = (postAssessmentPathsPathIdCvResponseSuccess)
+export type postAssessmentPathsPathIdCvResponseSuccess = postAssessmentPathsPathIdCvResponse200 & {
+  headers: Headers
+}
+export type postAssessmentPathsPathIdCvResponse = postAssessmentPathsPathIdCvResponseSuccess
 
-export const getPostAssessmentPathsPathIdCvUrl = ({ pathId }: PostAssessmentPathsPathIdCvPathParameters,) => {
-
-
-  
-
+export const getPostAssessmentPathsPathIdCvUrl = ({ pathId }: PostAssessmentPathsPathIdCvPathParameters) => {
   return `/assessment-paths/${pathId}/cv`
 }
 
-export const postAssessmentPathsPathIdCv = async ({ pathId }: PostAssessmentPathsPathIdCvPathParameters,
-    postAssessmentPathsPathIdCvBody: PostAssessmentPathsPathIdCvBody, options?: RequestInit): Promise<postAssessmentPathsPathIdCvResponse> => {
-    const formData = new FormData();
-if(postAssessmentPathsPathIdCvBody.file !== undefined) {
- formData.append(`file`, postAssessmentPathsPathIdCvBody.file)
- }
-
-  return customFetch<postAssessmentPathsPathIdCvResponse>(getPostAssessmentPathsPathIdCvUrl({ pathId }),
-  {      
-    ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
+export const postAssessmentPathsPathIdCv = async (
+  { pathId }: PostAssessmentPathsPathIdCvPathParameters,
+  postAssessmentPathsPathIdCvBody: PostAssessmentPathsPathIdCvBody,
+  options?: RequestInit
+): Promise<postAssessmentPathsPathIdCvResponse> => {
+  const formData = new FormData()
+  if (postAssessmentPathsPathIdCvBody.file !== undefined) {
+    formData.append(`file`, postAssessmentPathsPathIdCvBody.file)
   }
-);}
 
+  return customFetch<postAssessmentPathsPathIdCvResponse>(getPostAssessmentPathsPathIdCvUrl({ pathId }), {
+    ...options,
+    method: 'POST',
+    body: formData
+  })
+}
 
 export type getAssessmentPathsPathIdCvResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAssessmentPathsPathIdCvResponseSuccess = (getAssessmentPathsPathIdCvResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAssessmentPathsPathIdCvResponse = (getAssessmentPathsPathIdCvResponseSuccess)
+export type getAssessmentPathsPathIdCvResponseSuccess = getAssessmentPathsPathIdCvResponse200 & {
+  headers: Headers
+}
+export type getAssessmentPathsPathIdCvResponse = getAssessmentPathsPathIdCvResponseSuccess
 
-export const getGetAssessmentPathsPathIdCvUrl = ({ pathId }: GetAssessmentPathsPathIdCvPathParameters,) => {
-
-
-  
-
+export const getGetAssessmentPathsPathIdCvUrl = ({ pathId }: GetAssessmentPathsPathIdCvPathParameters) => {
   return `/assessment-paths/${pathId}/cv`
 }
 
-export const getAssessmentPathsPathIdCv = async ({ pathId }: GetAssessmentPathsPathIdCvPathParameters, options?: RequestInit): Promise<getAssessmentPathsPathIdCvResponse> => {
-  
-  return customFetch<getAssessmentPathsPathIdCvResponse>(getGetAssessmentPathsPathIdCvUrl({ pathId }),
-  {      
+export const getAssessmentPathsPathIdCv = async (
+  { pathId }: GetAssessmentPathsPathIdCvPathParameters,
+  options?: RequestInit
+): Promise<getAssessmentPathsPathIdCvResponse> => {
+  return customFetch<getAssessmentPathsPathIdCvResponse>(getGetAssessmentPathsPathIdCvUrl({ pathId }), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
-
+  })
+}

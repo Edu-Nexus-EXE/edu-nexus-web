@@ -14,16 +14,8 @@ export function WelcomePage() {
 
       <section className='flex flex-col items-center gap-12 pt-8 pb-16'>
         <div className='w-[500px] max-w-[100vw] p-4'>
-          <img
-            src={logoLight}
-            alt='React Router'
-            className='block w-full dark:hidden'
-          />
-          <img
-            src={logoDark}
-            alt='React Router'
-            className='hidden w-full dark:block'
-          />
+          <img src={logoLight} alt='React Router' className='block w-full dark:hidden' />
+          <img src={logoDark} alt='React Router' className='hidden w-full dark:block' />
         </div>
 
         <div className='text-center'>

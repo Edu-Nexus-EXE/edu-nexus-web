@@ -75,10 +75,23 @@
       "added": "Certificate added successfully.",
       "empty": "No certificates yet.",
       "validation": "Certificate name, issuer, and issue date are required.",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "showingOf": "Showing {{count}} of {{total}}",
       "fields": {
         "name": "Certificate name",
+        "namePlaceholder": "e.g. AWS Cloud Practitioner",
         "issuer": "Issuer",
-        "credentialUrl": "Credential URL"
+        "issuerPlaceholder": "e.g. Amazon Web Services",
+        "issuedDate": "Issue date",
+        "expiresDate": "Expiry date",
+        "credentialUrl": "Credential URL",
+        "credentialUrlPlaceholder": "https://credential.net/your-cert",
+        "fileUrl": "File URL",
+        "fileUrlPlaceholder": "https://example.com/certificate.pdf",
+        "isVisible": "Visible on public portfolio",
+        "public": "Public",
+        "hidden": "Hidden"
       }
     },
     "projects": {
@@ -88,18 +101,39 @@
       "added": "Project added successfully.",
       "empty": "No projects yet.",
       "validation": "Project title, description, and start date are required.",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "showingOf": "Showing {{count}} of {{total}}",
       "fields": {
         "title": "Project title",
-        "description": "Project description",
-        "techStack": "Tech stack (comma separated)",
-        "demoUrl": "Demo URL",
-        "repoUrl": "Repository URL"
+        "titlePlaceholder": "e.g. E-commerce API",
+        "description": "Description",
+        "descriptionPlaceholder": "Briefly describe what the project does, the problem it solves, and your contribution.",
+        "techStack": "Tech stack",
+        "techStackPlaceholder": "Java, Spring Boot, PostgreSQL",
+        "role": "Your role",
+        "rolePlaceholder": "e.g. Backend Developer",
+        "startedDate": "Start date",
+        "completedDate": "Completed date",
+        "repoUrl": "Repository URL",
+        "repoUrlPlaceholder": "https://github.com/your-org/your-repo",
+        "liveUrl": "Live URL",
+        "liveUrlPlaceholder": "https://your-demo.com",
+        "imageUrl": "Cover image URL",
+        "imageUrlPlaceholder": "https://example.com/preview.png",
+        "isVisible": "Visible on public portfolio",
+        "public": "Public",
+        "hidden": "Hidden",
+        "inProgress": "In progress"
       }
     },
     "actions": {
       "delete": "Delete",
       "save": "Save portfolio",
       "saveItem": "Save item",
+      "update": "Update",
+      "edit": "Edit",
+      "cancel": "Cancel",
       "show": "Show",
       "hide": "Hide"
     }

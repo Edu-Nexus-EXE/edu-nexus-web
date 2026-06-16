@@ -10,6 +10,7 @@ type HistoryRecord = {
   createdAt?: string
   scorePercent: number
   skillCount: number
+  hasGapAnalysis: boolean
   roadmapId?: string
 }
 
@@ -32,23 +33,27 @@ export function AnalysisHistoryTable() {
         const jds = (res.data ?? []).filter((jd) => jd.parseStatus.toLowerCase() === 'completed')
         return Promise.all(
           jds.map(async (jd) => {
+            // Cố gắng lấy gap analysis. Nếu JD chưa được chạy gap thì API sẽ trả lỗi
+            // (vd 404) — ta vẫn giữ record để user thấy lịch sử JD đã phân tích xong.
             const [analysis, roadmaps] = await Promise.all([
               loadGapAnalysis(jd.id),
-              loadRoadmapOverview({ jdId: jd.id }),
+              loadRoadmapOverview({ jdId: jd.id })
             ])
+            const analysisData = analysis.data
             return {
               id: jd.id,
               jobTitle: jd.jobTitle,
               createdAt: jd.createdAt,
-              scorePercent: analysis.data?.meta.scorePercent ?? 0,
-              skillCount: analysis.data?.skills.length ?? 0,
-              roadmapId: ((roadmaps.data ?? []).find(isUsableRoadmap) ?? (roadmaps.data ?? [])[0])?.id,
+              scorePercent: analysisData?.meta.scorePercent ?? 0,
+              skillCount: analysisData?.skills.length ?? 0,
+              hasGapAnalysis: Boolean(analysisData && analysisData.skills.length > 0),
+              roadmapId: ((roadmaps.data ?? []).find(isUsableRoadmap) ?? (roadmaps.data ?? [])[0])?.id
             }
-          }),
+          })
         )
       })
       .then((records) => {
-        if (!cancelled) setItems((records ?? []).filter((record) => record.skillCount > 0))
+        if (!cancelled) setItems(records ?? [])
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -78,11 +83,21 @@ export function AnalysisHistoryTable() {
             <table className='w-full text-left border-collapse'>
               <thead>
                 <tr className='bg-muted/50'>
-                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('analysisHistory.table.job')}</th>
-                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('analysisHistory.table.company')}</th>
-                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('analysisHistory.table.date')}</th>
-                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('analysisHistory.table.match')}</th>
-                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right'>{t('analysisHistory.table.actions')}</th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                    {t('analysisHistory.table.job')}
+                  </th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                    {t('analysisHistory.table.company')}
+                  </th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                    {t('analysisHistory.table.date')}
+                  </th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                    {t('analysisHistory.table.match')}
+                  </th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right'>
+                    {t('analysisHistory.table.actions')}
+                  </th>
                 </tr>
               </thead>
               <tbody className='divide-y divide-border'>
@@ -102,7 +117,11 @@ export function AnalysisHistoryTable() {
                       </div>
                     </td>
                     <td className='px-6 py-5'>
-                      <span className='text-sm text-muted-foreground'>{t('analysisHistory.table.skillsCount', { count: record.skillCount })}</span>
+                      <span className='text-sm text-muted-foreground'>
+                        {record.hasGapAnalysis
+                          ? t('analysisHistory.table.skillsCount', { count: record.skillCount })
+                          : t('analysisHistory.table.noGapAnalysis')}
+                      </span>
                     </td>
                     <td className='px-6 py-5'>
                       <span className='text-sm text-muted-foreground'>
@@ -112,7 +131,10 @@ export function AnalysisHistoryTable() {
                     <td className='px-6 py-5'>
                       <div className='flex items-center gap-4'>
                         <div className='flex-1 h-2 w-24 bg-muted rounded-full overflow-hidden'>
-                          <div className='h-full rounded-full bg-primary' style={{ width: `${Math.min(100, record.scorePercent)}%` }} />
+                          <div
+                            className='h-full rounded-full bg-primary'
+                            style={{ width: `${Math.min(100, record.scorePercent)}%` }}
+                          />
                         </div>
                         <span className='text-sm font-bold text-primary'>{Math.min(100, record.scorePercent)}%</span>
                       </div>
@@ -121,26 +143,32 @@ export function AnalysisHistoryTable() {
                       <div className='flex flex-wrap justify-end gap-2'>
                         <button
                           type='button'
-                          onClick={() => navigate(`/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(record.id)}`)}
+                          onClick={() =>
+                            navigate(`/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(record.id)}`)
+                          }
                           className='inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary'
                         >
                           <span className='material-symbols-outlined text-sm'>analytics</span>
-                          {t('analysisHistory.table.viewAnalysis')}
+                          {record.hasGapAnalysis
+                            ? t('analysisHistory.table.viewAnalysis')
+                            : t('analysisHistory.table.runAnalysis')}
                         </button>
-                        <button
-                          type='button'
-                          onClick={() =>
-                            navigate(
-                              record.roadmapId
-                                ? `/roadmaps?roadmapId=${encodeURIComponent(record.roadmapId)}`
-                                : `/roadmaps?jdId=${encodeURIComponent(record.id)}`,
-                            )
-                          }
-                          className='inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90'
-                        >
-                          <span className='material-symbols-outlined text-sm'>route</span>
-                          {t('analysisHistory.table.viewRoadmap')}
-                        </button>
+                        {record.hasGapAnalysis ? (
+                          <button
+                            type='button'
+                            onClick={() =>
+                              navigate(
+                                record.roadmapId
+                                  ? `/roadmaps?roadmapId=${encodeURIComponent(record.roadmapId)}`
+                                  : `/roadmaps?jdId=${encodeURIComponent(record.id)}`
+                              )
+                            }
+                            className='inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90'
+                          >
+                            <span className='material-symbols-outlined text-sm'>route</span>
+                            {t('analysisHistory.table.viewRoadmap')}
+                          </button>
+                        ) : null}
                       </div>
                     </td>
                   </tr>
@@ -149,7 +177,9 @@ export function AnalysisHistoryTable() {
             </table>
           </div>
           <div className='px-6 py-4 bg-muted/30 flex items-center justify-between border-t border-border'>
-            <p className='text-xs text-muted-foreground font-medium'>{t('analysisHistory.pagination.loaded', { count: items.length })}</p>
+            <p className='text-xs text-muted-foreground font-medium'>
+              {t('analysisHistory.pagination.loaded', { count: items.length })}
+            </p>
           </div>
         </>
       )}

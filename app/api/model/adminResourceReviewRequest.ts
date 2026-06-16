@@ -6,5 +6,5 @@
  */
 
 export interface AdminResourceReviewRequest {
-  needsAdminReview?: boolean;
+  needsAdminReview?: boolean
 }

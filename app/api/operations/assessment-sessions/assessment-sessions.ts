@@ -12,171 +12,150 @@ import type {
   PostAssessmentSessionsSessionIdSubmitPathParameters,
   StartAssessmentSessionRequest,
   SubmitAssessmentSessionRequest
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type postAssessmentPathsPathIdSessionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAssessmentPathsPathIdSessionsResponseSuccess = (postAssessmentPathsPathIdSessionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAssessmentPathsPathIdSessionsResponse = (postAssessmentPathsPathIdSessionsResponseSuccess)
+export type postAssessmentPathsPathIdSessionsResponseSuccess = postAssessmentPathsPathIdSessionsResponse200 & {
+  headers: Headers
+}
+export type postAssessmentPathsPathIdSessionsResponse = postAssessmentPathsPathIdSessionsResponseSuccess
 
-export const getPostAssessmentPathsPathIdSessionsUrl = ({ pathId }: PostAssessmentPathsPathIdSessionsPathParameters,) => {
-
-
-  
-
+export const getPostAssessmentPathsPathIdSessionsUrl = ({
+  pathId
+}: PostAssessmentPathsPathIdSessionsPathParameters) => {
   return `/assessment-paths/${pathId}/sessions`
 }
 
-export const postAssessmentPathsPathIdSessions = async ({ pathId }: PostAssessmentPathsPathIdSessionsPathParameters,
-    startAssessmentSessionRequest: StartAssessmentSessionRequest, options?: RequestInit): Promise<postAssessmentPathsPathIdSessionsResponse> => {
-  
-  return customFetch<postAssessmentPathsPathIdSessionsResponse>(getPostAssessmentPathsPathIdSessionsUrl({ pathId }),
-  {      
+export const postAssessmentPathsPathIdSessions = async (
+  { pathId }: PostAssessmentPathsPathIdSessionsPathParameters,
+  startAssessmentSessionRequest: StartAssessmentSessionRequest,
+  options?: RequestInit
+): Promise<postAssessmentPathsPathIdSessionsResponse> => {
+  return customFetch<postAssessmentPathsPathIdSessionsResponse>(getPostAssessmentPathsPathIdSessionsUrl({ pathId }), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      startAssessmentSessionRequest,)
-  }
-);}
-
+    body: JSON.stringify(startAssessmentSessionRequest)
+  })
+}
 
 export type getAssessmentSessionsSessionIdQuestionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAssessmentSessionsSessionIdQuestionsResponseSuccess = (getAssessmentSessionsSessionIdQuestionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAssessmentSessionsSessionIdQuestionsResponse = (getAssessmentSessionsSessionIdQuestionsResponseSuccess)
+export type getAssessmentSessionsSessionIdQuestionsResponseSuccess =
+  getAssessmentSessionsSessionIdQuestionsResponse200 & {
+    headers: Headers
+  }
+export type getAssessmentSessionsSessionIdQuestionsResponse = getAssessmentSessionsSessionIdQuestionsResponseSuccess
 
-export const getGetAssessmentSessionsSessionIdQuestionsUrl = ({ sessionId }: GetAssessmentSessionsSessionIdQuestionsPathParameters,) => {
-
-
-  
-
+export const getGetAssessmentSessionsSessionIdQuestionsUrl = ({
+  sessionId
+}: GetAssessmentSessionsSessionIdQuestionsPathParameters) => {
   return `/assessment-sessions/${sessionId}/questions`
 }
 
-export const getAssessmentSessionsSessionIdQuestions = async ({ sessionId }: GetAssessmentSessionsSessionIdQuestionsPathParameters, options?: RequestInit): Promise<getAssessmentSessionsSessionIdQuestionsResponse> => {
-  
-  return customFetch<getAssessmentSessionsSessionIdQuestionsResponse>(getGetAssessmentSessionsSessionIdQuestionsUrl({ sessionId }),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
+export const getAssessmentSessionsSessionIdQuestions = async (
+  { sessionId }: GetAssessmentSessionsSessionIdQuestionsPathParameters,
+  options?: RequestInit
+): Promise<getAssessmentSessionsSessionIdQuestionsResponse> => {
+  return customFetch<getAssessmentSessionsSessionIdQuestionsResponse>(
+    getGetAssessmentSessionsSessionIdQuestionsUrl({ sessionId }),
+    {
+      ...options,
+      method: 'GET'
+    }
+  )
+}
 
 export type postAssessmentSessionsSessionIdSubmitResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAssessmentSessionsSessionIdSubmitResponseSuccess = (postAssessmentSessionsSessionIdSubmitResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAssessmentSessionsSessionIdSubmitResponse = (postAssessmentSessionsSessionIdSubmitResponseSuccess)
+export type postAssessmentSessionsSessionIdSubmitResponseSuccess = postAssessmentSessionsSessionIdSubmitResponse200 & {
+  headers: Headers
+}
+export type postAssessmentSessionsSessionIdSubmitResponse = postAssessmentSessionsSessionIdSubmitResponseSuccess
 
-export const getPostAssessmentSessionsSessionIdSubmitUrl = ({ sessionId }: PostAssessmentSessionsSessionIdSubmitPathParameters,) => {
-
-
-  
-
+export const getPostAssessmentSessionsSessionIdSubmitUrl = ({
+  sessionId
+}: PostAssessmentSessionsSessionIdSubmitPathParameters) => {
   return `/assessment-sessions/${sessionId}/submit`
 }
 
-export const postAssessmentSessionsSessionIdSubmit = async ({ sessionId }: PostAssessmentSessionsSessionIdSubmitPathParameters,
-    submitAssessmentSessionRequest: SubmitAssessmentSessionRequest, options?: RequestInit): Promise<postAssessmentSessionsSessionIdSubmitResponse> => {
-  
-  return customFetch<postAssessmentSessionsSessionIdSubmitResponse>(getPostAssessmentSessionsSessionIdSubmitUrl({ sessionId }),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      submitAssessmentSessionRequest,)
-  }
-);}
-
+export const postAssessmentSessionsSessionIdSubmit = async (
+  { sessionId }: PostAssessmentSessionsSessionIdSubmitPathParameters,
+  submitAssessmentSessionRequest: SubmitAssessmentSessionRequest,
+  options?: RequestInit
+): Promise<postAssessmentSessionsSessionIdSubmitResponse> => {
+  return customFetch<postAssessmentSessionsSessionIdSubmitResponse>(
+    getPostAssessmentSessionsSessionIdSubmitUrl({ sessionId }),
+    {
+      ...options,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...options?.headers },
+      body: JSON.stringify(submitAssessmentSessionRequest)
+    }
+  )
+}
 
 export type getAssessmentSessionsSessionIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAssessmentSessionsSessionIdResponseSuccess = (getAssessmentSessionsSessionIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAssessmentSessionsSessionIdResponse = (getAssessmentSessionsSessionIdResponseSuccess)
+export type getAssessmentSessionsSessionIdResponseSuccess = getAssessmentSessionsSessionIdResponse200 & {
+  headers: Headers
+}
+export type getAssessmentSessionsSessionIdResponse = getAssessmentSessionsSessionIdResponseSuccess
 
-export const getGetAssessmentSessionsSessionIdUrl = ({ sessionId }: GetAssessmentSessionsSessionIdPathParameters,) => {
-
-
-  
-
+export const getGetAssessmentSessionsSessionIdUrl = ({ sessionId }: GetAssessmentSessionsSessionIdPathParameters) => {
   return `/assessment-sessions/${sessionId}`
 }
 
-export const getAssessmentSessionsSessionId = async ({ sessionId }: GetAssessmentSessionsSessionIdPathParameters, options?: RequestInit): Promise<getAssessmentSessionsSessionIdResponse> => {
-  
-  return customFetch<getAssessmentSessionsSessionIdResponse>(getGetAssessmentSessionsSessionIdUrl({ sessionId }),
-  {      
+export const getAssessmentSessionsSessionId = async (
+  { sessionId }: GetAssessmentSessionsSessionIdPathParameters,
+  options?: RequestInit
+): Promise<getAssessmentSessionsSessionIdResponse> => {
+  return customFetch<getAssessmentSessionsSessionIdResponse>(getGetAssessmentSessionsSessionIdUrl({ sessionId }), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type getJdSubmissionsJdIdReusableSessionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getJdSubmissionsJdIdReusableSessionsResponseSuccess = (getJdSubmissionsJdIdReusableSessionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getJdSubmissionsJdIdReusableSessionsResponse = (getJdSubmissionsJdIdReusableSessionsResponseSuccess)
+export type getJdSubmissionsJdIdReusableSessionsResponseSuccess = getJdSubmissionsJdIdReusableSessionsResponse200 & {
+  headers: Headers
+}
+export type getJdSubmissionsJdIdReusableSessionsResponse = getJdSubmissionsJdIdReusableSessionsResponseSuccess
 
-export const getGetJdSubmissionsJdIdReusableSessionsUrl = ({ jdId }: GetJdSubmissionsJdIdReusableSessionsPathParameters,) => {
-
-
-  
-
+export const getGetJdSubmissionsJdIdReusableSessionsUrl = ({
+  jdId
+}: GetJdSubmissionsJdIdReusableSessionsPathParameters) => {
   return `/jd-submissions/${jdId}/reusable-sessions`
 }
 
-export const getJdSubmissionsJdIdReusableSessions = async ({ jdId }: GetJdSubmissionsJdIdReusableSessionsPathParameters, options?: RequestInit): Promise<getJdSubmissionsJdIdReusableSessionsResponse> => {
-  
-  return customFetch<getJdSubmissionsJdIdReusableSessionsResponse>(getGetJdSubmissionsJdIdReusableSessionsUrl({ jdId }),
-  {      
-    ...options,
-    method: 'GET'
-    
-    
-  }
-);}
-
-
+export const getJdSubmissionsJdIdReusableSessions = async (
+  { jdId }: GetJdSubmissionsJdIdReusableSessionsPathParameters,
+  options?: RequestInit
+): Promise<getJdSubmissionsJdIdReusableSessionsResponse> => {
+  return customFetch<getJdSubmissionsJdIdReusableSessionsResponse>(
+    getGetJdSubmissionsJdIdReusableSessionsUrl({ jdId }),
+    {
+      ...options,
+      method: 'GET'
+    }
+  )
+}

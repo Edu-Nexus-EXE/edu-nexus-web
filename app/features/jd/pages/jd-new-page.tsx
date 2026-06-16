@@ -41,11 +41,21 @@ export function JdNewPage() {
       .then((res) => {
         const data = (res as { data?: { usage?: { jd?: { used?: number; limit?: number } } } })?.data
         const jdUsage = data?.usage?.jd
-        if (jdUsage && typeof jdUsage.used === 'number' && typeof jdUsage.limit === 'number' && jdUsage.used >= jdUsage.limit) {
-          throw new QuotaExceededError(
-            t('jd.new.quotaExceeded', { used: jdUsage.used, limit: jdUsage.limit }),
-            { status: 403, quotaType: 'jd', current: jdUsage.used, limit: jdUsage.limit }
-          )
+        // Convention: limit < 0 means unlimited. Skip the quota check
+        // entirely so we never surface a false-positive "hết hạn mức" modal.
+        if (
+          jdUsage &&
+          typeof jdUsage.used === 'number' &&
+          typeof jdUsage.limit === 'number' &&
+          jdUsage.limit >= 0 &&
+          jdUsage.used >= jdUsage.limit
+        ) {
+          throw new QuotaExceededError(t('jd.new.quotaExceeded', { used: jdUsage.used, limit: jdUsage.limit }), {
+            status: 403,
+            quotaType: 'jd',
+            current: jdUsage.used,
+            limit: jdUsage.limit
+          })
         }
       })
       .catch((e) => {
@@ -79,7 +89,7 @@ export function JdNewPage() {
       const jdId = parseCreatedJdId(res)
 
       if (!jdId) {
-          throw new Error(t('jd.new.errors.missingJdId'))
+        throw new Error(t('jd.new.errors.missingJdId'))
       }
 
       navigate(`/dashboard/jd/${jdId}`)
@@ -112,8 +122,12 @@ export function JdNewPage() {
               <span className='material-symbols-outlined'>upload_file</span>
             </div>
             <div>
-              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.new.flow.stats.input')}</p>
-              <p className='text-sm font-semibold text-foreground'>{sourceType === 'url' ? t('jd.new.flow.stats.urlMode') : t('jd.new.flow.stats.textMode')}</p>
+              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('jd.new.flow.stats.input')}
+              </p>
+              <p className='text-sm font-semibold text-foreground'>
+                {sourceType === 'url' ? t('jd.new.flow.stats.urlMode') : t('jd.new.flow.stats.textMode')}
+              </p>
             </div>
           </div>
         </div>
@@ -123,7 +137,9 @@ export function JdNewPage() {
               <span className='material-symbols-outlined'>data_object</span>
             </div>
             <div>
-              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.new.flow.stats.payload')}</p>
+              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('jd.new.flow.stats.payload')}
+              </p>
               <p className='text-sm font-semibold text-foreground'>
                 {sourceType === 'url'
                   ? urlFilled
@@ -137,11 +153,17 @@ export function JdNewPage() {
         <div className='rounded-2xl border border-border bg-card/80 p-4 shadow-sm'>
           <div className='flex items-center gap-3'>
             <div className='flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary'>
-              <span className={cn('material-symbols-outlined', isSubmitting && 'animate-spin')}>{isSubmitting ? 'progress_activity' : 'auto_awesome'}</span>
+              <span className={cn('material-symbols-outlined', isSubmitting && 'animate-spin')}>
+                {isSubmitting ? 'progress_activity' : 'auto_awesome'}
+              </span>
             </div>
             <div>
-              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.new.flow.stats.aiParsing')}</p>
-              <p className='text-sm font-semibold text-foreground'>{isSubmitting ? t('jd.new.flow.stats.submittingToBackend') : t('jd.new.flow.stats.detailAutoUpdate')}</p>
+              <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                {t('jd.new.flow.stats.aiParsing')}
+              </p>
+              <p className='text-sm font-semibold text-foreground'>
+                {isSubmitting ? t('jd.new.flow.stats.submittingToBackend') : t('jd.new.flow.stats.detailAutoUpdate')}
+              </p>
             </div>
           </div>
         </div>
@@ -150,21 +172,48 @@ export function JdNewPage() {
       <div className='mb-8 rounded-3xl border border-border bg-card/80 p-5 shadow-sm'>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', activeInputReady ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-muted text-muted-foreground')}>1</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                activeInputReady
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-muted text-muted-foreground'
+              )}
+            >
+              1
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.new.step1Title')}</p>
               <p className='text-xs text-muted-foreground mt-1'>{t('jd.new.flow.timeline.step1Hint')}</p>
             </div>
           </div>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', canSubmit ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-muted text-muted-foreground')}>2</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                canSubmit
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-muted text-muted-foreground'
+              )}
+            >
+              2
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.new.flow.timeline.step2Title')}</p>
               <p className='text-xs text-muted-foreground mt-1'>{t('jd.new.flow.timeline.step2Hint')}</p>
             </div>
           </div>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', isSubmitting ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-muted text-muted-foreground')}>3</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                isSubmitting
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-muted text-muted-foreground'
+              )}
+            >
+              3
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.new.step2Title')}</p>
               <p className='text-xs text-muted-foreground mt-1'>{t('jd.new.flow.timeline.step3Hint')}</p>
@@ -198,14 +247,18 @@ export function JdNewPage() {
                 onClick={() => setSourceType('text')}
                 className={cn(
                   'inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all',
-                  sourceType === 'text' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                  sourceType === 'text'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {t('jd.new.tabText')}
                 <span
                   className={cn(
                     'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide',
-                    sourceType === 'text' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-primary/10 text-primary'
+                    sourceType === 'text'
+                      ? 'bg-primary-foreground/20 text-primary-foreground'
+                      : 'bg-primary/10 text-primary'
                   )}
                 >
                   {t('jd.new.recommendedBadge')}
@@ -216,7 +269,9 @@ export function JdNewPage() {
                 onClick={() => setSourceType('url')}
                 className={cn(
                   'px-4 py-2 rounded-xl text-xs font-bold transition-all',
-                  sourceType === 'url' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+                  sourceType === 'url'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {t('jd.new.tabUrl')}
@@ -225,7 +280,12 @@ export function JdNewPage() {
           </div>
 
           <div className='mt-6 space-y-5 flex-grow'>
-            <div className={cn('rounded-2xl border p-4 transition-all', sourceType === 'url' ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/10 opacity-70')}>
+            <div
+              className={cn(
+                'rounded-2xl border p-4 transition-all',
+                sourceType === 'url' ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/10 opacity-70'
+              )}
+            >
               <div className='mb-3 flex items-center gap-2'>
                 <span className='material-symbols-outlined text-primary text-lg'>link</span>
                 <p className='text-sm font-semibold text-foreground'>{t('jd.new.tabUrl')}</p>
@@ -238,10 +298,17 @@ export function JdNewPage() {
                 type='text'
                 disabled={sourceType !== 'url' || isSubmitting}
               />
-              <p className='mt-2 text-xs text-muted-foreground'>{t('jd.new.urlNote', { tabText: t('jd.new.tabText') })}</p>
+              <p className='mt-2 text-xs text-muted-foreground'>
+                {t('jd.new.urlNote', { tabText: t('jd.new.tabText') })}
+              </p>
             </div>
 
-            <div className={cn('rounded-2xl border p-4 transition-all', sourceType === 'text' ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/10 opacity-70')}>
+            <div
+              className={cn(
+                'rounded-2xl border p-4 transition-all',
+                sourceType === 'text' ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/10 opacity-70'
+              )}
+            >
               <div className='mb-3 flex items-center justify-between gap-3'>
                 <div className='flex items-center gap-2'>
                   <span className='material-symbols-outlined text-primary text-lg'>notes</span>
@@ -265,7 +332,9 @@ export function JdNewPage() {
           <div className='bg-card p-6 rounded-3xl shadow-sm border border-border'>
             <div className='flex items-center gap-3'>
               <div className='w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shrink-0'>
-                <span className={cn('material-symbols-outlined text-lg', isSubmitting && 'animate-spin')}>{isSubmitting ? 'progress_activity' : 'rocket_launch'}</span>
+                <span className={cn('material-symbols-outlined text-lg', isSubmitting && 'animate-spin')}>
+                  {isSubmitting ? 'progress_activity' : 'rocket_launch'}
+                </span>
               </div>
               <div>
                 <h2 className='text-lg font-semibold text-foreground'>{t('jd.new.next')}</h2>
@@ -276,7 +345,9 @@ export function JdNewPage() {
             <div className='mt-5 space-y-3'>
               <div className='rounded-2xl border border-border bg-muted/10 p-4'>
                 <div className='flex items-start gap-3'>
-                  <div className='mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold'>1</div>
+                  <div className='mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold'>
+                    1
+                  </div>
                   <div>
                     <p className='font-semibold text-foreground'>{t('jd.new.step1Title')}</p>
                     <p className='mt-1 text-sm text-muted-foreground'>{t('jd.new.step1Desc')}</p>
@@ -285,7 +356,9 @@ export function JdNewPage() {
               </div>
               <div className='rounded-2xl border border-border bg-muted/10 p-4'>
                 <div className='flex items-start gap-3'>
-                  <div className='mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold'>2</div>
+                  <div className='mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold'>
+                    2
+                  </div>
                   <div>
                     <p className='font-semibold text-foreground'>{t('jd.new.step2Title')}</p>
                     <p className='mt-1 text-sm text-muted-foreground'>{t('jd.new.step2Desc')}</p>
@@ -295,7 +368,9 @@ export function JdNewPage() {
             </div>
 
             <div className='mt-5 rounded-2xl border border-primary/20 bg-primary/5 p-4'>
-              <p className='text-xs font-semibold uppercase tracking-widest text-primary'>{t('jd.new.flow.submissionStatus')}</p>
+              <p className='text-xs font-semibold uppercase tracking-widest text-primary'>
+                {t('jd.new.flow.submissionStatus')}
+              </p>
               <p className='mt-2 text-sm font-semibold text-foreground'>
                 {canSubmit
                   ? t('jd.new.ready')

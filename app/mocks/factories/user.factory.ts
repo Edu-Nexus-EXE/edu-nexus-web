@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker'
 
 /**
  * TODO (sau khi Orval chạy lần đầu):
@@ -8,13 +8,13 @@ import { faker } from "@faker-js/faker";
  */
 
 export type User = {
-  id: string;
-  email: string;
-  fullName: string;
-  avatarUrl: string;
-  role: "student" | "instructor" | "admin";
-  createdAt: string;
-};
+  id: string
+  email: string
+  fullName: string
+  avatarUrl: string
+  role: 'student' | 'instructor' | 'admin'
+  createdAt: string
+}
 
 export function createUser(overrides: Partial<User> = {}): User {
   return {
@@ -22,15 +22,12 @@ export function createUser(overrides: Partial<User> = {}): User {
     email: faker.internet.email(),
     fullName: faker.person.fullName(),
     avatarUrl: faker.image.avatar(),
-    role: faker.helpers.arrayElement(["student", "instructor", "admin"]),
+    role: faker.helpers.arrayElement(['student', 'instructor', 'admin']),
     createdAt: faker.date.past({ years: 2 }).toISOString(),
-    ...overrides,
-  };
+    ...overrides
+  }
 }
 
-export function createUserList(
-  count = 10,
-  overrides: Partial<User> = {},
-): User[] {
-  return Array.from({ length: count }, () => createUser(overrides));
+export function createUserList(count = 10, overrides: Partial<User> = {}): User[] {
+  return Array.from({ length: count }, () => createUser(overrides))
 }

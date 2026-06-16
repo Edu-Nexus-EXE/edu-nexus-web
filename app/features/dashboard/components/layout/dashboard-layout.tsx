@@ -25,9 +25,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <footer className='mt-auto py-8 px-8 border-t border-border flex flex-col md:flex-row items-center justify-between text-muted-foreground text-sm gap-4'>
           <p>{t('footer.copyright')}</p>
           <div className='flex gap-6'>
-            <a href='#' className='hover:text-primary transition-colors'>{t('footer.support')}</a>
-            <a href='#' className='hover:text-primary transition-colors'>{t('footer.security')}</a>
-            <a href='#' className='hover:text-primary transition-colors'>{t('footer.terms')}</a>
+            <a href='#' className='hover:text-primary transition-colors'>
+              {t('footer.support')}
+            </a>
+            <a href='#' className='hover:text-primary transition-colors'>
+              {t('footer.security')}
+            </a>
+            <a href='#' className='hover:text-primary transition-colors'>
+              {t('footer.terms')}
+            </a>
           </div>
         </footer>
       </main>

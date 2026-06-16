@@ -6,7 +6,7 @@
  */
 
 export interface UpdateRoadmapNodeStatusCommand {
-  nodeId?: string;
+  nodeId?: string
   /** @nullable */
-  status?: string | null;
+  status?: string | null
 }

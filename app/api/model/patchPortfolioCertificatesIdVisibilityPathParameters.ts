@@ -6,5 +6,5 @@
  */
 
 export type PatchPortfolioCertificatesIdVisibilityPathParameters = {
- id: string,
- }
+  id: string
+}

@@ -13,7 +13,9 @@
   "plans": {
     "perMonth": "/tháng",
     "unlimited": "Không giới hạn",
+    "capPlus": "{{count}}+",
     "currentPlan": "Gói hiện tại",
+    "currentPlanBadge": "Gói hiện tại của bạn",
     "processing": "Đang xử lý...",
     "paymentRedirectMissing": "Đơn hàng đã được tạo nhưng hệ thống chưa trả về đường dẫn thanh toán tự động.",
     "paymentManualFallback": "Bạn có thể kiểm tra lịch sử đơn bên dưới hoặc chờ máy chủ hoàn thiện luồng thanh toán do nhà cung cấp xử lý.",
@@ -71,7 +73,44 @@
     "message": "Đã vượt quá hạn mức",
     "quotaType": "Loại hạn mức:",
     "usage": "Đã dùng:",
+    "unlimited": "(không giới hạn)",
     "close": "Đóng",
     "upgrade": "Nâng cấp gói"
+  },
+  "checkout": {
+    "creating": "Đang tạo đơn thanh toán...",
+    "title": "Quét QR để hoàn tất thanh toán",
+    "subtitle": "Mở app ngân hàng và quét mã QR bên dưới.",
+    "qrAlt": "Mã QR thanh toán VietQR",
+    "bank": "Ngân hàng",
+    "accountName": "Chủ tài khoản",
+    "amount": "Số tiền",
+    "content": "Nội dung chuyển khoản",
+    "copy": "Sao chép",
+    "copied": "Đã sao chép",
+    "hint": "Giữ nguyên nội dung chuyển khoản. Gói sẽ tự kích hoạt sau 1–2 phút khi nhận được tiền.",
+    "waiting": "Đang chờ xác nhận thanh toán...",
+    "minimize": "Thu nhỏ và chờ",
+    "success": "Nâng cấp thành công",
+    "successHint": "Gói Sinh viên đã được kích hoạt.",
+    "goDashboard": "Về trang chính",
+    "expired": "Đơn thanh toán đã hết hạn. Hãy tạo đơn mới.",
+    "tryAgain": "Tạo lại đơn",
+    "error": "Không thể tạo đơn. Vui lòng thử lại.",
+    "close": "Đóng"
+  },
+  "banners": {
+    "nearLimit": "Bạn sắp đạt giới hạn {{type}} ({{used}}/{{limit}}, còn {{left}} lượt). Nâng cấp gói Sinh viên để dùng không giới hạn.",
+    "expiringToday": "Gói Sinh viên hết hạn hôm nay. Gia hạn ngay để giữ quyền không giới hạn.",
+    "expiringSoon": "Gói Sinh viên sẽ hết hạn trong {{days}} ngày. Gia hạn ngay để giữ quyền không giới hạn.",
+    "quotaTypes": {
+      "jd": "JD",
+      "gapAnalysis": "Phân tích khoảng cách",
+      "assessment": "Bài đánh giá",
+      "roadmapActive": "Lộ trình đang hoạt động",
+      "careerTrack": "Lộ trình nghề nghiệp",
+      "portfolioCertificate": "Chứng chỉ hồ sơ",
+      "portfolioProject": "Dự án hồ sơ"
+    }
   }
 }

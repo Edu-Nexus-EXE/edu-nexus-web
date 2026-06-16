@@ -8,8 +8,8 @@ export function meta({}: Route.MetaArgs) {
     { title: getMetaTitle('portfolio', 'editor.title') },
     {
       name: 'description',
-      content: getMetaTranslation('portfolio', 'editor.subtitle'),
-    },
+      content: getMetaTranslation('portfolio', 'editor.subtitle')
+    }
   ]
 }
 

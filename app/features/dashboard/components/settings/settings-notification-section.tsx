@@ -6,7 +6,7 @@ export function SettingsNotificationSection() {
   const [preferences, setPreferences] = useState({
     weeklyReport: true,
     jdMatches: true,
-    subscriptionExpiry: false,
+    subscriptionExpiry: false
   })
   const [isSaving, setIsSaving] = useState(false)
   const [saveState, setSaveState] = useState<'idle' | 'saved'>('idle')
@@ -15,18 +15,18 @@ export function SettingsNotificationSection() {
     {
       key: 'weeklyReport',
       title: t('notifications.weeklyReport'),
-      description: t('notifications.weeklyReportDesc'),
+      description: t('notifications.weeklyReportDesc')
     },
     {
       key: 'jdMatches',
       title: t('notifications.jdMatches'),
-      description: t('notifications.jdMatchesDesc'),
+      description: t('notifications.jdMatchesDesc')
     },
     {
       key: 'subscriptionExpiry',
       title: t('notifications.subscriptionExpiry'),
-      description: t('notifications.subscriptionExpiryDesc'),
-    },
+      description: t('notifications.subscriptionExpiryDesc')
+    }
   ]
 
   async function handleToggle(key: keyof typeof preferences) {
@@ -60,7 +60,10 @@ export function SettingsNotificationSection() {
 
       <div className='mt-6 space-y-4'>
         {rows.map((row) => (
-          <div key={row.key} className='flex flex-col gap-4 rounded-xl border border-border bg-muted/20 p-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div
+            key={row.key}
+            className='flex flex-col gap-4 rounded-xl border border-border bg-muted/20 p-4 sm:flex-row sm:items-center sm:justify-between'
+          >
             <div className='pr-0 sm:pr-6'>
               <p className='font-semibold text-foreground'>{row.title}</p>
               <p className='mt-1 text-sm text-muted-foreground'>{row.description}</p>

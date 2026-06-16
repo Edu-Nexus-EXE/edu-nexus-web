@@ -8,7 +8,9 @@ export function CheckoutCardInfo() {
       <h2 className='text-xl font-bold mb-6 text-foreground'>{t('checkout.cardInfo.title')}</h2>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         <div className='md:col-span-2'>
-          <label className='block text-sm font-medium mb-1.5 text-foreground'>{t('checkout.cardInfo.cardNumber')}</label>
+          <label className='block text-sm font-medium mb-1.5 text-foreground'>
+            {t('checkout.cardInfo.cardNumber')}
+          </label>
           <input
             type='text'
             placeholder='0000 0000 0000 0000'

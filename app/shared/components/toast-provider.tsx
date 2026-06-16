@@ -43,7 +43,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     return {
       push,
       success: (message: string, title?: string) => push({ message, title, variant: 'success', ttlMs: 2500 }),
-      error: (message: string, title?: string) => push({ message, title, variant: 'error', ttlMs: 4000 }),
+      error: (message: string, title?: string) => push({ message, title, variant: 'error', ttlMs: 4000 })
     }
   }, [push])
 
@@ -69,10 +69,7 @@ function ToastViewport({ items, onDismiss }: { items: ToastItem[]; onDismiss: (i
       {items.map((item) => (
         <div
           key={item.id}
-          className={cn(
-            'rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-lg',
-            'px-4 py-3'
-          )}
+          className={cn('rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-lg', 'px-4 py-3')}
           role='status'
           aria-live='polite'
         >

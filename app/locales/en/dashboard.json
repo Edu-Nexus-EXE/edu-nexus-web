@@ -320,8 +320,10 @@
       "date": "Analysis Date",
       "match": "Match %",
       "skillsCount": "{{count}} skills",
+      "noGapAnalysis": "Gap analysis not run yet",
       "actions": "Actions",
       "viewAnalysis": "View analysis",
+      "runAnalysis": "Run analysis",
       "viewRoadmap": "View roadmap",
       "detail": "Details"
     },
@@ -451,6 +453,10 @@
       "completed": "Completed",
       "markComplete": "Mark as completed",
       "tierLabel": "Level {{level}}",
+      "treeHeader": "Skill tree",
+      "treeScrollHint": "← Scroll horizontally to see more →",
+      "tierHeading": "Step {{level}}",
+      "backToResources": "← Back to resources",
       "nodeStatus": {
         "completed": "Completed",
         "active": "Active",
@@ -575,10 +581,22 @@
     }
   },
   "certificates": {
-    "title": "Certificates",
+    "title": "Certificates & Portfolio",
+    "hero": {
+      "badge": "CREDENTIALS",
+      "title": "Certificates & Portfolio",
+      "subtitle": "Showcase your verified certificates, signature projects, and the public portfolio built from your Edu-Nexus activity.",
+      "public": "Public",
+      "private": "Private",
+      "edit": "Manage portfolio"
+    },
     "badges": {
       "title": "Achievement badges",
-      "total": "Total badges"
+      "total": "{{count}} badges",
+      "view": "View",
+      "emptyTitle": "No certificates yet",
+      "emptySubtitle": "Add your verified certificates in the portfolio editor to showcase them here.",
+      "addCta": "Add certificate"
     },
     "profile": {
       "verified": "Verified profile",
@@ -586,17 +604,28 @@
       "lookingForJob": "Open to work",
       "headlineFallback": "Build your verified Edu-Nexus portfolio from your profile settings.",
       "visibleCertificates": "{{count}} visible certificates",
+      "totalCertificates": "{{count}} total certificates",
       "projects": "{{count}} projects",
+      "skills": "{{count}} skills",
       "center": "Verification center",
       "centerDesc": "Your credentials are verified and securely stored.",
       "secured": "Secured",
-      "hash": "Verification hash"
+      "hash": "Verification hash",
+      "public": "Public",
+      "private": "Private"
     },
     "projects": {
       "title": "Projects",
       "sourceCode": "Source code",
       "liveDemo": "Live demo",
-      "caseStudy": "Case study"
+      "caseStudy": "Case study",
+      "public": "Public",
+      "hidden": "Hidden",
+      "inProgress": "In progress",
+      "total": "{{count}} projects",
+      "emptyTitle": "No projects yet",
+      "emptySubtitle": "Build your signature projects in the portfolio editor to feature them here.",
+      "addCta": "Add project"
     }
   }
 }

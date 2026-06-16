@@ -31,9 +31,24 @@ export function LearningPathTable() {
       <div className='p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
         <h3 className='font-bold text-lg text-foreground'>{t('learningPath.table.title')}</h3>
         <div className='flex gap-2 overflow-x-auto'>
-          <button type='button' className='px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg font-medium whitespace-nowrap'>{t('learningPath.table.all')}</button>
-          <button type='button' className='px-3 py-1.5 text-sm hover:bg-muted rounded-lg text-muted-foreground font-medium whitespace-nowrap'>{t('learningPath.table.learning')}</button>
-          <button type='button' className='px-3 py-1.5 text-sm hover:bg-muted rounded-lg text-muted-foreground font-medium whitespace-nowrap'>{t('learningPath.table.completed')}</button>
+          <button
+            type='button'
+            className='px-3 py-1.5 text-sm bg-primary text-primary-foreground rounded-lg font-medium whitespace-nowrap'
+          >
+            {t('learningPath.table.all')}
+          </button>
+          <button
+            type='button'
+            className='px-3 py-1.5 text-sm hover:bg-muted rounded-lg text-muted-foreground font-medium whitespace-nowrap'
+          >
+            {t('learningPath.table.learning')}
+          </button>
+          <button
+            type='button'
+            className='px-3 py-1.5 text-sm hover:bg-muted rounded-lg text-muted-foreground font-medium whitespace-nowrap'
+          >
+            {t('learningPath.table.completed')}
+          </button>
         </div>
       </div>
 
@@ -54,11 +69,21 @@ export function LearningPathTable() {
           <table className='w-full text-left border-collapse'>
             <thead>
               <tr className='bg-muted/50'>
-                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('learningPath.table.name')}</th>
-                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('learningPath.table.startDate')}</th>
-                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('learningPath.table.progress')}</th>
-                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('learningPath.table.status')}</th>
-                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right'>{t('learningPath.table.actions')}</th>
+                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                  {t('learningPath.table.name')}
+                </th>
+                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                  {t('learningPath.table.startDate')}
+                </th>
+                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                  {t('learningPath.table.progress')}
+                </th>
+                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                  {t('learningPath.table.status')}
+                </th>
+                <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right'>
+                  {t('learningPath.table.actions')}
+                </th>
               </tr>
             </thead>
             <tbody className='divide-y divide-border'>
@@ -75,7 +100,9 @@ export function LearningPathTable() {
                         </div>
                         <div>
                           <p className='font-bold text-foreground'>{track.name}</p>
-                          <p className='text-xs text-muted-foreground'>{track.description ?? t('learningPath.table.descFallback')}</p>
+                          <p className='text-xs text-muted-foreground'>
+                            {track.description ?? t('learningPath.table.descFallback')}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -89,18 +116,28 @@ export function LearningPathTable() {
                       </div>
                     </td>
                     <td className='px-6 py-5'>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${isCompleted ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isCompleted ? 'bg-success' : 'bg-warning'}`} />
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${isCompleted ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isCompleted ? 'bg-success' : 'bg-warning'}`}
+                        />
                         {isCompleted ? t('learningPath.table.completed') : t('learningPath.table.learning')}
                       </span>
                     </td>
                     <td className='px-6 py-5 text-right'>
                       {isCompleted ? (
-                        <button type='button' className='text-sm font-bold text-primary hover:underline underline-offset-4'>
+                        <button
+                          type='button'
+                          className='text-sm font-bold text-primary hover:underline underline-offset-4'
+                        >
                           {t('learningPath.table.viewMap')}
                         </button>
                       ) : (
-                        <button type='button' className='px-4 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-bold hover:opacity-90 transition-all shadow-md shadow-primary/20'>
+                        <button
+                          type='button'
+                          className='px-4 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-bold hover:opacity-90 transition-all shadow-md shadow-primary/20'
+                        >
                           {t('learningPath.table.continue')}
                         </button>
                       )}
@@ -114,15 +151,40 @@ export function LearningPathTable() {
       )}
 
       <div className='px-6 py-4 bg-muted/30 border-t border-border flex items-center justify-between'>
-        <span className='text-xs font-medium text-muted-foreground'>{t('learningPath.table.footer', { count: tracks.length })}</span>
+        <span className='text-xs font-medium text-muted-foreground'>
+          {t('learningPath.table.footer', { count: tracks.length })}
+        </span>
         <div className='flex gap-1'>
-          <button type='button' aria-label='Previous page' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
+          <button
+            type='button'
+            aria-label='Previous page'
+            className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'
+          >
             <span className='material-symbols-outlined text-sm'>chevron_left</span>
           </button>
-          <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-primary-foreground text-xs font-bold'>1</button>
-          <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'>2</button>
-          <button type='button' className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'>3</button>
-          <button type='button' aria-label='Next page' className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'>
+          <button
+            type='button'
+            className='w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-primary-foreground text-xs font-bold'
+          >
+            1
+          </button>
+          <button
+            type='button'
+            className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'
+          >
+            2
+          </button>
+          <button
+            type='button'
+            className='w-8 h-8 flex items-center justify-center rounded border border-border text-foreground hover:border-primary hover:text-primary hover:bg-card text-xs font-bold transition-colors'
+          >
+            3
+          </button>
+          <button
+            type='button'
+            aria-label='Next page'
+            className='w-8 h-8 flex items-center justify-center rounded border border-border text-muted-foreground hover:text-primary hover:bg-card transition-colors'
+          >
             <span className='material-symbols-outlined text-sm'>chevron_right</span>
           </button>
         </div>

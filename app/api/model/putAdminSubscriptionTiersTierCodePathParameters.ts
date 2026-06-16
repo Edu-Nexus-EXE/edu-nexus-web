@@ -6,5 +6,5 @@
  */
 
 export type PutAdminSubscriptionTiersTierCodePathParameters = {
- tierCode: string,
- }
+  tierCode: string
+}

@@ -4,6 +4,7 @@
 > Đọc file này trước khi code feature mới hoặc refactor lớn.
 >
 > Tài liệu liên quan:
+>
 > - [`AGENTS.md`](./AGENTS.md) — quy ước & checklist cho AI/dev
 > - [`README.md`](./README.md) — setup & scripts
 
@@ -21,17 +22,17 @@
 
 ## 2. Layer overview
 
-| Thư mục | Vai trò | Ghi chú |
-| --- | --- | --- |
-| `app/routes.ts` | Bản đồ URL tập trung | Đăng ký toàn bộ route config (React Router 7) |
-| `app/routes/` | Route module THIN | URL → render page từ `features/*` |
-| `app/features/` | Business feature modules | 11 feature: admin, assessment, auth, cv, dashboard, jd, landing, portfolio, pricing, sprint1, welcome |
-| `app/shared/` | Cross-feature utilities | components, hooks, lib, config, ui |
-| `app/providers/` | App-level providers | ThemeProvider, I18nProvider, AppProviders |
-| `app/locales/` | i18n resources | 14 namespace × 2 ngôn ngữ (EN / VI) |
-| `app/api/` | Orval generated code | operations/, model/, mutator/ |
-| `app/mocks/` | MSW mock layer | handlers/, factories/ — dev only |
-| `app/styles/` | Global styles + design tokens | app.css, theme.css |
+| Thư mục          | Vai trò                       | Ghi chú                                                                                               |
+| ---------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `app/routes.ts`  | Bản đồ URL tập trung          | Đăng ký toàn bộ route config (React Router 7)                                                         |
+| `app/routes/`    | Route module THIN             | URL → render page từ `features/*`                                                                     |
+| `app/features/`  | Business feature modules      | 11 feature: admin, assessment, auth, cv, dashboard, jd, landing, portfolio, pricing, sprint1, welcome |
+| `app/shared/`    | Cross-feature utilities       | components, hooks, lib, config, ui                                                                    |
+| `app/providers/` | App-level providers           | ThemeProvider, I18nProvider, AppProviders                                                             |
+| `app/locales/`   | i18n resources                | 14 namespace × 2 ngôn ngữ (EN / VI)                                                                   |
+| `app/api/`       | Orval generated code          | operations/, model/, mutator/                                                                         |
+| `app/mocks/`     | MSW mock layer                | handlers/, factories/ — dev only                                                                      |
+| `app/styles/`    | Global styles + design tokens | app.css, theme.css                                                                                    |
 
 ### Quy tắc vàng (dependency direction)
 
@@ -52,19 +53,20 @@ routes ─┬─► features ─┐
 
 File `app/routes.ts` là nơi **duy nhất** đăng ký route. Routes được nhóm bằng 5 hàm:
 
-| Hàm | Domain | URL prefix |
-| --- | --- | --- |
-| `marketing()` | Landing / public pages | `/`, `/pricing`, `/checkout`, `/p/:slug`, ... |
-| `auth()` | Xác thực | `/signup`, `/login`, `/register` |
-| `onboarding()` | Onboarding wizard | `/onboarding` |
-| `dashboard()` | User dashboard (có layout) | `/dashboard/*` |
-| `admin()` | Admin panel (có layout) | `/admin/*` |
+| Hàm            | Domain                     | URL prefix                                    |
+| -------------- | -------------------------- | --------------------------------------------- |
+| `marketing()`  | Landing / public pages     | `/`, `/pricing`, `/checkout`, `/p/:slug`, ... |
+| `auth()`       | Xác thực                   | `/signup`, `/login`, `/register`              |
+| `onboarding()` | Onboarding wizard          | `/onboarding`                                 |
+| `dashboard()`  | User dashboard (có layout) | `/dashboard/*`                                |
+| `admin()`      | Admin panel (có layout)    | `/admin/*`                                    |
 
 Ngoài ra còn có các **redirect routes** cho URL legacy `/jd/*` → `/dashboard/jd/*`.
 
 ### 3.2 Route module THIN
 
 Route module chỉ làm 2 việc:
+
 1. Export `meta()` (nếu cần)
 2. Render page component từ `features/*`
 
@@ -159,19 +161,19 @@ app/features/<feature>/
 
 ### Feature map
 
-| Feature | Exports chính | Pages |
-| --- | --- | --- |
-| `admin` | AdminDashboardPage, AdminUserManagementPage, AdminUserDetailPage, AdminRevenuePage, AdminSubscriptionPage, AdminJdLogsPage, AdminJdLogDetailPage, AdminResourceManagementPage, AdminRagManagementPage, AdminSkillsQueuePage, AdminLayout | 10 pages |
-| `assessment` | AssessmentPage, AssessmentResultsPage | 2 pages |
-| `auth` | LoginPage, SignupPage | 2 pages |
-| `cv` | AssessmentCvPage | 1 page |
-| `dashboard` | DashboardPage, GapAnalysisPage, AnalysisHistoryPage, LearningPathPage, CareerTrackPage, RoadmapPage, MarketPage, SettingsPage, CertificatesPage, DashboardLayout | 9 pages + layout |
-| `jd` | JdDetailPage, JdNewPage | 2 pages |
-| `landing` | LandingPage, CheckoutPage, CheckoutSuccessPage, ContactPage, MarketingLayout, LandingNavbar, LandingFooter | 4 pages + layout |
-| `portfolio` | PortfolioEditorPage, PortfolioPublicPage | 2 pages |
-| `pricing` | PricingPage | 1 page |
-| `sprint1` | *(internal legacy, không export ra ngoài)* | — |
-| `welcome` | WelcomePage | 1 page |
+| Feature      | Exports chính                                                                                                                                                                                                                            | Pages            |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `admin`      | AdminDashboardPage, AdminUserManagementPage, AdminUserDetailPage, AdminRevenuePage, AdminSubscriptionPage, AdminJdLogsPage, AdminJdLogDetailPage, AdminResourceManagementPage, AdminRagManagementPage, AdminSkillsQueuePage, AdminLayout | 10 pages         |
+| `assessment` | AssessmentPage, AssessmentResultsPage                                                                                                                                                                                                    | 2 pages          |
+| `auth`       | LoginPage, SignupPage                                                                                                                                                                                                                    | 2 pages          |
+| `cv`         | AssessmentCvPage                                                                                                                                                                                                                         | 1 page           |
+| `dashboard`  | DashboardPage, GapAnalysisPage, AnalysisHistoryPage, LearningPathPage, CareerTrackPage, RoadmapPage, MarketPage, SettingsPage, CertificatesPage, DashboardLayout                                                                         | 9 pages + layout |
+| `jd`         | JdDetailPage, JdNewPage                                                                                                                                                                                                                  | 2 pages          |
+| `landing`    | LandingPage, CheckoutPage, CheckoutSuccessPage, ContactPage, MarketingLayout, LandingNavbar, LandingFooter                                                                                                                               | 4 pages + layout |
+| `portfolio`  | PortfolioEditorPage, PortfolioPublicPage                                                                                                                                                                                                 | 2 pages          |
+| `pricing`    | PricingPage                                                                                                                                                                                                                              | 1 page           |
+| `sprint1`    | _(internal legacy, không export ra ngoài)_                                                                                                                                                                                               | —                |
+| `welcome`    | WelcomePage                                                                                                                                                                                                                              | 1 page           |
 
 ### Quy tắc import
 
@@ -183,7 +185,7 @@ import { JdNewPage } from '~/features/jd'
 import { JdNewPage } from '~/features/jd/pages/jd-new-page'
 
 // ❌ Không import chéo giữa các feature
-import { DashboardLayout } from '~/features/dashboard'  // trong features/jd → SAI
+import { DashboardLayout } from '~/features/dashboard' // trong features/jd → SAI
 ```
 
 ---
@@ -233,11 +235,11 @@ app/shared/
 
 `app/providers/` — App-level context providers, được mount trong `root.tsx`:
 
-| File | Chức năng |
-| --- | --- |
-| `app-providers.tsx` | Wrapper tổng hợp, mount ThemeProvider + I18nProvider |
-| `theme-provider.tsx` | Dark/Light mode, đọc từ `localStorage`, SSR-safe |
-| `i18n-provider.tsx` | Khởi tạo i18next, mount-then-render để tránh hydration mismatch |
+| File                 | Chức năng                                                       |
+| -------------------- | --------------------------------------------------------------- |
+| `app-providers.tsx`  | Wrapper tổng hợp, mount ThemeProvider + I18nProvider            |
+| `theme-provider.tsx` | Dark/Light mode, đọc từ `localStorage`, SSR-safe                |
+| `i18n-provider.tsx`  | Khởi tạo i18next, mount-then-render để tránh hydration mismatch |
 
 ---
 
@@ -245,22 +247,22 @@ app/shared/
 
 ### Namespace hiện tại
 
-| Namespace | Feature tương ứng |
-| --- | --- |
-| `common` | Cross-feature |
-| `welcome` | `welcome` |
-| `landing` | `landing` |
-| `pricing` | `pricing` |
-| `subscription` | Subscription / checkout |
-| `auth` | `auth` |
-| `dashboard` | `dashboard` |
-| `settings` | Settings trong dashboard |
-| `admin` | `admin` |
-| `jd` | `jd` |
-| `assessment` | `assessment` |
-| `cv` | `cv` |
-| `onboarding` | Onboarding wizard |
-| `portfolio` | `portfolio` |
+| Namespace      | Feature tương ứng        |
+| -------------- | ------------------------ |
+| `common`       | Cross-feature            |
+| `welcome`      | `welcome`                |
+| `landing`      | `landing`                |
+| `pricing`      | `pricing`                |
+| `subscription` | Subscription / checkout  |
+| `auth`         | `auth`                   |
+| `dashboard`    | `dashboard`              |
+| `settings`     | Settings trong dashboard |
+| `admin`        | `admin`                  |
+| `jd`           | `jd`                     |
+| `assessment`   | `assessment`             |
+| `cv`           | `cv`                     |
+| `onboarding`   | Onboarding wizard        |
+| `portfolio`    | `portfolio`              |
 
 **14 namespace**, đăng ký trong `app/shared/lib/i18n/resources.ts`.
 

@@ -1,4 +1,7 @@
-import { deleteAdminRagDocumentsId, postAdminRagDocuments } from '~/api/operations/admin-rag-documents/admin-rag-documents'
+import {
+  deleteAdminRagDocumentsId,
+  postAdminRagDocuments
+} from '~/api/operations/admin-rag-documents/admin-rag-documents'
 import { getAdminDashboardStats } from '~/api/operations/admin-payments/admin-payments'
 import { getAdminJdSubmissions, postAdminJdSubmissionsIdReParse } from '~/api/operations/admin-jds/admin-jds'
 import { getAdminPaymentOrders } from '~/api/operations/admin-payments/admin-payments'
@@ -11,7 +14,7 @@ import {
   patchAdminResourcesIdReview,
   postAdminResources,
   postAdminResourcesIdReject,
-  putAdminResourcesId,
+  putAdminResourcesId
 } from '~/api/operations/admin-resources/admin-resources'
 import {
   deleteAdminSkillsIdPrerequisitesPrereqId,
@@ -22,9 +25,15 @@ import {
   postAdminSkillsIdApprove,
   postAdminSkillsIdPrerequisites,
   postAdminSkillsOldIdMergeToNewId,
-  putAdminSkillsId,
+  putAdminSkillsId
 } from '~/api/operations/admin-skills/admin-skills'
-import { getAdminUsers, getAdminUsersId, patchAdminUsersIdBan, postAdminUsersIdActivateSubscription, postAdminUsersIdRevokeSubscription } from '~/api/operations/admin-users/admin-users'
+import {
+  getAdminUsers,
+  getAdminUsersId,
+  patchAdminUsersIdBan,
+  postAdminUsersIdActivateSubscription,
+  postAdminUsersIdRevokeSubscription
+} from '~/api/operations/admin-users/admin-users'
 
 function unwrapData<T>(response: unknown): T | null {
   const data = (response as { data?: unknown })?.data
@@ -219,18 +228,24 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
     const studentCount = toNumberValue(usersByTier.student, 0)
     return {
       totalUsers: toNumberValue(root.totalUsers, 0),
-      usersByTier: Object.fromEntries(Object.entries(usersByTier).map(([key, value]) => [key, toNumberValue(value, 0)])),
+      usersByTier: Object.fromEntries(
+        Object.entries(usersByTier).map(([key, value]) => [key, toNumberValue(value, 0)])
+      ),
       totalJdSubmitted: toNumberValue(root.totalJdSubmitted, 0),
       revenue: toNumberValue(root.totalRevenue ?? subscriptionRevenue?.allTime, 0),
       monthlyRevenue: toNumberValue(subscriptionRevenue?.currentMonth, 0),
-      revenueByProvider: Object.fromEntries(Object.entries(byProvider).map(([key, value]) => [key, toNumberValue(value, 0)])),
+      revenueByProvider: Object.fromEntries(
+        Object.entries(byProvider).map(([key, value]) => [key, toNumberValue(value, 0)])
+      ),
       aiCost: toNumberValue(totalAiCost?.allTime ?? root.totalAiCost ?? root.aiCostEstimate, 0),
       monthlyAiCost: toNumberValue(totalAiCost?.currentMonth, 0),
-      aiCostByPipeline: Object.fromEntries(Object.entries(byPipeline).map(([key, value]) => [key, toNumberValue(value, 0)])),
+      aiCostByPipeline: Object.fromEntries(
+        Object.entries(byPipeline).map(([key, value]) => [key, toNumberValue(value, 0)])
+      ),
       activeSubscriptions: studentCount,
       affiliateClicks: toNumberValue(affiliateStats?.totalClicks, 0),
       affiliateConversions: toNumberValue(affiliateStats?.totalConversions, 0),
-      affiliateRevenue: toNumberValue(affiliateStats?.estimatedRevenue, 0),
+      affiliateRevenue: toNumberValue(affiliateStats?.estimatedRevenue, 0)
     }
   } catch {
     return {
@@ -246,7 +261,7 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
       activeSubscriptions: 0,
       affiliateClicks: 0,
       affiliateConversions: 0,
-      affiliateRevenue: 0,
+      affiliateRevenue: 0
     }
   }
 }
@@ -266,7 +281,7 @@ export async function loadAdminUsersList(params?: {
       tier: params?.tier,
       isBanned: params?.isBanned,
       page,
-      pageSize,
+      pageSize
     })
     const data = unwrapData<unknown>(res)
     const items = parseItems(data)
@@ -274,7 +289,10 @@ export async function loadAdminUsersList(params?: {
       items: items.map((item, index) => {
         const raw = isObject(item) ? item : {}
         const subscription = isObject(raw.subscription) ? raw.subscription : null
-        const tierCode = toStringValue(raw.tierCode ?? raw.tier_code ?? subscription?.tierCode ?? subscription?.tier_code, '')
+        const tierCode = toStringValue(
+          raw.tierCode ?? raw.tier_code ?? subscription?.tierCode ?? subscription?.tier_code,
+          ''
+        )
         const tierDisplayName = toStringValue(
           raw.tierDisplayName ??
             raw.subscriptionTierDisplayName ??
@@ -293,12 +311,14 @@ export async function loadAdminUsersList(params?: {
           plan,
           jdCount: toNumberValue(raw.jdCount, 0),
           createdAt: toStringValue(raw.createdAt, new Date().toISOString()),
-          status: Boolean(raw.isBanned ?? raw.is_banned) ? 'banned' : toStringValue(raw.status || raw.accountStatus || raw.subscriptionStatus, 'active'),
+          status: Boolean(raw.isBanned ?? raw.is_banned)
+            ? 'banned'
+            : toStringValue(raw.status || raw.accountStatus || raw.subscriptionStatus, 'active')
         }
       }),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -324,12 +344,12 @@ export async function loadAdminResourcesQueue(params?: {
           subtitle: toStringValue(raw.skillTag || raw.provider, 'Unknown provider'),
           type: toStringValue(raw.type, 'document'),
           status: toStringValue(raw.status, 'pending'),
-          url: typeof raw.url === 'string' ? raw.url : undefined,
+          url: typeof raw.url === 'string' ? raw.url : undefined
         }
       }),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -360,7 +380,12 @@ function mapAdminResource(item: unknown, index: number): AdminResourceRowView {
     description: toStringValue(raw.description, ''),
     isFree: Boolean(raw.isFree ?? raw.is_free ?? raw.accessType === 'free'),
     accessType: toStringValue(raw.accessType ?? raw.access_type, 'free'),
-    affiliateLabel: typeof raw.affiliateLabel === 'string' ? raw.affiliateLabel : typeof raw.affiliate_label === 'string' ? raw.affiliate_label : undefined,
+    affiliateLabel:
+      typeof raw.affiliateLabel === 'string'
+        ? raw.affiliateLabel
+        : typeof raw.affiliate_label === 'string'
+          ? raw.affiliate_label
+          : undefined,
     affiliateCommissionRate:
       typeof raw.affiliateCommissionRate === 'number'
         ? raw.affiliateCommissionRate
@@ -376,7 +401,12 @@ function mapAdminResource(item: unknown, index: number): AdminResourceRowView {
           : undefined,
     needsAdminReview,
     isActive: Boolean(isActive ?? true),
-    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : typeof raw.created_at === 'string' ? raw.created_at : undefined,
+    createdAt:
+      typeof raw.createdAt === 'string'
+        ? raw.createdAt
+        : typeof raw.created_at === 'string'
+          ? raw.created_at
+          : undefined,
     skillMappings: skillMappingsRaw
       .map((entry, entryIndex) => {
         const skill = isObject(entry) ? entry : {}
@@ -389,10 +419,10 @@ function mapAdminResource(item: unknown, index: number): AdminResourceRowView {
               ? skill.sequenceOrder
               : typeof skill.sequence_order === 'number'
                 ? skill.sequence_order
-                : entryIndex + 1,
+                : entryIndex + 1
         }
       })
-      .filter((entry) => Boolean(entry.skillId)),
+      .filter((entry) => Boolean(entry.skillId))
   }
 }
 
@@ -413,7 +443,7 @@ export async function loadAdminResourcesList(params?: {
       search: params?.search,
       type: params?.type,
       needsReview: params?.needsReview,
-      isActive: params?.isActive,
+      isActive: params?.isActive
     })
     const data = unwrapData<unknown>(res)
     const items = parseItems(data)
@@ -421,7 +451,7 @@ export async function loadAdminResourcesList(params?: {
       items: items.map(mapAdminResource),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -466,8 +496,8 @@ export async function disableAdminResource(row: AdminResourceRowView) {
     skillMappings: row.skillMappings.map((item) => ({
       skillId: item.skillId,
       isPrimary: item.isPrimary,
-      sequenceOrder: item.sequenceOrder ?? 1,
-    })),
+      sequenceOrder: item.sequenceOrder ?? 1
+    }))
   }
   return putAdminResourcesId({ id: row.id }, payload)
 }
@@ -490,8 +520,8 @@ export async function restoreAdminResource(row: AdminResourceRowView) {
     skillMappings: row.skillMappings.map((item) => ({
       skillId: item.skillId,
       isPrimary: item.isPrimary,
-      sequenceOrder: item.sequenceOrder ?? 1,
-    })),
+      sequenceOrder: item.sequenceOrder ?? 1
+    }))
   }
   return putAdminResourcesId({ id: row.id }, payload)
 }
@@ -509,7 +539,7 @@ export async function loadAdminSkillsQueue(params?: {
       search: params?.search,
       major: params?.major,
       page,
-      pageSize,
+      pageSize
     })
     const data = unwrapData<unknown>(res)
     const items = parseItems(data)
@@ -517,7 +547,7 @@ export async function loadAdminSkillsQueue(params?: {
       items: items.map((item, index) => ({ ...mapAdminSkill(item, index), status: 'pending' })),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -546,7 +576,12 @@ function mapAdminSkill(item: unknown, index: number): AdminSkillRowView {
     slug: toStringValue(raw.slug, ''),
     difficultyLevel: toNumberValue(raw.difficultyLevel ?? raw.difficulty_level, 1),
     isActive,
-    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : typeof raw.created_at === 'string' ? raw.created_at : undefined,
+    createdAt:
+      typeof raw.createdAt === 'string'
+        ? raw.createdAt
+        : typeof raw.created_at === 'string'
+          ? raw.created_at
+          : undefined,
     roadmapUsage: toNumberValue(raw.roadmapUsage ?? raw.roadmap_usage, 0),
     jdUsage: toNumberValue(raw.jdUsage ?? raw.jd_usage, 0),
     resourceCount: toNumberValue(raw.resourceCount ?? raw.resource_count, 0),
@@ -556,7 +591,7 @@ function mapAdminSkill(item: unknown, index: number): AdminSkillRowView {
         const id = toStringValue(skill.id ?? skill.skillId ?? skill.prerequisiteSkillId, '')
         return { id, name: toStringValue(skill.name ?? skill.skillName, `Skill ${entryIndex + 1}`) }
       })
-      .filter((entry) => Boolean(entry.id)),
+      .filter((entry) => Boolean(entry.id))
   }
 }
 
@@ -577,7 +612,7 @@ export async function loadAdminSkillsList(params?: {
       category: params?.category,
       isActive: params?.isActive,
       page,
-      pageSize,
+      pageSize
     })
     const data = unwrapData<unknown>(res)
     const items = parseItems(data)
@@ -585,7 +620,7 @@ export async function loadAdminSkillsList(params?: {
       items: items.map(mapAdminSkill),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -597,13 +632,16 @@ export async function createAdminSkill(payload: CreateSkillRequest) {
 }
 
 export async function approveAdminSkill(id: string, payload?: Partial<AdminSkillRowView>) {
-  return postAdminSkillsIdApprove({ id }, {
-    name: payload?.title ?? null,
-    category: payload?.subtitle ?? null,
-    major: payload?.major ?? null,
-    difficultyLevel: payload?.difficultyLevel ?? null,
-    description: payload?.description?.replace(/^\[AI-GENERATED\]\s*/i, '') ?? null,
-  })
+  return postAdminSkillsIdApprove(
+    { id },
+    {
+      name: payload?.title ?? null,
+      category: payload?.subtitle ?? null,
+      major: payload?.major ?? null,
+      difficultyLevel: payload?.difficultyLevel ?? null,
+      description: payload?.description?.replace(/^\[AI-GENERATED\]\s*/i, '') ?? null
+    }
+  )
 }
 
 export async function updateAdminSkill(id: string, payload: UpdateSkillRequest) {
@@ -646,11 +684,14 @@ export async function loadAdminUserDetail(id: string): Promise<AdminUserDetailVi
       const current = toNumberValue(entry.current, 0)
       const limitRaw = entry.limit
       const limit = typeof limitRaw === 'number' ? limitRaw : typeof limitRaw === 'string' ? limitRaw : 'unlimited'
-      const percent = typeof limit === 'number' && limit > 0 ? Math.min(100, Math.round((current / limit) * 100)) : toNumberValue(entry.percent, 0)
+      const percent =
+        typeof limit === 'number' && limit > 0
+          ? Math.min(100, Math.round((current / limit) * 100))
+          : toNumberValue(entry.percent, 0)
       return {
         current,
         max: String(limit),
-        percent,
+        percent
       }
     }
 
@@ -661,7 +702,7 @@ export async function loadAdminUserDetail(id: string): Promise<AdminUserDetailVi
       avatarUrl: toStringValue(raw.avatarUrl, 'https://placehold.co/160x160?text=User'),
       createdDate: toStringValue(raw.createdAt, new Date().toISOString()),
       lastLogin: toStringValue(raw.lastLoginAt || raw.lastLogin, '—'),
-      isBanned: Boolean(raw.isBanned ?? (toStringValue(raw.status || raw.accountStatus).toLowerCase() === 'banned')),
+      isBanned: Boolean(raw.isBanned ?? toStringValue(raw.status || raw.accountStatus).toLowerCase() === 'banned'),
       plan: toStringValue(subscription?.displayName || subscription?.tierName || raw.plan, 'Free'),
       subscriptionStatus: toStringValue(subscription?.status, 'active'),
       startDate: toStringValue(subscription?.startDate || subscription?.startedAt, '—'),
@@ -670,18 +711,21 @@ export async function loadAdminUserDetail(id: string): Promise<AdminUserDetailVi
       usage: {
         jds: mapUsageEntry(usage?.jds),
         roadmaps: mapUsageEntry(usage?.roadmaps),
-        assessments: mapUsageEntry(usage?.assessments),
+        assessments: mapUsageEntry(usage?.assessments)
       },
       payments: paymentHistory.map((item, index) => {
         const payment = isObject(item) ? item : {}
         return {
           date: toStringValue(payment.createdAt || payment.date, new Date().toISOString()),
-          amount: typeof payment.amount === 'number' ? `${payment.amount.toLocaleString('vi-VN')} VND` : toStringValue(payment.amount, '0 VND'),
+          amount:
+            typeof payment.amount === 'number'
+              ? `${payment.amount.toLocaleString('vi-VN')} VND`
+              : toStringValue(payment.amount, '0 VND'),
           provider: toStringValue(payment.provider || payment.method, 'Trực tuyến'),
           code: toStringValue(payment.code || payment.transactionId, `payment-${index + 1}`),
-          status: toStringValue(payment.status, 'success'),
+          status: toStringValue(payment.status, 'success')
         }
-      }),
+      })
     }
   } catch {
     return null
@@ -713,7 +757,7 @@ export async function loadAdminPaymentOrders(): Promise<AdminPaymentOrderView[]>
         amount: toNumberValue(raw.amount, 0),
         provider: toStringValue(raw.provider, 'Trực tuyến'),
         status: toStringValue(raw.status, 'pending'),
-        createdAt: toStringValue(raw.createdAt, new Date().toISOString()),
+        createdAt: toStringValue(raw.createdAt, new Date().toISOString())
       }
     })
   } catch {
@@ -741,12 +785,12 @@ export async function loadAdminJdFailed(params?: {
           submittedBy: toStringValue(raw.submittedBy || raw.userEmail, 'Unknown user'),
           errorReason: toStringValue(raw.errorReason || raw.lastError, 'Unknown error'),
           submittedAt: toStringValue(raw.createdAt, new Date().toISOString()),
-          status: toStringValue(raw.parseStatus || raw.status, 'failed'),
+          status: toStringValue(raw.parseStatus || raw.status, 'failed')
         }
       }),
       total: parseTotal(data, items.length),
       page,
-      pageSize,
+      pageSize
     }
   } catch {
     return { items: [], total: 0, page, pageSize }
@@ -770,7 +814,7 @@ export async function loadAdminRagDocumentsList(): Promise<AdminRagDocumentView[
         sourceType: toStringValue(raw.sourceType, 'other'),
         chunks: toNumberValue(raw.chunksCount ?? raw.chunkCount, 0),
         status: toStringValue(raw.embeddingStatus ?? raw.status, 'pending'),
-        uploadedAt: toStringValue(raw.createdAt, new Date().toISOString()),
+        uploadedAt: toStringValue(raw.createdAt, new Date().toISOString())
       }
     })
   } catch {

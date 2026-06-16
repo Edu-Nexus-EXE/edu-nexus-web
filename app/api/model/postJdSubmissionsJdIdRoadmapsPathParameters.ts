@@ -6,5 +6,5 @@
  */
 
 export type PostJdSubmissionsJdIdRoadmapsPathParameters = {
- jdId: string,
- }
+  jdId: string
+}

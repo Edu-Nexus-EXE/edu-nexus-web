@@ -2,16 +2,21 @@ import { Navigate, useNavigate, useParams } from 'react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { deleteJdSubmissionsJdIdAssessmentPath, postJdSubmissionsJdIdAssessmentPath } from '~/api/operations/assessment-paths/assessment-paths'
+import {
+  deleteJdSubmissionsJdIdAssessmentPath,
+  postJdSubmissionsJdIdAssessmentPath
+} from '~/api/operations/assessment-paths/assessment-paths'
 import { getAssessmentPathsPathIdCv } from '~/api/operations/cv-submissions/cv-submissions'
 import { getJdSubmissionsJdIdGapAnalysis } from '~/api/operations/gap-analysis/gap-analysis'
 import { deleteJdSubmissionsId, getJdSubmissionsId } from '~/api/operations/jd-submissions/jd-submissions'
 import { getUsersMeRoadmaps } from '~/api/operations/roadmaps/roadmaps'
 import { getAssessmentSessionResult, getReusableSessions } from '~/shared/lib/assessment-api'
+import { QuotaExceededError } from '~/api/mutator/custom-fetch'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 import { formatDateTime } from '~/shared/lib/format-date'
 import { Badge } from '~/shared/ui/badge'
+import { ConfirmDialog } from '~/shared/ui/confirm-dialog'
 
 import { ProgressPipeline, type PipelineStep } from '../components/progress-pipeline'
 
@@ -216,6 +221,8 @@ export function JdDetailPage() {
   const [creatingPath, setCreatingPath] = useState<'cv' | 'assessment' | null>(null)
   const [removingPath, setRemovingPath] = useState(false)
   const [deletingJd, setDeletingJd] = useState(false)
+  const [deletePathDialogOpen, setDeletePathDialogOpen] = useState(false)
+  const [deleteJdDialogOpen, setDeleteJdDialogOpen] = useState(false)
   const [error, setError] = useState('')
   const [jd, setJd] = useState<JdSubmission | null>(null)
   const [cvStatus, setCvStatus] = useState<CvStatus>('idle')
@@ -335,9 +342,7 @@ export function JdDetailPage() {
           ? (((res as ResponseWithData<unknown>)?.data ?? []) as ReusableSessionDto[])
           : []
 
-        const candidateIds = rows
-          .map((row) => String(row.sessionId ?? ''))
-          .filter(Boolean)
+        const candidateIds = rows.map((row) => String(row.sessionId ?? '')).filter(Boolean)
 
         if (candidateIds.length === 0) {
           setLatestAssessmentSessionId('')
@@ -400,9 +405,15 @@ export function JdDetailPage() {
         await getJdSubmissionsJdIdGapAnalysis({ jdId: id })
         if (!cancelled && mounted.current) setHasGapAnalysis(true)
       } catch (error) {
-        const status = typeof error === 'object' && error !== null && 'status' in error ? error.status : undefined
-
         if (!cancelled && mounted.current) {
+          // Polling probe — swallow quota errors silently so they do not surface
+          // as a modal when the user is only viewing the JD detail page.
+          if (error instanceof QuotaExceededError) {
+            setHasGapAnalysis(false)
+            return
+          }
+
+          const status = typeof error === 'object' && error !== null && 'status' in error ? error.status : undefined
           setHasGapAnalysis(false)
           if (status === 404) {
             retryTimer = window.setTimeout(checkGapAnalysis, 3000)
@@ -509,10 +520,20 @@ export function JdDetailPage() {
 
     const href = `/dashboard/assessment-paths/${encodeURIComponent(path.id)}/cv?jdId=${encodeURIComponent(id)}`
 
-    if (effectiveCvStatus === 'completed' || effectiveCvStatus === 'pending' || effectiveCvStatus === 'processing' || effectiveCvStatus === 'failed') {
+    if (
+      effectiveCvStatus === 'completed' ||
+      effectiveCvStatus === 'pending' ||
+      effectiveCvStatus === 'processing' ||
+      effectiveCvStatus === 'failed'
+    ) {
       return {
         href,
-        icon: effectiveCvStatus === 'completed' ? 'description' : effectiveCvStatus === 'failed' ? 'error' : 'hourglass_top',
+        icon:
+          effectiveCvStatus === 'completed'
+            ? 'description'
+            : effectiveCvStatus === 'failed'
+              ? 'error'
+              : 'hourglass_top',
         label: effectiveCvStatus === 'completed' ? t('jd.detail.viewCv') : t('jd.detail.continueCv'),
         helper:
           effectiveCvStatus === 'completed'
@@ -538,9 +559,23 @@ export function JdDetailPage() {
     return [
       {
         key: 'jd',
-        status: 'done',
+        status:
+          jd?.parseStatus === 'completed'
+            ? 'done'
+            : jd?.parseStatus === 'failed'
+              ? 'locked'
+              : jd && (jd.parseStatus === 'pending' || jd.parseStatus === 'processing')
+                ? 'current'
+                : 'locked',
         label: t('jd.detail.pipeline.jd.label'),
-        hint: t('jd.detail.pipeline.jd.doneHint')
+        hint:
+          jd?.parseStatus === 'completed'
+            ? t('jd.detail.pipeline.jd.doneHint')
+            : jd?.parseStatus === 'failed'
+              ? t('jd.detail.pipeline.jd.failedHint')
+              : jd && (jd.parseStatus === 'pending' || jd.parseStatus === 'processing')
+                ? t('jd.detail.pipeline.jd.processingHint')
+                : t('jd.detail.pipeline.jd.lockedHint')
       },
       {
         key: 'path',
@@ -611,16 +646,22 @@ export function JdDetailPage() {
     }
   }
 
-  async function handleDeletePath() {
+  function openDeletePathDialog() {
     if (!id || !path || removingPath) return
     if (hasGapAnalysis) {
       setError(t('jd.detail.errors.cannotResetAfterGap'))
       return
     }
-    if (!window.confirm(t('jd.detail.confirmDeletePath'))) return
+    setError('')
+    setDeletePathDialogOpen(true)
+  }
+
+  async function handleDeletePath() {
+    if (!id || !path || removingPath) return
 
     setRemovingPath(true)
     setError('')
+    setDeletePathDialogOpen(false)
 
     try {
       await deleteJdSubmissionsJdIdAssessmentPath({ jdId: id })
@@ -644,12 +685,18 @@ export function JdDetailPage() {
     }
   }
 
+  function openDeleteJdDialog() {
+    if (!id || deletingJd) return
+    setError('')
+    setDeleteJdDialogOpen(true)
+  }
+
   async function handleDeleteJd() {
     if (!id || deletingJd) return
-    if (!window.confirm(t('jd.detail.confirmDeleteJd'))) return
 
     setDeletingJd(true)
     setError('')
+    setDeleteJdDialogOpen(false)
 
     try {
       await deleteJdSubmissionsId({ id })
@@ -667,20 +714,44 @@ export function JdDetailPage() {
 
       <div className='flex items-start justify-between gap-6 mb-10'>
         <div>
-          <p className='text-xs font-semibold tracking-widest uppercase text-muted-foreground'>{t('jd.detail.badge')}</p>
-          <h1 className='text-3xl md:text-4xl font-bold text-foreground mt-2'>{jd?.jobTitle || t('jd.detail.titleFallback')}</h1>
+          <p className='text-xs font-semibold tracking-widest uppercase text-muted-foreground'>
+            {t('jd.detail.badge')}
+          </p>
+          <h1 className='text-3xl md:text-4xl font-bold text-foreground mt-2'>
+            {jd?.jobTitle || t('jd.detail.titleFallback')}
+          </h1>
           <p className='text-sm text-muted-foreground mt-2'>{t('jd.detail.jdId', { jdId: id })}</p>
 
           <div className='mt-4 flex flex-wrap items-center gap-2'>
             <Badge variant={parseBadge.variant}>{parseBadge.label}</Badge>
             {path ? <Badge variant='outline'>{t('jd.detail.pathSelected', { pathType: path.pathType })}</Badge> : null}
             {path?.pathType === 'cv' && effectiveCvStatus !== 'idle' && effectiveCvStatus !== 'loading' ? (
-              <Badge variant={effectiveCvStatus === 'completed' ? 'success' : effectiveCvStatus === 'failed' ? 'destructive' : effectiveCvStatus === 'missing' ? 'outline' : 'warning'}>
+              <Badge
+                variant={
+                  effectiveCvStatus === 'completed'
+                    ? 'success'
+                    : effectiveCvStatus === 'failed'
+                      ? 'destructive'
+                      : effectiveCvStatus === 'missing'
+                        ? 'outline'
+                        : 'warning'
+                }
+              >
                 {t(`jd.detail.cvStatus.${effectiveCvStatus}`)}
               </Badge>
             ) : null}
-            {path?.pathType === 'assessment' && effectiveAssessmentStatus !== 'idle' && effectiveAssessmentStatus !== 'loading' ? (
-              <Badge variant={effectiveAssessmentStatus === 'submitted' ? 'success' : effectiveAssessmentStatus === 'expired' ? 'destructive' : 'warning'}>
+            {path?.pathType === 'assessment' &&
+            effectiveAssessmentStatus !== 'idle' &&
+            effectiveAssessmentStatus !== 'loading' ? (
+              <Badge
+                variant={
+                  effectiveAssessmentStatus === 'submitted'
+                    ? 'success'
+                    : effectiveAssessmentStatus === 'expired'
+                      ? 'destructive'
+                      : 'warning'
+                }
+              >
                 {t(`jd.detail.assessmentStatus.${effectiveAssessmentStatus}`)}
               </Badge>
             ) : null}
@@ -697,30 +768,63 @@ export function JdDetailPage() {
       </div>
 
       {error ? (
-        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>{error}</div>
+        <div className='mb-6 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm'>
+          {error}
+        </div>
       ) : null}
 
       <div className='mb-8 rounded-3xl border border-border bg-card/80 p-5 shadow-sm'>
         <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', 'border-primary bg-primary text-primary-foreground')}>1</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                'border-primary bg-primary text-primary-foreground'
+              )}
+            >
+              1
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.detail.flow.step1Title')}</p>
               <p className='mt-1 text-xs text-muted-foreground'>{t('jd.detail.flow.step1Hint')}</p>
             </div>
           </div>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', isParsing ? 'border-primary bg-primary text-primary-foreground' : jd?.parseStatus === 'completed' ? 'border-success bg-success text-white' : 'border-border bg-muted text-muted-foreground')}>2</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                isParsing
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : jd?.parseStatus === 'completed'
+                    ? 'border-success bg-success text-white'
+                    : 'border-border bg-muted text-muted-foreground'
+              )}
+            >
+              2
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.detail.flow.step2Title')}</p>
-              <p className='mt-1 text-xs text-muted-foreground'>{isParsing ? t('jd.detail.flow.step2ProcessingHint') : t('jd.detail.flow.step2DoneHint')}</p>
+              <p className='mt-1 text-xs text-muted-foreground'>
+                {isParsing ? t('jd.detail.flow.step2ProcessingHint') : t('jd.detail.flow.step2DoneHint')}
+              </p>
             </div>
           </div>
           <div className='flex items-start gap-3'>
-            <div className={cn('flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold', canChoosePath ? 'border-primary bg-primary text-primary-foreground' : 'border-border bg-muted text-muted-foreground')}>3</div>
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center rounded-full border text-sm font-bold',
+                canChoosePath
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border bg-muted text-muted-foreground'
+              )}
+            >
+              3
+            </div>
             <div>
               <p className='text-sm font-semibold text-foreground'>{t('jd.detail.flow.step3Title')}</p>
-              <p className='mt-1 text-xs text-muted-foreground'>{canChoosePath ? t('jd.detail.flow.step3ReadyHint') : t('jd.detail.flow.step3LockedHint')}</p>
+              <p className='mt-1 text-xs text-muted-foreground'>
+                {canChoosePath ? t('jd.detail.flow.step3ReadyHint') : t('jd.detail.flow.step3LockedHint')}
+              </p>
             </div>
           </div>
         </div>
@@ -773,8 +877,12 @@ export function JdDetailPage() {
                     <span className='material-icons text-lg'>schedule</span>
                   </div>
                   <div>
-                    <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.detail.createdAt')}</p>
-                    <p className='mt-2 text-base font-semibold text-foreground'>{formatDateTime(jd.createdAt, i18n.language)}</p>
+                    <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                      {t('jd.detail.createdAt')}
+                    </p>
+                    <p className='mt-2 text-base font-semibold text-foreground'>
+                      {formatDateTime(jd.createdAt, i18n.language)}
+                    </p>
                     <p className='mt-1 text-sm text-muted-foreground'>{t('jd.detail.createdAtHint')}</p>
                   </div>
                 </div>
@@ -787,12 +895,20 @@ export function JdDetailPage() {
                   </div>
                   <div className='grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2'>
                     <div>
-                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.detail.seniorityLevelLabel')}</p>
-                      <p className='mt-2 text-base font-semibold text-foreground'>{seniorityLevelLabel(t, jd.seniorityLevel)}</p>
+                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                        {t('jd.detail.seniorityLevelLabel')}
+                      </p>
+                      <p className='mt-2 text-base font-semibold text-foreground'>
+                        {seniorityLevelLabel(t, jd.seniorityLevel)}
+                      </p>
                     </div>
                     <div>
-                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('jd.detail.salaryLabel')}</p>
-                      <p className='mt-2 text-base font-semibold text-foreground'>{formatSalaryRange(t, jd.salaryMin, jd.salaryMax, jd.currency)}</p>
+                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                        {t('jd.detail.salaryLabel')}
+                      </p>
+                      <p className='mt-2 text-base font-semibold text-foreground'>
+                        {formatSalaryRange(t, jd.salaryMin, jd.salaryMax, jd.currency)}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -811,9 +927,22 @@ export function JdDetailPage() {
                 <div className='flex flex-wrap gap-2'>
                   {jd.hardSkills.length ? (
                     jd.hardSkills.map((s) => (
-                      <span key={s.id} className={cn('inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium', s.isMandatory ? 'border-primary/40 bg-primary/10 text-primary' : 'border-border bg-muted/40 text-foreground')}>
+                      <span
+                        key={s.id}
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium',
+                          s.isMandatory
+                            ? 'border-primary/40 bg-primary/10 text-primary'
+                            : 'border-border bg-muted/40 text-foreground'
+                        )}
+                      >
                         <span>{s.skillNameRaw}</span>
-                        <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide', s.isMandatory ? 'bg-primary text-primary-foreground' : 'bg-border text-muted-foreground')}>
+                        <span
+                          className={cn(
+                            'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',
+                            s.isMandatory ? 'bg-primary text-primary-foreground' : 'bg-border text-muted-foreground'
+                          )}
+                        >
                           {s.isMandatory ? t('jd.detail.mandatory') : t('jd.detail.optional')}
                         </span>
                       </span>
@@ -837,9 +966,22 @@ export function JdDetailPage() {
                 <div className='flex flex-wrap gap-2'>
                   {jd.softSkills.length ? (
                     jd.softSkills.map((s) => (
-                      <span key={s.id} className={cn('inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium', s.isMandatory ? 'border-primary/40 bg-primary/10 text-primary' : 'border-border bg-muted/40 text-foreground')}>
+                      <span
+                        key={s.id}
+                        className={cn(
+                          'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium',
+                          s.isMandatory
+                            ? 'border-primary/40 bg-primary/10 text-primary'
+                            : 'border-border bg-muted/40 text-foreground'
+                        )}
+                      >
                         <span>{s.skillNameRaw}</span>
-                        <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide', s.isMandatory ? 'bg-primary text-primary-foreground' : 'bg-border text-muted-foreground')}>
+                        <span
+                          className={cn(
+                            'rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide',
+                            s.isMandatory ? 'bg-primary text-primary-foreground' : 'bg-border text-muted-foreground'
+                          )}
+                        >
                           {s.isMandatory ? t('jd.detail.mandatory') : t('jd.detail.optional')}
                         </span>
                       </span>
@@ -885,7 +1027,7 @@ export function JdDetailPage() {
 
                 <button
                   type='button'
-                  onClick={handleDeletePath}
+                  onClick={openDeletePathDialog}
                   disabled={removingPath || hasGapAnalysis}
                   title={hasGapAnalysis ? t('jd.detail.resetLockedTooltip') : undefined}
                   className={cn(
@@ -897,7 +1039,9 @@ export function JdDetailPage() {
                   {removingPath ? t('jd.detail.deletingPath') : t('jd.detail.resetPath')}
                 </button>
 
-                <p className='text-xs text-muted-foreground'>{hasGapAnalysis ? t('jd.detail.resetLockedTooltip') : t('jd.detail.pathLocked')}</p>
+                <p className='text-xs text-muted-foreground'>
+                  {hasGapAnalysis ? t('jd.detail.resetLockedTooltip') : t('jd.detail.pathLocked')}
+                </p>
               </div>
             ) : (
               <div className='space-y-4'>
@@ -922,11 +1066,15 @@ export function JdDetailPage() {
                           <span className='material-icons text-xl'>upload_file</span>
                         </div>
                         <div>
-                          <p className='text-sm font-semibold text-foreground'>{creatingPath === 'cv' ? t('jd.detail.creatingPath') : t('jd.detail.chooseCv')}</p>
+                          <p className='text-sm font-semibold text-foreground'>
+                            {creatingPath === 'cv' ? t('jd.detail.creatingPath') : t('jd.detail.chooseCv')}
+                          </p>
                           <p className='mt-1 text-sm text-muted-foreground'>{t('jd.detail.chooseCvDesc')}</p>
                         </div>
                       </div>
-                      <span className='material-icons text-muted-foreground transition-transform group-hover:translate-x-1'>arrow_forward</span>
+                      <span className='material-icons text-muted-foreground transition-transform group-hover:translate-x-1'>
+                        arrow_forward
+                      </span>
                     </div>
                   </button>
 
@@ -945,11 +1093,17 @@ export function JdDetailPage() {
                           <span className='material-icons text-xl'>quiz</span>
                         </div>
                         <div>
-                          <p className='text-sm font-semibold text-foreground'>{creatingPath === 'assessment' ? t('jd.detail.creatingPath') : t('jd.detail.chooseAssessment')}</p>
+                          <p className='text-sm font-semibold text-foreground'>
+                            {creatingPath === 'assessment'
+                              ? t('jd.detail.creatingPath')
+                              : t('jd.detail.chooseAssessment')}
+                          </p>
                           <p className='mt-1 text-sm text-muted-foreground'>{t('jd.detail.chooseAssessmentDesc')}</p>
                         </div>
                       </div>
-                      <span className='material-icons text-primary transition-transform group-hover:translate-x-1'>arrow_forward</span>
+                      <span className='material-icons text-primary transition-transform group-hover:translate-x-1'>
+                        arrow_forward
+                      </span>
                     </div>
                   </button>
                 </div>
@@ -960,11 +1114,13 @@ export function JdDetailPage() {
           <ProgressPipeline title={t('jd.detail.pipeline.title')} steps={pipelineSteps} />
 
           <div className='bg-card border border-destructive/20 rounded-2xl p-6 shadow-sm'>
-            <h3 className='text-sm font-semibold uppercase tracking-widest text-destructive'>{t('jd.detail.dangerZone')}</h3>
+            <h3 className='text-sm font-semibold uppercase tracking-widest text-destructive'>
+              {t('jd.detail.dangerZone')}
+            </h3>
             <p className='mt-3 text-sm text-muted-foreground'>{t('jd.detail.deleteJdHint')}</p>
             <button
               type='button'
-              onClick={handleDeleteJd}
+              onClick={openDeleteJdDialog}
               disabled={deletingJd}
               className={cn(
                 'mt-4 w-full inline-flex items-center justify-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-semibold text-destructive hover:bg-destructive/15 transition-colors',
@@ -977,6 +1133,30 @@ export function JdDetailPage() {
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deletePathDialogOpen}
+        title={t('jd.detail.confirmDeletePathTitle')}
+        description={t('jd.detail.confirmDeletePath')}
+        tone='warning'
+        confirmLabel={t('jd.detail.deletePath')}
+        cancelLabel={t('jd.detail.cancel')}
+        busy={removingPath}
+        onCancel={() => setDeletePathDialogOpen(false)}
+        onConfirm={handleDeletePath}
+      />
+
+      <ConfirmDialog
+        open={deleteJdDialogOpen}
+        title={t('jd.detail.confirmDeleteJdTitle')}
+        description={t('jd.detail.confirmDeleteJd')}
+        tone='danger'
+        confirmLabel={t('jd.detail.deleteJd')}
+        cancelLabel={t('jd.detail.cancel')}
+        busy={deletingJd}
+        onCancel={() => setDeleteJdDialogOpen(false)}
+        onConfirm={handleDeleteJd}
+      />
     </div>
   )
 }

@@ -7,9 +7,9 @@
 
 export interface UpdateCurrentUserRequest {
   /** @nullable */
-  fullName?: string | null;
+  fullName?: string | null
   /** @nullable */
-  avatarUrl?: string | null;
+  avatarUrl?: string | null
   /** @nullable */
-  portfolioUrlSlug?: string | null;
+  portfolioUrlSlug?: string | null
 }

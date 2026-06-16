@@ -17,7 +17,9 @@ export interface GapAnalysisSkill {
  * Fallback mock data used when API returns no data.
  * The actual UI data flows through loadGapAnalysis() in sprint2-api.ts.
  */
-export function getGapAnalysisSkills(t: (key: string, options?: Record<string, unknown>) => string): GapAnalysisSkill[] {
+export function getGapAnalysisSkills(
+  t: (key: string, options?: Record<string, unknown>) => string
+): GapAnalysisSkill[] {
   return [
     {
       id: 'docker',
@@ -29,7 +31,7 @@ export function getGapAnalysisSkills(t: (key: string, options?: Record<string, u
       priorityScore: 8,
       hasPriority: true,
       reason: t('learningPath.gapAnalysis.dockerDesc', { ns: 'dashboard' }),
-      tags: ['Containerization', 'Microservices'],
+      tags: ['Containerization', 'Microservices']
     },
     {
       id: 'cicd',
@@ -41,7 +43,7 @@ export function getGapAnalysisSkills(t: (key: string, options?: Record<string, u
       priorityScore: 7,
       hasPriority: true,
       reason: t('learningPath.gapAnalysis.cicdDesc', { ns: 'dashboard' }),
-      tags: ['GitHub Actions', 'Jenkins'],
+      tags: ['GitHub Actions', 'Jenkins']
     },
     {
       id: 'sql',
@@ -53,7 +55,7 @@ export function getGapAnalysisSkills(t: (key: string, options?: Record<string, u
       priorityScore: 6,
       hasPriority: true,
       reason: t('learningPath.gapAnalysis.sqlDesc', { ns: 'dashboard' }),
-      tags: ['PostgreSQL', 'Query Tuning'],
+      tags: ['PostgreSQL', 'Query Tuning']
     },
     {
       id: 'java_oop',
@@ -65,7 +67,7 @@ export function getGapAnalysisSkills(t: (key: string, options?: Record<string, u
       priorityScore: 0,
       hasPriority: false,
       reason: t('learningPath.gapAnalysis.javaOopDesc', { ns: 'dashboard' }),
-      tags: ['Inheritance', 'Design Patterns'],
-    },
+      tags: ['Inheritance', 'Design Patterns']
+    }
   ]
 }

@@ -6,5 +6,5 @@
  */
 
 export type PatchRoadmapsIdArchivePathParameters = {
- id: string,
- }
+  id: string
+}

@@ -6,10 +6,10 @@
  */
 
 export type GetAdminSkillsParams = {
-search?: string;
-major?: string;
-category?: string;
-isActive?: boolean;
-page?: number;
-pageSize?: number;
-};
+  search?: string
+  major?: string
+  category?: string
+  isActive?: boolean
+  page?: number
+  pageSize?: number
+}

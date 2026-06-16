@@ -14,7 +14,12 @@ import { isAuthResponseData, mapAuthResponseToUser } from '../lib/be-auth-types'
 type ResponseWithData<T> = { data?: T }
 
 type GoogleAccountsId = {
-  initialize: (options: { client_id: string; callback: (resp: { credential?: string }) => void; auto_select?: boolean; cancel_on_tap_outside?: boolean }) => void
+  initialize: (options: {
+    client_id: string
+    callback: (resp: { credential?: string }) => void
+    auto_select?: boolean
+    cancel_on_tap_outside?: boolean
+  }) => void
   renderButton: (container: HTMLElement, options: Record<string, unknown>) => void
 }
 
@@ -120,7 +125,7 @@ export function LoginForm() {
 
               setAuthSession({
                 user: mapAuthResponseToUser(data),
-                tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+                tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken }
               })
 
               await redirectAfterLogin(navigate, data)
@@ -131,7 +136,7 @@ export function LoginForm() {
             }
           },
           auto_select: false,
-          cancel_on_tap_outside: true,
+          cancel_on_tap_outside: true
         })
 
         if (googleBtnRef.current) {
@@ -141,7 +146,7 @@ export function LoginForm() {
             size: 'large',
             text: 'signin_with',
             shape: 'pill',
-            width: 320,
+            width: 320
           })
         }
 
@@ -173,7 +178,7 @@ export function LoginForm() {
 
       setAuthSession({
         user: mapAuthResponseToUser(data),
-        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+        tokens: { accessToken: data.accessToken, refreshToken: data.refreshToken }
       })
 
       toast.success(t('login.success'))
@@ -278,9 +283,7 @@ export function LoginForm() {
               onClick={() => setShowPassword((v) => !v)}
               className='absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors'
             >
-              <span className='material-icons text-lg'>
-                {showPassword ? 'visibility_off' : 'visibility'}
-              </span>
+              <span className='material-icons text-lg'>{showPassword ? 'visibility_off' : 'visibility'}</span>
             </button>
           </div>
         </div>

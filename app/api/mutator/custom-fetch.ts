@@ -42,7 +42,10 @@ export class QuotaExceededError extends Error {
   upgradeUrl?: string
   raw?: unknown
 
-  constructor(message: string, init: { status: number; quotaType?: string; current?: number; limit?: number; upgradeUrl?: string; raw?: unknown }) {
+  constructor(
+    message: string,
+    init: { status: number; quotaType?: string; current?: number; limit?: number; upgradeUrl?: string; raw?: unknown }
+  ) {
     super(message)
     this.name = 'QuotaExceededError'
     this.status = init.status
@@ -112,9 +115,9 @@ async function tryRefreshTokens(): Promise<{ accessToken: string; refreshToken: 
         method: 'POST',
         headers: {
           Accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ refreshToken }),
+        body: JSON.stringify({ refreshToken })
       })
 
       if (AUTH_DEBUG) {
@@ -122,7 +125,7 @@ async function tryRefreshTokens(): Promise<{ accessToken: string; refreshToken: 
           url: fullUrl.toString(),
           status: resp.status,
           ok: resp.ok,
-          hasRefreshToken: Boolean(refreshToken),
+          hasRefreshToken: Boolean(refreshToken)
         })
       }
 
@@ -186,7 +189,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
   const isRefreshRequest = fullUrl.pathname.endsWith('/auth/refresh')
   const headers: Record<string, string> = {
     Accept: 'application/json',
-    ...(inputHeaders as Record<string, string> | undefined),
+    ...(inputHeaders as Record<string, string> | undefined)
   }
 
   if (token && !headers.Authorization && !isRefreshRequest) {
@@ -198,7 +201,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
     return fetch(fullUrl.toString(), {
       ...rest,
       headers: mergedHeaders,
-      body,
+      body
     })
   }
 
@@ -210,7 +213,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
       method: rest.method ?? 'GET',
       hasAccessToken: Boolean(token),
       hasRefreshToken: Boolean(getRefreshToken()),
-      isRefreshRequest,
+      isRefreshRequest
     })
   }
 
@@ -229,13 +232,25 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
 
     if (response.status === 403 && isQuotaExceeded(payload)) {
       const quota = payload.error ?? {}
+      const limit = typeof quota.limit === 'number' ? quota.limit : undefined
+      // Convention: a non-negative limit means a finite cap. If BE reports an
+      // unlimited quota (limit < 0) it must not surface as a quota-exceeded
+      // modal — treat the response as a normal error so the caller can
+      // decide what to do.
+      if (limit === undefined || limit < 0) {
+        throw Object.assign(new Error(quota.message ?? 'API error'), {
+          status: response.status,
+          data: payload
+        })
+      }
+
       throw new QuotaExceededError(quota.message ?? '', {
         status: response.status,
         quotaType: typeof quota.quotaType === 'string' ? quota.quotaType : undefined,
         current: typeof quota.current === 'number' ? quota.current : undefined,
-        limit: typeof quota.limit === 'number' ? quota.limit : undefined,
+        limit,
         upgradeUrl: typeof quota.upgradeUrl === 'string' ? quota.upgradeUrl : '/pricing',
-        raw: payload,
+        raw: payload
       })
     }
 
@@ -246,7 +261,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
       }
       throw new InvalidCredentialsError('INVALID_CREDENTIALS', {
         status: response.status,
-        raw: payload,
+        raw: payload
       })
     }
 
@@ -259,7 +274,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
 
     throw Object.assign(new Error(payload.message ?? payload.error?.message ?? 'API error'), {
       status: response.status,
-      data: payload,
+      data: payload
     })
   }
 

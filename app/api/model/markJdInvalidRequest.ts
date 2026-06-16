@@ -7,5 +7,5 @@
 
 export interface MarkJdInvalidRequest {
   /** @nullable */
-  reason?: string | null;
+  reason?: string | null
 }

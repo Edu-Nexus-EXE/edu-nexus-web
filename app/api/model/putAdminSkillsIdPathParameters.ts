@@ -6,5 +6,5 @@
  */
 
 export type PutAdminSkillsIdPathParameters = {
- id: string,
- }
+  id: string
+}

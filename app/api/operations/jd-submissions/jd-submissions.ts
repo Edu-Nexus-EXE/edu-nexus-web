@@ -9,143 +9,114 @@ import type {
   GetJdSubmissionsIdPathParameters,
   GetJdSubmissionsParams,
   SubmitJdRequest
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type postJdSubmissionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type postJdSubmissionsResponseSuccess = (postJdSubmissionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postJdSubmissionsResponse = (postJdSubmissionsResponseSuccess)
+export type postJdSubmissionsResponseSuccess = postJdSubmissionsResponse200 & {
+  headers: Headers
+}
+export type postJdSubmissionsResponse = postJdSubmissionsResponseSuccess
 
 export const getPostJdSubmissionsUrl = () => {
-
-
-  
-
   return `/jd-submissions`
 }
 
-export const postJdSubmissions = async (submitJdRequest: SubmitJdRequest, options?: RequestInit): Promise<postJdSubmissionsResponse> => {
-  
-  return customFetch<postJdSubmissionsResponse>(getPostJdSubmissionsUrl(),
-  {      
+export const postJdSubmissions = async (
+  submitJdRequest: SubmitJdRequest,
+  options?: RequestInit
+): Promise<postJdSubmissionsResponse> => {
+  return customFetch<postJdSubmissionsResponse>(getPostJdSubmissionsUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      submitJdRequest,)
-  }
-);}
-
+    body: JSON.stringify(submitJdRequest)
+  })
+}
 
 export type getJdSubmissionsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getJdSubmissionsResponseSuccess = (getJdSubmissionsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getJdSubmissionsResponse = (getJdSubmissionsResponseSuccess)
+export type getJdSubmissionsResponseSuccess = getJdSubmissionsResponse200 & {
+  headers: Headers
+}
+export type getJdSubmissionsResponse = getJdSubmissionsResponseSuccess
 
-export const getGetJdSubmissionsUrl = (params?: GetJdSubmissionsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetJdSubmissionsUrl = (params?: GetJdSubmissionsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/jd-submissions?${stringifiedParams}` : `/jd-submissions`
 }
 
-export const getJdSubmissions = async (params?: GetJdSubmissionsParams, options?: RequestInit): Promise<getJdSubmissionsResponse> => {
-  
-  return customFetch<getJdSubmissionsResponse>(getGetJdSubmissionsUrl(params),
-  {      
+export const getJdSubmissions = async (
+  params?: GetJdSubmissionsParams,
+  options?: RequestInit
+): Promise<getJdSubmissionsResponse> => {
+  return customFetch<getJdSubmissionsResponse>(getGetJdSubmissionsUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type getJdSubmissionsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type getJdSubmissionsIdResponseSuccess = (getJdSubmissionsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getJdSubmissionsIdResponse = (getJdSubmissionsIdResponseSuccess)
+export type getJdSubmissionsIdResponseSuccess = getJdSubmissionsIdResponse200 & {
+  headers: Headers
+}
+export type getJdSubmissionsIdResponse = getJdSubmissionsIdResponseSuccess
 
-export const getGetJdSubmissionsIdUrl = ({ id }: GetJdSubmissionsIdPathParameters,) => {
-
-
-  
-
+export const getGetJdSubmissionsIdUrl = ({ id }: GetJdSubmissionsIdPathParameters) => {
   return `/jd-submissions/${id}`
 }
 
-export const getJdSubmissionsId = async ({ id }: GetJdSubmissionsIdPathParameters, options?: RequestInit): Promise<getJdSubmissionsIdResponse> => {
-  
-  return customFetch<getJdSubmissionsIdResponse>(getGetJdSubmissionsIdUrl({ id }),
-  {      
+export const getJdSubmissionsId = async (
+  { id }: GetJdSubmissionsIdPathParameters,
+  options?: RequestInit
+): Promise<getJdSubmissionsIdResponse> => {
+  return customFetch<getJdSubmissionsIdResponse>(getGetJdSubmissionsIdUrl({ id }), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type deleteJdSubmissionsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type deleteJdSubmissionsIdResponseSuccess = (deleteJdSubmissionsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type deleteJdSubmissionsIdResponse = (deleteJdSubmissionsIdResponseSuccess)
+export type deleteJdSubmissionsIdResponseSuccess = deleteJdSubmissionsIdResponse200 & {
+  headers: Headers
+}
+export type deleteJdSubmissionsIdResponse = deleteJdSubmissionsIdResponseSuccess
 
-export const getDeleteJdSubmissionsIdUrl = ({ id }: DeleteJdSubmissionsIdPathParameters,) => {
-
-
-  
-
+export const getDeleteJdSubmissionsIdUrl = ({ id }: DeleteJdSubmissionsIdPathParameters) => {
   return `/jd-submissions/${id}`
 }
 
-export const deleteJdSubmissionsId = async ({ id }: DeleteJdSubmissionsIdPathParameters, options?: RequestInit): Promise<deleteJdSubmissionsIdResponse> => {
-  
-  return customFetch<deleteJdSubmissionsIdResponse>(getDeleteJdSubmissionsIdUrl({ id }),
-  {      
+export const deleteJdSubmissionsId = async (
+  { id }: DeleteJdSubmissionsIdPathParameters,
+  options?: RequestInit
+): Promise<deleteJdSubmissionsIdResponse> => {
+  return customFetch<deleteJdSubmissionsIdResponse>(getDeleteJdSubmissionsIdUrl({ id }), {
     ...options,
     method: 'DELETE'
-    
-    
-  }
-);}
-
-
+  })
+}

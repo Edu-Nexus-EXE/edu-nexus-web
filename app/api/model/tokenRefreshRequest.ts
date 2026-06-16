@@ -7,5 +7,5 @@
 
 export interface TokenRefreshRequest {
   /** @nullable */
-  refreshToken?: string | null;
+  refreshToken?: string | null
 }

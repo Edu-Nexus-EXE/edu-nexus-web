@@ -6,5 +6,5 @@
  */
 
 export type GetPSlugPathParameters = {
- slug: string,
- }
+  slug: string
+}

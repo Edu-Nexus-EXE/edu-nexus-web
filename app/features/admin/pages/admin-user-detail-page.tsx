@@ -7,7 +7,7 @@ import {
   loadAdminUserDetail,
   revokeAdminUserSubscription,
   setAdminUserBan,
-  type AdminUserDetailView,
+  type AdminUserDetailView
 } from '../lib/admin-data'
 
 const fallbackUser: AdminUserDetailView = {
@@ -26,12 +26,24 @@ const fallbackUser: AdminUserDetailView = {
   usage: {
     jds: { current: 5, max: 'unlimited', percent: 25 },
     roadmaps: { current: 3, max: 'unlimited', percent: 17 },
-    assessments: { current: 4, max: 'unlimited', percent: 20 },
+    assessments: { current: 4, max: 'unlimited', percent: 20 }
   },
   payments: [
-    { date: '2025-03-15T00:00:00.000Z', amount: '299,000 VND', provider: 'VNPAY', code: 'EB-98231023', status: 'success' },
-    { date: '2025-02-01T00:00:00.000Z', amount: '299,000 VND', provider: 'Momo', code: 'EB-87123912', status: 'success' },
-  ],
+    {
+      date: '2025-03-15T00:00:00.000Z',
+      amount: '299,000 VND',
+      provider: 'VNPAY',
+      code: 'EB-98231023',
+      status: 'success'
+    },
+    {
+      date: '2025-02-01T00:00:00.000Z',
+      amount: '299,000 VND',
+      provider: 'Momo',
+      code: 'EB-87123912',
+      status: 'success'
+    }
+  ]
 }
 
 function formatDate(value: string) {
@@ -42,7 +54,8 @@ function formatDate(value: string) {
 
 function statusTone(status: string) {
   const normalized = status.toLowerCase()
-  if (normalized === 'banned' || normalized === 'suspended') return 'bg-destructive/10 text-destructive border-destructive/20'
+  if (normalized === 'banned' || normalized === 'suspended')
+    return 'bg-destructive/10 text-destructive border-destructive/20'
   if (normalized === 'expired' || normalized === 'inactive') return 'bg-muted text-muted-foreground border-border'
   return 'bg-success/10 text-success border-success/20'
 }
@@ -91,8 +104,11 @@ export function AdminUserDetailPage() {
   const current = detail ?? fallbackUser
   const banned = current.isBanned
   const subscriptionTone = useMemo(() => statusTone(current.subscriptionStatus), [current.subscriptionStatus])
-  const isStudentActive = current.plan.toLowerCase().includes('student') && current.subscriptionStatus.toLowerCase() === 'active'
-  const subscriptionActionNote = isStudentActive ? t('userDetail.subscription.revokeHint') : t('userDetail.subscription.activateHint')
+  const isStudentActive =
+    current.plan.toLowerCase().includes('student') && current.subscriptionStatus.toLowerCase() === 'active'
+  const subscriptionActionNote = isStudentActive
+    ? t('userDetail.subscription.revokeHint')
+    : t('userDetail.subscription.activateHint')
 
   async function handleBan(nextValue: boolean) {
     try {
@@ -111,7 +127,9 @@ export function AdminUserDetailPage() {
       await activateAdminUserSubscription(current.id, durationMonths)
       const nextEndDate = new Date()
       nextEndDate.setMonth(nextEndDate.getMonth() + durationMonths)
-      setDetail((prev) => (prev ? { ...prev, plan: 'Student', subscriptionStatus: 'active', endDate: nextEndDate.toISOString() } : prev))
+      setDetail((prev) =>
+        prev ? { ...prev, plan: 'Student', subscriptionStatus: 'active', endDate: nextEndDate.toISOString() } : prev
+      )
       setShowActivateModal(false)
     } finally {
       setSubmitting(false)
@@ -122,7 +140,9 @@ export function AdminUserDetailPage() {
     try {
       setSubmitting(true)
       await revokeAdminUserSubscription(current.id)
-      setDetail((prev) => (prev ? { ...prev, plan: 'Free', subscriptionStatus: 'active', endDate: '—', autoRenew: false } : prev))
+      setDetail((prev) =>
+        prev ? { ...prev, plan: 'Free', subscriptionStatus: 'active', endDate: '—', autoRenew: false } : prev
+      )
     } finally {
       setSubmitting(false)
     }
@@ -210,7 +230,9 @@ export function AdminUserDetailPage() {
 
               <div className='flex justify-between items-center mb-8 relative z-10'>
                 <h3 className='text-2xl font-bold text-foreground'>{t('userDetail.subscription.title')}</h3>
-                <span className={`px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider border ${subscriptionTone}`}>
+                <span
+                  className={`px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-wider border ${subscriptionTone}`}
+                >
                   {current.subscriptionStatus}
                 </span>
               </div>
@@ -218,38 +240,60 @@ export function AdminUserDetailPage() {
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 mb-auto relative z-10'>
                 <div className='space-y-4'>
                   <div className='p-5 bg-muted rounded-xl border border-border'>
-                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>{t('userDetail.subscription.currentPlan')}</p>
+                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>
+                      {t('userDetail.subscription.currentPlan')}
+                    </p>
                     <p className='font-bold text-foreground text-lg'>{current.plan}</p>
                   </div>
                   <div className='p-5 bg-muted rounded-xl border border-border'>
-                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>{t('userDetail.subscription.startDate')}</p>
+                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>
+                      {t('userDetail.subscription.startDate')}
+                    </p>
                     <p className='font-bold text-foreground text-lg'>{formatDate(current.startDate)}</p>
                   </div>
                 </div>
                 <div className='space-y-4'>
                   <div className='p-5 bg-muted rounded-xl border-l-4 border-primary border border-border'>
-                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>{t('userDetail.subscription.endDate')}</p>
+                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>
+                      {t('userDetail.subscription.endDate')}
+                    </p>
                     <p className='font-bold text-foreground text-lg'>{formatDate(current.endDate)}</p>
                   </div>
                   <div className='p-5 bg-muted rounded-xl border border-border'>
-                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>{t('userDetail.subscription.autoRenew')}</p>
-                    <p className='font-bold text-foreground text-lg'>{current.autoRenew ? t('userDetail.subscription.yes') : t('userDetail.subscription.no')}</p>
+                    <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>
+                      {t('userDetail.subscription.autoRenew')}
+                    </p>
+                    <p className='font-bold text-foreground text-lg'>
+                      {current.autoRenew ? t('userDetail.subscription.yes') : t('userDetail.subscription.no')}
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className='flex flex-col sm:flex-row gap-4 mt-8 pt-8 border-t border-border relative z-10'>
                 {isStudentActive ? (
-                  <button type='button' onClick={() => void handleRevokeSubscription()} disabled={submitting} className='flex-1 border border-destructive text-destructive py-4 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-destructive/10 transition-colors disabled:opacity-50'>
+                  <button
+                    type='button'
+                    onClick={() => void handleRevokeSubscription()}
+                    disabled={submitting}
+                    className='flex-1 border border-destructive text-destructive py-4 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-destructive/10 transition-colors disabled:opacity-50'
+                  >
                     {t('userDetail.subscription.revoke')}
                   </button>
                 ) : (
-                  <button type='button' onClick={() => setShowActivateModal(true)} disabled={submitting} className='flex-1 py-4 bg-primary text-primary-foreground rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50'>
+                  <button
+                    type='button'
+                    onClick={() => setShowActivateModal(true)}
+                    disabled={submitting}
+                    className='flex-1 py-4 bg-primary text-primary-foreground rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50'
+                  >
                     {t('userDetail.subscription.activate')}
                   </button>
                 )}
               </div>
-              <p className='relative z-10 mt-3 text-xs font-medium leading-relaxed text-muted-foreground'>{subscriptionActionNote}</p>
+              <p className='relative z-10 mt-3 text-xs font-medium leading-relaxed text-muted-foreground'>
+                {subscriptionActionNote}
+              </p>
             </section>
 
             <section className='lg:col-span-5 bg-card rounded-2xl p-8 flex flex-col border border-border shadow-sm relative overflow-hidden group'>
@@ -260,17 +304,21 @@ export function AdminUserDetailPage() {
                 {[
                   { label: 'Job Descriptions', icon: 'work', value: current.usage.jds },
                   { label: 'Roadmaps', icon: 'map', value: current.usage.roadmaps },
-                  { label: 'Assessments', icon: 'assessment', value: current.usage.assessments },
+                  { label: 'Assessments', icon: 'assessment', value: current.usage.assessments }
                 ].map((item) => (
                   <div key={item.label} className='group'>
                     <div className='flex justify-between items-end mb-3'>
                       <div>
-                        <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>{item.label}</p>
+                        <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1'>
+                          {item.label}
+                        </p>
                         <p className='text-lg font-bold text-foreground'>
                           {item.value.current} / <span className='text-primary'>{item.value.max}</span>
                         </p>
                       </div>
-                      <span className='material-symbols-outlined text-primary group-hover:scale-110 transition-transform'>{item.icon}</span>
+                      <span className='material-symbols-outlined text-primary group-hover:scale-110 transition-transform'>
+                        {item.icon}
+                      </span>
                     </div>
                     <div className='h-2.5 w-full bg-muted rounded-full overflow-hidden border border-border'>
                       <div className='h-full bg-primary rounded-full' style={{ width: `${item.value.percent}%` }} />
@@ -290,23 +338,38 @@ export function AdminUserDetailPage() {
           <section className='bg-card rounded-2xl p-8 border border-border shadow-sm overflow-hidden relative group'>
             <div className='flex justify-between items-center mb-8 flex-wrap gap-4'>
               <h3 className='text-2xl font-bold text-foreground'>{t('userDetail.paymentHistory.title')}</h3>
-              <button type='button' className='text-xs font-bold text-primary border-b border-primary hover:text-primary/80 hover:border-primary/80 transition-colors pb-0.5 uppercase tracking-wider'>
+              <button
+                type='button'
+                className='text-xs font-bold text-primary border-b border-primary hover:text-primary/80 hover:border-primary/80 transition-colors pb-0.5 uppercase tracking-wider'
+              >
                 {t('userDetail.paymentHistory.exportCsv')}
               </button>
             </div>
 
             <div className='overflow-x-auto'>
               {current.payments.length === 0 ? (
-                <div className='py-8 text-center text-muted-foreground font-medium'>{t('userDetail.paymentHistory.empty')}</div>
+                <div className='py-8 text-center text-muted-foreground font-medium'>
+                  {t('userDetail.paymentHistory.empty')}
+                </div>
               ) : (
                 <table className='w-full text-left border-collapse'>
                   <thead>
                     <tr className='bg-muted border-b border-border'>
-                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('userDetail.paymentHistory.table.date')}</th>
-                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('userDetail.paymentHistory.table.amount')}</th>
-                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('userDetail.paymentHistory.table.provider')}</th>
-                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>{t('userDetail.paymentHistory.table.code')}</th>
-                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider text-center'>{t('userDetail.paymentHistory.table.status')}</th>
+                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
+                        {t('userDetail.paymentHistory.table.date')}
+                      </th>
+                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
+                        {t('userDetail.paymentHistory.table.amount')}
+                      </th>
+                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
+                        {t('userDetail.paymentHistory.table.provider')}
+                      </th>
+                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider'>
+                        {t('userDetail.paymentHistory.table.code')}
+                      </th>
+                      <th className='px-6 py-4 font-bold text-xs text-muted-foreground uppercase tracking-wider text-center'>
+                        {t('userDetail.paymentHistory.table.status')}
+                      </th>
                     </tr>
                   </thead>
                   <tbody className='divide-y divide-border'>
@@ -317,7 +380,10 @@ export function AdminUserDetailPage() {
                         <td className='px-6 py-5 text-muted-foreground text-sm'>{pm.provider}</td>
                         <td className='px-6 py-5 font-mono text-primary font-bold text-sm'>{pm.code}</td>
                         <td className='px-6 py-5 text-center'>
-                          <span className='material-symbols-outlined text-primary bg-primary/10 rounded-full p-1.5' style={{ fontVariationSettings: "'FILL' 1" }}>
+                          <span
+                            className='material-symbols-outlined text-primary bg-primary/10 rounded-full p-1.5'
+                            style={{ fontVariationSettings: "'FILL' 1" }}
+                          >
                             check_circle
                           </span>
                         </td>
@@ -332,24 +398,40 @@ export function AdminUserDetailPage() {
       )}
 
       {showActivateModal && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4' onClick={() => !submitting && setShowActivateModal(false)}>
-          <div className='bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md relative animate-in fade-in zoom-in-95 duration-200' onClick={(e) => e.stopPropagation()}>
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4'
+          onClick={() => !submitting && setShowActivateModal(false)}
+        >
+          <div
+            className='bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md relative animate-in fade-in zoom-in-95 duration-200'
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className='p-8 border-b border-border'>
               <h3 className='text-2xl font-bold text-foreground'>{t('userDetail.subscription.activateTitle')}</h3>
               <p className='text-muted-foreground text-sm mt-2'>{t('userDetail.subscription.activateDesc')}</p>
             </div>
 
             <div className='p-8 space-y-4'>
-              <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider'>{t('userDetail.subscription.durationMonths')}</p>
+              <p className='text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                {t('userDetail.subscription.durationMonths')}
+              </p>
               <div className='grid grid-cols-3 gap-3'>
                 {[1, 3, 6].map((m) => (
-                  <button key={m} type='button' onClick={() => setSelectedDuration(m)} className={`py-3 rounded-xl font-bold text-sm border transition-all ${selectedDuration === m ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20' : 'bg-muted border-border text-foreground hover:border-primary/50 hover:bg-muted/80'}`}>
+                  <button
+                    key={m}
+                    type='button'
+                    onClick={() => setSelectedDuration(m)}
+                    className={`py-3 rounded-xl font-bold text-sm border transition-all ${selectedDuration === m ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20' : 'bg-muted border-border text-foreground hover:border-primary/50 hover:bg-muted/80'}`}
+                  >
                     {label(`${m} tháng`, `${m} months`)}
                   </button>
                 ))}
               </div>
               <div className='space-y-2'>
-                <label className='text-xs font-bold text-muted-foreground uppercase tracking-wider' htmlFor='admin-subscription-duration'>
+                <label
+                  className='text-xs font-bold text-muted-foreground uppercase tracking-wider'
+                  htmlFor='admin-subscription-duration'
+                >
                   {t('userDetail.subscription.customDuration')}
                 </label>
                 <input
@@ -366,10 +448,20 @@ export function AdminUserDetailPage() {
             </div>
 
             <div className='p-8 pt-0 flex gap-4'>
-              <button type='button' onClick={() => setShowActivateModal(false)} disabled={submitting} className='flex-1 py-3 border border-border text-foreground rounded-xl font-bold text-sm hover:bg-muted/50 transition-colors disabled:opacity-50'>
+              <button
+                type='button'
+                onClick={() => setShowActivateModal(false)}
+                disabled={submitting}
+                className='flex-1 py-3 border border-border text-foreground rounded-xl font-bold text-sm hover:bg-muted/50 transition-colors disabled:opacity-50'
+              >
                 {t('adminCommon.cancel')}
               </button>
-              <button type='button' onClick={() => void handleActivateSubscription()} disabled={submitting} className='flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50'>
+              <button
+                type='button'
+                onClick={() => void handleActivateSubscription()}
+                disabled={submitting}
+                className='flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50'
+              >
                 {submitting ? t('adminCommon.processing') : t('userDetail.subscription.confirmActivate')}
               </button>
             </div>

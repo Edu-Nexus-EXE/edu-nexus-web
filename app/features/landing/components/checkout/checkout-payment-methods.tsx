@@ -39,7 +39,9 @@ export function CheckoutPaymentMethods() {
             <span className='font-semibold text-foreground'>{t('checkout.paymentMethods.momo')}</span>
             <span className='text-sm text-muted-foreground'>{t('checkout.paymentMethods.momoDesc')}</span>
           </div>
-          <div className='w-8 h-8 rounded-md bg-brand-momo flex items-center justify-center text-brand-momo-foreground font-bold text-[10px]'>MOMO</div>
+          <div className='w-8 h-8 rounded-md bg-brand-momo flex items-center justify-center text-brand-momo-foreground font-bold text-[10px]'>
+            MOMO
+          </div>
         </label>
 
         {/* ZaloPay */}
@@ -53,7 +55,9 @@ export function CheckoutPaymentMethods() {
             <span className='font-semibold text-foreground'>{t('checkout.paymentMethods.zalo')}</span>
             <span className='text-sm text-muted-foreground'>{t('checkout.paymentMethods.zaloDesc')}</span>
           </div>
-          <div className='w-8 h-8 rounded-md bg-brand-zalo flex items-center justify-center text-brand-zalo-foreground font-bold text-[10px]'>Zalo</div>
+          <div className='w-8 h-8 rounded-md bg-brand-zalo flex items-center justify-center text-brand-zalo-foreground font-bold text-[10px]'>
+            Zalo
+          </div>
         </label>
 
         {/* Bank Transfer */}

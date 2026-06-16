@@ -69,7 +69,10 @@ export function LandingNavbar() {
                 {t('nav.dashboard')}
               </a>
             ) : (
-              <a href='/login' className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'>
+              <a
+                href='/login'
+                className='text-sm font-medium text-muted-foreground hover:text-primary transition-colors'
+              >
                 {t('nav.login')}
               </a>
             )}

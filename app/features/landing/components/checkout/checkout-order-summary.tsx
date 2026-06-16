@@ -7,7 +7,9 @@ export function CheckoutOrderSummary() {
   return (
     <aside className='lg:col-span-5 flex flex-col gap-6'>
       <div className='bg-card p-6 md:p-8 rounded-xl border border-border shadow-lg sticky top-8'>
-        <h2 className='text-xl font-bold mb-6 pb-4 border-b border-border text-foreground'>{t('checkout.summary.title')}</h2>
+        <h2 className='text-xl font-bold mb-6 pb-4 border-b border-border text-foreground'>
+          {t('checkout.summary.title')}
+        </h2>
 
         <div className='mb-6 p-4 rounded-lg bg-primary/5 border border-primary/10'>
           <div className='flex justify-between items-start mb-2'>
@@ -52,9 +54,15 @@ export function CheckoutOrderSummary() {
 
         <div className='flex flex-col items-center gap-4'>
           <div className='flex items-center gap-4 opacity-60 grayscale hover:grayscale-0 transition-all'>
-            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>VISA</div>
-            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>MASTER</div>
-            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>STRIPE</div>
+            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>
+              VISA
+            </div>
+            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>
+              MASTER
+            </div>
+            <div className='w-10 h-6 bg-muted rounded flex items-center justify-center text-[8px] font-bold border border-border text-foreground'>
+              STRIPE
+            </div>
           </div>
           <div className='flex items-center gap-2 text-xs text-muted-foreground'>
             <span className='material-symbols-outlined text-sm'>verified_user</span>

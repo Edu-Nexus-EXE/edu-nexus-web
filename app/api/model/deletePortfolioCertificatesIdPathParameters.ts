@@ -6,5 +6,5 @@
  */
 
 export type DeletePortfolioCertificatesIdPathParameters = {
- id: string,
- }
+  id: string
+}

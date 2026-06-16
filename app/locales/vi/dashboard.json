@@ -320,8 +320,10 @@
       "date": "Ngày phân tích",
       "match": "Mức độ khớp %",
       "skillsCount": "{{count}} kỹ năng",
+      "noGapAnalysis": "Chưa chạy phân tích khoảng cách",
       "actions": "Hành động",
       "viewAnalysis": "Xem phân tích",
+      "runAnalysis": "Chạy phân tích",
       "viewRoadmap": "Xem lộ trình",
       "detail": "Chi tiết"
     },
@@ -451,6 +453,10 @@
       "completed": "Hoàn thành",
       "markComplete": "Đánh dấu hoàn thành",
       "tierLabel": "Bước {{level}}",
+      "treeHeader": "Lộ trình",
+      "treeScrollHint": "← Cuộn ngang để xem thêm →",
+      "tierHeading": "Bước {{level}}",
+      "backToResources": "← Quay lại danh sách",
       "nodeStatus": {
         "completed": "Hoàn thành",
         "active": "Đang học",
@@ -575,10 +581,22 @@
     }
   },
   "certificates": {
-    "title": "Chứng chỉ",
+    "title": "Chứng chỉ & Hồ sơ năng lực",
+    "hero": {
+      "badge": "CHỨNG CHỈ & HỒ SƠ",
+      "title": "Chứng chỉ & Hồ sơ năng lực",
+      "subtitle": "Trưng bày chứng chỉ đã xác minh, các dự án tiêu biểu và trang hồ sơ công khai được xây dựng từ hoạt động Edu-Nexus của bạn.",
+      "public": "Công khai",
+      "private": "Riêng tư",
+      "edit": "Quản lý hồ sơ"
+    },
     "badges": {
       "title": "Huy hiệu thành tích",
-      "total": "Tổng số huy hiệu"
+      "total": "{{count}} huy hiệu",
+      "view": "Xem",
+      "emptyTitle": "Chưa có chứng chỉ nào",
+      "emptySubtitle": "Thêm chứng chỉ đã xác minh trong trình chỉnh sửa hồ sơ để hiển thị chúng ở đây.",
+      "addCta": "Thêm chứng chỉ"
     },
     "profile": {
       "verified": "Hồ sơ đã xác minh",
@@ -586,17 +604,28 @@
       "lookingForJob": "Sẵn sàng tìm việc",
       "headlineFallback": "Xây dựng hồ sơ Edu-Nexus đã xác minh từ thông tin cài đặt của bạn.",
       "visibleCertificates": "{{count}} chứng chỉ đang hiển thị",
+      "totalCertificates": "{{count}} chứng chỉ tổng cộng",
       "projects": "{{count}} dự án",
+      "skills": "{{count}} kỹ năng",
       "center": "Trung tâm xác minh",
       "centerDesc": "Chứng chỉ của bạn được xác minh và lưu trữ an toàn.",
       "secured": "Đã bảo mật",
-      "hash": "Mã xác minh"
+      "hash": "Mã xác minh",
+      "public": "Công khai",
+      "private": "Riêng tư"
     },
     "projects": {
       "title": "Dự án",
       "sourceCode": "Mã nguồn",
       "liveDemo": "Bản demo",
-      "caseStudy": "Nghiên cứu tình huống"
+      "caseStudy": "Nghiên cứu tình huống",
+      "public": "Công khai",
+      "hidden": "Đang ẩn",
+      "inProgress": "Đang thực hiện",
+      "total": "{{count}} dự án",
+      "emptyTitle": "Chưa có dự án nào",
+      "emptySubtitle": "Tạo các dự án tiêu biểu trong trình chỉnh sửa hồ sơ để trưng bày chúng ở đây.",
+      "addCta": "Thêm dự án"
     }
   }
 }

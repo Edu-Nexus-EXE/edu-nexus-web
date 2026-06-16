@@ -6,5 +6,5 @@
  */
 
 export type PatchRoadmapNodesNodeIdStatusPathParameters = {
- nodeId: string,
- }
+  nodeId: string
+}

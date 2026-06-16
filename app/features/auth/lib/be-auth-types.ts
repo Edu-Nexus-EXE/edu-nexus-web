@@ -71,7 +71,7 @@ export function mapAuthResponseToUser(data: AuthResponseData): AuthUser {
     email: data.email,
     fullName: data.fullName,
     role: data.role === 'admin' ? 'admin' : 'user',
-    isSurveyCompleted: data.isSurveyCompleted,
+    isSurveyCompleted: data.isSurveyCompleted
   }
 }
 
@@ -84,6 +84,6 @@ export function mapUserProfileToUser(profile: UserProfileResponseData): AuthUser
     isSurveyCompleted: profile.isSurveyCompleted,
     avatarUrl: profile.avatarUrl ?? undefined,
     portfolioUrlSlug: profile.portfolioUrlSlug ?? undefined,
-    subscription: profile.subscription ?? null,
+    subscription: profile.subscription ?? null
   }
 }

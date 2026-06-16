@@ -6,10 +6,10 @@
  */
 
 export type GetAdminResourcesParams = {
-type?: string;
-search?: string;
-needsReview?: boolean;
-isActive?: boolean;
-page?: number;
-pageSize?: number;
-};
+  type?: string
+  search?: string
+  needsReview?: boolean
+  isActive?: boolean
+  page?: number
+  pageSize?: number
+}

@@ -7,5 +7,5 @@
 
 export interface GoogleLoginRequest {
   /** @nullable */
-  idToken?: string | null;
+  idToken?: string | null
 }

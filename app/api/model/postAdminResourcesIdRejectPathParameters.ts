@@ -6,5 +6,5 @@
  */
 
 export type PostAdminResourcesIdRejectPathParameters = {
- id: string,
- }
+  id: string
+}

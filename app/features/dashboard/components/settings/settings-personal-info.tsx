@@ -28,7 +28,7 @@ type FormState = {
 const TIER_LABELS: Record<string, { vi: string; en: string }> = {
   free: { vi: 'Miễn phí', en: 'Free' },
   student: { vi: 'Sinh viên', en: 'Student' },
-  pro: { vi: 'Pro', en: 'Pro' },
+  pro: { vi: 'Pro', en: 'Pro' }
 }
 
 function getTierLabel(tierCode: string | undefined, lang: string): string {
@@ -42,7 +42,7 @@ function createInitialState(user: AuthUser): FormState {
   return {
     fullName: user.fullName,
     portfolioUrlSlug: user.portfolioUrlSlug ?? '',
-    avatarUrl: user.avatarUrl ?? '',
+    avatarUrl: user.avatarUrl ?? ''
   }
 }
 
@@ -77,7 +77,7 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
     const payload: UpdateCurrentUserRequest = {
       fullName: form.fullName.trim(),
       portfolioUrlSlug: normalizeSlug(form.portfolioUrlSlug) || null,
-      avatarUrl: form.avatarUrl.trim() || null,
+      avatarUrl: form.avatarUrl.trim() || null
     }
 
     try {
@@ -87,7 +87,7 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
         ...user,
         fullName: payload.fullName ?? user.fullName,
         portfolioUrlSlug: payload.portfolioUrlSlug ?? undefined,
-        avatarUrl: payload.avatarUrl ?? undefined,
+        avatarUrl: payload.avatarUrl ?? undefined
       }
 
       const nextSession: AuthSession = {
@@ -95,8 +95,8 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
         user: {
           ...session.user,
           ...mapped,
-          subscription: mapped.subscription ?? session.user.subscription ?? null,
-        },
+          subscription: mapped.subscription ?? session.user.subscription ?? null
+        }
       }
 
       setAuthSession(nextSession)
@@ -191,7 +191,9 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
           <div className='rounded-2xl border border-border bg-muted/20 p-4'>
             <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
               <div className='space-y-2'>
-                <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${getSurveyStatusTone(user.isSurveyCompleted)}`}>
+                <span
+                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${getSurveyStatusTone(user.isSurveyCompleted)}`}
+                >
                   {user.isSurveyCompleted ? t('personal.survey.completed') : t('personal.survey.pending')}
                 </span>
                 <p className='text-sm text-muted-foreground'>{t('personal.survey.description')}</p>
@@ -207,9 +209,7 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
         </div>
       </div>
 
-      <div className='mt-10 text-xs text-muted-foreground'>
-        {t('personal.note')}
-      </div>
+      <div className='mt-10 text-xs text-muted-foreground'>{t('personal.note')}</div>
     </section>
   )
 }

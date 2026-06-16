@@ -7,5 +7,5 @@
 
 export interface StartAssessmentSessionRequest {
   /** @nullable */
-  reuseSessionId?: string | null;
+  reuseSessionId?: string | null
 }

@@ -6,5 +6,5 @@
  */
 
 export type GetAdminUsersIdPathParameters = {
- id: string,
- }
+  id: string
+}

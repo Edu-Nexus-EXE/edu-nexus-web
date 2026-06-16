@@ -13,7 +13,9 @@
   "plans": {
     "perMonth": "/month",
     "unlimited": "Unlimited",
+    "capPlus": "{{count}}+",
     "currentPlan": "Current plan",
+    "currentPlanBadge": "Your current plan",
     "processing": "Processing...",
     "paymentRedirectMissing": "The order was created but the system did not return an automatic payment redirect URL.",
     "paymentManualFallback": "You can review the order history below or wait until the backend completes the provider-managed checkout flow.",
@@ -71,7 +73,44 @@
     "message": "Quota exceeded",
     "quotaType": "Quota type:",
     "usage": "Usage:",
+    "unlimited": "(unlimited)",
     "close": "Close",
     "upgrade": "Upgrade plan"
+  },
+  "checkout": {
+    "creating": "Creating your order...",
+    "title": "Scan QR to complete payment",
+    "subtitle": "Use your banking app to scan the QR code below.",
+    "qrAlt": "VietQR payment code",
+    "bank": "Bank",
+    "accountName": "Account name",
+    "amount": "Amount",
+    "content": "Transfer content",
+    "copy": "Copy",
+    "copied": "Copied",
+    "hint": "Keep the transfer content unchanged. Your plan will activate 1–2 minutes after we receive the payment.",
+    "waiting": "Waiting for payment confirmation...",
+    "minimize": "Minimize and wait",
+    "success": "Upgrade successful",
+    "successHint": "Your Student plan is now active.",
+    "goDashboard": "Continue to dashboard",
+    "expired": "The order has expired. Please try creating a new one.",
+    "tryAgain": "Try again",
+    "error": "Could not create the order. Please retry.",
+    "close": "Close"
+  },
+  "banners": {
+    "nearLimit": "You're approaching the {{type}} limit ({{used}}/{{limit}}, {{left}} left). Upgrade to Student for unlimited usage.",
+    "expiringToday": "Your Student plan expires today. Renew now to keep unlimited access.",
+    "expiringSoon": "Your Student plan expires in {{days}} days. Renew now to keep unlimited access.",
+    "quotaTypes": {
+      "jd": "JD submissions",
+      "gapAnalysis": "Gap analyses",
+      "assessment": "Assessments",
+      "roadmapActive": "Active roadmaps",
+      "careerTrack": "Career tracks",
+      "portfolioCertificate": "Portfolio certificates",
+      "portfolioProject": "Portfolio projects"
+    }
   }
 }

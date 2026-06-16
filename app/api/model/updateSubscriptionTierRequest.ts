@@ -7,23 +7,23 @@
 
 export interface UpdateSubscriptionTierRequest {
   /** @nullable */
-  priceMonthly?: number | null;
+  priceMonthly?: number | null
   /** @nullable */
-  jdQuota?: number | null;
+  jdQuota?: number | null
   /** @nullable */
-  gapAnalysisQuota?: number | null;
+  gapAnalysisQuota?: number | null
   /** @nullable */
-  assessmentQuota?: number | null;
+  assessmentQuota?: number | null
   /** @nullable */
-  roadmapActiveQuota?: number | null;
+  roadmapActiveQuota?: number | null
   /** @nullable */
-  careerTrackQuota?: number | null;
+  careerTrackQuota?: number | null
   /** @nullable */
-  portfolioCertificateQuota?: number | null;
+  portfolioCertificateQuota?: number | null
   /** @nullable */
-  portfolioProjectQuota?: number | null;
+  portfolioProjectQuota?: number | null
   /** @nullable */
-  fullGapHistory?: boolean | null;
+  fullGapHistory?: boolean | null
   /** @nullable */
-  isActive?: boolean | null;
+  isActive?: boolean | null
 }

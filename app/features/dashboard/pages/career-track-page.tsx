@@ -17,7 +17,7 @@ import {
   putCareerTracksId,
   type CareerTrackDetailView,
   type CareerTrackView,
-  type JdRecentItem,
+  type JdRecentItem
 } from '../lib/sprint2-api'
 
 function getResponseId(response: unknown) {
@@ -61,7 +61,7 @@ export function CareerTrackPage() {
 
   const selectedTrack = useMemo(
     () => tracks.find((track) => track.id === selectedId) ?? tracks[0] ?? null,
-    [selectedId, tracks],
+    [selectedId, tracks]
   )
   const selectableJds = useMemo(() => {
     const usedIds = new Set((detail?.jds ?? []).map((jd) => jd.id))
@@ -79,9 +79,7 @@ export function CareerTrackPage() {
 
     const preferredId = nextSelectedId ?? selectedId
     const nextSelected =
-      preferredId && nextTracks.some((track) => track.id === preferredId)
-        ? preferredId
-        : nextTracks[0]?.id ?? null
+      preferredId && nextTracks.some((track) => track.id === preferredId) ? preferredId : (nextTracks[0]?.id ?? null)
 
     setSelectedId(nextSelected)
     return nextTracks
@@ -95,7 +93,9 @@ export function CareerTrackPage() {
         if (cancelled) return
         const items = res.data ?? []
         setTracks(items)
-        setSelectedId(routeTrackId && items.some((track) => track.id === routeTrackId) ? routeTrackId : items[0]?.id ?? null)
+        setSelectedId(
+          routeTrackId && items.some((track) => track.id === routeTrackId) ? routeTrackId : (items[0]?.id ?? null)
+        )
         setError(res.error)
       })
       .catch((err) => {
@@ -184,7 +184,7 @@ export function CareerTrackPage() {
       setError(null)
       const payload: CreateCareerTrackCommand = {
         name: createName.trim(),
-        description: createDescription.trim() || null,
+        description: createDescription.trim() || null
       }
       const response = await postCareerTracks(payload)
       const nextId = getResponseId(response)
@@ -212,7 +212,7 @@ export function CareerTrackPage() {
       const payload: UpdateCareerTrackCommand = {
         id: selectedTrack.id,
         name: editName.trim(),
-        description: editDescription.trim() || null,
+        description: editDescription.trim() || null
       }
       await putCareerTracksId({ id: selectedTrack.id }, payload)
       await refreshTracks(selectedTrack.id)
@@ -252,7 +252,7 @@ export function CareerTrackPage() {
       setError(null)
       const payload: AddJdToCareerTrackCommand = {
         careerTrackId: selectedTrack.id,
-        jdId: jdInput.trim(),
+        jdId: jdInput.trim()
       }
       await postCareerTracksIdJds({ id: selectedTrack.id }, payload)
       setJdInput('')
@@ -286,7 +286,9 @@ export function CareerTrackPage() {
 
       <div className='flex flex-col justify-between gap-4 md:flex-row md:items-end'>
         <div>
-          <h2 className='text-3xl font-extrabold tracking-tight text-foreground'>{t('learningPath.careerTrack.title')}</h2>
+          <h2 className='text-3xl font-extrabold tracking-tight text-foreground'>
+            {t('learningPath.careerTrack.title')}
+          </h2>
           <p className='mt-1 text-muted-foreground'>{t('learningPath.careerTrack.subtitle')}</p>
         </div>
         {isSpecDetailRoute ? (
@@ -301,7 +303,9 @@ export function CareerTrackPage() {
       </div>
 
       {error ? (
-        <div className='rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>{error}</div>
+        <div className='rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>
+          {error}
+        </div>
       ) : null}
 
       <div className='grid grid-cols-1 gap-6 xl:grid-cols-[340px_minmax(0,1fr)]'>
@@ -373,13 +377,17 @@ export function CareerTrackPage() {
                     <div className='flex items-start justify-between gap-3'>
                       <div className='min-w-0'>
                         <div className='truncate font-bold text-foreground'>{track.name}</div>
-                        <div className='mt-1 text-xs text-muted-foreground'>{t('learningPath.careerTrack.trackMeta', { count: track.jdCount })}</div>
+                        <div className='mt-1 text-xs text-muted-foreground'>
+                          {t('learningPath.careerTrack.trackMeta', { count: track.jdCount })}
+                        </div>
                       </div>
                       <span className='rounded-full bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary'>
                         {track.progress}%
                       </span>
                     </div>
-                    {track.description ? <div className='mt-2 line-clamp-2 text-xs text-muted-foreground'>{track.description}</div> : null}
+                    {track.description ? (
+                      <div className='mt-2 line-clamp-2 text-xs text-muted-foreground'>{track.description}</div>
+                    ) : null}
                   </button>
                 ))
               )}
@@ -410,7 +418,11 @@ export function CareerTrackPage() {
                     {detail?.description || selectedTrack.description || t('learningPath.careerTrack.noDescription')}
                   </p>
                   <div className='mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground'>
-                    <span>{t('learningPath.careerTrack.createdAt', { date: formatDate(detail?.createdAt ?? selectedTrack.createdAt) })}</span>
+                    <span>
+                      {t('learningPath.careerTrack.createdAt', {
+                        date: formatDate(detail?.createdAt ?? selectedTrack.createdAt)
+                      })}
+                    </span>
                     <span>{t('learningPath.careerTrack.overallProgress', { progress: selectedTrack.progress })}</span>
                   </div>
                 </div>
@@ -468,7 +480,9 @@ export function CareerTrackPage() {
               <div className='space-y-4 border-t border-border pt-6'>
                 <div className='flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
                   <div>
-                    <h4 className='text-lg font-semibold text-foreground'>{t('learningPath.careerTrack.jdListTitle')}</h4>
+                    <h4 className='text-lg font-semibold text-foreground'>
+                      {t('learningPath.careerTrack.jdListTitle')}
+                    </h4>
                     <p className='text-sm text-muted-foreground'>{t('learningPath.careerTrack.jdListSubtitle')}</p>
                   </div>
                   {canManage ? (
@@ -478,9 +492,7 @@ export function CareerTrackPage() {
                         onChange={(e) => setJdInput(e.target.value)}
                         className='min-w-0 flex-1 rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary'
                       >
-                        <option value=''>
-                          {jdsLoading ? 'Đang tải JD đã phân tích...' : 'Chọn JD đã phân tích'}
-                        </option>
+                        <option value=''>{jdsLoading ? 'Đang tải JD đã phân tích...' : 'Chọn JD đã phân tích'}</option>
                         {selectableJds.map((jd) => (
                           <option key={jd.id} value={jd.id}>
                             {jd.jobTitle} · {formatDate(jd.createdAt)}
@@ -513,7 +525,9 @@ export function CareerTrackPage() {
                     <div className='font-semibold text-foreground'>{t('learningPath.careerTrack.emptyJds')}</div>
                     {canManage ? (
                       <div className='mt-2 text-muted-foreground'>
-                        {selectableJds.length > 0 ? 'Chọn một JD đã phân tích ở phía trên để thêm vào lộ trình.' : 'Chưa có JD parse hoàn tất hoặc tất cả đã nằm trong lộ trình này.'}
+                        {selectableJds.length > 0
+                          ? 'Chọn một JD đã phân tích ở phía trên để thêm vào lộ trình.'
+                          : 'Chưa có JD parse hoàn tất hoặc tất cả đã nằm trong lộ trình này.'}
                       </div>
                     ) : null}
                   </div>
@@ -530,8 +544,12 @@ export function CareerTrackPage() {
                               {jd.title}
                             </Link>
                             <div className='mt-1 flex flex-wrap gap-3 text-xs text-muted-foreground'>
-                              <span>{t('learningPath.careerTrack.jdRoadmapProgress', { progress: jd.roadmapProgress })}</span>
-                              <span>{t('learningPath.careerTrack.roadmapStatus', { status: jd.roadmapStatus ?? 'None' })}</span>
+                              <span>
+                                {t('learningPath.careerTrack.jdRoadmapProgress', { progress: jd.roadmapProgress })}
+                              </span>
+                              <span>
+                                {t('learningPath.careerTrack.roadmapStatus', { status: jd.roadmapStatus ?? 'None' })}
+                              </span>
                               <span>{t('learningPath.careerTrack.addedAt', { date: formatDate(jd.addedAt) })}</span>
                             </div>
                           </div>

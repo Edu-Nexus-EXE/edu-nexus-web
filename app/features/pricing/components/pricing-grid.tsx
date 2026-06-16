@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSearchParams } from 'react-router'
 
 import { cn } from '~/shared/lib/cn'
+import { formatDate } from '~/shared/lib/format-date'
 
-import { createSubscriptionOrder, loadCurrentSubscription, loadSubscriptionOrders, loadSubscriptionTiers, type PricingTierView, type SubscriptionOrderView, type SubscriptionView } from '../lib/subscription'
+import { CheckoutQrModal } from '../components/checkout-qr-modal'
+import { SubscriptionBanner } from '../components/subscription-banner'
+import {
+  loadCurrentSubscription,
+  loadSubscriptionOrders,
+  loadSubscriptionTiers,
+  type PricingTierView,
+  type SubscriptionOrderView,
+  type SubscriptionView
+} from '../lib/subscription'
 
 type FeatureItemView = {
   label: string
@@ -16,7 +25,7 @@ function formatCurrency(value: number, locale: string) {
   return new Intl.NumberFormat(locale === 'vi' ? 'vi-VN' : 'en-US', {
     style: 'currency',
     currency: 'VND',
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(value)
 }
 
@@ -46,14 +55,29 @@ function FeatureItem({ label, disabled, bold }: FeatureItemView) {
 
 function buildFeatures(t: ReturnType<typeof useTranslation>['t'], tier: PricingTierView): FeatureItemView[] {
   const unlimited = t('plans.unlimited', { ns: 'subscription' })
-  const quotaOrUnlimited = (value: number) => (value < 0 || value >= 999 ? unlimited : String(value))
+  const quotaOrLimit = (value: number) => {
+    if (value < 0) return unlimited
+    if (value >= 50) return t('plans.capPlus', { ns: 'subscription', count: 50 })
+    return String(value)
+  }
 
   return [
-    { label: t('plans.features.jdQuota', { ns: 'subscription', count: quotaOrUnlimited(tier.jdQuota) }) },
-    { label: t('plans.features.roadmapQuota', { ns: 'subscription', count: quotaOrUnlimited(tier.roadmapQuota) }) },
-    { label: t('plans.features.assessmentQuota', { ns: 'subscription', count: quotaOrUnlimited(tier.assessmentQuota) }) },
-    { label: t('plans.features.portfolioProjects', { ns: 'subscription', count: quotaOrUnlimited(tier.portfolioProjectQuota) }) },
-    { label: t('plans.features.fullGapHistory', { ns: 'subscription' }), disabled: !tier.fullGapHistory, bold: tier.fullGapHistory },
+    { label: t('plans.features.jdQuota', { ns: 'subscription', count: quotaOrLimit(tier.jdQuota) }) },
+    { label: t('plans.features.roadmapQuota', { ns: 'subscription', count: quotaOrLimit(tier.roadmapQuota) }) },
+    {
+      label: t('plans.features.assessmentQuota', { ns: 'subscription', count: quotaOrLimit(tier.assessmentQuota) })
+    },
+    {
+      label: t('plans.features.portfolioProjects', {
+        ns: 'subscription',
+        count: quotaOrLimit(tier.portfolioProjectQuota)
+      })
+    },
+    {
+      label: t('plans.features.fullGapHistory', { ns: 'subscription' }),
+      disabled: !tier.fullGapHistory,
+      bold: tier.fullGapHistory
+    }
   ]
 }
 
@@ -62,18 +86,18 @@ function TierCard({
   current,
   locale,
   t,
-  busyTier,
+  isSubmitting,
   selectedDuration,
   onDurationChange,
-  onSelect,
+  onSelect
 }: {
   tier: PricingTierView
   current: SubscriptionView | null
   locale: string
   t: ReturnType<typeof useTranslation>['t']
-  busyTier: string | null
-  selectedDuration: number
-  onDurationChange: (months: number) => void
+  isSubmitting: boolean
+  selectedDuration: 1 | 3 | 6
+  onDurationChange: (months: 1 | 3 | 6) => void
   onSelect: (tierCode: string) => void
 }) {
   const isCurrent = current?.tierCode?.toLowerCase() === tier.code.toLowerCase()
@@ -84,11 +108,20 @@ function TierCard({
     <div
       className={cn(
         'flex flex-col gap-6 rounded-xl bg-card p-8 transition-all duration-300',
-        isPopular ? 'border-2 border-primary shadow-2xl shadow-primary/10 scale-[1.02] z-10' : 'border border-border hover:border-primary/30'
+        isPopular
+          ? 'border-2 border-primary shadow-2xl shadow-primary/10 scale-[1.02] z-10'
+          : isCurrent
+            ? 'border-2 border-primary shadow-lg shadow-primary/5'
+            : 'border border-border hover:border-primary/30'
       )}
     >
       <div className='flex flex-col gap-2 relative'>
-        {isPopular ? (
+        {isCurrent ? (
+          <div className='absolute -top-12 left-0 inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full'>
+            <span className='material-symbols-outlined text-sm'>verified</span>
+            {t('plans.currentPlanBadge', { ns: 'subscription' })}
+          </div>
+        ) : isPopular ? (
           <div className='absolute -top-12 left-0 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest px-4 py-1 rounded-full'>
             {t('plans.student.badge', { ns: 'subscription' })}
           </div>
@@ -96,16 +129,21 @@ function TierCard({
         <h3 className='text-foreground text-lg font-bold'>{tier.name}</h3>
         <p className={cn('flex items-baseline gap-1', isPopular ? 'text-primary' : 'text-foreground')}>
           <span className='text-4xl font-black tracking-tight'>{formatCurrency(tier.priceMonthly, locale)}</span>
-          <span className='text-muted-foreground text-sm font-medium'>{t('plans.perMonth', { ns: 'subscription' })}</span>
+          <span className='text-muted-foreground text-sm font-medium'>
+            {t('plans.perMonth', { ns: 'subscription' })}
+          </span>
         </p>
         <p className='text-muted-foreground text-sm mt-2'>
-          {t(`plans.${tier.code}.description` as const, { ns: 'subscription', defaultValue: t('plans.student.description', { ns: 'subscription' }) })}
+          {t(`plans.${tier.code}.description` as const, {
+            ns: 'subscription',
+            defaultValue: t('plans.student.description', { ns: 'subscription' })
+          })}
         </p>
       </div>
 
       <button
         type='button'
-        disabled={busyTier === tier.code || isCurrent || !tier.active}
+        disabled={isSubmitting || isCurrent || !tier.active}
         onClick={() => onSelect(tier.code)}
         className={cn(
           'flex w-full items-center justify-center rounded-lg h-12 px-6 text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card',
@@ -119,9 +157,12 @@ function TierCard({
       >
         {isCurrent
           ? t('plans.currentPlan', { ns: 'subscription' })
-          : busyTier === tier.code
+          : isSubmitting
             ? t('plans.processing', { ns: 'subscription' })
-            : t(`plans.${tier.code}.button` as const, { ns: 'subscription', defaultValue: t('plans.student.button', { ns: 'subscription' }) })}
+            : t(`plans.${tier.code}.button` as const, {
+                ns: 'subscription',
+                defaultValue: t('plans.student.button', { ns: 'subscription' })
+              })}
       </button>
 
       <div className='space-y-4 pt-4'>
@@ -131,7 +172,7 @@ function TierCard({
               {t('plans.duration.label', { ns: 'subscription' })}
             </p>
             <div className='mt-3 grid grid-cols-3 gap-2'>
-              {[1, 3, 6].map((months) => (
+              {([1, 3, 6] as const).map((months) => (
                 <button
                   key={months}
                   type='button'
@@ -143,7 +184,10 @@ function TierCard({
                       : 'border-border bg-background text-foreground hover:bg-muted/40'
                   )}
                 >
-                  {t(`plans.duration.options.${months}` as const, { ns: 'subscription', defaultValue: `${months} months` })}
+                  {t(`plans.duration.options.${months}` as const, {
+                    ns: 'subscription',
+                    defaultValue: `${months} months`
+                  })}
                 </button>
               ))}
             </div>
@@ -157,7 +201,15 @@ function TierCard({
   )
 }
 
-function OrderHistory({ orders, locale, t }: { orders: SubscriptionOrderView[]; locale: string; t: ReturnType<typeof useTranslation>['t'] }) {
+function OrderHistory({
+  orders,
+  locale,
+  t
+}: {
+  orders: SubscriptionOrderView[]
+  locale: string
+  t: ReturnType<typeof useTranslation>['t']
+}) {
   return (
     <section className='w-full max-w-[1100px] mt-16 rounded-2xl border border-border bg-card p-8 shadow-sm'>
       <div className='flex items-center justify-between gap-4 mb-6'>
@@ -178,12 +230,16 @@ function OrderHistory({ orders, locale, t }: { orders: SubscriptionOrderView[]; 
       ) : (
         <div className='space-y-3'>
           {orders.map((order) => (
-            <article key={order.id} className='rounded-xl border border-border bg-background px-4 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+            <article
+              key={order.id}
+              className='rounded-xl border border-border bg-background px-4 py-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between'
+            >
               <div className='space-y-2'>
                 <div>
                   <p className='font-semibold text-foreground'>{order.id}</p>
                   <p className='text-sm text-muted-foreground'>
-                    {new Date(order.createdAt).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US')} • {order.paymentMethod}
+                    {new Date(order.createdAt).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US')} •{' '}
+                    {order.paymentMethod}
                   </p>
                 </div>
                 <div className='flex flex-wrap gap-2'>
@@ -207,7 +263,9 @@ function OrderHistory({ orders, locale, t }: { orders: SubscriptionOrderView[]; 
               <div className='flex flex-col items-start gap-3 md:items-end'>
                 <div className='flex items-center gap-3'>
                   <span className='font-bold text-foreground'>{formatCurrency(order.amount, locale)}</span>
-                  <span className={cn('px-3 py-1 rounded-full text-xs font-semibold border', statusTone(order.status))}>{order.status}</span>
+                  <span className={cn('px-3 py-1 rounded-full text-xs font-semibold border', statusTone(order.status))}>
+                    {order.status}
+                  </span>
                 </div>
                 {order.paymentUrl ? (
                   <a
@@ -229,17 +287,20 @@ function OrderHistory({ orders, locale, t }: { orders: SubscriptionOrderView[]; 
 
 export function PricingGrid() {
   const { t, i18n } = useTranslation(['pricing', 'subscription'])
-  const [searchParams] = useSearchParams()
   const locale = i18n.language ?? 'vi'
 
   const [tiers, setTiers] = useState<PricingTierView[]>([])
   const [current, setCurrent] = useState<SubscriptionView | null>(null)
   const [orders, setOrders] = useState<SubscriptionOrderView[]>([])
-  const [selectedDuration, setSelectedDuration] = useState(1)
-  const [busyTier, setBusyTier] = useState<string | null>(null)
+  const [selectedDuration, setSelectedDuration] = useState<1 | 3 | 6>(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [orderNotice, setOrderNotice] = useState('')
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
+
+  async function refreshCurrent() {
+    const next = await loadCurrentSubscription()
+    setCurrent(next)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -269,72 +330,17 @@ export function PricingGrid() {
     return [...tiers].sort((a, b) => order.indexOf(a.code) - order.indexOf(b.code))
   }, [tiers])
 
-  const paymentState = searchParams.get('payment')
-  const paymentFeedback = useMemo(() => {
-    if (paymentState === 'success') {
-      return {
-        orderNotice: t('orders.paymentSuccess', { ns: 'subscription' }),
-        error: '',
-      }
-    }
-
-    if (paymentState === 'failed' || paymentState === 'cancelled') {
-      return {
-        orderNotice: '',
-        error: t('orders.paymentFailed', { ns: 'subscription' }),
-      }
-    }
-
-    return {
-      orderNotice: '',
-      error: '',
-    }
-  }, [paymentState, t])
-
-  async function handleSelectTier(tierCode: string) {
-    setBusyTier(tierCode)
+  function handleSelectTier(tierCode: string) {
     setError('')
-    setOrderNotice('')
-    try {
-      const result = await createSubscriptionOrder({ tierCode, durationMonths: tierCode === 'free' ? 1 : selectedDuration })
-      if (result.paymentUrl && typeof window !== 'undefined') {
-        window.location.href = result.paymentUrl
-        return
-      }
-
-      if (result.orderId) {
-        const amountLabel = typeof result.amount === 'number' ? formatCurrency(result.amount, locale) : '—'
-        const fallbackStatus = result.status ?? 'pending'
-        setOrderNotice(
-          `${t('orders.createdFallback', {
-            ns: 'subscription',
-            orderId: result.orderId,
-            status: fallbackStatus,
-            amount: amountLabel,
-          })}. ${t('plans.paymentManualFallback', { ns: 'subscription' })}`
-        )
-        setOrders((prev) => [
-          {
-            id: result.orderId ?? `fallback-${Date.now()}`,
-            amount: result.amount ?? 0,
-            status: fallbackStatus,
-            paymentMethod: result.paymentProvider ?? 'Online',
-            createdAt: new Date().toISOString(),
-            paymentUrl: null,
-            currency: result.currency,
-            provider: result.paymentProvider,
-          },
-          ...prev,
-        ])
-        return
-      }
-
-      setError(t('plans.paymentRedirectMissing', { ns: 'subscription' }))
-    } catch (e) {
-      setError((e as Error).message || t('errors.orderFailed', { ns: 'subscription' }))
-    } finally {
-      setBusyTier(null)
+    if (tierCode === 'student') {
+      setCheckoutOpen(true)
+      return
     }
+    setError(t('plans.paymentRedirectMissing', { ns: 'subscription' }))
+  }
+
+  async function handleCheckoutSuccess() {
+    await Promise.all([refreshCurrent(), loadSubscriptionOrders().then(setOrders)])
   }
 
   return (
@@ -343,18 +349,25 @@ export function PricingGrid() {
         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-3'>
           <div>
             <p className='text-sm font-semibold text-primary'>{t('currentPlan.label', { ns: 'subscription' })}</p>
-            <h2 className='text-xl font-black text-foreground mt-1'>{current?.displayName ?? t('currentPlan.freeFallback', { ns: 'subscription' })}</h2>
+            <h2 className='text-xl font-black text-foreground mt-1'>
+              {current?.displayName ?? t('currentPlan.freeFallback', { ns: 'subscription' })}
+            </h2>
           </div>
           <div className='text-sm text-muted-foreground'>
             {current?.expiresAt
-              ? t('currentPlan.expiresAt', { ns: 'subscription', date: current.expiresAt })
+              ? t('currentPlan.expiresAt', { ns: 'subscription', date: formatDate(current.expiresAt, locale) })
               : t('currentPlan.noExpiry', { ns: 'subscription' })}
           </div>
         </div>
       </div>
 
-      {error || paymentFeedback.error ? <div className='w-full max-w-[1100px] mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>{error || paymentFeedback.error}</div> : null}
-      {orderNotice || paymentFeedback.orderNotice ? <div className='w-full max-w-[1100px] mb-6 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary'>{orderNotice || paymentFeedback.orderNotice}</div> : null}
+      <SubscriptionBanner subscription={current} className='mb-6' />
+
+      {error ? (
+        <div className='w-full max-w-[1100px] mb-6 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+          {error}
+        </div>
+      ) : null}
 
       {loading ? (
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-[1100px]'>
@@ -371,7 +384,7 @@ export function PricingGrid() {
               current={current}
               locale={locale}
               t={t}
-              busyTier={busyTier}
+              isSubmitting={false}
               selectedDuration={selectedDuration}
               onDurationChange={setSelectedDuration}
               onSelect={handleSelectTier}
@@ -381,6 +394,14 @@ export function PricingGrid() {
       )}
 
       <OrderHistory orders={orders} locale={locale} t={t} />
+
+      {checkoutOpen ? (
+        <CheckoutQrModal
+          durationMonths={selectedDuration}
+          onClose={() => setCheckoutOpen(false)}
+          onSuccess={() => void handleCheckoutSuccess()}
+        />
+      ) : null}
     </>
   )
 }

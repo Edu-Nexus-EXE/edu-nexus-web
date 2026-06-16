@@ -6,5 +6,5 @@
  */
 
 export type PostRoadmapsIdRegeneratePathParameters = {
- id: string,
- }
+  id: string
+}

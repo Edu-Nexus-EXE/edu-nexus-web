@@ -23,7 +23,7 @@ function buildScholarships(t: ReturnType<typeof useTranslation>['t']): Scholarsh
       strengths: [
         t('market.items.aiMaster.strength1'),
         t('market.items.aiMaster.strength2'),
-        t('market.items.aiMaster.strength3'),
+        t('market.items.aiMaster.strength3')
       ],
       missing: [t('market.items.aiMaster.missing1'), t('market.items.aiMaster.missing2')],
       aiSuggestion: (
@@ -34,7 +34,7 @@ function buildScholarships(t: ReturnType<typeof useTranslation>['t']): Scholarsh
           </span>{' '}
           {t('market.items.aiMaster.suggestionAfter')}
         </>
-      ),
+      )
     },
     {
       id: '2',
@@ -55,9 +55,9 @@ function buildScholarships(t: ReturnType<typeof useTranslation>['t']): Scholarsh
       missing: [
         t('market.items.womenTech.missing1'),
         t('market.items.womenTech.missing2'),
-        t('market.items.womenTech.missing3'),
+        t('market.items.womenTech.missing3')
       ],
-      aiSuggestion: <>{t('market.items.womenTech.suggestion')}</>,
+      aiSuggestion: <>{t('market.items.womenTech.suggestion')}</>
     },
     {
       id: '3',
@@ -75,11 +75,11 @@ function buildScholarships(t: ReturnType<typeof useTranslation>['t']): Scholarsh
       strengths: [
         t('market.items.dataScience.strength1'),
         t('market.items.dataScience.strength2'),
-        t('market.items.dataScience.strength3'),
+        t('market.items.dataScience.strength3')
       ],
       missing: [t('market.items.dataScience.missing1')],
-      aiSuggestion: <>{t('market.items.dataScience.suggestion')}</>,
-    },
+      aiSuggestion: <>{t('market.items.dataScience.suggestion')}</>
+    }
   ]
 }
 

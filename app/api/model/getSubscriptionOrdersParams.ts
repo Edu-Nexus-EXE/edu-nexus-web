@@ -6,7 +6,7 @@
  */
 
 export type GetSubscriptionOrdersParams = {
-page?: number;
-pageSize?: number;
-status?: string;
-};
+  page?: number
+  pageSize?: number
+  status?: string
+}

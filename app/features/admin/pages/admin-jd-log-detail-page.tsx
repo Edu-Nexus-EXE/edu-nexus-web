@@ -189,18 +189,27 @@ export function AdminJdLogDetailPage() {
 
       {/* Floating Footer Actions */}
       <div className='pb-12 flex flex-col md:flex-row items-center gap-4'>
-        <button aria-label={t('jdLogDetail.actions.retry')} className='w-full md:w-auto px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
+        <button
+          aria-label={t('jdLogDetail.actions.retry')}
+          className='w-full md:w-auto px-8 py-3.5 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'
+        >
           <span className='material-symbols-outlined' style={{ fontVariationSettings: "'FILL' 1" }}>
             refresh
           </span>
           {t('jdLogDetail.actions.retry')}
         </button>
-        <button aria-label={t('jdLogDetail.actions.edit')} className='w-full md:w-auto px-8 py-3.5 border border-primary text-primary rounded-xl font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'>
+        <button
+          aria-label={t('jdLogDetail.actions.edit')}
+          className='w-full md:w-auto px-8 py-3.5 border border-primary text-primary rounded-xl font-bold hover:bg-primary/5 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer'
+        >
           <span className='material-symbols-outlined'>edit_note</span>
           {t('jdLogDetail.actions.edit')}
         </button>
         <div className='flex-1' />
-        <button aria-label={t('jdLogDetail.actions.delete')} className='w-full md:w-auto px-6 py-3.5 text-destructive font-semibold flex items-center justify-center gap-2 hover:bg-destructive/10 rounded-xl transition-all cursor-pointer'>
+        <button
+          aria-label={t('jdLogDetail.actions.delete')}
+          className='w-full md:w-auto px-6 py-3.5 text-destructive font-semibold flex items-center justify-center gap-2 hover:bg-destructive/10 rounded-xl transition-all cursor-pointer'
+        >
           <span className='material-symbols-outlined'>delete</span>
           {t('jdLogDetail.actions.delete')}
         </button>

@@ -31,10 +31,30 @@ export function LearningPathStats() {
   const hours = tracks.reduce((sum, track) => sum + (track.progress ?? 0) * 2, 0)
 
   const cards = [
-    { key: 'total', label: t('learningPath.stats.total'), value: loading ? '--' : String(total), badge: t('learningPath.stats.totalSub') },
-    { key: 'completed', label: t('learningPath.stats.completed'), value: loading ? '--' : String(completed), badge: loading || total === 0 ? '--' : `${((completed / Math.max(total, 1)) * 100).toFixed(1)}%` },
-    { key: 'certificates', label: t('learningPath.stats.certificates'), value: loading ? '--' : String(certificates), badge: 'verified' },
-    { key: 'hours', label: t('learningPath.stats.hours'), value: loading ? '--' : `${hours}h`, badge: t('learningPath.stats.hoursSub') },
+    {
+      key: 'total',
+      label: t('learningPath.stats.total'),
+      value: loading ? '--' : String(total),
+      badge: t('learningPath.stats.totalSub')
+    },
+    {
+      key: 'completed',
+      label: t('learningPath.stats.completed'),
+      value: loading ? '--' : String(completed),
+      badge: loading || total === 0 ? '--' : `${((completed / Math.max(total, 1)) * 100).toFixed(1)}%`
+    },
+    {
+      key: 'certificates',
+      label: t('learningPath.stats.certificates'),
+      value: loading ? '--' : String(certificates),
+      badge: 'verified'
+    },
+    {
+      key: 'hours',
+      label: t('learningPath.stats.hours'),
+      value: loading ? '--' : `${hours}h`,
+      badge: t('learningPath.stats.hoursSub')
+    }
   ]
 
   return (

@@ -6,7 +6,7 @@ import { customFetch } from '~/api/mutator/custom-fetch'
 export function getAssessmentSessionResult({ sessionId }: { sessionId: string }, options?: RequestInit) {
   return customFetch<unknown>(`/assessment-sessions/${sessionId}`, {
     ...options,
-    method: 'GET',
+    method: 'GET'
   })
 }
 
@@ -19,7 +19,7 @@ export function getAssessmentSessionResult({ sessionId }: { sessionId: string },
 export function getReusableSessions({ jdId }: { jdId: string }, options?: RequestInit) {
   return customFetch<unknown>(`/jd-submissions/${jdId}/reusable-sessions`, {
     ...options,
-    method: 'GET',
+    method: 'GET'
   })
 }
 
@@ -42,6 +42,6 @@ export function parseAutoTriggered(input: unknown): AutoTriggered | null {
 
   return {
     gapAnalysisId,
-    gapAnalysisStatus: String(dto.gapAnalysisStatus ?? ''),
+    gapAnalysisStatus: String(dto.gapAnalysisStatus ?? '')
   }
 }

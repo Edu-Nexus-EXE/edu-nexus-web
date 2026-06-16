@@ -6,8 +6,8 @@
  */
 
 export type GetAdminSkillsPendingReviewParams = {
-search?: string;
-major?: string;
-page?: number;
-pageSize?: number;
-};
+  search?: string
+  major?: string
+  page?: number
+  pageSize?: number
+}

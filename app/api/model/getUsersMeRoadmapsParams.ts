@@ -6,5 +6,5 @@
  */
 
 export type GetUsersMeRoadmapsParams = {
-status?: string;
-};
+  status?: string
+}

@@ -32,7 +32,7 @@ function toEditableTier(tier: PricingTierView): EditableTier {
     assessmentQuotaInput: toInputValue(tier.assessmentQuota),
     careerTrackQuotaInput: toInputValue(tier.careerTrackQuota),
     portfolioProjectQuotaInput: toInputValue(tier.portfolioProjectQuota),
-    portfolioCertificateQuotaInput: toInputValue(tier.portfolioCertificateQuota),
+    portfolioCertificateQuotaInput: toInputValue(tier.portfolioCertificateQuota)
   }
 }
 
@@ -72,7 +72,7 @@ export function AdminSubscriptionPage() {
         tier.code === tierCode
           ? {
               ...tier,
-              [key]: value,
+              [key]: value
             }
           : tier
       )
@@ -94,7 +94,7 @@ export function AdminSubscriptionPage() {
       portfolioCertificateQuota: fromInputValue(tier.portfolioCertificateQuotaInput),
       portfolioProjectQuota: fromInputValue(tier.portfolioProjectQuotaInput),
       fullGapHistory: tier.fullGapHistory,
-      isActive: tier.active,
+      isActive: tier.active
     }
 
     try {
@@ -120,10 +120,14 @@ export function AdminSubscriptionPage() {
       </div>
 
       {error ? (
-        <div className='rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>{error}</div>
+        <div className='rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+          {error}
+        </div>
       ) : null}
       {message ? (
-        <div className='rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary'>{message}</div>
+        <div className='rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-primary'>
+          {message}
+        </div>
       ) : null}
 
       {loading ? (
@@ -149,7 +153,9 @@ export function AdminSubscriptionPage() {
                   <p className='mt-1 text-sm text-muted-foreground'>{tier.code.toUpperCase()}</p>
                 </div>
                 <div className='flex flex-wrap gap-2'>
-                  <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${tier.active ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${tier.active ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}
+                  >
                     {tier.active ? t('users.table.active') : t('userDetail.subscription.no')}
                   </span>
                   {tier.code === 'student' ? (
@@ -236,7 +242,11 @@ export function AdminSubscriptionPage() {
                   {t('subscriptions.fullGapHistory')}
                 </label>
                 <label className='flex items-center gap-3 rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium text-foreground'>
-                  <input type='checkbox' checked={tier.active} onChange={(e) => updateTier(tier.code, 'active', e.target.checked)} />
+                  <input
+                    type='checkbox'
+                    checked={tier.active}
+                    onChange={(e) => updateTier(tier.code, 'active', e.target.checked)}
+                  />
                   {t('subscriptions.activeTier')}
                 </label>
               </div>

@@ -7,5 +7,5 @@
 
 export interface MergeSkillRequest {
   /** @nullable */
-  reason?: string | null;
+  reason?: string | null
 }

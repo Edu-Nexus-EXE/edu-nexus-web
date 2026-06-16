@@ -7,7 +7,7 @@
 
 export interface CreateCareerTrackCommand {
   /** @nullable */
-  name?: string | null;
+  name?: string | null
   /** @nullable */
-  description?: string | null;
+  description?: string | null
 }

@@ -6,5 +6,5 @@
  */
 
 export type PostAdminUsersIdActivateSubscriptionPathParameters = {
- id: string,
- }
+  id: string
+}

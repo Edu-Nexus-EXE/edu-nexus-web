@@ -6,11 +6,12 @@ import { getJdSubmissionsId } from '~/api/operations/jd-submissions/jd-submissio
 import {
   getAssessmentSessionsSessionIdQuestions,
   postAssessmentPathsPathIdSessions,
-  postAssessmentSessionsSessionIdSubmit,
+  postAssessmentSessionsSessionIdSubmit
 } from '~/api/operations/assessment-sessions/assessment-sessions'
 import type { StartAssessmentSessionRequest, SubmitAssessmentSessionRequest } from '~/api/model'
 import { useToast } from '~/shared/components'
 import { getReusableSessions, parseAutoTriggered } from '~/shared/lib/assessment-api'
+import { saveOptionsForSession, type CachedOptions } from '~/shared/lib/assessment-options-cache'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 import { Badge } from '~/shared/ui/badge'
@@ -34,12 +35,14 @@ type SessionQuestions = {
 type ResponseWithData<T> = { data?: T }
 
 type ReusableSession = {
+  jdId: string | null
   sessionId: string
   scorePercent: number
   fromJdTitle?: string | null
 }
 
 type ReusableSessionDto = {
+  jdId?: unknown
   sessionId?: unknown
   scorePercent?: unknown
   fromJdTitle?: unknown
@@ -69,20 +72,33 @@ type AssessmentPathDto = {
 
 type JdDto = {
   assessmentPath?: unknown
+  jobTitle?: unknown
 }
 
-function parseReusable(res: unknown): ReusableSession[] {
+function parseReusable(res: unknown, currentJdId: string, currentJdTitle: string): ReusableSession[] {
   const rows = ((res as ResponseWithData<unknown>)?.data ?? []) as unknown
   if (!Array.isArray(rows)) return []
 
-  return rows
-    .map((r) => r as ReusableSessionDto)
-    .map((r) => ({
-      sessionId: String(r.sessionId ?? ''),
-      scorePercent: Number(r.scorePercent ?? 0),
-      fromJdTitle: typeof r.fromJdTitle === 'string' ? r.fromJdTitle : null,
-    }))
-    .filter((r) => Boolean(r.sessionId))
+  return (
+    rows
+      .map((r) => r as ReusableSessionDto)
+      .map((r) => ({
+        jdId: typeof r.jdId === 'string' ? r.jdId : null,
+        sessionId: String(r.sessionId ?? ''),
+        scorePercent: Number(r.scorePercent ?? 0),
+        fromJdTitle: typeof r.fromJdTitle === 'string' ? r.fromJdTitle : null
+      }))
+      .filter((r) => Boolean(r.sessionId))
+      // Chỉ giữ session thuộc ĐÚNG JD hiện tại.
+      // Ưu tiên match theo jdId (chính xác); nếu BE cũ không trả jdId thì fallback
+      // match theo fromJdTitle với jobTitle của JD đang mở — tránh user thấy bộ câu
+      // hỏi của JD khác.
+      .filter((r) => {
+        if (r.jdId) return r.jdId === currentJdId
+        if (r.fromJdTitle && currentJdTitle) return r.fromJdTitle === currentJdTitle
+        return false
+      })
+  )
 }
 
 function parseQuestions(res: unknown): SessionQuestions {
@@ -97,9 +113,7 @@ function parseQuestions(res: unknown): SessionQuestions {
     .map((q) => {
       const optionsRaw = (q.options ?? {}) as Record<string, unknown>
       const normalizedOptions =
-        optionsRaw && typeof optionsRaw === 'object' && !Array.isArray(optionsRaw)
-          ? optionsRaw
-          : {}
+        optionsRaw && typeof optionsRaw === 'object' && !Array.isArray(optionsRaw) ? optionsRaw : {}
 
       return {
         id: String(q.id ?? ''),
@@ -110,8 +124,8 @@ function parseQuestions(res: unknown): SessionQuestions {
           A: String(normalizedOptions.A ?? normalizedOptions.a ?? ''),
           B: String(normalizedOptions.B ?? normalizedOptions.b ?? ''),
           C: String(normalizedOptions.C ?? normalizedOptions.c ?? ''),
-          D: String(normalizedOptions.D ?? normalizedOptions.d ?? ''),
-        },
+          D: String(normalizedOptions.D ?? normalizedOptions.d ?? '')
+        }
       }
     })
     .filter((q) => Boolean(q.id))
@@ -163,6 +177,19 @@ function parseAssessmentPathId(res: unknown): string {
   return String(pathFromObj.id ?? '')
 }
 
+function persistSessionOptions(sessionId: string, questions: Question[]): void {
+  const map: CachedOptions = {}
+  for (const q of questions) {
+    map[q.id] = {
+      A: q.options.A,
+      B: q.options.B,
+      C: q.options.C,
+      D: q.options.D
+    }
+  }
+  saveOptionsForSession(sessionId, map)
+}
+
 export function AssessmentPage() {
   const session = getAuthSession()
   const { t } = useTranslation('assessment')
@@ -183,6 +210,8 @@ export function AssessmentPage() {
 
   const [reusable, setReusable] = useState<ReusableSession[]>([])
   const [reuseSessionId, setReuseSessionId] = useState<string | null>(null)
+
+  const [jdTitle, setJdTitle] = useState<string>('')
 
   const [sessionId, setSessionId] = useState<string>('')
   const [data, setData] = useState<SessionQuestions | null>(null)
@@ -217,6 +246,8 @@ export function AssessmentPage() {
         if (cancelled) return
         const inferredPathId = parseAssessmentPathId(res)
         if (inferredPathId) setPathId(inferredPathId)
+        const dto = ((res as ResponseWithData<JdDto>)?.data ?? {}) as JdDto
+        if (typeof dto.jobTitle === 'string') setJdTitle(dto.jobTitle)
       })
       .catch(() => {
         if (cancelled) return
@@ -238,7 +269,7 @@ export function AssessmentPage() {
     }, 0)
 
     getReusableSessions({ jdId }, { signal: controller.signal })
-      .then((res) => setReusable(parseReusable(res)))
+      .then((res) => setReusable(parseReusable(res, jdId, jdTitle)))
       .catch(() => {
         setReusable([])
         setInitialError('')
@@ -246,7 +277,7 @@ export function AssessmentPage() {
       .finally(() => setInitialLoading(false))
 
     return () => controller.abort()
-  }, [jdId, pathId])
+  }, [jdId, jdTitle, pathId])
 
   if (!session) return <Navigate to='/login' replace />
 
@@ -266,12 +297,17 @@ export function AssessmentPage() {
       setShowQuestionsUI(true)
       setSessionId(newSessionId)
       setPollingQuestions(true)
+      setData({ sessionId: newSessionId, status: 'in_progress', questions: [] })
 
       for (let i = 0; i < 60; i++) {
         const qRes = await getAssessmentSessionsSessionIdQuestions({ sessionId: newSessionId })
         const parsed = parseQuestions(qRes)
-        setData(parsed)
+        // Luôn cập nhật status (khi BE đổi từ processing → in_progress) để badge cuối cùng
+        // chính xác; còn questions sẽ về 0 cho tới khi BE render xong.
+        setData({ sessionId: parsed.sessionId, status: parsed.status, questions: [] })
         if (parsed.questions.length > 0) {
+          persistSessionOptions(newSessionId, parsed.questions)
+          setData(parsed)
           setPollingQuestions(false)
           setTimeout(scrollToQuestions, 100)
           return
@@ -306,7 +342,7 @@ export function AssessmentPage() {
 
     try {
       const payload: SubmitAssessmentSessionRequest = {
-        answers: questions.map((q) => ({ questionId: q.id, selectedOption: answers[q.id] })),
+        answers: questions.map((q) => ({ questionId: q.id, selectedOption: answers[q.id] }))
       }
 
       const res = await postAssessmentSessionsSessionIdSubmit({ sessionId }, payload)
@@ -385,7 +421,9 @@ export function AssessmentPage() {
                 onClick={() => setReuseSessionId(null)}
                 className={cn(
                   'w-full text-left p-4 rounded-xl border transition-all',
-                  reuseSessionId === null ? 'border-primary bg-primary/10' : 'border-border bg-muted/20 hover:border-primary/40'
+                  reuseSessionId === null
+                    ? 'border-primary bg-primary/10'
+                    : 'border-border bg-muted/20 hover:border-primary/40'
                 )}
               >
                 <p className='text-sm font-semibold text-foreground'>{t('assessment.page.noReuse')}</p>
@@ -399,14 +437,20 @@ export function AssessmentPage() {
                   onClick={() => setReuseSessionId(s.sessionId)}
                   className={cn(
                     'w-full text-left p-4 rounded-xl border transition-all',
-                    reuseSessionId === s.sessionId ? 'border-primary bg-primary/10' : 'border-border bg-muted/20 hover:border-primary/40'
+                    reuseSessionId === s.sessionId
+                      ? 'border-primary bg-primary/10'
+                      : 'border-border bg-muted/20 hover:border-primary/40'
                   )}
                 >
                   <div className='flex items-center justify-between gap-4'>
-                    <p className='text-sm font-semibold text-foreground'>{s.fromJdTitle || t('assessment.page.noReuse')}</p>
+                    <p className='text-sm font-semibold text-foreground'>
+                      {s.fromJdTitle || t('assessment.page.noReuse')}
+                    </p>
                     <Badge variant='outline'>{Math.round(s.scorePercent)}%</Badge>
                   </div>
-                  <p className='text-xs text-muted-foreground mt-1'>{t('assessment.page.sessionLabel', { sessionId: s.sessionId })}</p>
+                  <p className='text-xs text-muted-foreground mt-1'>
+                    {t('assessment.page.sessionLabel', { sessionId: s.sessionId })}
+                  </p>
                 </button>
               ))}
             </div>
@@ -465,10 +509,18 @@ export function AssessmentPage() {
                 <div className='rounded-2xl border border-border bg-card/95 p-4'>
                   <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div>
-                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{t('assessment.page.progressHint')}</p>
-                      <p className='mt-1 text-base font-semibold text-foreground'>{t('assessment.page.progress', { answered, total })}</p>
+                      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
+                        {t('assessment.page.progressHint')}
+                      </p>
+                      <p className='mt-1 text-base font-semibold text-foreground'>
+                        {t('assessment.page.progress', { answered, total })}
+                      </p>
                       <p className='mt-1 text-sm text-muted-foreground'>
-                        {data?.questions?.length ? t('assessment.page.instructions') : t('assessment.page.questionsHint')}
+                        {data?.questions?.length
+                          ? t('assessment.page.instructions')
+                          : pollingQuestions
+                            ? t('assessment.page.pollingQuestions')
+                            : t('assessment.page.questionsHint')}
                       </p>
                     </div>
                     <div className='w-full sm:max-w-[240px]'>
@@ -510,7 +562,9 @@ export function AssessmentPage() {
                             <div className='text-xs text-muted-foreground'>
                               {t('assessment.page.questionMeta', { no: q.sequenceOrder || 0, part: q.part || 1 })}
                             </div>
-                            <h3 className='mt-1 text-base font-semibold text-foreground whitespace-pre-wrap'>{q.questionText}</h3>
+                            <h3 className='mt-1 text-base font-semibold text-foreground whitespace-pre-wrap'>
+                              {q.questionText}
+                            </h3>
                           </div>
                           <div className='shrink-0'>
                             {selected ? <Badge variant='outline'>{selected}</Badge> : <Badge variant='info'>?</Badge>}
@@ -520,7 +574,9 @@ export function AssessmentPage() {
                         <div className='mt-5 rounded-2xl border border-border bg-muted/10 p-4'>
                           <div className='mb-3 flex items-center gap-2'>
                             <span className='material-icons text-base text-primary'>radio_button_checked</span>
-                            <p className='text-sm font-semibold text-foreground'>{t('assessment.page.answerChoices')}</p>
+                            <p className='text-sm font-semibold text-foreground'>
+                              {t('assessment.page.answerChoices')}
+                            </p>
                           </div>
                           <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
                             {(['A', 'B', 'C', 'D'] as const).map((opt) => {
@@ -549,7 +605,9 @@ export function AssessmentPage() {
                                     >
                                       {opt}
                                     </span>
-                                    <span className='flex-1 text-sm leading-6 text-foreground whitespace-pre-wrap'>{label}</span>
+                                    <span className='flex-1 text-sm leading-6 text-foreground whitespace-pre-wrap'>
+                                      {label}
+                                    </span>
                                   </div>
                                 </button>
                               )

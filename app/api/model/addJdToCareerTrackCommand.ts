@@ -6,6 +6,6 @@
  */
 
 export interface AddJdToCareerTrackCommand {
-  careerTrackId?: string;
-  jdId?: string;
+  careerTrackId?: string
+  jdId?: string
 }

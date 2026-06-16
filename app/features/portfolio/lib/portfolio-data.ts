@@ -58,7 +58,9 @@ function toBooleanValue(value: unknown, fallback = false): boolean {
 }
 
 function toStringArray(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0) : []
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string' && item.trim().length > 0)
+    : []
 }
 
 export function slugify(value: string) {
@@ -84,7 +86,7 @@ export function createDefaultPortfolio(fullName: string, slug: string): Portfoli
       bio: '',
       slug: slugify(slug) || 'portfolio',
       skills: [],
-      skillSources: {},
+      skillSources: {}
     },
     certificates: [],
     projects: [],
@@ -92,7 +94,7 @@ export function createDefaultPortfolio(fullName: string, slug: string): Portfoli
     isPublic: false,
     showCompletedSkills: true,
     showCertificates: true,
-    showProjects: true,
+    showProjects: true
   }
 }
 
@@ -111,7 +113,7 @@ export function parsePortfolio(response: unknown, fallbackFullName: string, fall
           expiryDate: toStringValue(raw.expiresDate || raw.expiryDate),
           credentialUrl: toStringValue(raw.credentialUrl),
           fileUrl: toStringValue(raw.fileUrl),
-          isVisible: toBooleanValue(raw.isVisible, true),
+          isVisible: toBooleanValue(raw.isVisible, true)
         }
       })
     : []
@@ -130,12 +132,16 @@ export function parsePortfolio(response: unknown, fallbackFullName: string, fall
           startDate: toStringValue(raw.startedDate || raw.startDate),
           completedDate: toStringValue(raw.completedDate),
           imageUrl: toStringValue(raw.imageUrl),
-          isVisible: toBooleanValue(raw.isVisible, true),
+          isVisible: toBooleanValue(raw.isVisible, true)
         }
       })
     : []
 
-  const completedSkills = Array.isArray(root.completedSkills) ? root.completedSkills : Array.isArray(root.skills) ? root.skills : []
+  const completedSkills = Array.isArray(root.completedSkills)
+    ? root.completedSkills
+    : Array.isArray(root.skills)
+      ? root.skills
+      : []
   const parsedSkills = completedSkills
     .map((item) => {
       if (typeof item === 'string') return item.trim()
@@ -152,7 +158,7 @@ export function parsePortfolio(response: unknown, fallbackFullName: string, fall
       bio: toStringValue(root.bio),
       slug: slugify(toStringValue(root.slug || root.portfolioUrlSlug, fallbackSlug)) || 'portfolio',
       skills: parsedSkills,
-      skillSources,
+      skillSources
     },
     certificates,
     projects,
@@ -160,7 +166,7 @@ export function parsePortfolio(response: unknown, fallbackFullName: string, fall
     isPublic: toBooleanValue(root.isPublic, false),
     showCompletedSkills: toBooleanValue(root.showCompletedSkills, true),
     showCertificates: toBooleanValue(root.showCertificates, true),
-    showProjects: toBooleanValue(root.showProjects, true),
+    showProjects: toBooleanValue(root.showProjects, true)
   }
 }
 

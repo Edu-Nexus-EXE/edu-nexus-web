@@ -6,6 +6,6 @@
  */
 
 export type DeleteCareerTracksIdJdsJdIdPathParameters = {
- id: string,
-    jdId: string,
- }
+  id: string
+  jdId: string
+}

@@ -6,5 +6,5 @@
  */
 
 export type PostAdminJdSubmissionsIdReParsePathParameters = {
- id: string,
- }
+  id: string
+}

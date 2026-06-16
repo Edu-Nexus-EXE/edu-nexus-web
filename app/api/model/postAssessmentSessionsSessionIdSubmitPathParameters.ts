@@ -6,5 +6,5 @@
  */
 
 export type PostAssessmentSessionsSessionIdSubmitPathParameters = {
- sessionId: string,
- }
+  sessionId: string
+}

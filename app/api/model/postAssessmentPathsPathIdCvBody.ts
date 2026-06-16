@@ -6,5 +6,5 @@
  */
 
 export type PostAssessmentPathsPathIdCvBody = {
-  file?: Blob;
-};
+  file?: Blob
+}

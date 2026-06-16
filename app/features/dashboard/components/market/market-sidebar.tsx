@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next'
 const FIELD_FILTER_KEYS = [
   'market.filters.fieldOptions.csAi',
   'market.filters.fieldOptions.dataScience',
-  'market.filters.fieldOptions.softwareEngineering',
+  'market.filters.fieldOptions.softwareEngineering'
 ] as const
 
 const LOCATION_FILTER_KEYS = [
   'market.filters.locationOptions.vietnam',
   'market.filters.locationOptions.singapore',
-  'market.filters.locationOptions.australia',
+  'market.filters.locationOptions.australia'
 ] as const
 
 export function MarketSidebar() {

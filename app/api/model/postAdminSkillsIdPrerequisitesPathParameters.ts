@@ -6,5 +6,5 @@
  */
 
 export type PostAdminSkillsIdPrerequisitesPathParameters = {
- id: string,
- }
+  id: string
+}

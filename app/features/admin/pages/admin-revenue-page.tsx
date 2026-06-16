@@ -8,7 +8,7 @@ function formatCurrency(value: number) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
     currency: 'VND',
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(value)
 }
 
@@ -224,7 +224,9 @@ export function AdminRevenuePage() {
               ) : (
                 filteredOrders.map((order) => (
                   <tr key={order.id} className='hover:bg-muted/30 transition-colors'>
-                    <td className='px-6 py-5 text-sm font-medium text-muted-foreground'>{formatDate(order.createdAt)}</td>
+                    <td className='px-6 py-5 text-sm font-medium text-muted-foreground'>
+                      {formatDate(order.createdAt)}
+                    </td>
                     <td className='px-6 py-5 text-sm font-bold text-primary'>
                       <Link to={`/admin/users/${encodeURIComponent(order.user)}`} className='hover:underline'>
                         {order.user}
@@ -232,13 +234,17 @@ export function AdminRevenuePage() {
                     </td>
                     <td className='px-6 py-5 text-sm font-black text-foreground'>{formatCurrency(order.amount)}</td>
                     <td className='px-6 py-5'>
-                      <span className={`rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wider ${providerTone(order.provider)}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wider ${providerTone(order.provider)}`}
+                      >
                         {order.provider}
                       </span>
                     </td>
                     <td className='px-6 py-5 text-sm font-mono font-bold text-foreground'>{order.id}</td>
                     <td className='px-6 py-5'>
-                      <span className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${statusTone(order.status)}`}>
+                      <span
+                        className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${statusTone(order.status)}`}
+                      >
                         {order.status}
                       </span>
                     </td>
@@ -254,10 +260,14 @@ export function AdminRevenuePage() {
             <Trans
               t={t}
               i18nKey='revenue.orders.pagination'
-              values={{ start: filteredOrders.length > 0 ? 1 : 0, end: filteredOrders.length, total: filteredOrders.length }}
+              values={{
+                start: filteredOrders.length > 0 ? 1 : 0,
+                end: filteredOrders.length,
+                total: filteredOrders.length
+              }}
               components={{
                 1: <span className='font-bold text-foreground' />,
-                2: <span className='font-bold text-foreground' />,
+                2: <span className='font-bold text-foreground' />
               }}
             />
           </p>

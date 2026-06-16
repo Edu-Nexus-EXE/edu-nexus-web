@@ -7,5 +7,5 @@
 
 export interface CreateAssessmentPathRequest {
   /** @nullable */
-  pathType?: string | null;
+  pathType?: string | null
 }

@@ -45,9 +45,7 @@ export function SignupPage() {
 
         {/* Copyright */}
         <div className='mt-8 text-center'>
-          <p className='text-xs text-muted-foreground'>
-            © 2026 Edu-Nexus. All rights reserved.
-          </p>
+          <p className='text-xs text-muted-foreground'>© 2026 Edu-Nexus. All rights reserved.</p>
         </div>
       </div>
 
@@ -56,14 +54,14 @@ export function SignupPage() {
         className='hidden lg:block absolute right-0 top-0 h-full w-1/3 opacity-[0.03] pointer-events-none'
         style={{
           backgroundImage: 'radial-gradient(circle at center, var(--color-primary) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
+          backgroundSize: '24px 24px'
         }}
       />
       <div
         className='hidden lg:block absolute left-0 bottom-0 h-full w-1/3 opacity-[0.03] pointer-events-none'
         style={{
           backgroundImage: 'radial-gradient(circle at center, var(--color-primary) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
+          backgroundSize: '32px 32px'
         }}
       />
     </div>

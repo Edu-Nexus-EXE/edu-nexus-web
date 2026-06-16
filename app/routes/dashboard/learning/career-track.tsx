@@ -8,8 +8,8 @@ export function meta({}: Route.MetaArgs) {
     { title: getMetaTitle('dashboard', 'learningPath.careerTrack.title') },
     {
       name: 'description',
-      content: getMetaTranslation('dashboard', 'learningPath.careerTrack.subtitle'),
-    },
+      content: getMetaTranslation('dashboard', 'learningPath.careerTrack.subtitle')
+    }
   ]
 }
 

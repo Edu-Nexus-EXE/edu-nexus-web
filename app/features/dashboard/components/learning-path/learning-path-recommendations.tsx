@@ -36,8 +36,13 @@ export function LearningPathRecommendations() {
               {t('learningPath.recommendations.forYou')}
             </span>
             <h4 className='font-bold text-lg leading-tight'>{t('learningPath.recommendations.microservicesTitle')}</h4>
-            <p className='text-primary-foreground/80 text-xs mt-2 mb-4'>{t('learningPath.recommendations.microservicesDesc')}</p>
-            <button type='button' className='bg-card text-primary px-4 py-2 rounded-lg text-xs font-bold hover:bg-card/90 transition-colors'>
+            <p className='text-primary-foreground/80 text-xs mt-2 mb-4'>
+              {t('learningPath.recommendations.microservicesDesc')}
+            </p>
+            <button
+              type='button'
+              className='bg-card text-primary px-4 py-2 rounded-lg text-xs font-bold hover:bg-card/90 transition-colors'
+            >
               {t('learningPath.recommendations.startNow')}
             </button>
           </div>
@@ -47,17 +52,23 @@ export function LearningPathRecommendations() {
               <div className='w-10 h-10 rounded-full bg-muted flex items-center justify-center'>
                 <span className='material-symbols-outlined text-primary'>quiz</span>
               </div>
-              <span className='text-[10px] font-bold text-muted-foreground'>{t('learningPath.recommendations.testTime')}</span>
+              <span className='text-[10px] font-bold text-muted-foreground'>
+                {t('learningPath.recommendations.testTime')}
+              </span>
             </div>
             <h4 className='font-bold text-foreground'>{t('learningPath.recommendations.testTitle')}</h4>
             <p className='text-muted-foreground text-xs mt-1'>{t('learningPath.recommendations.testDesc')}</p>
-            <p className='mt-4 text-xs font-semibold text-primary'>{t('learningPath.recommendations.readyCount', { count: readyTrackCount })}</p>
+            <p className='mt-4 text-xs font-semibold text-primary'>
+              {t('learningPath.recommendations.readyCount', { count: readyTrackCount })}
+            </p>
           </div>
         </div>
       </div>
 
       <div>
-        <h3 className='font-bold text-xl mb-6 text-foreground'>{t('learningPath.recommendations.certificatesTitle')}</h3>
+        <h3 className='font-bold text-xl mb-6 text-foreground'>
+          {t('learningPath.recommendations.certificatesTitle')}
+        </h3>
         <div className='space-y-4'>
           <div className='flex items-center gap-4 p-4 bg-card border border-border rounded-xl shadow-sm'>
             <div className='w-12 h-12 bg-primary/10 rounded flex items-center justify-center text-primary'>
@@ -65,7 +76,9 @@ export function LearningPathRecommendations() {
             </div>
             <div>
               <p className='font-bold text-sm text-foreground'>Java Spring Specialist</p>
-              <p className='text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5'>{t('learningPath.recommendations.issued')}</p>
+              <p className='text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5'>
+                {t('learningPath.recommendations.issued')}
+              </p>
             </div>
           </div>
           <div className='flex items-center gap-4 p-4 bg-card border border-border rounded-xl shadow-sm opacity-60'>
@@ -74,11 +87,16 @@ export function LearningPathRecommendations() {
             </div>
             <div>
               <p className='font-bold text-sm text-foreground'>Data Analyst Associate</p>
-              <p className='text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5'>{t('learningPath.recommendations.pending')}</p>
+              <p className='text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-0.5'>
+                {t('learningPath.recommendations.pending')}
+              </p>
             </div>
           </div>
         </div>
-        <button type='button' className='w-full mt-4 py-3 text-sm font-bold text-muted-foreground hover:text-primary transition-colors text-center'>
+        <button
+          type='button'
+          className='w-full mt-4 py-3 text-sm font-bold text-muted-foreground hover:text-primary transition-colors text-center'
+        >
           {t('learningPath.recommendations.viewAllCertificates')}
         </button>
       </div>

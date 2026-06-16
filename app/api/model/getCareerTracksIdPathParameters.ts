@@ -6,5 +6,5 @@
  */
 
 export type GetCareerTracksIdPathParameters = {
- id: string,
- }
+  id: string
+}

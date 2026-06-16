@@ -4,107 +4,79 @@
  * Edu-Nexus API
  * OpenAPI spec version: v1
  */
-import type {
-  SubmitOnboardingRequest
-} from '../../model';
+import type { SubmitOnboardingRequest } from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getOnboardingResponse200 = {
   data: void
   status: 200
 }
-    
-export type getOnboardingResponseSuccess = (getOnboardingResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getOnboardingResponse = (getOnboardingResponseSuccess)
+export type getOnboardingResponseSuccess = getOnboardingResponse200 & {
+  headers: Headers
+}
+export type getOnboardingResponse = getOnboardingResponseSuccess
 
 export const getGetOnboardingUrl = () => {
-
-
-  
-
   return `/onboarding`
 }
 
-export const getOnboarding = async ( options?: RequestInit): Promise<getOnboardingResponse> => {
-  
-  return customFetch<getOnboardingResponse>(getGetOnboardingUrl(),
-  {      
+export const getOnboarding = async (options?: RequestInit): Promise<getOnboardingResponse> => {
+  return customFetch<getOnboardingResponse>(getGetOnboardingUrl(), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type postOnboardingResponse200 = {
   data: void
   status: 200
 }
-    
-export type postOnboardingResponseSuccess = (postOnboardingResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postOnboardingResponse = (postOnboardingResponseSuccess)
+export type postOnboardingResponseSuccess = postOnboardingResponse200 & {
+  headers: Headers
+}
+export type postOnboardingResponse = postOnboardingResponseSuccess
 
 export const getPostOnboardingUrl = () => {
-
-
-  
-
   return `/onboarding`
 }
 
-export const postOnboarding = async (submitOnboardingRequest: SubmitOnboardingRequest, options?: RequestInit): Promise<postOnboardingResponse> => {
-  
-  return customFetch<postOnboardingResponse>(getPostOnboardingUrl(),
-  {      
+export const postOnboarding = async (
+  submitOnboardingRequest: SubmitOnboardingRequest,
+  options?: RequestInit
+): Promise<postOnboardingResponse> => {
+  return customFetch<postOnboardingResponse>(getPostOnboardingUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      submitOnboardingRequest,)
-  }
-);}
-
+    body: JSON.stringify(submitOnboardingRequest)
+  })
+}
 
 export type putOnboardingResponse200 = {
   data: void
   status: 200
 }
-    
-export type putOnboardingResponseSuccess = (putOnboardingResponse200) & {
-  headers: Headers;
-};
-;
 
-export type putOnboardingResponse = (putOnboardingResponseSuccess)
+export type putOnboardingResponseSuccess = putOnboardingResponse200 & {
+  headers: Headers
+}
+export type putOnboardingResponse = putOnboardingResponseSuccess
 
 export const getPutOnboardingUrl = () => {
-
-
-  
-
   return `/onboarding`
 }
 
-export const putOnboarding = async (submitOnboardingRequest: SubmitOnboardingRequest, options?: RequestInit): Promise<putOnboardingResponse> => {
-  
-  return customFetch<putOnboardingResponse>(getPutOnboardingUrl(),
-  {      
+export const putOnboarding = async (
+  submitOnboardingRequest: SubmitOnboardingRequest,
+  options?: RequestInit
+): Promise<putOnboardingResponse> => {
+  return customFetch<putOnboardingResponse>(getPutOnboardingUrl(), {
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      submitOnboardingRequest,)
-  }
-);}
-
-
+    body: JSON.stringify(submitOnboardingRequest)
+  })
+}

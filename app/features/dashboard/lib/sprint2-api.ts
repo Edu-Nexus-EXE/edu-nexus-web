@@ -1,4 +1,10 @@
-import { deleteCareerTracksId, deleteCareerTracksIdJdsJdId, postCareerTracks, postCareerTracksIdJds, putCareerTracksId } from '~/api/operations/career-tracks/career-tracks'
+import {
+  deleteCareerTracksId,
+  deleteCareerTracksIdJdsJdId,
+  postCareerTracks,
+  postCareerTracksIdJds,
+  putCareerTracksId
+} from '~/api/operations/career-tracks/career-tracks'
 import { getJdSubmissions } from '~/api/operations/jd-submissions/jd-submissions'
 import { getUsersMe } from '~/api/operations/users/users'
 import { getSubscriptionMe } from '~/api/operations/subscription/subscription'
@@ -15,7 +21,7 @@ import {
   patchRoadmapNodeStatusRuntime,
   postGapAnalysisRuntime,
   postRoadmapRegenerateRuntime,
-  postRoadmapRuntime,
+  postRoadmapRuntime
 } from '~/shared/lib/sprint2-api-runtime'
 
 export type LoadState<T> = {
@@ -159,7 +165,7 @@ function toAuthUser(data: Record<string, unknown>): AuthUser {
         tierCode: toStringValue(data.subscription.tierCode, 'free'),
         displayName: toStringValue(data.subscription.displayName, 'Free'),
         status: toStringValue(data.subscription.status, 'inactive'),
-        expiresAt: typeof data.subscription.expiresAt === 'string' ? data.subscription.expiresAt : null,
+        expiresAt: typeof data.subscription.expiresAt === 'string' ? data.subscription.expiresAt : null
       }
     : null
 
@@ -170,7 +176,7 @@ function toAuthUser(data: Record<string, unknown>): AuthUser {
     role: toStringValue(data.role, 'user') as AuthUser['role'],
     isSurveyCompleted: Boolean(data.isSurveyCompleted ?? true),
     portfolioUrlSlug: typeof data.portfolioUrlSlug === 'string' ? data.portfolioUrlSlug : undefined,
-    subscription,
+    subscription
   }
 }
 
@@ -183,7 +189,9 @@ function getCollection(value: unknown): unknown[] {
 }
 
 function normalizeGapStatus(value: unknown): GapAnalysisSkillStatus {
-  const raw = toStringValue(value).toLowerCase().replace(/[_\s-]/g, '')
+  const raw = toStringValue(value)
+    .toLowerCase()
+    .replace(/[_\s-]/g, '')
   if (raw === 'missing') return 'missing'
   if (raw === 'needsupgrade' || raw === 'upgrade' || raw === 'partial') return 'upgrade'
   return 'have'
@@ -197,7 +205,7 @@ function mapGapSkill(item: unknown, index: number): GapAnalysisSkillView {
     typeof raw.isMandatoryInJd === 'boolean' && raw.isMandatoryInJd ? 'Mandatory in JD' : '',
     toStringValue(raw.currentLevel),
     toStringValue(raw.targetLevel),
-    toStringValue(raw.category),
+    toStringValue(raw.category)
   ].filter(Boolean)
 
   return {
@@ -210,7 +218,7 @@ function mapGapSkill(item: unknown, index: number): GapAnalysisSkillView {
     priorityScore: priorityScoreRaw,
     hasPriority: priorityScoreRaw > 0,
     reason: toStringValue(raw.reasoning ?? raw.reason ?? raw.explanation, ''),
-    tags,
+    tags
   }
 }
 
@@ -221,7 +229,7 @@ function parseGapSkills(root: Record<string, unknown>): GapAnalysisSkillView[] {
   const grouped = [
     ...getCollection(root.missingSkills),
     ...getCollection(root.skillsToImprove),
-    ...getCollection(root.existingSkills),
+    ...getCollection(root.existingSkills)
   ]
 
   return grouped.map(mapGapSkill)
@@ -245,7 +253,7 @@ function mapRoadmapNode(item: unknown, index: number): RoadmapNodeView {
     orderIndex: toNumberValue(raw.sequenceOrder ?? raw.orderIndex ?? raw.order, index),
     estimatedHours: toOptionalNumber(raw.estimatedHours ?? raw.durationHours),
     level: toOptionalNumber(raw.level),
-    prerequisiteNodeIds: toStringArray(raw.prerequisiteNodeIds ?? raw.prerequisites),
+    prerequisiteNodeIds: toStringArray(raw.prerequisiteNodeIds ?? raw.prerequisites)
   }
 }
 
@@ -287,7 +295,7 @@ function mapRoadmapResource(item: unknown, index: number): RoadmapResourceView {
     affiliateLabel: affiliateLabel || undefined,
     icon,
     iconBg,
-    iconColor,
+    iconColor
   }
 }
 
@@ -300,8 +308,10 @@ function mapRoadmapSummary(item: unknown, index: number): RoadmapView {
     progress: toNumberValue(raw.progressPercent ?? raw.progress, 0),
     status: toStringValue(raw.status, 'active'),
     isOutdated: Boolean(raw.isOutdated),
-    nodes: getCollection(raw.nodes).map(mapRoadmapNode).sort((a, b) => a.orderIndex - b.orderIndex),
-    resources: [],
+    nodes: getCollection(raw.nodes)
+      .map(mapRoadmapNode)
+      .sort((a, b) => a.orderIndex - b.orderIndex),
+    resources: []
   }
 }
 
@@ -313,7 +323,7 @@ function mapCareerTrack(item: unknown, index: number): CareerTrackView {
     description: toStringValue(raw.description) || undefined,
     jdCount: toNumberValue(raw.jdCount ?? raw.jobDescriptionCount ?? raw.jobsCount, 0),
     progress: toNumberValue(raw.overallProgress ?? raw.progress ?? raw.progressPercent, 0),
-    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : undefined,
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : undefined
   }
 }
 
@@ -325,7 +335,7 @@ function mapCareerTrackJd(item: unknown, index: number): CareerTrackJdView {
     title: toStringValue(raw.jobTitle ?? raw.title, 'JD'),
     roadmapStatus: toStringValue(raw.roadmapStatus) || undefined,
     roadmapProgress: toNumberValue(raw.roadmapProgress ?? raw.progress ?? raw.progressPercent, 0),
-    addedAt: typeof raw.addedAt === 'string' ? raw.addedAt : undefined,
+    addedAt: typeof raw.addedAt === 'string' ? raw.addedAt : undefined
   }
 }
 
@@ -337,7 +347,7 @@ function mapCareerTrackDetail(item: unknown, index: number): CareerTrackDetailVi
   return {
     ...summary,
     jdCount: toNumberValue(raw.jdCount, jds.length || summary.jdCount),
-    jds,
+    jds
   }
 }
 
@@ -355,7 +365,7 @@ export async function loadDashboardUser(): Promise<LoadState<AuthUser>> {
     return {
       data: toAuthUser(data),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load user' }
@@ -370,7 +380,15 @@ export type QuotaUsageItem = {
   unlimited: boolean
 }
 
-const QUOTA_KEYS = ['jd', 'gapAnalysis', 'assessment', 'roadmapActive', 'careerTrack', 'portfolioCertificate', 'portfolioProject'] as const
+const QUOTA_KEYS = [
+  'jd',
+  'gapAnalysis',
+  'assessment',
+  'roadmapActive',
+  'careerTrack',
+  'portfolioCertificate',
+  'portfolioProject'
+] as const
 
 export async function loadQuotaUsage(): Promise<LoadState<QuotaUsageItem[]>> {
   try {
@@ -383,7 +401,8 @@ export async function loadQuotaUsage(): Promise<LoadState<QuotaUsageItem[]>> {
       const used = toNumberValue(raw.used, 0)
       const limit = toNumberValue(raw.limit, 0)
       const unlimited = limit < 0
-      const nearLimit = typeof raw.nearLimit === 'boolean' ? raw.nearLimit : !unlimited && limit > 0 && used >= limit * (2 / 3)
+      const nearLimit =
+        typeof raw.nearLimit === 'boolean' ? raw.nearLimit : !unlimited && limit > 0 && used >= limit * (2 / 3)
       return { key, used, limit, nearLimit, unlimited }
     })
 
@@ -400,10 +419,10 @@ export async function loadDashboardStats(): Promise<LoadState<DashboardStatsStat
         certificates: '12',
         studyHours: '146h',
         readiness: '82%',
-        classRank: '#8',
+        classRank: '#8'
       },
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load stats' }
@@ -423,11 +442,11 @@ export async function loadSubscriptionState(): Promise<LoadState<SubscriptionSta
             tierCode: toStringValue(subscription.tierCode, 'free'),
             displayName: toStringValue(subscription.displayName, 'Free'),
             status: toStringValue(subscription.status, 'inactive'),
-            expiresAt: typeof subscription.expiresAt === 'string' ? subscription.expiresAt : null,
+            expiresAt: typeof subscription.expiresAt === 'string' ? subscription.expiresAt : null
           }
         : null,
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load subscription' }
@@ -446,11 +465,11 @@ export async function loadRecentJds(options?: { pageSize?: number }): Promise<Lo
           id: toStringValue(item.id, `jd-${index}`),
           jobTitle: toStringValue(item.jobTitle, 'Untitled JD'),
           parseStatus: toStringValue(item.parseStatus, 'pending'),
-          createdAt: typeof item.createdAt === 'string' ? item.createdAt : undefined,
+          createdAt: typeof item.createdAt === 'string' ? item.createdAt : undefined
         }))
         .filter((item) => Boolean(item.id)),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load JDs' }
@@ -479,12 +498,12 @@ export async function loadGapAnalysis(
           scorePercent: typeof root.scorePercent === 'number' ? root.scorePercent : null,
           status: toStringValue(root.status, skills.length > 0 ? 'completed' : 'pending'),
           jdId: toStringValue(root.jdId) || jdId,
-          gapAnalysisId: toStringValue(root.id) || null,
+          gapAnalysisId: toStringValue(root.id) || null
         },
-        skills,
+        skills
       },
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load gap analysis' }
@@ -495,7 +514,10 @@ export async function loadDashboardRoadmaps(status?: string): Promise<LoadState<
   return loadRoadmapOverview({ status })
 }
 
-export async function loadRoadmapOverview(filters?: { status?: string; jdId?: string }): Promise<LoadState<RoadmapView[]>> {
+export async function loadRoadmapOverview(filters?: {
+  status?: string
+  jdId?: string
+}): Promise<LoadState<RoadmapView[]>> {
   try {
     const res = await getUserRoadmapsRuntime(filters)
     const data = unwrapData<unknown>(res)
@@ -504,7 +526,7 @@ export async function loadRoadmapOverview(filters?: { status?: string; jdId?: st
     return {
       data: items.map(mapRoadmapSummary),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load roadmaps' }
@@ -516,7 +538,9 @@ export async function loadRoadmapById(id: string): Promise<LoadState<RoadmapView
     const res = await getRoadmapRuntime({ id })
     const data = unwrapData<unknown>(res)
     const raw = isObject(data) ? data : {}
-    const nodes = getCollection(raw.nodes).map(mapRoadmapNode).sort((a, b) => a.orderIndex - b.orderIndex)
+    const nodes = getCollection(raw.nodes)
+      .map(mapRoadmapNode)
+      .sort((a, b) => a.orderIndex - b.orderIndex)
 
     return {
       data: {
@@ -527,10 +551,10 @@ export async function loadRoadmapById(id: string): Promise<LoadState<RoadmapView
         status: toStringValue(raw.status, 'active'),
         isOutdated: Boolean(raw.isOutdated),
         nodes,
-        resources: [],
+        resources: []
       },
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load roadmap' }
@@ -566,7 +590,7 @@ export async function loadRoadmapResources(nodeId: string): Promise<LoadState<Ro
     return {
       data: items.map(mapRoadmapResource),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load resources' }
@@ -582,7 +606,7 @@ export async function loadCareerTracks(): Promise<LoadState<CareerTrackView[]>> 
     return {
       data: items.map(mapCareerTrack),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load career tracks' }
@@ -597,17 +621,11 @@ export async function loadCareerTrackById(id: string): Promise<LoadState<CareerT
     return {
       data: mapCareerTrackDetail(data, 0),
       loading: false,
-      error: null,
+      error: null
     }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load career track' }
   }
 }
 
-export {
-  deleteCareerTracksId,
-  deleteCareerTracksIdJdsJdId,
-  postCareerTracks,
-  postCareerTracksIdJds,
-  putCareerTracksId,
-}
+export { deleteCareerTracksId, deleteCareerTracksIdJdsJdId, postCareerTracks, postCareerTracksIdJds, putCareerTracksId }

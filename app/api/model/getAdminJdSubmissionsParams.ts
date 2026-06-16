@@ -6,7 +6,7 @@
  */
 
 export type GetAdminJdSubmissionsParams = {
-parseStatus?: string;
-page?: number;
-pageSize?: number;
-};
+  parseStatus?: string
+  page?: number
+  pageSize?: number
+}

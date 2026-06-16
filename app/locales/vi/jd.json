@@ -121,8 +121,11 @@
       "pathCvFailedHelper": "CV đã tải lên nhưng phân tích chưa thành công. Mở lại để xem lỗi và thử tải lên lại.",
       "pathCvMissingHelper": "Lộ trình CV đã được chọn nhưng chưa có tệp nào được tải lên. Bấm vào để tải CV lên ngay.",
       "confirmDeletePath": "Bạn có chắc muốn xoá lộ trình đánh giá hiện tại để chọn lại lộ trình khác không?",
+      "confirmDeletePathTitle": "Chọn lại lộ trình đánh giá?",
       "confirmDeleteJd": "Bạn có chắc muốn xoá JD này để giải phóng ô hạn mức không?",
+      "confirmDeleteJdTitle": "Xoá JD này?",
       "deletePath": "Xoá lộ trình",
+      "cancel": "Huỷ",
       "cvStatus": {
         "loading": "Đang kiểm tra trạng thái CV...",
         "missing": "Chưa tải CV lên",
@@ -168,7 +171,10 @@
         "title": "Tiến trình tổng thể",
         "jd": {
           "label": "Phân tích JD",
-          "doneHint": "JD đã được nộp và phân tích xong."
+          "doneHint": "JD đã được nộp và phân tích xong.",
+          "processingHint": "AI đang phân tích JD của bạn. Vui lòng chờ trong ít phút.",
+          "failedHint": "Phân tích JD thất bại. Hãy tạo lại JD mới để thử lại.",
+          "lockedHint": "Đang tải thông tin JD."
         },
         "path": {
           "label": "Lộ trình đánh giá",

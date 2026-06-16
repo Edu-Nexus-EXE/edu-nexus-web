@@ -8,5 +8,5 @@ export {
   isAuthResponseData,
   isUserProfileResponseData,
   mapAuthResponseToUser,
-  mapUserProfileToUser,
+  mapUserProfileToUser
 } from './be-auth-types'

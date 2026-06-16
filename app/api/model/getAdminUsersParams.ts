@@ -6,9 +6,9 @@
  */
 
 export type GetAdminUsersParams = {
-search?: string;
-tier?: string;
-isBanned?: boolean;
-page?: number;
-pageSize?: number;
-};
+  search?: string
+  tier?: string
+  isBanned?: boolean
+  page?: number
+  pageSize?: number
+}

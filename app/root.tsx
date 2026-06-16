@@ -54,14 +54,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <title>EduNexus — Nền tảng Phát triển Kỹ năng CNTT</title>
-        <meta name='description' content='EduNexus giúp bạn phân tích JD, đánh giá kỹ năng và xây dựng lộ trình học tập cá nhân hóa dựa trên nhu cầu tuyển dụng thực tế.' />
+        <meta
+          name='description'
+          content='EduNexus giúp bạn phân tích JD, đánh giá kỹ năng và xây dựng lộ trình học tập cá nhân hóa dựa trên nhu cầu tuyển dụng thực tế.'
+        />
         <meta property='og:title' content='EduNexus' />
-        <meta property='og:description' content='Phân tích JD, đánh giá kỹ năng và lộ trình học tập cá nhân hóa cho lập trình viên Việt Nam.' />
+        <meta
+          property='og:description'
+          content='Phân tích JD, đánh giá kỹ năng và lộ trình học tập cá nhân hóa cho lập trình viên Việt Nam.'
+        />
         <meta property='og:type' content='website' />
         <meta property='og:url' content='https://edunexus.vn' />
         <meta name='twitter:card' content='summary_large_image' />
         <meta name='twitter:title' content='EduNexus' />
-        <meta name='twitter:description' content='Phân tích JD, đánh giá kỹ năng và lộ trình học tập cá nhân hóa cho lập trình viên Việt Nam.' />
+        <meta
+          name='twitter:description'
+          content='Phân tích JD, đánh giá kỹ năng và lộ trình học tập cá nhân hóa cho lập trình viên Việt Nam.'
+        />
         <style dangerouslySetInnerHTML={{ __html: appShellStyle }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <Meta />

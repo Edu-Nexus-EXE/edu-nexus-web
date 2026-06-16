@@ -28,8 +28,14 @@ export function AnalysisHistoryInsights() {
       <div className='bg-card rounded-2xl border border-border p-6 shadow-sm'>
         <h3 className='font-bold text-lg text-foreground mb-4'>{t('analysisHistory.insights.quickStats')}</h3>
         <div className='space-y-3 text-sm'>
-          <div className='flex items-center justify-between'><span>{t('analysisHistory.insights.total')}</span><span className='font-bold'>{count}</span></div>
-          <div className='flex items-center justify-between'><span>{t('analysisHistory.insights.avg')}</span><span className='font-bold'>72%</span></div>
+          <div className='flex items-center justify-between'>
+            <span>{t('analysisHistory.insights.total')}</span>
+            <span className='font-bold'>{count}</span>
+          </div>
+          <div className='flex items-center justify-between'>
+            <span>{t('analysisHistory.insights.avg')}</span>
+            <span className='font-bold'>72%</span>
+          </div>
         </div>
       </div>
     </div>

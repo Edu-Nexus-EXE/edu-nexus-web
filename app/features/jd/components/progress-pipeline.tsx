@@ -43,14 +43,19 @@ export function ProgressPipeline({ title, steps }: ProgressPipelineProps) {
                 <p className='text-sm font-semibold text-foreground'>{step.label}</p>
                 <p className='mt-1 text-xs text-muted-foreground'>{step.hint}</p>
               </div>
-              {step.href ? <span className='material-icons mt-1.5 text-base text-muted-foreground'>arrow_forward</span> : null}
+              {step.href ? (
+                <span className='material-icons mt-1.5 text-base text-muted-foreground'>arrow_forward</span>
+              ) : null}
             </>
           )
 
           if (step.href) {
             return (
               <li key={step.key}>
-                <a href={step.href} className='flex items-start gap-3 rounded-xl border border-border p-3 transition-colors hover:bg-muted/30'>
+                <a
+                  href={step.href}
+                  className='flex items-start gap-3 rounded-xl border border-border p-3 transition-colors hover:bg-muted/30'
+                >
                   {body}
                 </a>
               </li>
@@ -58,7 +63,13 @@ export function ProgressPipeline({ title, steps }: ProgressPipelineProps) {
           }
 
           return (
-            <li key={step.key} className={cn('flex items-start gap-3 rounded-xl border border-border p-3', step.status === 'locked' && 'opacity-60')}>
+            <li
+              key={step.key}
+              className={cn(
+                'flex items-start gap-3 rounded-xl border border-border p-3',
+                step.status === 'locked' && 'opacity-60'
+              )}
+            >
               {body}
             </li>
           )

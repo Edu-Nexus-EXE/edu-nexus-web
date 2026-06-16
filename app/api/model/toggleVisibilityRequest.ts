@@ -6,5 +6,5 @@
  */
 
 export interface ToggleVisibilityRequest {
-  isVisible?: boolean;
+  isVisible?: boolean
 }

@@ -6,5 +6,5 @@
  */
 
 export type GetJdSubmissionsJdIdReusableSessionsPathParameters = {
- jdId: string,
- }
+  jdId: string
+}

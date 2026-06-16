@@ -6,5 +6,5 @@
  */
 
 export interface SetUserBanRequest {
-  isBanned?: boolean;
+  isBanned?: boolean
 }

@@ -8,124 +8,103 @@ import type {
   DeleteAdminRagDocumentsIdPathParameters,
   GetAdminRagDocumentsParams,
   PostAdminRagDocumentsBody
-} from '../../model';
+} from '../../model'
 
-import { customFetch } from '../../mutator/custom-fetch';
+import { customFetch } from '../../mutator/custom-fetch'
 
 export type getAdminRagDocumentsResponse200 = {
   data: void
   status: 200
 }
-    
-export type getAdminRagDocumentsResponseSuccess = (getAdminRagDocumentsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type getAdminRagDocumentsResponse = (getAdminRagDocumentsResponseSuccess)
+export type getAdminRagDocumentsResponseSuccess = getAdminRagDocumentsResponse200 & {
+  headers: Headers
+}
+export type getAdminRagDocumentsResponse = getAdminRagDocumentsResponseSuccess
 
-export const getGetAdminRagDocumentsUrl = (params?: GetAdminRagDocumentsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetAdminRagDocumentsUrl = (params?: GetAdminRagDocumentsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/admin/rag-documents?${stringifiedParams}` : `/admin/rag-documents`
 }
 
-export const getAdminRagDocuments = async (params?: GetAdminRagDocumentsParams, options?: RequestInit): Promise<getAdminRagDocumentsResponse> => {
-  
-  return customFetch<getAdminRagDocumentsResponse>(getGetAdminRagDocumentsUrl(params),
-  {      
+export const getAdminRagDocuments = async (
+  params?: GetAdminRagDocumentsParams,
+  options?: RequestInit
+): Promise<getAdminRagDocumentsResponse> => {
+  return customFetch<getAdminRagDocumentsResponse>(getGetAdminRagDocumentsUrl(params), {
     ...options,
     method: 'GET'
-    
-    
-  }
-);}
-
+  })
+}
 
 export type postAdminRagDocumentsResponse200 = {
   data: void
   status: 200
 }
-    
-export type postAdminRagDocumentsResponseSuccess = (postAdminRagDocumentsResponse200) & {
-  headers: Headers;
-};
-;
 
-export type postAdminRagDocumentsResponse = (postAdminRagDocumentsResponseSuccess)
+export type postAdminRagDocumentsResponseSuccess = postAdminRagDocumentsResponse200 & {
+  headers: Headers
+}
+export type postAdminRagDocumentsResponse = postAdminRagDocumentsResponseSuccess
 
 export const getPostAdminRagDocumentsUrl = () => {
-
-
-  
-
   return `/admin/rag-documents`
 }
 
-export const postAdminRagDocuments = async (postAdminRagDocumentsBody: PostAdminRagDocumentsBody, options?: RequestInit): Promise<postAdminRagDocumentsResponse> => {
-    const formData = new FormData();
-if(postAdminRagDocumentsBody.file !== undefined) {
- formData.append(`file`, postAdminRagDocumentsBody.file)
- }
-if(postAdminRagDocumentsBody.title !== undefined) {
- formData.append(`title`, postAdminRagDocumentsBody.title)
- }
-if(postAdminRagDocumentsBody.sourceType !== undefined) {
- formData.append(`sourceType`, postAdminRagDocumentsBody.sourceType)
- }
-if(postAdminRagDocumentsBody.relatedSkillIds !== undefined) {
- postAdminRagDocumentsBody.relatedSkillIds.forEach(value => formData.append(`relatedSkillIds`, value));
- }
-
-  return customFetch<postAdminRagDocumentsResponse>(getPostAdminRagDocumentsUrl(),
-  {      
-    ...options,
-    method: 'POST'
-    ,
-    body: 
-      formData,
+export const postAdminRagDocuments = async (
+  postAdminRagDocumentsBody: PostAdminRagDocumentsBody,
+  options?: RequestInit
+): Promise<postAdminRagDocumentsResponse> => {
+  const formData = new FormData()
+  if (postAdminRagDocumentsBody.file !== undefined) {
+    formData.append(`file`, postAdminRagDocumentsBody.file)
   }
-);}
+  if (postAdminRagDocumentsBody.title !== undefined) {
+    formData.append(`title`, postAdminRagDocumentsBody.title)
+  }
+  if (postAdminRagDocumentsBody.sourceType !== undefined) {
+    formData.append(`sourceType`, postAdminRagDocumentsBody.sourceType)
+  }
+  if (postAdminRagDocumentsBody.relatedSkillIds !== undefined) {
+    postAdminRagDocumentsBody.relatedSkillIds.forEach((value) => formData.append(`relatedSkillIds`, value))
+  }
 
+  return customFetch<postAdminRagDocumentsResponse>(getPostAdminRagDocumentsUrl(), {
+    ...options,
+    method: 'POST',
+    body: formData
+  })
+}
 
 export type deleteAdminRagDocumentsIdResponse200 = {
   data: void
   status: 200
 }
-    
-export type deleteAdminRagDocumentsIdResponseSuccess = (deleteAdminRagDocumentsIdResponse200) & {
-  headers: Headers;
-};
-;
 
-export type deleteAdminRagDocumentsIdResponse = (deleteAdminRagDocumentsIdResponseSuccess)
+export type deleteAdminRagDocumentsIdResponseSuccess = deleteAdminRagDocumentsIdResponse200 & {
+  headers: Headers
+}
+export type deleteAdminRagDocumentsIdResponse = deleteAdminRagDocumentsIdResponseSuccess
 
-export const getDeleteAdminRagDocumentsIdUrl = ({ id }: DeleteAdminRagDocumentsIdPathParameters,) => {
-
-
-  
-
+export const getDeleteAdminRagDocumentsIdUrl = ({ id }: DeleteAdminRagDocumentsIdPathParameters) => {
   return `/admin/rag-documents/${id}`
 }
 
-export const deleteAdminRagDocumentsId = async ({ id }: DeleteAdminRagDocumentsIdPathParameters, options?: RequestInit): Promise<deleteAdminRagDocumentsIdResponse> => {
-  
-  return customFetch<deleteAdminRagDocumentsIdResponse>(getDeleteAdminRagDocumentsIdUrl({ id }),
-  {      
+export const deleteAdminRagDocumentsId = async (
+  { id }: DeleteAdminRagDocumentsIdPathParameters,
+  options?: RequestInit
+): Promise<deleteAdminRagDocumentsIdResponse> => {
+  return customFetch<deleteAdminRagDocumentsIdResponse>(getDeleteAdminRagDocumentsIdUrl({ id }), {
     ...options,
     method: 'DELETE'
-    
-    
-  }
-);}
-
-
+  })
+}
