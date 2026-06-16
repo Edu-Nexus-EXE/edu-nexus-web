@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
-import { loadGapAnalysis, loadRecentJds } from '../../lib/sprint2-api'
+import { loadGapAnalysis, loadRecentJds, loadRoadmapOverview, type RoadmapView } from '../../lib/sprint2-api'
 
 type HistoryRecord = {
   id: string
@@ -10,6 +10,12 @@ type HistoryRecord = {
   createdAt?: string
   scorePercent: number
   skillCount: number
+  roadmapId?: string
+}
+
+function isUsableRoadmap(roadmap: RoadmapView) {
+  const status = roadmap.status.toLowerCase()
+  return status !== 'archived' && status !== 'failed'
 }
 
 export function AnalysisHistoryTable() {
@@ -26,13 +32,17 @@ export function AnalysisHistoryTable() {
         const jds = (res.data ?? []).filter((jd) => jd.parseStatus.toLowerCase() === 'completed')
         return Promise.all(
           jds.map(async (jd) => {
-            const analysis = await loadGapAnalysis(jd.id)
+            const [analysis, roadmaps] = await Promise.all([
+              loadGapAnalysis(jd.id),
+              loadRoadmapOverview({ jdId: jd.id }),
+            ])
             return {
               id: jd.id,
               jobTitle: jd.jobTitle,
               createdAt: jd.createdAt,
               scorePercent: analysis.data?.meta.scorePercent ?? 0,
               skillCount: analysis.data?.skills.length ?? 0,
+              roadmapId: ((roadmaps.data ?? []).find(isUsableRoadmap) ?? (roadmaps.data ?? [])[0])?.id,
             }
           }),
         )
@@ -83,7 +93,12 @@ export function AnalysisHistoryTable() {
                         <div className='size-8 rounded-lg flex items-center justify-center bg-primary/10 text-primary'>
                           <span className='material-symbols-outlined text-lg'>description</span>
                         </div>
-                        <span className='font-bold text-foreground text-sm'>{record.jobTitle}</span>
+                        <Link
+                          to={`/dashboard/jd/${encodeURIComponent(record.id)}`}
+                          className='text-sm font-bold text-foreground transition-colors hover:text-primary hover:underline'
+                        >
+                          {record.jobTitle}
+                        </Link>
                       </div>
                     </td>
                     <td className='px-6 py-5'>
@@ -103,14 +118,30 @@ export function AnalysisHistoryTable() {
                       </div>
                     </td>
                     <td className='px-6 py-5 text-right'>
-                      <button
-                        type='button'
-                        onClick={() => navigate(`/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(record.id)}`)}
-                        className='text-muted-foreground hover:text-primary transition-colors text-sm font-bold flex items-center gap-1 ml-auto'
-                      >
-                        {t('analysisHistory.table.detail')}
-                        <span className='material-symbols-outlined text-sm'>open_in_new</span>
-                      </button>
+                      <div className='flex flex-wrap justify-end gap-2'>
+                        <button
+                          type='button'
+                          onClick={() => navigate(`/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(record.id)}`)}
+                          className='inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary'
+                        >
+                          <span className='material-symbols-outlined text-sm'>analytics</span>
+                          {t('analysisHistory.table.viewAnalysis')}
+                        </button>
+                        <button
+                          type='button'
+                          onClick={() =>
+                            navigate(
+                              record.roadmapId
+                                ? `/roadmaps?roadmapId=${encodeURIComponent(record.roadmapId)}`
+                                : `/roadmaps?jdId=${encodeURIComponent(record.id)}`,
+                            )
+                          }
+                          className='inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90'
+                        >
+                          <span className='material-symbols-outlined text-sm'>route</span>
+                          {t('analysisHistory.table.viewRoadmap')}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

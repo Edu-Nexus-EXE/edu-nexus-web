@@ -22,7 +22,8 @@
     "searchPlaceholder": "Search system...",
     "defaultUser": "Admin Manager",
     "defaultPlan": "System Controller",
-    "viewAsUser": "View as user"
+    "viewAsUser": "View as user",
+    "themeToggle": "Theme"
   },
   "stats": {
     "totalUsers": "Total users",
@@ -115,7 +116,12 @@
         "exam": "Sample Exam"
       },
       "needsReview": "Needs Review",
-      "clearFilters": "Clear Filters"
+      "clearFilters": "Clear Filters",
+      "activeState": {
+        "all": "All resources",
+        "active": "Active only",
+        "inactive": "Disabled / rejected"
+      }
     },
     "table": {
       "titleAndProvider": "Title & Provider",
@@ -145,7 +151,46 @@
     "subtitle": "Manage learning resources and review AI-generated entries.",
     "actions": {
       "reject": "Reject",
-      "approve": "Approve"
+      "approve": "Approve",
+      "view": "View",
+      "viewDetails": "View details",
+      "edit": "Edit",
+      "delete": "Delete",
+      "disable": "Disable",
+      "restore": "Restore"
+    },
+    "form": {
+      "createTitle": "Create resource",
+      "editTitle": "Edit resource",
+      "editDesc": "Create resources and map them to skills for roadmap recommendations.",
+      "viewDetails": "Resource Details",
+      "viewDetailsDesc": "View detailed information of the resource.",
+      "title": "Title",
+      "provider": "Provider",
+      "url": "URL",
+      "resourceType": "Resource Type",
+      "language": "Language",
+      "shortDescription": "Short Description",
+      "relatedSkillIds": "Related Skill IDs",
+      "duration": "Duration (minutes)",
+      "accessType": "Access Type",
+      "affiliateLabel": "Affiliate Label",
+      "commission": "Commission (%)",
+      "needsReview": "Needs review",
+      "active": "Active",
+      "saveChanges": "Save changes",
+      "createResource": "Create resource",
+      "close": "Close",
+      "cancel": "Cancel"
+    },
+    "language": {
+      "vietnamese": "Vietnamese",
+      "english": "English"
+    },
+    "accessType": {
+      "free": "Free",
+      "paid": "Paid",
+      "affiliate": "Affiliate"
     }
   },
   "rag": {
@@ -187,7 +232,15 @@
       "totalChunks": "Total Chunks"
     },
     "actions": {
-      "delete": "Delete"
+      "delete": "Delete",
+      "viewDetails": "View details",
+      "close": "Close"
+    },
+    "detail": {
+      "title": "Document Details",
+      "description": "Review RAG document metadata and ingestion status.",
+      "uploadedAt": "Uploaded at",
+      "id": "Document ID"
     }
   },
   "users": {
@@ -350,6 +403,16 @@
       "yes": "Yes",
       "no": "No",
       "activate": "Activate Student",
+      "activateTitle": "Activate Subscription",
+      "activateDesc": "Select the number of months for the subscription.",
+      "durationMonths": "Duration (months)",
+      "customDuration": "Custom duration",
+      "durationHint": "This value is sent to POST /admin/users/:id/activate-subscription as durationMonths.",
+      "activateHint": "Free users can be upgraded to Student. The backend adds the selected duration to the current expiry when the Student plan is still active.",
+      "revokeHint": "Revoking a Student plan downgrades the user to Free while keeping the subscription status Active. User data is kept.",
+      "months": "{{count}} month",
+      "months_plural": "{{count}} months",
+      "confirmActivate": "Confirm Activation",
       "revoke": "Revoke Plan"
     },
     "usage": {
@@ -373,6 +436,8 @@
     "loading": "Loading data...",
     "empty": "No data available.",
     "submitting": "Submitting...",
+    "processing": "Processing...",
+    "cancel": "Cancel",
     "pagination": "Page {{page}} / {{totalPages}} · {{total}} items",
     "prev": "Previous",
     "next": "Next",
@@ -382,7 +447,10 @@
     "revenue": "Revenue (VND)",
     "aiCost": "AI Cost Estimate",
     "aiCostBadge": "ESTIMATED",
-    "activeSubscriptions": "Active subscriptions"
+    "activeSubscriptions": "Active subscriptions",
+    "userTierChart": "User tiers",
+    "revenueChart": "Revenue by provider",
+    "aiPipelineChart": "AI cost by pipeline"
   },
   "skillsQueue": {
     "title": "Skills Review Queue",
@@ -397,6 +465,7 @@
     "approve": "Approve",
     "reject": "Reject",
     "edit": "Edit",
+    "viewDetails": "View details",
     "save": "Save",
     "cancel": "Cancel",
     "noDescription": "No description provided.",
@@ -417,6 +486,20 @@
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected"
+    },
+    "form": {
+      "createTitle": "Create new skill",
+      "editTitle": "Edit skill",
+      "viewTitle": "Skill Details",
+      "editDesc": "Update taxonomy metadata, prerequisites, and duplicate merge rules.",
+      "viewDesc": "Review skill metadata and current usage.",
+      "name": "Skill name",
+      "slug": "Slug",
+      "category": "Category",
+      "major": "Major",
+      "description": "Description",
+      "difficultyLevel": "Difficulty level",
+      "active": "Active"
     }
   },
   "footer": {

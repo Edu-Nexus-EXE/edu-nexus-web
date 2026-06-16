@@ -1,12 +1,49 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
+import { useEffect, useMemo, useState } from 'react'
 
-import { getAuthSession } from '~/shared/lib/auth-session'
+import { getUsersMe } from '~/api/operations/users/users'
+import { mapUserProfileToUser } from '~/features/auth/lib/auth-mappers'
+import { getAuthSession, setAuthSession, type AuthUser } from '~/shared/lib/auth-session'
+import { ThemeToggle } from '~/shared/components/theme-toggle'
 import { LanguageSwitcher } from '~/shared/components/language-switcher'
 
 export function AdminHeader() {
   const { t } = useTranslation('admin')
-  const user = getAuthSession()?.user
+  const session = getAuthSession()
+  const [user, setUser] = useState<AuthUser | undefined>(session?.user)
+  const [avatarFailed, setAvatarFailed] = useState(false)
+  const initials = useMemo(() => {
+    const source = user?.fullName || user?.email || t('header.defaultUser')
+    const parts = source.trim().split(/\s+/).filter(Boolean)
+    const letters = parts.length > 1 ? `${parts[0][0]}${parts[parts.length - 1][0]}` : source.slice(0, 2)
+    return letters.toUpperCase()
+  }, [t, user?.email, user?.fullName])
+  const avatarUrl = user?.avatarUrl?.trim()
+
+  useEffect(() => {
+    let cancelled = false
+    const current = getAuthSession()
+    if (!current) return
+
+    getUsersMe()
+      .then((res) => {
+        if (cancelled) return
+        const data = (res as { data?: unknown }).data
+        if (!data) return
+        const mapped = mapUserProfileToUser(data as Parameters<typeof mapUserProfileToUser>[0])
+        setUser(mapped)
+        setAvatarFailed(false)
+        setAuthSession({ ...current, user: mapped })
+      })
+      .catch(() => {
+        if (!cancelled) setUser(current.user)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <header className='h-20 border-b border-border px-8 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-40'>
@@ -41,6 +78,7 @@ export function AdminHeader() {
           <span className='hidden md:inline'>{t('header.viewAsUser')}</span>
         </Link>
 
+        <ThemeToggle label={t('header.themeToggle')} />
         <LanguageSwitcher />
 
         <div className='flex items-center gap-3 pl-4 border-l border-border'>
@@ -48,14 +86,18 @@ export function AdminHeader() {
             <p className='text-sm font-semibold text-foreground'>{user?.fullName || t('header.defaultUser')}</p>
             <p className='text-xs text-muted-foreground'>{user?.role || t('header.defaultPlan')}</p>
           </div>
-          <img
-            alt={t('adminCommon.adminAvatar')}
-            className='w-10 h-10 rounded-full object-cover ring-2 ring-primary/20'
-            src={
-              user?.avatarUrl ||
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuDPRGXULQKHmAiiNBm-xsyPUS1_8jSLbsyqB0e4SOhBrMRmEuuYnoXJNejgU1vA_Sc3nFJxigl7WWDiMGFpCE7VbKP33jdI67kA0YrsU52RCpSxF84zcYOvkSv9Q0xWqCQgg_DueiEBnk_AUof4iAlBXxnd-AnRUxdQ9qn70KlxsxT6xxdKiTR0ziYRj5hiUtfvhPvGn1_Li3ElZgC2bWP0exj46Wf6DcKyTLomVah3CPkM4F6VUyVRwIpqCvNZgpqafdw8Out-8nIq'
-            }
-          />
+          {avatarUrl && !avatarFailed ? (
+            <img
+              alt={t('adminCommon.adminAvatar')}
+              className='w-10 h-10 rounded-full object-cover ring-2 ring-primary/20'
+              src={avatarUrl}
+              onError={() => setAvatarFailed(true)}
+            />
+          ) : (
+            <div className='flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-black text-primary-foreground ring-2 ring-primary/20'>
+              {initials}
+            </div>
+          )}
         </div>
       </div>
     </header>

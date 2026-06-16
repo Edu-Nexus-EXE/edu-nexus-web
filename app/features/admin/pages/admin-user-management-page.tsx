@@ -12,7 +12,8 @@ function statusChip(status: string) {
 }
 
 export function AdminUserManagementPage() {
-  const { t } = useTranslation('admin')
+  const { t, i18n } = useTranslation('admin')
+  const isVi = (i18n.language ?? 'vi').startsWith('vi')
   const [rows, setRows] = useState<AdminUserRowView[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
@@ -123,7 +124,9 @@ export function AdminUserManagementPage() {
               ) : rows.length === 0 ? (
                 <tr><td colSpan={6} className='px-6 py-8'><div className='flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-muted/10 px-6 py-8 text-center'><div className='mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary'><span className='material-symbols-outlined'>group_off</span></div><p className='text-sm font-semibold text-foreground'>{t('adminCommon.empty')}</p><p className='mt-2 text-sm text-muted-foreground'>{t('users.description')}</p></div></td></tr>
               ) : (
-                rows.map((row) => (
+                rows.map((row) => {
+                  const isAdmin = row.role.toLowerCase() === 'admin'
+                  return (
                   <tr key={row.id} className='hover:bg-muted/30 transition-colors cursor-pointer'>
                     <td className='px-6 py-5'>
                       <div>
@@ -131,17 +134,30 @@ export function AdminUserManagementPage() {
                         <p className='text-sm text-muted-foreground'>{row.email}</p>
                       </div>
                     </td>
-                    <td className='px-6 py-5'><span className='px-3 py-1 bg-muted text-muted-foreground rounded-full text-xs font-bold uppercase tracking-wider'>{row.plan}</span></td>
+                    <td className='px-6 py-5'>
+                      <div className='flex flex-wrap items-center gap-2'>
+                        <span className='px-3 py-1 bg-muted text-muted-foreground rounded-full text-xs font-bold uppercase tracking-wider'>{row.plan}</span>
+                        {isAdmin ? <span className='px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-wider'>Admin</span> : null}
+                      </div>
+                    </td>
                     <td className='px-6 py-5'><p className='text-sm'>{new Date(row.createdAt).toLocaleDateString('vi-VN')}</p></td>
                     <td className='px-6 py-5 font-bold'>{row.jdCount}</td>
                     <td className='px-6 py-5'><span className={`px-3 py-1 rounded-lg text-xs font-bold uppercase ${statusChip(row.status)}`}>{row.status}</span></td>
                     <td className='px-6 py-5 text-right'>
-                      <Link to={`/admin/users/${encodeURIComponent(row.id)}`} className='p-2 hover:bg-muted rounded-lg text-primary transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card' title={t('users.table.viewAction')} aria-label={t('users.table.viewAction')}>
-                        <span className='material-symbols-outlined text-lg'>visibility</span>
-                      </Link>
+                      {isAdmin ? (
+                        <span className='inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-2 text-xs font-bold text-primary'>
+                          <span className='material-symbols-outlined text-[16px]'>admin_panel_settings</span>
+                          {isVi ? 'Chính bạn' : 'Current admin'}
+                        </span>
+                      ) : (
+                        <Link to={`/admin/users/${encodeURIComponent(row.id)}`} className='p-2 hover:bg-muted rounded-lg text-primary transition-colors inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-card' title={t('users.table.viewAction')} aria-label={t('users.table.viewAction')}>
+                          <span className='material-symbols-outlined text-lg'>visibility</span>
+                        </Link>
+                      )}
                     </td>
                   </tr>
-                ))
+                  )
+                })
               )}
             </tbody>
           </table>

@@ -30,7 +30,7 @@ function resolveSelectedRoadmap(
 
   if (preferredJdId) {
     const byJdId = roadmaps.filter((item) => item.jdId === preferredJdId)
-    return byJdId.find(isUsableRoadmap) ?? null
+    return byJdId.find(isUsableRoadmap) ?? byJdId[0] ?? null
   }
 
   return roadmaps.find(isUsableRoadmap) ?? roadmaps[0] ?? null
@@ -155,6 +155,46 @@ function getRoadmapStatusLabelKey(status: string) {
 // Chia node thành các tầng (level) dựa trên prerequisiteNodeIds để vẽ skill tree dọc.
 // Node không có tiên quyết = tầng 0; tầng = 1 + max(tầng các tiên quyết). Có guard chống vòng lặp.
 // Nếu roadmap không khai báo quan hệ tiên quyết nào → xếp tuần tự mỗi node 1 tầng (chuỗi dọc).
+const VI_ROADMAP_TEXT: Record<string, string> = {
+  'Full-stack Developer Intern Skill Tree Roadmap': 'Lộ trình kỹ năng thực tập sinh Full-stack',
+  'Git Basics': 'Cơ bản về Git',
+  'Advanced Git': 'Git nâng cao',
+  'REST API': 'REST API',
+  TypeScript: 'TypeScript',
+  JWT: 'JWT',
+  'ASP.NET Core': 'ASP.NET Core',
+  'Entity Framework Core': 'Entity Framework Core',
+  PostgreSQL: 'PostgreSQL',
+  React: 'React',
+  'C#': 'C#',
+}
+
+const VI_RESOURCE_TYPES: Record<string, string> = {
+  article: 'bài viết',
+  video: 'video',
+  course: 'khóa học',
+  document: 'tài liệu',
+  docs: 'tài liệu',
+}
+
+function translateFixedRoadmapText(value: string | undefined, language: string) {
+  if (!value || !language.startsWith('vi')) return value
+  return VI_ROADMAP_TEXT[value] ?? value
+}
+
+function translateRoadmapDescription(value: string | undefined, language: string) {
+  if (!value || !language.startsWith('vi')) return value
+  return value
+    .replace(/^Learn the basics of Git, including version control, branching, and merging\.$/i, 'Học nền tảng Git, gồm quản lý phiên bản, tạo nhánh và hợp nhất mã.')
+    .replace(/^Learn version control using Git, including branching, merging, and collaboration workflows\.$/i, 'Học quản lý phiên bản bằng Git, gồm tạo nhánh, hợp nhất và quy trình cộng tác.')
+    .replace(/^Learn (.+?)[.]?$/i, 'Học $1.')
+}
+
+function translateResourceType(value: string, language: string) {
+  if (!language.startsWith('vi')) return value
+  return VI_RESOURCE_TYPES[value.toLowerCase()] ?? value
+}
+
 function computeTiers(nodes: RoadmapNodeView[]): RoadmapNodeView[][] {
   const byId = new Map(nodes.map((node) => [node.id, node]))
   const hasEdges = nodes.some((node) => node.prerequisiteNodeIds.some((id) => byId.has(id)))
@@ -183,7 +223,7 @@ function computeTiers(nodes: RoadmapNodeView[]): RoadmapNodeView[][] {
 }
 
 export function RoadmapPage() {
-  const { t } = useTranslation('dashboard')
+  const { t, i18n } = useTranslation('dashboard')
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const toast = useToast()
@@ -204,7 +244,9 @@ export function RoadmapPage() {
   const [roadmapRefreshToken, setRoadmapRefreshToken] = useState(0)
   const [resourceLoading, setResourceLoading] = useState(false)
   const [previewResource, setPreviewResource] = useState<RoadmapResourceView | null>(null)
+  const [archiveDialogOpen, setArchiveDialogOpen] = useState(false)
   const isRoadmapListMode = !roadmapIdFromQuery && !jdIdFromQuery
+  const language = i18n.language ?? 'vi'
 
   useEffect(() => {
     let cancelled = false
@@ -407,12 +449,19 @@ export function RoadmapPage() {
 
   const handleArchive = async () => {
     if (!roadmap) return
+    setArchiveDialogOpen(true)
+  }
+
+  const confirmArchive = async () => {
+    if (!roadmap) return
+
     try {
       setUpdating(true)
       setError('')
       await triggerRoadmapArchive(roadmap.id)
       setRoadmap((current) => (current ? { ...current, status: 'archived' } : current))
       setResources([])
+      setArchiveDialogOpen(false)
       toast.success(t('learningPath.roadmap.archiveSuccess'))
     } catch (e) {
       setError((e as Error).message || t('learningPath.roadmap.archiveFailed'))
@@ -484,7 +533,7 @@ export function RoadmapPage() {
       </header>
 
       <div className='flex'>
-        <main className={`flex-grow transition-all duration-300 ${isPanelOpen && selectedNodeId ? 'lg:mr-[420px]' : ''}`}>
+        <main className='flex-grow transition-all duration-300'>
           <div className='mx-auto max-w-6xl p-6 md:p-8'>
             <div className='mb-8 space-y-5 rounded-[2rem] border border-white/60 bg-white/88 p-6 shadow-2xl shadow-orange-500/10 backdrop-blur-xl dark:border-white/10 dark:bg-[#0f1a2d]/92 dark:shadow-sky-950/30 md:p-8'>
               <div className='flex flex-col gap-4 md:flex-row md:items-start md:justify-between'>
@@ -494,7 +543,7 @@ export function RoadmapPage() {
                     {t('learningPath.roadmap.badge')}
                   </div>
                   <h1 className='max-w-4xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-5xl'>
-                    {roadmap?.title || t('learningPath.roadmap.title')}
+                    {translateFixedRoadmapText(roadmap?.title, language) || t('learningPath.roadmap.title')}
                   </h1>
                   <p className='mt-4 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300'>
                     {roadmap ? t('learningPath.roadmap.detailSubtitle') : t('learningPath.roadmap.emptyDescription')}
@@ -512,15 +561,17 @@ export function RoadmapPage() {
                       {t('learningPath.roadmap.generate')}
                     </button>
                   ) : null}
-                  {roadmap && !isArchived ? (
-                    <button
-                      type='button'
-                      disabled={updating}
-                      onClick={() => void handleArchive()}
-                      className='rounded-2xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-50 dark:border-white/10 dark:bg-white/8 dark:text-slate-100 dark:hover:bg-white/12'
-                    >
-                      {t('learningPath.roadmap.archive')}
-                    </button>
+                  {roadmap && !isArchived && !roadmap.isOutdated ? (
+                    <div className='flex flex-wrap gap-2'>
+                      <button
+                        type='button'
+                        disabled={updating}
+                        onClick={() => void handleArchive()}
+                        className='rounded-2xl border border-slate-200 bg-white/70 px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-white disabled:opacity-50 dark:border-white/10 dark:bg-white/8 dark:text-slate-100 dark:hover:bg-white/12'
+                      >
+                        {t('learningPath.roadmap.archive')}
+                      </button>
+                    </div>
                   ) : null}
                 </div>
               </div>
@@ -563,31 +614,70 @@ export function RoadmapPage() {
               </div>
             </div>
 
-            {roadmap?.isOutdated ? (
-              <div className='mb-6 rounded-2xl border border-warning/30 bg-warning/10 p-4'>
-                <div className='flex flex-col gap-3 md:flex-row md:items-center md:justify-between'>
+            {roadmap?.isOutdated && !isArchived ? (
+              <div className='mb-6 rounded-2xl border border-orange-300/50 bg-gradient-to-br from-orange-50 to-amber-50 p-5 shadow-lg shadow-orange-500/10 dark:border-orange-400/30 dark:from-orange-500/15 dark:to-amber-500/10'>
+                <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
                   <div>
-                    <div className='font-semibold text-foreground'>{t('learningPath.roadmap.outdatedTitle')}</div>
-                    <div className='text-sm text-muted-foreground'>{t('learningPath.roadmap.outdatedDescription')}</div>
+                    <div className='flex items-center gap-2 font-black text-slate-950 dark:text-white'>
+                      <span className='material-symbols-outlined text-orange-500'>sync_problem</span>
+                      {t('learningPath.roadmap.outdatedTitle')}
+                    </div>
+                    <div className='mt-1 text-sm text-slate-600 dark:text-slate-300'>{t('learningPath.roadmap.outdatedDescription')}</div>
                   </div>
-                  <div className='flex gap-2'>
-                    <button
-                      type='button'
-                      disabled={updating}
-                      onClick={() => void handleRegenerate()}
-                      className='rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-50'
-                    >
-                      {t('learningPath.roadmap.refresh')}
-                    </button>
+                  <div className='flex flex-wrap gap-2'>
                     <button
                       type='button'
                       disabled={updating}
                       onClick={() => void handleKeep()}
-                      className='rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground disabled:opacity-50'
+                      className='rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm font-bold text-emerald-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-emerald-50 disabled:opacity-50 dark:border-emerald-400/25 dark:bg-white/8 dark:text-emerald-100 dark:hover:bg-emerald-400/10'
                     >
                       {t('learningPath.roadmap.keep')}
                     </button>
+                    <button
+                      type='button'
+                      disabled={updating}
+                      onClick={() => void handleArchive()}
+                      className='rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 disabled:opacity-50 dark:border-white/10 dark:bg-white/8 dark:text-slate-100 dark:hover:bg-white/12'
+                    >
+                      {t('learningPath.roadmap.archive')}
+                    </button>
+                    <button
+                      type='button'
+                      disabled={updating}
+                      onClick={() => void handleRegenerate()}
+                      className='rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-sky-500/20 transition hover:-translate-y-0.5 hover:bg-sky-600 disabled:opacity-50'
+                    >
+                      {t('learningPath.roadmap.refresh')}
+                    </button>
                   </div>
+                </div>
+              </div>
+            ) : null}
+
+            {roadmap && isArchived ? (
+              <div className='mb-6 overflow-hidden rounded-3xl border border-amber-300/50 bg-gradient-to-br from-amber-50 via-orange-50 to-white p-5 shadow-xl shadow-amber-500/10 dark:border-amber-400/30 dark:from-amber-500/15 dark:via-orange-500/10 dark:to-white/5'>
+                <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
+                  <div className='flex items-start gap-4'>
+                    <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/25'>
+                      <span className='material-symbols-outlined'>inventory_2</span>
+                    </div>
+                    <div>
+                      <h2 className='text-lg font-black text-slate-950 dark:text-white'>{t('learningPath.roadmap.archivedTitle')}</h2>
+                      <p className='mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300'>
+                        {t('learningPath.roadmap.archivedDescription')}
+                      </p>
+                    </div>
+                  </div>
+                  {roadmap.jdId ? (
+                    <button
+                      type='button'
+                      onClick={() => navigate(`/dashboard/analytics/gap-analysis?jdId=${encodeURIComponent(roadmap.jdId ?? '')}`)}
+                      className='inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 dark:bg-white dark:text-slate-950'
+                    >
+                      <span className='material-symbols-outlined text-lg'>analytics</span>
+                      {t('learningPath.roadmap.backToGapAnalysis')}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             ) : null}
@@ -642,7 +732,9 @@ export function RoadmapPage() {
                             arrow_forward
                           </span>
                         </div>
-                        <h3 className='line-clamp-2 text-lg font-black text-slate-950 dark:text-white'>{item.title}</h3>
+                        <h3 className='line-clamp-2 text-lg font-black text-slate-950 dark:text-white'>
+                          {translateFixedRoadmapText(item.title, language)}
+                        </h3>
                         <div className='mt-4 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10'>
                           <div
                             className='h-full rounded-full bg-gradient-to-r from-emerald-400 via-sky-400 to-orange-400'
@@ -680,7 +772,7 @@ export function RoadmapPage() {
             ) : null}
 
             {roadmap ? (
-              <div className='grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]'>
+              <div className='grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]'>
                 <section className='rounded-[1.5rem] border border-slate-200 bg-white/90 p-6 shadow-xl shadow-slate-200/60 dark:border-white/10 dark:bg-[#111d31]/92 dark:shadow-black/20'>
                   <div className='mb-4 flex items-center justify-between'>
                     <h2 className='text-lg font-bold text-foreground'>{t('learningPath.roadmap.nodesTitle')}</h2>
@@ -713,8 +805,11 @@ export function RoadmapPage() {
                                   setPreviewResource(null)
                                   setIsPanelOpen(true)
                                 }}
-                                className={`flex w-full max-w-sm flex-1 basis-64 items-start gap-3 rounded-2xl border p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/40 ${getNodeStatusClasses(node.status, selected)}`}
+                                className={`relative flex w-full max-w-sm flex-1 basis-64 items-start gap-3 overflow-hidden rounded-3xl border p-4 text-left shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl ${
+                                  selected ? 'ring-2 ring-primary/30 ring-offset-2 ring-offset-background' : ''
+                                } ${getNodeStatusClasses(node.status, selected)}`}
                               >
+                                <div className='pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sky-400 via-primary to-orange-400 opacity-80' />
                                 <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-lg ${getNodeIconClasses(node.status)}`}>
                                   <span className='material-symbols-outlined text-xl'>{node.icon}</span>
                                 </div>
@@ -728,7 +823,9 @@ export function RoadmapPage() {
                                       {t(getStatusLabelKey(node.status))}
                                     </span>
                                   </div>
-                                  <div className='mt-2 font-semibold text-slate-950 dark:text-white'>{node.title}</div>
+                                  <div className='mt-2 font-semibold text-slate-950 dark:text-white'>
+                                    {translateFixedRoadmapText(node.title, language)}
+                                  </div>
                                   {node.estimatedHours ? (
                                     <p className='mt-1 text-xs text-slate-500 dark:text-slate-300'>
                                       {t('learningPath.roadmap.duration', { hours: node.estimatedHours })}
@@ -749,7 +846,9 @@ export function RoadmapPage() {
                     <div className='flex items-start justify-between gap-4'>
                       <div>
                         <div className='text-xs font-bold uppercase tracking-widest text-sky-600 dark:text-sky-300'>{t('learningPath.roadmap.detailTitle')}</div>
-                        <h2 className='mt-2 text-2xl font-black text-slate-950 dark:text-white'>{activeNode.title}</h2>
+                        <h2 className='mt-2 text-2xl font-black text-slate-950 dark:text-white'>
+                          {translateFixedRoadmapText(activeNode.title, language)}
+                        </h2>
                       </div>
                       <button
                         onClick={() => setIsPanelOpen(false)}
@@ -777,7 +876,7 @@ export function RoadmapPage() {
                     </div>
 
                     <p className='mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300'>
-                      {activeNode.description || t('learningPath.roadmap.nodeDescriptionFallback')}
+                      {translateRoadmapDescription(activeNode.description, language) || t('learningPath.roadmap.nodeDescriptionFallback')}
                     </p>
 
                     <div className='mt-6 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 dark:border-white/10 dark:bg-white/6'>
@@ -793,7 +892,7 @@ export function RoadmapPage() {
                               key={node.id}
                               className='inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 dark:border-white/10 dark:bg-white/8 dark:text-slate-100'
                             >
-                              {node.title}
+                              {translateFixedRoadmapText(node.title, language)}
                               <span className='material-symbols-outlined text-sm text-success'>
                                 {node.status === 'completed' ? 'check_circle' : 'pending'}
                               </span>
@@ -823,13 +922,14 @@ export function RoadmapPage() {
                               const previewKind = getResourcePreviewKind(resource)
 
                               return (
-                              <article
+                                <article
                                 key={resource.id}
-                                className='group rounded-2xl border border-slate-200 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg hover:shadow-sky-500/10 dark:border-white/10 dark:bg-white/7 dark:hover:border-sky-400/40'
+                                className='group rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/80 p-4 transition-all hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-lg hover:shadow-sky-500/10 dark:border-white/10 dark:from-white/8 dark:to-white/5 dark:hover:border-sky-400/40'
                               >
-                                <div className={`rounded-xl p-3 ${resource.iconBg} ${resource.iconColor}`}>
-                                  <span className='material-symbols-outlined'>{resource.icon}</span>
-                                </div>
+                                <div className='flex items-start gap-4'>
+                                  <div className={`shrink-0 rounded-xl p-3 ${resource.iconBg} ${resource.iconColor}`}>
+                                    <span className='material-symbols-outlined'>{resource.icon}</span>
+                                  </div>
                                 <div className='min-w-0 flex-1'>
                                   <div className='flex flex-wrap items-center gap-2'>
                                     <div className='font-semibold text-slate-950 group-hover:text-sky-700 dark:text-white dark:group-hover:text-sky-200'>{resource.title}</div>
@@ -846,11 +946,12 @@ export function RoadmapPage() {
                                   </div>
                                   <div className='mt-1 text-xs text-muted-foreground'>
                                     {resource.provider ? `${resource.provider} • ` : ''}
-                                    {resource.type}
+                                    {translateResourceType(resource.type, language)}
                                   </div>
                                   {resource.description ? (
-                                    <p className='mt-2 text-sm text-muted-foreground'>{resource.description}</p>
+                                    <p className='mt-2 text-sm leading-6 text-muted-foreground'>{resource.description}</p>
                                   ) : null}
+                                </div>
                                 </div>
                                 <div className='mt-4 flex flex-wrap gap-2'>
                                   <button
@@ -888,36 +989,6 @@ export function RoadmapPage() {
                       </div>
                     )}
 
-                    {previewResource ? (
-                      <div className='mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/7'>
-                        <div className='flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 dark:border-white/10'>
-                          <div className='min-w-0'>
-                            <p className='truncate text-sm font-bold text-slate-950 dark:text-white'>{previewResource.title}</p>
-                            <p className='text-xs text-slate-500 dark:text-slate-400'>
-                              {getResourcePreviewKind(previewResource) === 'video'
-                                ? t('learningPath.roadmap.videoPreview')
-                                : t('learningPath.roadmap.documentPreview')}
-                            </p>
-                          </div>
-                          <button
-                            type='button'
-                            onClick={() => setPreviewResource(null)}
-                            className='rounded-full p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10'
-                            aria-label={t('learningPath.roadmap.closePanel')}
-                          >
-                            <span className='material-symbols-outlined text-base'>close</span>
-                          </button>
-                        </div>
-                        <iframe
-                          title={previewResource.title}
-                          src={getResourcePreviewUrl(previewResource) ?? 'about:blank'}
-                          className='h-72 w-full bg-slate-950'
-                          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                          allowFullScreen
-                        />
-                      </div>
-                    ) : null}
-
                     <button
                       onClick={() => void handleMarkComplete()}
                       disabled={updating || selectedStatus === 'completed' || isArchived || !prerequisitesMet}
@@ -933,6 +1004,88 @@ export function RoadmapPage() {
           </div>
         </main>
       </div>
+      {archiveDialogOpen && roadmap ? (
+        <div className='fixed inset-0 z-[85] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm'>
+          <div className='w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl shadow-sky-950/40 dark:bg-[#101b2d]'>
+            <div className='bg-gradient-to-br from-amber-400/20 via-orange-400/10 to-sky-400/10 p-6'>
+              <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg shadow-amber-500/30'>
+                <span className='material-symbols-outlined'>archive</span>
+              </div>
+              <h2 className='mt-5 text-2xl font-black text-slate-950 dark:text-white'>{t('learningPath.roadmap.archiveModalTitle')}</h2>
+              <p className='mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300'>
+                {t('learningPath.roadmap.archiveModalDescription', {
+                  title: translateFixedRoadmapText(roadmap.title, language),
+                })}
+              </p>
+              <div className='mt-4 rounded-2xl border border-amber-200/70 bg-white/70 p-4 text-sm text-amber-900 dark:border-amber-400/20 dark:bg-white/8 dark:text-amber-100'>
+                {t('learningPath.roadmap.archiveModalNote')}
+              </div>
+            </div>
+            <div className='flex flex-col gap-3 p-6 sm:flex-row sm:justify-end'>
+              <button
+                type='button'
+                disabled={updating}
+                onClick={() => setArchiveDialogOpen(false)}
+                className='rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-white/10 dark:text-slate-100 dark:hover:bg-white/10'
+              >
+                {t('learningPath.roadmap.cancel')}
+              </button>
+              <button
+                type='button'
+                disabled={updating}
+                onClick={() => void confirmArchive()}
+                className='rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-amber-500/20 hover:bg-amber-600 disabled:opacity-50'
+              >
+                {updating ? t('learningPath.roadmap.archiving') : t('learningPath.roadmap.confirmArchive')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {previewResource ? (
+        <div className='fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md'>
+          <div className='flex max-h-[88vh] w-full max-w-5xl flex-col overflow-hidden rounded-[1.5rem] border border-white/15 bg-white shadow-2xl shadow-sky-950/40 dark:bg-[#101b2d]'>
+            <div className='flex flex-col gap-3 border-b border-slate-200 bg-slate-50 px-5 py-4 dark:border-white/10 dark:bg-white/7 sm:flex-row sm:items-center sm:justify-between'>
+              <div className='min-w-0'>
+                <p className='truncate text-base font-black text-slate-950 dark:text-white'>{previewResource.title}</p>
+                <p className='mt-1 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
+                  {getResourcePreviewKind(previewResource) === 'video'
+                    ? t('learningPath.roadmap.videoPreview')
+                    : t('learningPath.roadmap.documentPreview')}
+                </p>
+              </div>
+              <div className='flex shrink-0 items-center gap-2'>
+                {previewResource.url ? (
+                  <a
+                    href={previewResource.url}
+                    target='_blank'
+                    rel='noreferrer'
+                    className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/8 dark:text-slate-100 dark:hover:bg-white/12'
+                  >
+                    <span className='material-symbols-outlined text-base'>open_in_new</span>
+                    {t('learningPath.roadmap.openInNewTab')}
+                  </a>
+                ) : null}
+                <button
+                  type='button'
+                  onClick={() => setPreviewResource(null)}
+                  className='rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10'
+                  aria-label={t('learningPath.roadmap.closePanel')}
+                >
+                  <span className='material-symbols-outlined'>close</span>
+                </button>
+              </div>
+            </div>
+            <iframe
+              title={previewResource.title}
+              src={getResourcePreviewUrl(previewResource) ?? 'about:blank'}
+              className='h-[min(70vh,720px)] min-h-[420px] w-full bg-slate-950'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+              allowFullScreen
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

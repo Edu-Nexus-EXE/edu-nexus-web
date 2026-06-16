@@ -7,10 +7,14 @@ import { useToast } from '~/shared/components'
 import { SkillRow } from '../components/gap-analysis/skill-row'
 import {
   loadGapAnalysis,
+  loadRoadmapOverview,
   triggerGapAnalysis,
   triggerRoadmap,
+  triggerRoadmapArchive,
+  triggerRoadmapRegenerate,
   type GapAnalysisMetaView,
   type GapAnalysisSkillView,
+  type RoadmapView,
 } from '../lib/sprint2-api'
 
 const EMPTY_META: GapAnalysisMetaView = {
@@ -35,6 +39,11 @@ function getCreatedRoadmapId(response: unknown) {
   return typeof id === 'string' && id.length > 0 ? id : null
 }
 
+function isCurrentRoadmap(roadmap: RoadmapView) {
+  const status = roadmap.status.toLowerCase()
+  return status !== 'archived' && status !== 'failed'
+}
+
 export function GapAnalysisPage() {
   const { t } = useTranslation('dashboard')
   const navigate = useNavigate()
@@ -50,6 +59,9 @@ export function GapAnalysisPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [creatingRoadmap, setCreatingRoadmap] = useState(false)
+  const [roadmapChoices, setRoadmapChoices] = useState<RoadmapView[]>([])
+  const [releaseRoadmap, setReleaseRoadmap] = useState<RoadmapView | null>(null)
+  const [checkingRoadmap, setCheckingRoadmap] = useState(false)
   const [error, setError] = useState('')
   const [polling, setPolling] = useState(false)
 
@@ -120,8 +132,47 @@ export function GapAnalysisPage() {
     }
   }, [jdIdFromQuery, t, wantsAllHistory])
 
+  useEffect(() => {
+    if (!jdIdFromQuery || jdIdFromQuery === 'latest') {
+      queueMicrotask(() => {
+        setRoadmapChoices([])
+        setCheckingRoadmap(false)
+      })
+      return
+    }
+
+    let cancelled = false
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setCheckingRoadmap(true)
+        setRoadmapChoices([])
+      }
+    })
+
+    loadRoadmapOverview({ jdId: jdIdFromQuery })
+      .then((res) => {
+        if (cancelled) return
+        setRoadmapChoices(res.data ?? [])
+      })
+      .catch(() => {
+        if (!cancelled) setRoadmapChoices([])
+      })
+      .finally(() => {
+        if (!cancelled) setCheckingRoadmap(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [jdIdFromQuery])
+
   const hasData = skills.length > 0
   const isStudentHistoryUnlocked = jdIdFromQuery !== 'latest'
+  const currentRoadmap = useMemo(() => roadmapChoices.find(isCurrentRoadmap) ?? null, [roadmapChoices])
+  const archivedRoadmap = useMemo(
+    () => roadmapChoices.find((item) => item.status.toLowerCase() === 'archived') ?? null,
+    [roadmapChoices],
+  )
 
   const formattedUpdatedDate = useMemo(() => {
     if (!meta.completedAt) return null
@@ -168,6 +219,27 @@ export function GapAnalysisPage() {
     }
   }
 
+  const navigateToRoadmapResponse = (response: unknown) => {
+    const roadmapId = getCreatedRoadmapId(response)
+    if (roadmapId) {
+      navigate(`/roadmaps?roadmapId=${encodeURIComponent(roadmapId)}`)
+    } else {
+      navigate(`/roadmaps?jdId=${encodeURIComponent(jdIdFromQuery)}`)
+    }
+  }
+
+  const createRoadmapFromScratch = async () => {
+    const response = await triggerRoadmap(jdIdFromQuery)
+    toast.success(t('learningPath.roadmap.generateStarted'))
+    navigateToRoadmapResponse(response)
+  }
+
+  const regenerateRoadmapFrom = async (roadmapId: string) => {
+    const response = await triggerRoadmapRegenerate(roadmapId)
+    toast.success(t('learningPath.roadmap.regenerateStarted'))
+    navigateToRoadmapResponse(response)
+  }
+
   const onCreateRoadmap = async () => {
     if (!jdIdFromQuery || jdIdFromQuery === 'latest') {
       setError(t('learningPath.roadmap.noJdSelected'))
@@ -179,19 +251,39 @@ export function GapAnalysisPage() {
       return
     }
 
+    if (currentRoadmap) {
+      setReleaseRoadmap(currentRoadmap)
+      return
+    }
+
     try {
       setCreatingRoadmap(true)
       setError('')
-      const response = await triggerRoadmap(jdIdFromQuery)
-      const roadmapId = getCreatedRoadmapId(response)
-      toast.success(t('learningPath.roadmap.generateStarted'))
-      navigate(
-        roadmapId
-          ? `/roadmaps?roadmapId=${encodeURIComponent(roadmapId)}`
-          : `/roadmaps?jdId=${encodeURIComponent(jdIdFromQuery)}`,
-      )
+      if (archivedRoadmap) {
+        await regenerateRoadmapFrom(archivedRoadmap.id)
+      } else {
+        await createRoadmapFromScratch()
+      }
     } catch (e) {
       const message = (e as Error).message || t('learningPath.roadmap.generateFailed')
+      setError(message)
+      toast.error(message)
+    } finally {
+      setCreatingRoadmap(false)
+    }
+  }
+
+  const onReleaseAndRegenerate = async () => {
+    if (!releaseRoadmap) return
+
+    try {
+      setCreatingRoadmap(true)
+      setError('')
+      await triggerRoadmapArchive(releaseRoadmap.id)
+      await regenerateRoadmapFrom(releaseRoadmap.id)
+      setReleaseRoadmap(null)
+    } catch (e) {
+      const message = (e as Error).message || t('learningPath.roadmap.regenerateFailed')
       setError(message)
       toast.error(message)
     } finally {
@@ -340,19 +432,55 @@ export function GapAnalysisPage() {
         <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
           <button
             onClick={() => void onCreateRoadmap()}
-            disabled={creatingRoadmap || !hasData || shouldContinuePolling(meta.status)}
-            className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95'
+            disabled={checkingRoadmap || creatingRoadmap || !hasData || shouldContinuePolling(meta.status)}
+            className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
           >
-            {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createRoadmap')}
+            {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
           </button>
-          <button
-            onClick={() => navigate('/roadmaps')}
-            className='cursor-pointer rounded-xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary transition-all hover:bg-primary/5 active:scale-95'
-          >
-            {t('learningPath.gapAnalysis.viewRoadmap')}
-          </button>
+          {currentRoadmap ? (
+            <button
+              onClick={() => navigate(`/roadmaps?roadmapId=${encodeURIComponent(currentRoadmap.id)}`)}
+              className='cursor-pointer rounded-xl border-2 border-primary bg-card px-8 py-4 text-base font-bold text-primary transition-all hover:bg-primary/5 active:scale-95'
+            >
+              {t('learningPath.gapAnalysis.viewCurrentRoadmap')}
+            </button>
+          ) : null}
         </div>
       </div>
+
+      {releaseRoadmap ? (
+        <div className='fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm'>
+          <div className='w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-card shadow-2xl'>
+            <div className='bg-gradient-to-br from-sky-500/20 via-primary/10 to-orange-500/20 p-6'>
+              <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30'>
+                <span className='material-symbols-outlined'>published_with_changes</span>
+              </div>
+              <h2 className='mt-5 text-2xl font-black text-foreground'>{t('learningPath.roadmap.releaseTitle')}</h2>
+              <p className='mt-2 text-sm leading-6 text-muted-foreground'>
+                {t('learningPath.roadmap.releaseDescription', { title: releaseRoadmap.title })}
+              </p>
+            </div>
+            <div className='flex flex-col gap-3 p-6 sm:flex-row sm:justify-end'>
+              <button
+                type='button'
+                disabled={creatingRoadmap}
+                onClick={() => setReleaseRoadmap(null)}
+                className='rounded-xl border border-border px-5 py-3 text-sm font-bold text-foreground hover:bg-muted/40 disabled:opacity-50'
+              >
+                {t('learningPath.roadmap.cancel')}
+              </button>
+              <button
+                type='button'
+                disabled={creatingRoadmap}
+                onClick={() => void onReleaseAndRegenerate()}
+                className='rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 disabled:opacity-50'
+              >
+                {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.roadmap.releaseAndCreate')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -82,9 +82,6 @@ export function AdminSidebar() {
       </nav>
 
       <div className='p-4 mt-auto space-y-4'>
-        <button className='w-full py-3 bg-primary text-primary-foreground rounded-xl text-sm font-bold shadow-lg shadow-primary/30 hover:shadow-primary/40 transition-all'>
-          {t('sidebar.generateReport')}
-        </button>
         <div className='space-y-1'>
           <button className='w-full flex items-center gap-3 px-4 py-2 text-muted-foreground hover:text-primary transition-colors rounded-xl'>
             <span className='material-symbols-outlined text-xl'>help_outline</span>

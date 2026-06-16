@@ -12,6 +12,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'sidebar.skills', icon: 'psychology', path: '/dashboard/jd/new' },
   { key: 'sidebar.certificates', icon: 'history_edu', path: '/dashboard/credentials/certificates' },
   { key: 'sidebar.analysisHistory', icon: 'timeline', path: '/dashboard/analytics/analysis-history' },
+  { key: 'sidebar.allRoadmaps', icon: 'account_tree', path: '/roadmaps' },
   { key: 'sidebar.careerTrack', icon: 'route', path: '/career-tracks' },
   { key: 'sidebar.portfolio', icon: 'badge', path: '/dashboard/portfolio' },
   { key: 'sidebar.setting', icon: 'settings', path: '/settings' }

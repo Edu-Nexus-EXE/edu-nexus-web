@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next'
 
-export function AdminRagHeader() {
+type AdminRagHeaderProps = {
+  onUploadClick: () => void
+}
+
+export function AdminRagHeader({ onUploadClick }: AdminRagHeaderProps) {
   const { t } = useTranslation('admin')
 
   return (
@@ -13,7 +17,11 @@ export function AdminRagHeader() {
           {t('rag.description')}
         </p>
       </div>
-      <button className='bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center gap-3 shadow-xl shadow-primary/20 active:scale-95 transition-all hover:opacity-90'>
+      <button
+        type='button'
+        onClick={onUploadClick}
+        className='bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-8 py-4 rounded-xl font-bold flex items-center gap-3 shadow-xl shadow-primary/20 active:scale-95 transition-all hover:opacity-90'
+      >
         <span className='material-symbols-outlined'>upload_file</span>
         <span className='font-body-lg'>{t('rag.uploadButton')}</span>
       </button>

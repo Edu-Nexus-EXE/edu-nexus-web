@@ -112,7 +112,20 @@ export type CareerTrackView = {
   name: string
   description?: string
   jdCount: number
-  progress?: number
+  progress: number
+  createdAt?: string
+}
+
+export type CareerTrackJdView = {
+  id: string
+  title: string
+  roadmapStatus?: string
+  roadmapProgress: number
+  addedAt?: string
+}
+
+export type CareerTrackDetailView = CareerTrackView & {
+  jds: CareerTrackJdView[]
 }
 
 function unwrapData<T>(response: unknown): T | null {
@@ -299,7 +312,32 @@ function mapCareerTrack(item: unknown, index: number): CareerTrackView {
     name: toStringValue(raw.name, 'Career Track'),
     description: toStringValue(raw.description) || undefined,
     jdCount: toNumberValue(raw.jdCount ?? raw.jobDescriptionCount ?? raw.jobsCount, 0),
-    progress: toOptionalNumber(raw.overallProgress ?? raw.progress ?? raw.progressPercent),
+    progress: toNumberValue(raw.overallProgress ?? raw.progress ?? raw.progressPercent, 0),
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : undefined,
+  }
+}
+
+function mapCareerTrackJd(item: unknown, index: number): CareerTrackJdView {
+  const raw = isObject(item) ? item : {}
+  const id = toStringValue(raw.jdId ?? raw.id, `jd-${index}`)
+  return {
+    id,
+    title: toStringValue(raw.jobTitle ?? raw.title, 'JD'),
+    roadmapStatus: toStringValue(raw.roadmapStatus) || undefined,
+    roadmapProgress: toNumberValue(raw.roadmapProgress ?? raw.progress ?? raw.progressPercent, 0),
+    addedAt: typeof raw.addedAt === 'string' ? raw.addedAt : undefined,
+  }
+}
+
+function mapCareerTrackDetail(item: unknown, index: number): CareerTrackDetailView {
+  const summary = mapCareerTrack(item, index)
+  const raw = isObject(item) ? item : {}
+  const jds = getCollection(raw.jds).map(mapCareerTrackJd)
+
+  return {
+    ...summary,
+    jdCount: toNumberValue(raw.jdCount, jds.length || summary.jdCount),
+    jds,
   }
 }
 
@@ -396,9 +434,9 @@ export async function loadSubscriptionState(): Promise<LoadState<SubscriptionSta
   }
 }
 
-export async function loadRecentJds(): Promise<LoadState<JdRecentItem[]>> {
+export async function loadRecentJds(options?: { pageSize?: number }): Promise<LoadState<JdRecentItem[]>> {
   try {
-    const res = await getJdSubmissions({ page: 1, pageSize: 10 })
+    const res = await getJdSubmissions({ page: 1, pageSize: options?.pageSize ?? 10 })
     const rows = getCollection((res as { data?: unknown })?.data)
 
     return {
@@ -551,13 +589,13 @@ export async function loadCareerTracks(): Promise<LoadState<CareerTrackView[]>> 
   }
 }
 
-export async function loadCareerTrackById(id: string): Promise<LoadState<CareerTrackView>> {
+export async function loadCareerTrackById(id: string): Promise<LoadState<CareerTrackDetailView>> {
   try {
     const res = await getCareerTrackRuntime({ id })
     const data = unwrapData<unknown>(res)
     if (!isObject(data)) return { data: null, loading: false, error: 'Career track not found' }
     return {
-      data: mapCareerTrack(data, 0),
+      data: mapCareerTrackDetail(data, 0),
       loading: false,
       error: null,
     }

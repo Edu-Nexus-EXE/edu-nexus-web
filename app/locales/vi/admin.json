@@ -22,7 +22,8 @@
     "searchPlaceholder": "Tìm kiếm hệ thống...",
     "defaultUser": "Quản trị viên",
     "defaultPlan": "Điều phối hệ thống",
-    "viewAsUser": "Xem giao diện người dùng"
+    "viewAsUser": "Xem giao diện người dùng",
+    "themeToggle": "Sáng/tối"
   },
   "stats": {
     "totalUsers": "Tổng người dùng",
@@ -115,7 +116,12 @@
         "exam": "Đề thi mẫu"
       },
       "needsReview": "Cần xem duyệt",
-      "clearFilters": "Xóa lọc"
+      "clearFilters": "Xóa lọc",
+      "activeState": {
+        "all": "Tất cả tài nguyên",
+        "active": "Chỉ đang bật",
+        "inactive": "Đã tắt / từ chối"
+      }
     },
     "table": {
       "titleAndProvider": "Tiêu đề & Nhà cung cấp",
@@ -145,7 +151,46 @@
     "subtitle": "Quản lý tài nguyên học tập và duyệt mục do AI tạo.",
     "actions": {
       "reject": "Từ chối",
-      "approve": "Duyệt"
+      "approve": "Duyệt",
+      "view": "Xem",
+      "viewDetails": "Xem chi tiết",
+      "edit": "Sửa",
+      "delete": "Xóa",
+      "disable": "Tắt",
+      "restore": "Bật lại"
+    },
+    "form": {
+      "createTitle": "Tạo tài nguyên",
+      "editTitle": "Sửa tài nguyên",
+      "editDesc": "Tạo tài nguyên và ánh xạ với kỹ năng để gợi ý trong lộ trình.",
+      "viewDetails": "Chi tiết tài nguyên",
+      "viewDetailsDesc": "Xem thông tin chi tiết của tài nguyên.",
+      "title": "Tiêu đề",
+      "provider": "Nhà cung cấp",
+      "url": "URL",
+      "resourceType": "Loại tài nguyên",
+      "language": "Ngôn ngữ",
+      "shortDescription": "Mô tả ngắn",
+      "relatedSkillIds": "ID kỹ năng liên quan",
+      "duration": "Thời lượng (phút)",
+      "accessType": "Loại truy cập",
+      "affiliateLabel": "Nhãn Affiliate",
+      "commission": "Hoa hồng (%)",
+      "needsReview": "Cần duyệt",
+      "active": "Đang bật",
+      "saveChanges": "Lưu thay đổi",
+      "createResource": "Tạo tài nguyên",
+      "close": "Đóng",
+      "cancel": "Hủy"
+    },
+    "language": {
+      "vietnamese": "Tiếng Việt",
+      "english": "Tiếng Anh"
+    },
+    "accessType": {
+      "free": "Miễn phí",
+      "paid": "Trả phí",
+      "affiliate": "Affiliate"
     }
   },
   "rag": {
@@ -187,7 +232,15 @@
       "totalChunks": "Tổng đoạn dữ liệu"
     },
     "actions": {
-      "delete": "Xoá"
+      "delete": "Xoá",
+      "viewDetails": "Xem chi tiết",
+      "close": "Đóng"
+    },
+    "detail": {
+      "title": "Chi tiết tài liệu",
+      "description": "Xem metadata và trạng thái ingest của tài liệu RAG.",
+      "uploadedAt": "Thời điểm tải lên",
+      "id": "ID tài liệu"
     }
   },
   "users": {
@@ -350,6 +403,16 @@
       "yes": "Có",
       "no": "Không",
       "activate": "Kích hoạt Student",
+      "activateTitle": "Kích hoạt gói dịch vụ",
+      "activateDesc": "Chọn số tháng cho gói đăng ký.",
+      "durationMonths": "Thời hạn (tháng)",
+      "customDuration": "Thời hạn tùy chỉnh",
+      "durationHint": "Giá trị này được gửi tới POST /admin/users/:id/activate-subscription dưới dạng durationMonths.",
+      "activateHint": "Tài khoản Free có thể được nâng lên Student. Backend sẽ cộng dồn thời hạn nếu gói Student hiện tại vẫn còn hiệu lực.",
+      "revokeHint": "Thu hồi gói Student sẽ hạ về Free nhưng vẫn giữ trạng thái Active. Toàn bộ dữ liệu người dùng được giữ nguyên.",
+      "months": "{{count}} tháng",
+      "months_plural": "{{count}} tháng",
+      "confirmActivate": "Xác nhận kích hoạt",
       "revoke": "Thu hồi gói"
     },
     "usage": {
@@ -373,6 +436,8 @@
     "loading": "Đang tải dữ liệu...",
     "empty": "Không có dữ liệu.",
     "submitting": "Đang gửi...",
+    "processing": "Đang xử lý...",
+    "cancel": "Hủy",
     "pagination": "Trang {{page}} / {{totalPages}} · {{total}} mục",
     "prev": "Trước",
     "next": "Sau",
@@ -382,7 +447,10 @@
     "revenue": "Doanh thu (VND)",
     "aiCost": "Ước tính chi phí AI",
     "aiCostBadge": "ƯỚC TÍNH",
-    "activeSubscriptions": "Thuê bao đang hoạt động"
+    "activeSubscriptions": "Thuê bao đang hoạt động",
+    "userTierChart": "Phân bổ gói người dùng",
+    "revenueChart": "Doanh thu theo kênh",
+    "aiPipelineChart": "Chi phí AI theo pipeline"
   },
   "skillsQueue": {
     "title": "Hàng đợi duyệt kỹ năng",
@@ -397,6 +465,7 @@
     "approve": "Duyệt",
     "reject": "Từ chối",
     "edit": "Sửa",
+    "viewDetails": "Xem chi tiết",
     "save": "Lưu",
     "cancel": "Huỷ",
     "noDescription": "Chưa có mô tả.",
@@ -417,6 +486,20 @@
       "pending": "Đang chờ",
       "approved": "Đã duyệt",
       "rejected": "Đã từ chối"
+    },
+    "form": {
+      "createTitle": "Tạo kỹ năng mới",
+      "editTitle": "Sửa kỹ năng",
+      "viewTitle": "Chi tiết kỹ năng",
+      "editDesc": "Cập nhật metadata taxonomy, kỹ năng tiên quyết và quy tắc gộp trùng.",
+      "viewDesc": "Xem metadata và mức sử dụng hiện tại của kỹ năng.",
+      "name": "Tên kỹ năng",
+      "slug": "Slug",
+      "category": "Danh mục",
+      "major": "Ngành",
+      "description": "Mô tả",
+      "difficultyLevel": "Độ khó",
+      "active": "Đang bật"
     }
   },
   "footer": {
