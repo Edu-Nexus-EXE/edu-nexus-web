@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
 
@@ -20,12 +20,19 @@ import {
 } from '../lib/sprint2-api'
 
 const EMPTY_META: GapAnalysisMetaView = {
-  version: 1,
+  version: 0,
   completedAt: null,
   scorePercent: null,
-  status: 'pending',
+  status: 'none',
   jdId: null,
   gapAnalysisId: null
+}
+
+const GAP_ANALYSIS_POLL_INTERVAL_MS = 3000
+const GAP_ANALYSIS_MAX_POLL_ATTEMPTS = 40
+
+function wait(ms: number) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms))
 }
 
 function shouldContinuePolling(status: string) {
@@ -59,12 +66,21 @@ export function GapAnalysisPage() {
   const [meta, setMeta] = useState<GapAnalysisMetaView>(EMPTY_META)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [hasTriggered, setHasTriggered] = useState(false)
   const [creatingRoadmap, setCreatingRoadmap] = useState(false)
   const [roadmapChoices, setRoadmapChoices] = useState<RoadmapView[]>([])
   const [releaseRoadmap, setReleaseRoadmap] = useState<RoadmapView | null>(null)
+  const [rerunConfirmOpen, setRerunConfirmOpen] = useState(false)
   const [checkingRoadmap, setCheckingRoadmap] = useState(false)
   const [error, setError] = useState('')
   const [polling, setPolling] = useState(false)
+  const pollRunRef = useRef(0)
+
+  useEffect(() => {
+    return () => {
+      pollRunRef.current += 1
+    }
+  }, [])
 
   const toggleDetails = (id: string) => {
     setExpandedSkill((prev) => (prev === id ? null : id))
@@ -82,6 +98,13 @@ export function GapAnalysisPage() {
         setError(res.error)
       }
 
+      if (!res.data) {
+        setSkills([])
+        setMeta(EMPTY_META)
+        setPolling(false)
+        return
+      }
+
       const nextSkills = res.data?.skills ?? []
       const nextMeta = res.data?.meta ?? EMPTY_META
       setSkills(nextSkills)
@@ -95,6 +118,7 @@ export function GapAnalysisPage() {
 
       if (shouldContinuePolling(nextMeta.status)) {
         setPolling(true)
+        setHasTriggered(true)
         timer = window.setTimeout(() => {
           void fetchAnalysis()
         }, 3000)
@@ -108,6 +132,7 @@ export function GapAnalysisPage() {
         setLoading(true)
         setError('')
         setPolling(false)
+        setHasTriggered(false)
       }
     })
 
@@ -192,28 +217,95 @@ export function GapAnalysisPage() {
     return { total, missing, upgrade, have }
   }, [skills])
 
-  const onCreateAnalysis = async () => {
+  const applyAnalysisResult = (result: { meta: GapAnalysisMetaView; skills: GapAnalysisSkillView[] }) => {
+    setSkills(result.skills)
+    setMeta(result.meta)
+    setExpandedSkill(result.skills[0]?.id ?? null)
+  }
+
+  const pollGapAnalysisUntilReady = async (jdId: string, runId: number) => {
+    for (let attempt = 0; attempt < GAP_ANALYSIS_MAX_POLL_ATTEMPTS; attempt += 1) {
+      if (pollRunRef.current !== runId) return
+
+      if (attempt > 0) {
+        await wait(GAP_ANALYSIS_POLL_INTERVAL_MS)
+      }
+
+      if (pollRunRef.current !== runId) return
+
+      const res = await loadGapAnalysis(jdId, { all: false })
+      if (pollRunRef.current !== runId) return
+
+      if (!res.data) {
+        if (attempt === GAP_ANALYSIS_MAX_POLL_ATTEMPTS - 1 && res.error) {
+          setError(res.error)
+        }
+        continue
+      }
+
+      applyAnalysisResult(res.data)
+
+      if (!shouldContinuePolling(res.data.meta.status)) {
+        setPolling(false)
+        return
+      }
+
+      setPolling(true)
+      setHasTriggered(true)
+    }
+
+    if (pollRunRef.current === runId) {
+      setPolling(false)
+      setError(t('learningPath.gapAnalysis.loadFailed'))
+    }
+  }
+
+  const performAnalysis = async () => {
     if (!jdIdFromQuery || jdIdFromQuery === 'latest') {
       setError(t('learningPath.gapAnalysis.empty'))
       return
     }
 
+    const runId = pollRunRef.current + 1
+    pollRunRef.current = runId
+
     try {
       setRefreshing(true)
+      setHasTriggered(true)
       setError('')
       setPolling(true)
+      setSkills([])
+      setMeta(EMPTY_META)
       await triggerGapAnalysis(jdIdFromQuery)
       toast.success(t('learningPath.gapAnalysis.triggered'))
-
-      const res = await loadGapAnalysis(jdIdFromQuery, { all: wantsAllHistory })
-      setSkills(res.data?.skills ?? [])
-      setMeta(res.data?.meta ?? EMPTY_META)
-      setExpandedSkill((current) => current ?? res.data?.skills?.[0]?.id ?? null)
+      await wait(1000)
+      await pollGapAnalysisUntilReady(jdIdFromQuery, runId)
     } catch (e) {
       setError((e as Error).message || t('learningPath.gapAnalysis.loadFailed'))
+      setPolling(false)
     } finally {
       setRefreshing(false)
     }
+  }
+
+  const handleAnalysisClick = () => {
+    if (!jdIdFromQuery || jdIdFromQuery === 'latest') {
+      setError(t('learningPath.gapAnalysis.empty'))
+      return
+    }
+    if (refreshing || (hasTriggered && !hasData)) {
+      return
+    }
+    if (hasData) {
+      setRerunConfirmOpen(true)
+      return
+    }
+    void performAnalysis()
+  }
+
+  const onConfirmRerun = () => {
+    setRerunConfirmOpen(false)
+    void performAnalysis()
   }
 
   const navigateToRoadmapResponse = (response: unknown) => {
@@ -317,16 +409,34 @@ export function GapAnalysisPage() {
               <span className='material-symbols-outlined text-base'>analytics</span>
               {t('learningPath.gapAnalysis.source', { percent: meta.scorePercent ?? 0 })}
             </span>
+            {polling && hasData ? (
+              <span className='inline-flex items-center gap-1.5 font-semibold text-primary'>
+                <span className='material-symbols-outlined animate-spin text-base'>progress_activity</span>
+                {t('learningPath.gapAnalysis.loading')}
+              </span>
+            ) : null}
           </div>
         </div>
         <div className='flex shrink-0 gap-3'>
           <button
-            onClick={() => void onCreateAnalysis()}
-            disabled={refreshing || !jdIdFromQuery || jdIdFromQuery === 'latest'}
-            className='flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-all duration-200 active:scale-95 hover:opacity-90 disabled:opacity-50'
+            onClick={handleAnalysisClick}
+            disabled={
+              refreshing ||
+              (hasTriggered && !hasData) ||
+              !jdIdFromQuery ||
+              jdIdFromQuery === 'latest' ||
+              shouldContinuePolling(meta.status)
+            }
+            className='flex cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-sm transition-all duration-200 active:scale-95 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50'
           >
-            <span className='material-symbols-outlined text-lg'>replay</span>
-            {t('learningPath.gapAnalysis.runAnalysis')}
+            {refreshing || (hasTriggered && !hasData) ? (
+              <span className='material-symbols-outlined animate-spin text-lg'>progress_activity</span>
+            ) : (
+              <span className='material-symbols-outlined text-lg'>{hasData ? 'refresh' : 'auto_awesome'}</span>
+            )}
+            {hasData
+              ? t('learningPath.gapAnalysis.rerunAnalysis')
+              : t('learningPath.gapAnalysis.runAnalysis')}
           </button>
         </div>
       </header>
@@ -338,11 +448,11 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {polling || (loading && !hasData) ? (
+        {hasTriggered && !hasData ? (
           <AnalyzingState version={meta.version} />
         ) : null}
 
-        {hasData && !polling ? (
+        {hasData ? (
           <section className='rounded-r-2xl border border-border border-r-0 border-y-0 border-l-8 border-primary bg-primary/5 p-6 shadow-sm'>
             <div className='flex items-start gap-4'>
               <div className='gradient-primary flex shrink-0 items-center justify-center rounded-xl p-2 text-primary-foreground shadow-md'>
@@ -370,7 +480,7 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {hasData && !polling ? (
+        {hasData ? (
         <section className='rounded-xl border border-border bg-card shadow-sm'>
           <div className='flex flex-col justify-between gap-4 border-b border-border p-6 sm:flex-row sm:items-center'>
             <div>
@@ -426,7 +536,7 @@ export function GapAnalysisPage() {
         </section>
         ) : null}
 
-        {!hasData && !loading && !polling ? (
+        {!hasData && !loading && !hasTriggered ? (
           <section className='relative overflow-hidden rounded-2xl border border-border bg-card p-10 shadow-sm'>
             <div className='pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl' />
             <div className='pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-primary/5 blur-3xl' />
@@ -447,13 +557,17 @@ export function GapAnalysisPage() {
               </p>
               <button
                 type='button'
-                onClick={() => void onCreateAnalysis()}
+                onClick={handleAnalysisClick}
                 disabled={
-                  refreshing || shouldContinuePolling(meta.status) || !jdIdFromQuery || jdIdFromQuery === 'latest'
+                  refreshing ||
+                  (hasTriggered && !hasData) ||
+                  shouldContinuePolling(meta.status) ||
+                  !jdIdFromQuery ||
+                  jdIdFromQuery === 'latest'
                 }
                 className='mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
               >
-                {refreshing ? (
+                {refreshing || (hasTriggered && !hasData) ? (
                   <>
                     <span className='material-symbols-outlined text-lg animate-spin'>progress_activity</span>
                     {t('learningPath.gapAnalysis.emptyAnalyzing')}
@@ -469,7 +583,7 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {hasData && !polling ? (
+        {hasData ? (
           <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
             {currentRoadmap ? (
               <button
@@ -519,6 +633,47 @@ export function GapAnalysisPage() {
                 className='rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 disabled:opacity-50'
               >
                 {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.roadmap.releaseAndCreate')}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {rerunConfirmOpen ? (
+        <div className='fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm'>
+          <div className='w-full max-w-lg overflow-hidden rounded-3xl border border-white/15 bg-card shadow-2xl'>
+            <div className='bg-gradient-to-br from-amber-500/20 via-primary/10 to-orange-500/20 p-6'>
+              <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/30'>
+                <span className='material-symbols-outlined'>refresh</span>
+              </div>
+              <h2 className='mt-5 text-2xl font-black text-foreground'>
+                {t('learningPath.gapAnalysis.confirmRerunTitle')}
+              </h2>
+              <p className='mt-2 text-sm leading-6 text-muted-foreground'>
+                {t('learningPath.gapAnalysis.confirmRerunDesc')}
+              </p>
+            </div>
+            <div className='flex flex-col gap-3 p-6 sm:flex-row sm:justify-end'>
+              <button
+                type='button'
+                disabled={refreshing}
+                onClick={() => setRerunConfirmOpen(false)}
+                className='rounded-xl border border-border px-5 py-3 text-sm font-bold text-foreground hover:bg-muted/40 disabled:opacity-50'
+              >
+                {t('learningPath.gapAnalysis.confirmRerunCancel')}
+              </button>
+              <button
+                type='button'
+                disabled={refreshing}
+                onClick={onConfirmRerun}
+                className='inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-lg shadow-primary/20 disabled:opacity-50'
+              >
+                {refreshing ? (
+                  <span className='material-symbols-outlined animate-spin text-base'>progress_activity</span>
+                ) : (
+                  <span className='material-symbols-outlined text-base'>auto_awesome</span>
+                )}
+                {t('learningPath.gapAnalysis.confirmRerunConfirm')}
               </button>
             </div>
           </div>
