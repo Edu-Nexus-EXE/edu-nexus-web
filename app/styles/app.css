@@ -112,3 +112,13 @@ html.dark {
     transform: translateY(-6px);
   }
 }
+
+@keyframes ai-progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}

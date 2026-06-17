@@ -6,6 +6,7 @@ import { useToast } from '~/shared/components'
 import { cn } from '~/shared/lib/cn'
 
 import { SkillRow } from '../components/gap-analysis/skill-row'
+import { AnalyzingState } from '../components/gap-analysis/analyzing-state'
 import {
   loadGapAnalysis,
   loadRoadmapOverview,
@@ -316,9 +317,6 @@ export function GapAnalysisPage() {
               <span className='material-symbols-outlined text-base'>analytics</span>
               {t('learningPath.gapAnalysis.source', { percent: meta.scorePercent ?? 0 })}
             </span>
-            {polling ? (
-              <span className='font-semibold text-primary'>{t('learningPath.gapAnalysis.loading')}</span>
-            ) : null}
           </div>
         </div>
         <div className='flex shrink-0 gap-3'>
@@ -340,13 +338,11 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {loading ? (
-          <section className='rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground'>
-            {t('learningPath.gapAnalysis.loading')}
-          </section>
+        {polling || (loading && !hasData) ? (
+          <AnalyzingState version={meta.version} />
         ) : null}
 
-        {hasData ? (
+        {hasData && !polling ? (
           <section className='rounded-r-2xl border border-border border-r-0 border-y-0 border-l-8 border-primary bg-primary/5 p-6 shadow-sm'>
             <div className='flex items-start gap-4'>
               <div className='gradient-primary flex shrink-0 items-center justify-center rounded-xl p-2 text-primary-foreground shadow-md'>
@@ -374,6 +370,7 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
+        {hasData && !polling ? (
         <section className='rounded-xl border border-border bg-card shadow-sm'>
           <div className='flex flex-col justify-between gap-4 border-b border-border p-6 sm:flex-row sm:items-center'>
             <div>
@@ -427,8 +424,9 @@ export function GapAnalysisPage() {
             </div>
           ) : null}
         </section>
+        ) : null}
 
-        {!hasData && !loading ? (
+        {!hasData && !loading && !polling ? (
           <section className='relative overflow-hidden rounded-2xl border border-border bg-card p-10 shadow-sm'>
             <div className='pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl' />
             <div className='pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-primary/5 blur-3xl' />
@@ -471,7 +469,7 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {hasData ? (
+        {hasData && !polling ? (
           <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
             {currentRoadmap ? (
               <button
