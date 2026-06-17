@@ -26,6 +26,10 @@
     "saving": "Saving...",
     "success": "Profile updated successfully",
     "note": "Email and role are read-only. Portfolio slug and avatar can be updated here.",
+    "roles": {
+      "user": "User",
+      "admin": "Administrator"
+    },
     "errors": {
       "fullNameRequired": "Full name is required.",
       "saveFailed": "Failed to update profile."

@@ -26,6 +26,10 @@
     "saving": "Đang lưu...",
     "success": "Cập nhật hồ sơ thành công",
     "note": "Email và vai trò hiện là chỉ đọc. Bạn có thể cập nhật đường dẫn hồ sơ công khai và ảnh đại diện tại đây.",
+    "roles": {
+      "user": "Người dùng",
+      "admin": "Quản trị viên"
+    },
     "errors": {
       "fullNameRequired": "Họ tên là bắt buộc.",
       "saveFailed": "Không thể cập nhật hồ sơ."

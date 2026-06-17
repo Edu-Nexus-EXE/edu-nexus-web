@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { useToast } from '~/shared/components'
+import { cn } from '~/shared/lib/cn'
 
 import { SkillRow } from '../components/gap-analysis/skill-row'
 import {
@@ -40,8 +41,7 @@ function getCreatedRoadmapId(response: unknown) {
 }
 
 function isCurrentRoadmap(roadmap: RoadmapView) {
-  const status = roadmap.status.toLowerCase()
-  return status !== 'archived' && status !== 'failed'
+  return roadmap.status.toLowerCase() === 'active'
 }
 
 export function GapAnalysisPage() {
@@ -91,14 +91,6 @@ export function GapAnalysisPage() {
         if (current && nextSkills.some((skill) => skill.id === current)) return current
         return firstSkillId
       })
-
-      if (
-        !nextSkills.length &&
-        !shouldContinuePolling(nextMeta.status) &&
-        (!jdIdFromQuery || jdIdFromQuery === 'latest')
-      ) {
-        setError((current) => current || t('learningPath.gapAnalysis.empty'))
-      }
 
       if (shouldContinuePolling(nextMeta.status)) {
         setPolling(true)
@@ -437,20 +429,50 @@ export function GapAnalysisPage() {
         </section>
 
         {!hasData && !loading ? (
-          <section className='rounded-xl border border-border bg-card p-6 text-sm text-muted-foreground'>
-            {error || t('learningPath.gapAnalysis.empty')}
+          <section className='relative overflow-hidden rounded-2xl border border-border bg-card p-10 shadow-sm'>
+            <div className='pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-3xl' />
+            <div className='pointer-events-none absolute -left-16 bottom-0 h-56 w-56 rounded-full bg-primary/5 blur-3xl' />
+            <div className='relative flex flex-col items-center text-center'>
+              <div
+                className={cn(
+                  'mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary shadow-sm',
+                  refreshing && 'animate-spin'
+                )}
+              >
+                <span className='material-symbols-outlined text-3xl'>
+                  {refreshing ? 'progress_activity' : 'auto_awesome'}
+                </span>
+              </div>
+              <h2 className='text-2xl font-bold text-foreground'>{t('learningPath.gapAnalysis.emptyTitle')}</h2>
+              <p className='mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground'>
+                {refreshing ? t('learningPath.gapAnalysis.emptyAnalyzing') : t('learningPath.gapAnalysis.emptyDesc')}
+              </p>
+              <button
+                type='button'
+                onClick={() => void onCreateAnalysis()}
+                disabled={
+                  refreshing || shouldContinuePolling(meta.status) || !jdIdFromQuery || jdIdFromQuery === 'latest'
+                }
+                className='mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:opacity-90 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60'
+              >
+                {refreshing ? (
+                  <>
+                    <span className='material-symbols-outlined text-lg animate-spin'>progress_activity</span>
+                    {t('learningPath.gapAnalysis.emptyAnalyzing')}
+                  </>
+                ) : (
+                  <>
+                    <span className='material-symbols-outlined text-lg'>auto_awesome</span>
+                    {t('learningPath.gapAnalysis.emptyCta')}
+                  </>
+                )}
+              </button>
+            </div>
           </section>
         ) : null}
 
         {hasData ? (
           <div className='flex flex-col justify-center gap-4 py-4 sm:flex-row'>
-            <button
-              onClick={() => void onCreateRoadmap()}
-              disabled={checkingRoadmap || creatingRoadmap || shouldContinuePolling(meta.status)}
-              className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
-            >
-              {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
-            </button>
             {currentRoadmap ? (
               <button
                 onClick={() => navigate(`/roadmaps?roadmapId=${encodeURIComponent(currentRoadmap.id)}`)}
@@ -458,7 +480,15 @@ export function GapAnalysisPage() {
               >
                 {t('learningPath.gapAnalysis.viewCurrentRoadmap')}
               </button>
-            ) : null}
+            ) : (
+              <button
+                onClick={() => void onCreateRoadmap()}
+                disabled={checkingRoadmap || creatingRoadmap || shouldContinuePolling(meta.status)}
+                className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
+              >
+                {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
+              </button>
+            )}
           </div>
         ) : null}
       </div>

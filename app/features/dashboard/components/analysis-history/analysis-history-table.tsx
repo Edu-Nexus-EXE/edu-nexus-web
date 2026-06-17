@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
-import { loadGapAnalysis, loadRecentJds, loadRoadmapOverview, type RoadmapView } from '../../lib/sprint2-api'
+import { loadAllRecentJds, loadGapAnalysis, loadRoadmapOverview, type RoadmapView } from '../../lib/sprint2-api'
 
 type HistoryRecord = {
   id: string
@@ -11,12 +11,23 @@ type HistoryRecord = {
   scorePercent: number
   skillCount: number
   hasGapAnalysis: boolean
+  parseStatus: string
   roadmapId?: string
 }
 
+const STATUS_FILTERS = ['all', 'pending', 'processing', 'completed', 'failed'] as const
+type StatusFilter = (typeof STATUS_FILTERS)[number]
+
 function isUsableRoadmap(roadmap: RoadmapView) {
-  const status = roadmap.status.toLowerCase()
-  return status !== 'archived' && status !== 'failed'
+  return roadmap.status.toLowerCase() === 'active'
+}
+
+function statusTone(status: string) {
+  const normalized = status.toLowerCase()
+  if (normalized === 'completed') return 'border-success/30 bg-success/10 text-success'
+  if (normalized === 'failed') return 'border-destructive/30 bg-destructive/10 text-destructive'
+  if (normalized === 'processing') return 'border-warning/30 bg-warning/10 text-warning'
+  return 'border-border bg-muted text-muted-foreground'
 }
 
 export function AnalysisHistoryTable() {
@@ -24,22 +35,25 @@ export function AnalysisHistoryTable() {
   const navigate = useNavigate()
   const [items, setItems] = useState<HistoryRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
 
   useEffect(() => {
     let cancelled = false
 
-    loadRecentJds()
-      .then((res) => {
-        const jds = (res.data ?? []).filter((jd) => jd.parseStatus.toLowerCase() === 'completed')
+    Promise.all([loadAllRecentJds(), loadRoadmapOverview()])
+      .then(([res, roadmapRes]) => {
+        const jds = res.data ?? []
+        const roadmaps = roadmapRes.data ?? []
         return Promise.all(
           jds.map(async (jd) => {
             // Cố gắng lấy gap analysis. Nếu JD chưa được chạy gap thì API sẽ trả lỗi
             // (vd 404) — ta vẫn giữ record để user thấy lịch sử JD đã phân tích xong.
-            const [analysis, roadmaps] = await Promise.all([
-              loadGapAnalysis(jd.id),
-              loadRoadmapOverview({ jdId: jd.id })
-            ])
+            const analysis = await loadGapAnalysis(jd.id)
             const analysisData = analysis.data
+            const activeRoadmap = roadmaps.find(
+              (roadmap) => isUsableRoadmap(roadmap) && roadmap.jdId?.toLowerCase() === jd.id.toLowerCase()
+            )
             return {
               id: jd.id,
               jobTitle: jd.jobTitle,
@@ -47,7 +61,8 @@ export function AnalysisHistoryTable() {
               scorePercent: analysisData?.meta.scorePercent ?? 0,
               skillCount: analysisData?.skills.length ?? 0,
               hasGapAnalysis: Boolean(analysisData && analysisData.skills.length > 0),
-              roadmapId: ((roadmaps.data ?? []).find(isUsableRoadmap) ?? (roadmaps.data ?? [])[0])?.id
+              parseStatus: jd.parseStatus,
+              roadmapId: activeRoadmap?.id
             }
           })
         )
@@ -62,6 +77,15 @@ export function AnalysisHistoryTable() {
       cancelled = true
     }
   }, [])
+
+  const filteredItems = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase()
+    return items.filter((item) => {
+      const matchesName = !normalizedSearch || item.jobTitle.toLowerCase().includes(normalizedSearch)
+      const matchesStatus = statusFilter === 'all' || item.parseStatus.toLowerCase() === statusFilter
+      return matchesName && matchesStatus
+    })
+  }, [items, search, statusFilter])
 
   return (
     <div className='bg-card border border-border rounded-2xl overflow-hidden shadow-sm'>
@@ -79,6 +103,47 @@ export function AnalysisHistoryTable() {
         </div>
       ) : (
         <>
+          <div className='flex flex-col gap-3 border-b border-border bg-muted/20 p-4 md:flex-row md:items-center md:justify-between'>
+            <div className='relative w-full md:max-w-sm'>
+              <span className='material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-base text-muted-foreground'>
+                search
+              </span>
+              <input
+                type='search'
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t('analysisHistory.filters.searchPlaceholder', { defaultValue: 'Tìm theo tên JD...' })}
+                className='h-11 w-full rounded-xl border border-border bg-background pl-10 pr-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/15'
+              />
+            </div>
+            <div className='flex flex-wrap gap-2'>
+              {STATUS_FILTERS.map((status) => (
+                <button
+                  key={status}
+                  type='button'
+                  onClick={() => setStatusFilter(status)}
+                  className={`rounded-full border px-3.5 py-2 text-xs font-bold transition ${
+                    statusFilter === status
+                      ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                      : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-primary'
+                  }`}
+                >
+                  {t(`analysisHistory.filters.status.${status}`, {
+                    defaultValue:
+                      status === 'all'
+                        ? 'Tất cả'
+                        : status === 'pending'
+                          ? 'Đang chờ'
+                          : status === 'processing'
+                            ? 'Đang xử lý'
+                            : status === 'completed'
+                              ? 'Hoàn thành'
+                              : 'Thất bại'
+                  })}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className='overflow-x-auto'>
             <table className='w-full text-left border-collapse'>
               <thead>
@@ -93,6 +158,9 @@ export function AnalysisHistoryTable() {
                     {t('analysisHistory.table.date')}
                   </th>
                   <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
+                    {t('analysisHistory.table.status', { defaultValue: 'Trạng thái' })}
+                  </th>
+                  <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider'>
                     {t('analysisHistory.table.match')}
                   </th>
                   <th className='px-6 py-4 text-xs font-bold text-muted-foreground uppercase tracking-wider text-right'>
@@ -101,7 +169,7 @@ export function AnalysisHistoryTable() {
                 </tr>
               </thead>
               <tbody className='divide-y divide-border'>
-                {items.map((record) => (
+                {filteredItems.map((record) => (
                   <tr key={record.id} className='hover:bg-muted/30 transition-colors'>
                     <td className='px-6 py-5'>
                       <div className='flex items-center gap-3'>
@@ -129,6 +197,17 @@ export function AnalysisHistoryTable() {
                       </span>
                     </td>
                     <td className='px-6 py-5'>
+                      <span
+                        className={`inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${statusTone(
+                          record.parseStatus
+                        )}`}
+                      >
+                        {t(`analysisHistory.filters.status.${record.parseStatus.toLowerCase()}`, {
+                          defaultValue: record.parseStatus
+                        })}
+                      </span>
+                    </td>
+                    <td className='px-6 py-5'>
                       <div className='flex items-center gap-4'>
                         <div className='flex-1 h-2 w-24 bg-muted rounded-full overflow-hidden'>
                           <div
@@ -153,16 +232,10 @@ export function AnalysisHistoryTable() {
                             ? t('analysisHistory.table.viewAnalysis')
                             : t('analysisHistory.table.runAnalysis')}
                         </button>
-                        {record.hasGapAnalysis ? (
+                        {record.hasGapAnalysis && record.roadmapId ? (
                           <button
                             type='button'
-                            onClick={() =>
-                              navigate(
-                                record.roadmapId
-                                  ? `/roadmaps?roadmapId=${encodeURIComponent(record.roadmapId)}`
-                                  : `/roadmaps?jdId=${encodeURIComponent(record.id)}`
-                              )
-                            }
+                            onClick={() => navigate(`/roadmaps?roadmapId=${encodeURIComponent(record.roadmapId!)}`)}
                             className='inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-primary-foreground transition hover:opacity-90'
                           >
                             <span className='material-symbols-outlined text-sm'>route</span>
@@ -175,10 +248,15 @@ export function AnalysisHistoryTable() {
                 ))}
               </tbody>
             </table>
+            {filteredItems.length === 0 ? (
+              <div className='border-t border-border p-6 text-center text-sm font-medium text-muted-foreground'>
+                {t('analysisHistory.filters.noResults', { defaultValue: 'Không có JD nào khớp bộ lọc.' })}
+              </div>
+            ) : null}
           </div>
           <div className='px-6 py-4 bg-muted/30 flex items-center justify-between border-t border-border'>
             <p className='text-xs text-muted-foreground font-medium'>
-              {t('analysisHistory.pagination.loaded', { count: items.length })}
+              {t('analysisHistory.pagination.loaded', { count: filteredItems.length })}
             </p>
           </div>
         </>

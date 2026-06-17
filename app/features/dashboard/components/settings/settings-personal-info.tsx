@@ -173,7 +173,7 @@ export function SettingsPersonalInfo({ session, user, onUserUpdated }: SettingsP
           <label className='text-sm font-bold text-muted-foreground'>{t('personal.role')}</label>
           <input
             type='text'
-            value={user.role}
+            value={t(`personal.roles.${user.role}`, { defaultValue: user.role })}
             readOnly
             className='w-full px-4 py-3 rounded-xl border border-border bg-muted text-foreground outline-none cursor-not-allowed'
           />

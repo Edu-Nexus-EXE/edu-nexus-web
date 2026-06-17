@@ -188,6 +188,11 @@ function getCollection(value: unknown): unknown[] {
   return []
 }
 
+function getTotalPages(value: unknown) {
+  if (!isObject(value) || !isObject(value.pagination)) return 1
+  return Math.max(1, toNumberValue(value.pagination.totalPages, 1))
+}
+
 function normalizeGapStatus(value: unknown): GapAnalysisSkillStatus {
   const raw = toStringValue(value)
     .toLowerCase()
@@ -453,21 +458,63 @@ export async function loadSubscriptionState(): Promise<LoadState<SubscriptionSta
   }
 }
 
-export async function loadRecentJds(options?: { pageSize?: number }): Promise<LoadState<JdRecentItem[]>> {
+function mapJdRecentItem(item: unknown, index: number): JdRecentItem {
+  const raw = isObject(item) ? item : {}
+  return {
+    id: toStringValue(raw.id, `jd-${index}`),
+    jobTitle: toStringValue(raw.jobTitle, 'Untitled JD'),
+    parseStatus: toStringValue(raw.parseStatus, 'pending'),
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : undefined
+  }
+}
+
+export async function loadRecentJds(options?: {
+  page?: number
+  pageSize?: number
+  status?: string
+}): Promise<LoadState<JdRecentItem[]>> {
   try {
-    const res = await getJdSubmissions({ page: 1, pageSize: options?.pageSize ?? 10 })
+    const res = await getJdSubmissions({
+      page: options?.page ?? 1,
+      pageSize: options?.pageSize ?? 10,
+      status: options?.status
+    })
     const rows = getCollection((res as { data?: unknown })?.data)
 
     return {
       data: rows
-        .map((item) => (isObject(item) ? item : {}))
-        .map((item, index) => ({
-          id: toStringValue(item.id, `jd-${index}`),
-          jobTitle: toStringValue(item.jobTitle, 'Untitled JD'),
-          parseStatus: toStringValue(item.parseStatus, 'pending'),
-          createdAt: typeof item.createdAt === 'string' ? item.createdAt : undefined
-        }))
+        .map(mapJdRecentItem)
         .filter((item) => Boolean(item.id)),
+      loading: false,
+      error: null
+    }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load JDs' }
+  }
+}
+
+export async function loadAllRecentJds(options?: {
+  pageSize?: number
+  status?: string
+}): Promise<LoadState<JdRecentItem[]>> {
+  try {
+    const pageSize = options?.pageSize ?? 100
+    const first = await getJdSubmissions({ page: 1, pageSize, status: options?.status })
+    const firstData = (first as { data?: unknown })?.data
+    const totalPages = getTotalPages(firstData)
+    const rest =
+      totalPages > 1
+        ? await Promise.all(
+            Array.from({ length: totalPages - 1 }, (_, index) =>
+              getJdSubmissions({ page: index + 2, pageSize, status: options?.status })
+            )
+          )
+        : []
+
+    const rows = [first, ...rest].flatMap((res) => getCollection((res as { data?: unknown })?.data))
+
+    return {
+      data: rows.map(mapJdRecentItem).filter((item) => Boolean(item.id)),
       loading: false,
       error: null
     }
@@ -522,9 +569,14 @@ export async function loadRoadmapOverview(filters?: {
     const res = await getUserRoadmapsRuntime(filters)
     const data = unwrapData<unknown>(res)
     const items = getCollection(data)
+    const normalizedStatus = filters?.status?.toLowerCase()
+    const normalizedJdId = filters?.jdId?.toLowerCase()
 
     return {
-      data: items.map(mapRoadmapSummary),
+      data: items
+        .map(mapRoadmapSummary)
+        .filter((item) => !normalizedStatus || item.status.toLowerCase() === normalizedStatus)
+        .filter((item) => !normalizedJdId || item.jdId?.toLowerCase() === normalizedJdId),
       loading: false,
       error: null
     }
