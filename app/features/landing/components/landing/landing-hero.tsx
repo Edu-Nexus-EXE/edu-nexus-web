@@ -1,9 +1,27 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router'
 
+import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
+
+const GUIDE_URL =
+  'https://drive.google.com/file/d/1RVSprFMQKCabsY9X9V4auzSB02we9XUF/view'
 
 export function LandingHero() {
   const { t } = useTranslation('landing')
+  const navigate = useNavigate()
+
+  const handleStart = () => {
+    if (getAuthSession()) {
+      navigate('/dashboard')
+    } else {
+      navigate('/login')
+    }
+  }
+
+  const handleGuide = () => {
+    window.open(GUIDE_URL, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <section className='relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden'>
@@ -49,6 +67,7 @@ export function LandingHero() {
           <div className='flex flex-col sm:flex-row justify-center gap-4'>
             <button
               type='button'
+              onClick={handleStart}
               className={cn(
                 'group bg-primary hover:opacity-90 text-primary-foreground',
                 'px-8 py-4 rounded-lg text-base font-semibold transition-all',
@@ -62,6 +81,7 @@ export function LandingHero() {
             </button>
             <button
               type='button'
+              onClick={handleGuide}
               className='px-8 py-4 rounded-lg border border-border text-foreground font-medium hover:bg-muted transition-colors flex items-center justify-center gap-2'
             >
               <span className='material-symbols-outlined text-lg'>play_circle</span>

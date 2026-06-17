@@ -4,8 +4,6 @@ import { LanguageSwitcher, ThemeToggle } from '~/shared/components'
 import { cn } from '~/shared/lib/cn'
 import { getAuthSession } from '~/shared/lib/auth-session'
 
-import { BrandMark } from './brand-mark'
-
 function hasCompleteUserSession() {
   const session = getAuthSession()
   const accessToken = session?.tokens?.accessToken?.trim()
@@ -26,8 +24,8 @@ export function LandingNavbar() {
         <div className='flex justify-between items-center h-20'>
           {/* Logo */}
           <a href='/' className='flex-shrink-0 flex items-center gap-2 cursor-pointer'>
-            <div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground'>
-              <BrandMark className='h-5 w-5' />
+            <div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/30'>
+              <span className='material-symbols-outlined text-[20px] leading-none'>auto_awesome</span>
             </div>
             <span className='font-bold text-xl tracking-tight text-foreground'>Edu-Nexus</span>
           </a>
