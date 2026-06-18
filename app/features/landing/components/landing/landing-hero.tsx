@@ -4,11 +4,13 @@ import { useNavigate } from 'react-router'
 import { getAuthSession } from '~/shared/lib/auth-session'
 import { cn } from '~/shared/lib/cn'
 
-const GUIDE_URL =
-  'https://drive.google.com/file/d/1RVSprFMQKCabsY9X9V4auzSB02we9XUF/view'
+const GUIDE_URLS = {
+  vi: 'https://drive.google.com/file/d/1ZVBL_qtAENOBdWggsLJifoJ-p7kKI97B/view?usp=sharing',
+  en: 'https://drive.google.com/file/d/1LirxpzEH4dIa1oCfBgiaSt5OZeCBa7Ig/view?usp=sharing'
+} as const
 
 export function LandingHero() {
-  const { t } = useTranslation('landing')
+  const { t, i18n } = useTranslation('landing')
   const navigate = useNavigate()
 
   const handleStart = () => {
@@ -20,7 +22,9 @@ export function LandingHero() {
   }
 
   const handleGuide = () => {
-    window.open(GUIDE_URL, '_blank', 'noopener,noreferrer')
+    const lang = (i18n.language?.split('-')[0] ?? 'vi') as keyof typeof GUIDE_URLS
+    const guideUrl = GUIDE_URLS[lang] ?? GUIDE_URLS.vi
+    window.open(guideUrl, '_blank', 'noopener,noreferrer')
   }
 
   return (
