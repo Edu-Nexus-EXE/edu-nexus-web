@@ -75,6 +75,14 @@ export function SignupForm() {
 
   return (
     <div className='bg-card border border-border shadow-xl rounded-xl overflow-hidden backdrop-blur-sm'>
+      {/* Full-screen loading overlay */}
+      {loading && (
+        <div className='fixed inset-0 z-[100] bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center'>
+          <div className='w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4' />
+          <p className='text-lg font-semibold text-foreground animate-pulse'>{t('signup.submitting')}</p>
+        </div>
+      )}
+
       <div className='p-5 sm:p-8'>
         <div className='text-center mb-8'>
           <h2 className='text-xl font-bold text-foreground mb-2'>{t('signup.title')}</h2>

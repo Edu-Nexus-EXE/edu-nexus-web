@@ -1,11 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Link } from 'react-router'
+
 import {
   loadAdminDashboardStats,
   loadAdminPaymentOrders,
+  loadAdminJdFailed,
+  loadAdminSkillsQueue,
+  loadAdminResourcesQueue,
   type AdminDashboardStatsView,
-  type AdminPaymentOrderView
+  type AdminPaymentOrderView,
+  type AdminJdFailedView
 } from '../../lib/admin-data'
 
 const emptyStats: AdminDashboardStatsView = {
@@ -100,15 +106,29 @@ export function AdminOverviewCharts() {
   const label = (vi: string, en: string) => (isVi ? vi : en)
   const [stats, setStats] = useState<AdminDashboardStatsView>(emptyStats)
   const [orders, setOrders] = useState<AdminPaymentOrderView[]>([])
+  const [jdFailed, setJdFailed] = useState<AdminJdFailedView[]>([])
+  const [jdFailedTotal, setJdFailedTotal] = useState(0)
+  const [skillsPending, setSkillsPending] = useState(0)
+  const [resourcesPending, setResourcesPending] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let cancelled = false
-    Promise.all([loadAdminDashboardStats(), loadAdminPaymentOrders()])
-      .then(([nextStats, nextOrders]) => {
+    Promise.all([
+      loadAdminDashboardStats(),
+      loadAdminPaymentOrders(),
+      loadAdminJdFailed({ parseStatus: 'failed', pageSize: 3 }),
+      loadAdminSkillsQueue({ pageSize: 1 }),
+      loadAdminResourcesQueue({ pageSize: 1 })
+    ])
+      .then(([nextStats, nextOrders, jdResult, skillsResult, resourcesResult]) => {
         if (cancelled) return
         setStats(nextStats)
         setOrders(nextOrders)
+        setJdFailed(jdResult.items)
+        setJdFailedTotal(jdResult.total)
+        setSkillsPending(skillsResult.total)
+        setResourcesPending(resourcesResult.total)
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
@@ -127,14 +147,8 @@ export function AdminOverviewCharts() {
       { key: 'student', value: stats.activeSubscriptions }
     ].filter((item) => item.value > 0)
   }, [stats.activeSubscriptions, stats.totalUsers, stats.usersByTier])
-  const providerItems = useMemo(() => {
-    const fromApi = normalizedEntries(stats.revenueByProvider)
-    return fromApi.length ? fromApi : providerFromOrders(orders)
-  }, [orders, stats.revenueByProvider])
   const monthlyTrend = useMemo(() => recentMonths(orders), [orders])
-  const aiItems = useMemo(() => normalizedEntries(stats.aiCostByPipeline), [stats.aiCostByPipeline])
   const totalTier = tierItems.reduce((sum, item) => sum + item.value, 0)
-  const maxProvider = Math.max(...providerItems.map((item) => item.value), 1)
   const trendValues = monthlyTrend.map((item) => item.value)
   const hasRevenueTrend = trendValues.some((value) => value > 0)
   const maxTrend = Math.max(...trendValues, 1)
@@ -142,6 +156,7 @@ export function AdminOverviewCharts() {
     totalTier > 0
       ? Math.round(((tierItems.find((item) => item.key.toLowerCase() === 'student')?.value ?? 0) / totalTier) * 100)
       : 0
+  const jdSuccessRate = stats.totalJdSubmitted > 0 ? Math.round(((stats.totalJdSubmitted - jdFailedTotal) / stats.totalJdSubmitted) * 100) : 0
 
   if (loading) {
     return (
@@ -306,74 +321,112 @@ export function AdminOverviewCharts() {
       <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-7'>
         <div className='flex items-start justify-between gap-4'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-widest text-success'>
-              {label('Thanh toán', 'Payments')}
+            <p className='text-xs font-bold uppercase tracking-widest text-warning'>
+              {label('Phân tích JD', 'JD Analytics')}
             </p>
             <h2 className='mt-1 text-2xl font-black text-foreground'>
-              {label('Doanh thu theo kênh', 'Revenue by provider')}
+              {label('Trạng thái phân tích', 'Parse Status')}
             </h2>
           </div>
-          <span className='material-symbols-outlined text-success'>bar_chart</span>
+          <span className='material-symbols-outlined text-warning'>analytics</span>
         </div>
 
-        <div className='mt-6 space-y-5'>
-          {providerItems.length === 0 ? (
-            <div className='flex h-40 items-center justify-center rounded-2xl border border-dashed border-border bg-muted/20 text-sm font-semibold text-muted-foreground'>
-              {label('Chưa có doanh thu theo kênh.', 'No provider revenue yet.')}
+        <div className='mt-8'>
+          <div className='flex items-center justify-between text-sm font-bold text-foreground mb-2'>
+            <span>{label('Tỉ lệ thành công', 'Success Rate')}</span>
+            <span>{jdSuccessRate}%</span>
+          </div>
+          <div className='h-3 overflow-hidden rounded-full bg-destructive/20'>
+            <div 
+              className='h-full rounded-full bg-success' 
+              style={{ width: `${jdSuccessRate}%` }}
+            />
+          </div>
+          <div className='mt-4 flex gap-6 text-sm'>
+            <div>
+              <span className='text-muted-foreground'>{label('Tổng JD:', 'Total JDs:')}</span>
+              <span className='ml-2 font-bold text-foreground'>{stats.totalJdSubmitted}</span>
             </div>
-          ) : (
-            providerItems.map((item) => {
-              const percent = Math.round(
-                (item.value / Math.max(...providerItems.map((provider) => provider.value), 1)) * 100
-              )
-              return (
-                <div key={item.key}>
-                  <div className='mb-2 flex items-center justify-between gap-4 text-sm'>
-                    <span className='font-bold uppercase tracking-wide text-foreground'>
-                      {item.key.replaceAll('_', ' ')}
-                    </span>
-                    <span className='font-black text-foreground'>{formatCurrency(item.value)}</span>
-                  </div>
-                  <div className='h-4 overflow-hidden rounded-full bg-muted'>
-                    <div
-                      className='h-full rounded-full bg-success shadow-[0_0_18px_color-mix(in_srgb,var(--color-success)_35%,transparent)]'
-                      style={{ width: `${Math.max(5, percent)}%` }}
-                    />
-                  </div>
-                </div>
-              )
-            })
-          )}
+            <div>
+              <span className='text-muted-foreground'>{label('Lỗi phân tích:', 'Parse Errors:')}</span>
+              <span className='ml-2 font-bold text-destructive'>{jdFailedTotal}</span>
+            </div>
+          </div>
         </div>
+
+        {jdFailed.length > 0 && (
+          <div className='mt-8 border-t border-border pt-6'>
+            <h3 className='text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4'>
+              {label('Lỗi gần đây', 'Recent Errors')}
+            </h3>
+            <div className='space-y-3'>
+              {jdFailed.slice(0, 3).map((jd) => (
+                <div key={jd.id} className='flex items-center justify-between rounded-xl border border-border bg-muted/20 p-3'>
+                  <div className='min-w-0 flex-1 pr-4'>
+                    <p className='truncate text-sm font-bold text-foreground'>{jd.title}</p>
+                    <p className='truncate text-xs text-muted-foreground mt-0.5'>{jd.errorReason}</p>
+                  </div>
+                  <Link to='/admin/jd-logs' className='shrink-0 text-primary text-xs font-semibold hover:underline'>
+                    {label('Chi tiết', 'Details')}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </article>
 
-      {aiItems.length > 0 ? (
-        <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-5'>
-          <div className='flex items-start justify-between gap-4'>
-            <div>
-              <p className='text-xs font-bold uppercase tracking-widest text-warning'>{label('AI', 'AI')}</p>
-              <h2 className='mt-1 text-2xl font-black text-foreground'>
-                {label('Chi phí theo pipeline', 'Cost by pipeline')}
-              </h2>
-              <p className='mt-1 text-sm text-muted-foreground'>{formatCurrency(stats.aiCost)}</p>
+      <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-5'>
+        <div className='flex items-start justify-between gap-4'>
+          <div>
+            <p className='text-xs font-bold uppercase tracking-widest text-info'>
+              {label('Xét duyệt', 'Approvals')}
+            </p>
+            <h2 className='mt-1 text-2xl font-black text-foreground'>
+              {label('Yêu cầu chờ xử lý', 'Pending Requests')}
+            </h2>
+          </div>
+          <span className='material-symbols-outlined text-info'>pending_actions</span>
+        </div>
+
+        <div className='mt-8 space-y-4'>
+          <div className='flex items-center justify-between rounded-2xl border border-border bg-card p-5 shadow-sm'>
+            <div className='flex items-center gap-4'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary'>
+                <span className='material-symbols-outlined text-lg'>psychology</span>
+              </div>
+              <div>
+                <p className='text-sm font-bold text-foreground'>{label('Kỹ năng', 'Skills')}</p>
+                <p className='text-xs text-muted-foreground'>{label('Đang chờ duyệt', 'Pending review')}</p>
+              </div>
             </div>
-            <span className='material-symbols-outlined text-warning'>query_stats</span>
+            <div className='flex items-center gap-4'>
+              <span className='text-2xl font-black text-foreground'>{skillsPending}</span>
+              <Link to='/admin/skills-queue' className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center'>
+                <span className='material-symbols-outlined text-sm'>arrow_forward</span>
+              </Link>
+            </div>
           </div>
-          <div className='mt-6 flex h-52 items-end gap-3 border-b border-border pb-3'>
-            {aiItems.map((item) => {
-              const height = Math.round((item.value / Math.max(...aiItems.map((ai) => ai.value), 1)) * 100)
-              return (
-                <div key={item.key} className='flex min-w-0 flex-1 flex-col items-center gap-2'>
-                  <div className='w-full rounded-t-xl bg-warning' style={{ height: `${Math.max(8, height)}%` }} />
-                  <span className='w-full truncate text-center text-[10px] font-bold uppercase text-muted-foreground'>
-                    {item.key.replaceAll('_', ' ')}
-                  </span>
-                </div>
-              )
-            })}
+
+          <div className='flex items-center justify-between rounded-2xl border border-border bg-card p-5 shadow-sm'>
+            <div className='flex items-center gap-4'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-full bg-info/10 text-info'>
+                <span className='material-symbols-outlined text-lg'>menu_book</span>
+              </div>
+              <div>
+                <p className='text-sm font-bold text-foreground'>{label('Tài liệu', 'Resources')}</p>
+                <p className='text-xs text-muted-foreground'>{label('Đang chờ duyệt', 'Pending review')}</p>
+              </div>
+            </div>
+            <div className='flex items-center gap-4'>
+              <span className='text-2xl font-black text-foreground'>{resourcesPending}</span>
+              <Link to='/admin/resources?tab=queue' className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-info/10 hover:text-info transition-colors flex items-center justify-center'>
+                <span className='material-symbols-outlined text-sm'>arrow_forward</span>
+              </Link>
+            </div>
           </div>
-        </article>
-      ) : null}
+        </div>
+      </article>
     </section>
   )
 }

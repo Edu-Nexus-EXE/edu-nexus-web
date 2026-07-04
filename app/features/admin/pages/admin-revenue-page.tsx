@@ -20,13 +20,21 @@ function formatDate(value: string) {
 
 function statusTone(status: string) {
   const normalized = status.toLowerCase()
-  if (normalized === 'completed' || normalized === 'success' || normalized === 'paid' || normalized === 'active') {
+  if (normalized === 'completed') {
     return 'bg-primary/10 text-primary border-primary/20'
   }
   if (normalized === 'pending' || normalized === 'processing') {
     return 'bg-muted text-muted-foreground border-border'
   }
   return 'bg-destructive/10 text-destructive border-destructive/20'
+}
+
+function translateStatus(status: string) {
+  const normalized = status.toLowerCase()
+  if (normalized === 'completed') return 'Thành công'
+  if (normalized === 'pending' || normalized === 'processing') return 'Đang xử lý'
+  if (normalized === 'cancelled' || normalized === 'failed') return 'Đã hủy'
+  return status
 }
 
 function providerTone(provider: string) {
@@ -44,6 +52,12 @@ export function AdminRevenuePage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [providerFilter, setProviderFilter] = useState('all')
   const [searchEmail, setSearchEmail] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 10
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [statusFilter, providerFilter, searchEmail])
 
   useEffect(() => {
     let cancelled = false
@@ -69,7 +83,13 @@ export function AdminRevenuePage() {
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
-      const matchesStatus = statusFilter === 'all' || order.status.toLowerCase() === statusFilter
+      const normalizedStatus = order.status.toLowerCase()
+      let matchesStatus = false
+      if (statusFilter === 'all') matchesStatus = true
+      else if (statusFilter === 'completed') matchesStatus = normalizedStatus === 'completed'
+      else if (statusFilter === 'pending') matchesStatus = normalizedStatus === 'pending' || normalizedStatus === 'processing'
+      else if (statusFilter === 'failed') matchesStatus = normalizedStatus === 'failed' || normalizedStatus === 'cancelled'
+
       const matchesProvider = providerFilter === 'all' || order.provider.toLowerCase().includes(providerFilter)
       const matchesEmail = !searchEmail.trim() || order.user.toLowerCase().includes(searchEmail.trim().toLowerCase())
       return matchesStatus && matchesProvider && matchesEmail
@@ -78,11 +98,16 @@ export function AdminRevenuePage() {
 
   const successfulOrders = filteredOrders.filter((order) => {
     const normalized = order.status.toLowerCase()
-    return normalized === 'completed' || normalized === 'success' || normalized === 'paid' || normalized === 'active'
+    return normalized === 'completed'
   })
 
   const totalRevenue = successfulOrders.reduce((sum, order) => sum + order.amount, 0)
   const providers = Array.from(new Set(orders.map((order) => order.provider).filter(Boolean)))
+  
+  const totalPages = Math.ceil(filteredOrders.length / pageSize)
+  const paginatedOrders = useMemo(() => {
+    return filteredOrders.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  }, [filteredOrders, currentPage])
 
   return (
     <div className='p-8 max-w-7xl mx-auto w-full space-y-8'>
@@ -215,14 +240,14 @@ export function AdminRevenuePage() {
                     {t('adminCommon.loading')}
                   </td>
                 </tr>
-              ) : filteredOrders.length === 0 ? (
+              ) : paginatedOrders.length === 0 ? (
                 <tr>
                   <td colSpan={6} className='px-6 py-10 text-center text-sm text-muted-foreground'>
                     {t('adminCommon.empty')}
                   </td>
                 </tr>
               ) : (
-                filteredOrders.map((order) => (
+                paginatedOrders.map((order) => (
                   <tr key={order.id} className='hover:bg-muted/30 transition-colors'>
                     <td className='px-6 py-5 text-sm font-medium text-muted-foreground'>
                       {formatDate(order.createdAt)}
@@ -245,7 +270,7 @@ export function AdminRevenuePage() {
                       <span
                         className={`rounded-full border px-3 py-1 text-[11px] font-bold uppercase tracking-wider ${statusTone(order.status)}`}
                       >
-                        {order.status}
+                        {translateStatus(order.status)}
                       </span>
                     </td>
                   </tr>
@@ -261,8 +286,8 @@ export function AdminRevenuePage() {
               t={t}
               i18nKey='revenue.orders.pagination'
               values={{
-                start: filteredOrders.length > 0 ? 1 : 0,
-                end: filteredOrders.length,
+                start: paginatedOrders.length > 0 ? (currentPage - 1) * pageSize + 1 : 0,
+                end: (currentPage - 1) * pageSize + paginatedOrders.length,
                 total: filteredOrders.length
               }}
               components={{
@@ -272,6 +297,28 @@ export function AdminRevenuePage() {
             />
           </p>
         </div>
+
+        {totalPages > 1 && (
+          <div className='flex items-center justify-between border-t border-border p-4 bg-muted/20'>
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-muted disabled:opacity-50'
+            >
+              {t('adminCommon.pagination.prev', 'Trang trước')}
+            </button>
+            <span className='text-sm font-bold text-muted-foreground'>
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-muted disabled:opacity-50'
+            >
+              {t('adminCommon.pagination.next', 'Trang sau')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

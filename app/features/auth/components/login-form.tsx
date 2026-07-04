@@ -198,6 +198,14 @@ export function LoginForm() {
   // Google sign-in is handled by Google Identity Services renderButton callback.
   return (
     <div className='bg-card/80 backdrop-blur-sm border border-border shadow-xl rounded-xl p-5 sm:p-8 md:p-10 w-full'>
+      {/* Full-screen loading overlay */}
+      {(loading || googleLoading) && (
+        <div className='fixed inset-0 z-[100] bg-background/60 backdrop-blur-sm flex flex-col items-center justify-center'>
+          <div className='w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4' />
+          <p className='text-lg font-semibold text-foreground animate-pulse'>{t('login.submitting')}</p>
+        </div>
+      )}
+
       {/* Header */}
       <div className='text-center mb-8'>
         <div className='inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4 border border-primary/20 shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.2)]'>

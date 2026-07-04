@@ -29,7 +29,7 @@ export function LandingNavbar() {
   useClickOutside(menuRef, closeMenu)
 
   return (
-    <nav className='fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-background/80 border-b border-border'>
+    <nav ref={menuRef} className='fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md bg-background/80 border-b border-border'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-between items-center h-20'>
           {/* Logo */}
@@ -117,7 +117,6 @@ export function LandingNavbar() {
 
       {/* Mobile Menu Panel */}
       <div
-        ref={menuRef}
         className={cn(
           'md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-border bg-background/95 backdrop-blur-lg',
           isMenuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 border-t-transparent'

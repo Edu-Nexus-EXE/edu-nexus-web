@@ -218,6 +218,33 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
   try {
     const res = await getAdminDashboardStats()
     const data = unwrapData<unknown>(res)
+    
+    // Manually calculate revenue to fix backend bug (includes cancelled/pending orders)
+    const ordersRes = await getAdminPaymentOrders({ page: 1, pageSize: 1000 }).catch(() => null)
+    let calculatedRevenue = 0
+    let calculatedMonthly = 0
+    const calculatedProvider: Record<string, number> = {}
+
+    if (ordersRes) {
+      const ordersData = unwrapData<unknown>(ordersRes)
+      const items = parseItems(ordersData)
+      const now = new Date()
+      items.forEach((item) => {
+        const raw = isObject(item) ? item : {}
+        const status = toStringValue(raw.status, '').toLowerCase()
+        if (status === 'completed') {
+          const amount = toNumberValue(raw.amount, 0)
+          calculatedRevenue += amount
+          const createdAt = new Date(toStringValue(raw.createdAt, ''))
+          if (!Number.isNaN(createdAt.getTime()) && createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear()) {
+            calculatedMonthly += amount
+          }
+          const provider = toStringValue(raw.provider, 'Trực tuyến')
+          calculatedProvider[provider] = (calculatedProvider[provider] || 0) + amount
+        }
+      })
+    }
+
     const root = isObject(data) ? data : {}
     const subscriptionRevenue = isObject(root.subscriptionRevenue) ? root.subscriptionRevenue : null
     const affiliateStats = isObject(root.affiliateStats) ? root.affiliateStats : null
@@ -232,11 +259,11 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
         Object.entries(usersByTier).map(([key, value]) => [key, toNumberValue(value, 0)])
       ),
       totalJdSubmitted: toNumberValue(root.totalJdSubmitted, 0),
-      revenue: toNumberValue(root.totalRevenue ?? subscriptionRevenue?.allTime, 0),
-      monthlyRevenue: toNumberValue(subscriptionRevenue?.currentMonth, 0),
-      revenueByProvider: Object.fromEntries(
-        Object.entries(byProvider).map(([key, value]) => [key, toNumberValue(value, 0)])
-      ),
+      revenue: ordersRes ? calculatedRevenue : toNumberValue(root.totalRevenue ?? subscriptionRevenue?.allTime, 0),
+      monthlyRevenue: ordersRes ? calculatedMonthly : toNumberValue(subscriptionRevenue?.currentMonth, 0),
+      revenueByProvider: ordersRes 
+        ? calculatedProvider 
+        : Object.fromEntries(Object.entries(byProvider).map(([key, value]) => [key, toNumberValue(value, 0)])),
       aiCost: toNumberValue(totalAiCost?.allTime ?? root.totalAiCost ?? root.aiCostEstimate, 0),
       monthlyAiCost: toNumberValue(totalAiCost?.currentMonth, 0),
       aiCostByPipeline: Object.fromEntries(
@@ -746,7 +773,7 @@ export async function revokeAdminUserSubscription(id: string) {
 
 export async function loadAdminPaymentOrders(): Promise<AdminPaymentOrderView[]> {
   try {
-    const res = await getAdminPaymentOrders({ page: 1, pageSize: 10 })
+    const res = await getAdminPaymentOrders({ page: 1, pageSize: 1000 })
     const data = unwrapData<unknown>(res)
     const items = parseItems(data)
     return items.map((item, index) => {
