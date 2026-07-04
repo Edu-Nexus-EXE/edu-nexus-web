@@ -7,7 +7,7 @@ import { SignupForm } from '../components/signup-form'
 export function SignupPage() {
   const { t } = useTranslation('auth')
   return (
-    <div className='bg-background text-foreground font-display min-h-screen flex items-center justify-center relative overflow-hidden'>
+    <div className='bg-background text-foreground font-display min-h-[100dvh] flex items-center justify-center relative overflow-y-auto overflow-x-hidden'>
       <div className='absolute top-6 left-6 z-50'>
         <Link
           to='/'

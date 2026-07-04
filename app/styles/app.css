@@ -59,6 +59,12 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Hide native Edge/Chrome password reveal icon */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 .gradient-primary {
   background: linear-gradient(
     135deg,

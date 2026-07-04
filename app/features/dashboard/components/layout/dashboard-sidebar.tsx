@@ -120,13 +120,13 @@ export function DashboardSidebar({
             {open ? t('sidebar.membershipLabel') : collapsedTierLabel}
           </p>
           {open ? <p className='text-sm font-medium text-foreground mb-3'>{tierLabel}</p> : null}
-          <button
-            type='button'
-            className='w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-primary/40 transition-shadow'
+          <Link
+            to='/pricing'
+            className='block text-center w-full py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:shadow-lg hover:shadow-primary/40 transition-shadow'
             title={!open ? t('sidebar.upgrade') : undefined}
           >
             {open ? t('sidebar.upgrade') : <span className='material-icons text-base'>upgrade</span>}
-          </button>
+          </Link>
         </div>
       </div>
     </aside>

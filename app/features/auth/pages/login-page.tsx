@@ -7,7 +7,7 @@ import { LoginForm } from '../components/login-form'
 export function LoginPage() {
   const { t } = useTranslation('auth')
   return (
-    <div className='bg-background text-foreground font-display min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-primary selection:text-primary-foreground'>
+    <div className='bg-background text-foreground font-display min-h-[100dvh] flex items-center justify-center relative overflow-y-auto overflow-x-hidden selection:bg-primary selection:text-primary-foreground'>
       <div className='absolute top-6 left-6 z-50'>
         <Link
           to='/'

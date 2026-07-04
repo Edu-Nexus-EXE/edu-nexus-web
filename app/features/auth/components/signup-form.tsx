@@ -31,6 +31,8 @@ export function SignupForm() {
 
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -60,8 +62,12 @@ export function SignupForm() {
       toast.success(t('signup.success'))
 
       redirectAfterSignup(navigate, data.isSurveyCompleted)
-    } catch (err) {
-      setError((err as Error).message || t('signup.errorInvalid'))
+    } catch (err: any) {
+      if (err?.status === 409) {
+        setError(t('signup.emailExists'))
+      } else {
+        setError(err?.message || t('signup.errorInvalid'))
+      }
     } finally {
       setLoading(false)
     }
@@ -69,7 +75,7 @@ export function SignupForm() {
 
   return (
     <div className='bg-card border border-border shadow-xl rounded-xl overflow-hidden backdrop-blur-sm'>
-      <div className='p-8'>
+      <div className='p-5 sm:p-8'>
         <div className='text-center mb-8'>
           <h2 className='text-xl font-bold text-foreground mb-2'>{t('signup.title')}</h2>
           <p className='text-sm text-muted-foreground'>{t('signup.subtitle')}</p>
@@ -107,7 +113,7 @@ export function SignupForm() {
                   'border border-border bg-muted text-foreground',
                   'placeholder:text-muted-foreground',
                   'focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-primary',
-                  'transition-all duration-200 sm:text-sm'
+                  'transition-all duration-200 text-base sm:text-sm'
                 )}
               />
             </div>
@@ -138,7 +144,7 @@ export function SignupForm() {
                   'border border-border bg-muted text-foreground',
                   'placeholder:text-muted-foreground',
                   'focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-primary',
-                  'transition-all duration-200 sm:text-sm'
+                  'transition-all duration-200 text-base sm:text-sm'
                 )}
               />
             </div>
@@ -161,17 +167,25 @@ export function SignupForm() {
               <input
                 id='password'
                 name='password'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 required
                 placeholder={t('signup.passwordPlaceholder')}
                 className={cn(
-                  'block w-full pl-10 pr-3 py-3 rounded-lg',
+                  'block w-full pl-10 pr-10 py-3 rounded-lg',
                   'border border-border bg-muted text-foreground',
                   'placeholder:text-muted-foreground',
                   'focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-primary',
-                  'transition-all duration-200 sm:text-sm'
+                  'transition-all duration-200 text-base sm:text-sm'
                 )}
               />
+              <button
+                type='button'
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword((v) => !v)}
+                className='absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors'
+              >
+                <span className='material-icons text-lg'>{showPassword ? 'visibility_off' : 'visibility'}</span>
+              </button>
             </div>
           </div>
 
@@ -192,17 +206,25 @@ export function SignupForm() {
               <input
                 id='confirmPassword'
                 name='confirmPassword'
-                type='password'
+                type={showConfirmPassword ? 'text' : 'password'}
                 required
                 placeholder={t('signup.confirmPasswordPlaceholder')}
                 className={cn(
-                  'block w-full pl-10 pr-3 py-3 rounded-lg',
+                  'block w-full pl-10 pr-10 py-3 rounded-lg',
                   'border border-border bg-muted text-foreground',
                   'placeholder:text-muted-foreground',
                   'focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-primary',
-                  'transition-all duration-200 sm:text-sm'
+                  'transition-all duration-200 text-base sm:text-sm'
                 )}
               />
+              <button
+                type='button'
+                aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                className='absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground hover:text-foreground transition-colors'
+              >
+                <span className='material-icons text-lg'>{showConfirmPassword ? 'visibility_off' : 'visibility'}</span>
+              </button>
             </div>
           </div>
 

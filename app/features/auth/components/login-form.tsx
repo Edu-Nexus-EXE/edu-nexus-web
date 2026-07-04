@@ -197,7 +197,7 @@ export function LoginForm() {
 
   // Google sign-in is handled by Google Identity Services renderButton callback.
   return (
-    <div className='bg-card/80 backdrop-blur-sm border border-border shadow-xl rounded-xl p-8 md:p-10 w-full'>
+    <div className='bg-card/80 backdrop-blur-sm border border-border shadow-xl rounded-xl p-5 sm:p-8 md:p-10 w-full'>
       {/* Header */}
       <div className='text-center mb-8'>
         <div className='inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4 border border-primary/20 shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.2)]'>
@@ -239,7 +239,7 @@ export function LoginForm() {
                 'border border-border bg-card/50 text-foreground',
                 'placeholder:text-muted-foreground',
                 'focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-primary',
-                'hover:border-primary/40 transition-all duration-200 sm:text-sm'
+                'hover:border-primary/40 transition-all duration-200 text-base sm:text-sm'
               )}
             />
           </div>
@@ -273,7 +273,7 @@ export function LoginForm() {
                 'border border-border bg-card/50 text-foreground',
                 'placeholder:text-muted-foreground',
                 'focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-primary',
-                'hover:border-primary/40 transition-all duration-200 sm:text-sm'
+                'hover:border-primary/40 transition-all duration-200 text-base sm:text-sm'
               )}
             />
 
