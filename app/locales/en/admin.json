@@ -14,7 +14,8 @@
     "jdLogs": "JD Logs",
     "generateReport": "Generate Report",
     "support": "Support",
-    "logout": "Logout"
+    "logout": "Logout",
+    "marketReadiness": "Market Readiness"
   },
   "header": {
     "title": "System Overview",
@@ -507,5 +508,89 @@
     "support": "Support",
     "privacy": "Privacy",
     "terms": "Terms"
+  },
+  "marketReadiness": {
+    "eyebrow": "USP demo",
+    "title": "Career Readiness KPI",
+    "subtitle": "Track market data ingestion and student readiness snapshots for institution-level employment outcomes.",
+    "refresh": "Refresh",
+    "empty": "No data yet",
+    "errors": {
+      "load": "Failed to load career readiness KPI."
+    },
+    "kpi": {
+      "totalStudents": "Total students",
+      "snapshots": "Students with snapshot",
+      "averageScore": "Average readiness",
+      "coverage": "Snapshot coverage"
+    },
+    "byMajor": {
+      "title": "Readiness by major",
+      "major": "Major",
+      "students": "Students",
+      "score": "Avg score"
+    },
+    "missingSkills": {
+      "title": "Top missing skills",
+      "skill": "Skill",
+      "missing": "Missing",
+      "upgrade": "Needs upgrade"
+    },
+    "targetRoles": {
+      "title": "Target roles",
+      "role": "Role",
+      "students": "Students",
+      "marketJobs": "Market JDs"
+    },
+    "import": {
+      "title": "Manual market JD import",
+      "subtitle": "Paste a JSON payload to seed real rows into the market job tables for demo and fallback when crawler sources block requests.",
+      "submit": "Import jobs",
+      "running": "Importing",
+      "success": "Market jobs imported.",
+      "failed": "Failed to import market jobs.",
+      "invalidJson": "Payload must be valid JSON with sourceSite and jobs[]."
+    },
+    "crawler": {
+      "title": "Crawler demo",
+      "subtitle": "Fetch public market data when the source allows access. If the source blocks scraping, keep manual import as the reliable demo path.",
+      "sourceSite": "Source",
+      "role": "Role category",
+      "keyword": "Keyword",
+      "limit": "Limit",
+      "submit": "Run crawler",
+      "running": "Crawling",
+      "success": "Crawler imported market jobs.",
+      "blocked": "Crawler was blocked by the source. The run was recorded for review.",
+      "unsupported": "This crawler source is disabled or unsupported.",
+      "noJobs": "Crawler finished with no imported jobs. Manual import is still available.",
+      "failed": "Crawler failed.",
+      "demoOnly": "demo",
+      "disabled": "disabled"
+    },
+    "result": {
+      "title": "Last operation result",
+      "empty": "Run an import or crawler job to see the result here.",
+      "operation": "Operation",
+      "import": "Manual import",
+      "crawl": "Crawler",
+      "sourceMode": "Source mode",
+      "status": "Status",
+      "parsedJobs": "Parsed jobs",
+      "fetchedUrls": "Fetched URLs",
+      "runId": "Run ID",
+      "message": "Message",
+      "importedJobs": "Imported jobs",
+      "importedSkills": "Imported skills",
+      "skipped": "Skipped duplicates"
+    },
+    "crawlRuns": {
+      "title": "Recent crawler runs",
+      "refresh": "Reload",
+      "empty": "No crawler runs yet.",
+      "parsed": "{{count}} parsed",
+      "imported": "{{count}} imported",
+      "fetched": "{{count}} fetched"
+    }
   }
 }

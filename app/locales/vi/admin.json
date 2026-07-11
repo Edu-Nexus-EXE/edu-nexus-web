@@ -14,7 +14,8 @@
     "jdLogs": "Nhật ký JD",
     "generateReport": "Tạo báo cáo",
     "support": "Hỗ trợ",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "marketReadiness": "Sẵn sàng nghề nghiệp"
   },
   "header": {
     "title": "Tổng quan hệ thống",
@@ -507,5 +508,89 @@
     "support": "Hỗ trợ",
     "privacy": "Bảo mật",
     "terms": "Điều khoản"
+  },
+  "marketReadiness": {
+    "eyebrow": "Demo USP",
+    "title": "KPI sẵn sàng nghề nghiệp",
+    "subtitle": "Theo dõi dữ liệu thị trường và snapshot sẵn sàng của sinh viên cho mục tiêu việc làm cấp trường.",
+    "refresh": "Làm mới",
+    "empty": "Chưa có dữ liệu",
+    "errors": {
+      "load": "Không thể tải KPI sẵn sàng nghề nghiệp."
+    },
+    "kpi": {
+      "totalStudents": "Tổng sinh viên",
+      "snapshots": "Sinh viên có snapshot",
+      "averageScore": "Điểm sẵn sàng TB",
+      "coverage": "Độ bao phủ snapshot"
+    },
+    "byMajor": {
+      "title": "Sẵn sàng theo ngành",
+      "major": "Ngành",
+      "students": "Sinh viên",
+      "score": "Điểm TB"
+    },
+    "missingSkills": {
+      "title": "Kỹ năng thiếu nhiều nhất",
+      "skill": "Kỹ năng",
+      "missing": "Thiếu",
+      "upgrade": "Cần nâng cấp"
+    },
+    "targetRoles": {
+      "title": "Vai trò mục tiêu",
+      "role": "Vai trò",
+      "students": "Sinh viên",
+      "marketJobs": "JD thị trường"
+    },
+    "import": {
+      "title": "Import JD thị trường thủ công",
+      "subtitle": "Dán JSON để seed dòng dữ liệu thật vào các bảng market job cho demo và làm phương án dự phòng khi crawler bị chặn.",
+      "submit": "Import JD",
+      "running": "Đang import",
+      "success": "Đã import JD thị trường.",
+      "failed": "Import JD thị trường thất bại.",
+      "invalidJson": "Payload phải là JSON hợp lệ với sourceSite và jobs[]."
+    },
+    "crawler": {
+      "title": "Demo crawler",
+      "subtitle": "Lấy dữ liệu thị trường công khai khi nguồn cho phép. Nếu nguồn chặn crawl, import thủ công vẫn là đường demo ổn định.",
+      "sourceSite": "Nguồn",
+      "role": "Nhóm vai trò",
+      "keyword": "Từ khoá",
+      "limit": "Giới hạn",
+      "submit": "Chạy crawler",
+      "running": "Đang crawl",
+      "success": "Crawler đã import JD thị trường.",
+      "noJobs": "Crawler kết thúc nhưng không import JD nào. Bạn vẫn có thể dùng import thủ công.",
+      "failed": "Crawler thất bại.",
+      "blocked": "Crawler bị nguồn chặn. Lần chạy đã được ghi lại để kiểm tra.",
+      "unsupported": "Nguồn crawler này đang tắt hoặc không hỗ trợ.",
+      "demoOnly": "demo",
+      "disabled": "đang tắt"
+    },
+    "result": {
+      "title": "Kết quả thao tác gần nhất",
+      "empty": "Chạy import hoặc crawler để xem kết quả ở đây.",
+      "operation": "Thao tác",
+      "import": "Import thủ công",
+      "crawl": "Crawler",
+      "sourceMode": "Chế độ nguồn",
+      "importedJobs": "JD đã import",
+      "importedSkills": "Kỹ năng đã import",
+      "skipped": "Bỏ qua trùng lặp",
+      "status": "Trạng thái",
+      "parsedJobs": "JD parse được",
+      "fetchedUrls": "URL đã fetch",
+      "runId": "Mã lần chạy",
+      "message": "Thông điệp"
+    },
+    "crawlRuns": {
+      "title": "Lần chạy crawler gần đây",
+      "refresh": "Tải lại",
+      "empty": "Chưa có lần chạy crawler.",
+      "parsed": "{{count}} parse",
+      "imported": "{{count}} import",
+      "fetched": "{{count}} fetch"
+    }
   }
 }

@@ -434,9 +434,7 @@ export function GapAnalysisPage() {
             ) : (
               <span className='material-symbols-outlined text-lg'>{hasData ? 'refresh' : 'auto_awesome'}</span>
             )}
-            {hasData
-              ? t('learningPath.gapAnalysis.rerunAnalysis')
-              : t('learningPath.gapAnalysis.runAnalysis')}
+            {hasData ? t('learningPath.gapAnalysis.rerunAnalysis') : t('learningPath.gapAnalysis.runAnalysis')}
           </button>
         </div>
       </header>
@@ -448,9 +446,7 @@ export function GapAnalysisPage() {
           </section>
         ) : null}
 
-        {hasTriggered && !hasData ? (
-          <AnalyzingState version={meta.version} />
-        ) : null}
+        {hasTriggered && !hasData ? <AnalyzingState version={meta.version} /> : null}
 
         {hasData ? (
           <section className='rounded-r-2xl border border-border border-r-0 border-y-0 border-l-8 border-primary bg-primary/5 p-6 shadow-sm'>
@@ -481,59 +477,59 @@ export function GapAnalysisPage() {
         ) : null}
 
         {hasData ? (
-        <section className='rounded-xl border border-border bg-card shadow-sm'>
-          <div className='flex flex-col justify-between gap-4 border-b border-border p-6 sm:flex-row sm:items-center'>
-            <div>
-              <h2 className='text-lg font-bold text-foreground'>{t('learningPath.gapAnalysis.tableTitle')}</h2>
-              <p className='mt-1 text-sm text-muted-foreground'>{t('learningPath.gapAnalysis.historyNote')}</p>
+          <section className='rounded-xl border border-border bg-card shadow-sm'>
+            <div className='flex flex-col justify-between gap-4 border-b border-border p-6 sm:flex-row sm:items-center'>
+              <div>
+                <h2 className='text-lg font-bold text-foreground'>{t('learningPath.gapAnalysis.tableTitle')}</h2>
+                <p className='mt-1 text-sm text-muted-foreground'>{t('learningPath.gapAnalysis.historyNote')}</p>
+              </div>
+              <div className='flex flex-wrap items-center gap-4 text-xs font-semibold'>
+                <span className='flex items-center gap-1.5'>
+                  <span className='h-2.5 w-2.5 rounded-full bg-destructive'></span>
+                  {t('learningPath.gapAnalysis.status.missing')}
+                </span>
+                <span className='flex items-center gap-1.5'>
+                  <span className='h-2.5 w-2.5 rounded-full bg-warning'></span>
+                  {t('learningPath.gapAnalysis.status.upgrade')}
+                </span>
+                <span className='flex items-center gap-1.5'>
+                  <span className='h-2.5 w-2.5 rounded-full bg-success'></span>
+                  {t('learningPath.gapAnalysis.status.have')}
+                </span>
+              </div>
             </div>
-            <div className='flex flex-wrap items-center gap-4 text-xs font-semibold'>
-              <span className='flex items-center gap-1.5'>
-                <span className='h-2.5 w-2.5 rounded-full bg-destructive'></span>
-                {t('learningPath.gapAnalysis.status.missing')}
-              </span>
-              <span className='flex items-center gap-1.5'>
-                <span className='h-2.5 w-2.5 rounded-full bg-warning'></span>
-                {t('learningPath.gapAnalysis.status.upgrade')}
-              </span>
-              <span className='flex items-center gap-1.5'>
-                <span className='h-2.5 w-2.5 rounded-full bg-success'></span>
-                {t('learningPath.gapAnalysis.status.have')}
-              </span>
-            </div>
-          </div>
 
-          <div className='overflow-x-auto'>
-            <table className='w-full border-collapse text-left'>
-              <thead>
-                <tr className='border-b border-border bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground'>
-                  <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.skill')}</th>
-                  <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.status')}</th>
-                  <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.current')}</th>
-                  <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.required')}</th>
-                  <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.priority')}</th>
-                  <th className='px-6 py-4'></th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-border'>
-                {skills.map((skill) => (
-                  <SkillRow
-                    key={skill.id}
-                    skill={skill}
-                    isExpanded={expandedSkill === skill.id}
-                    onToggle={toggleDetails}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {!isStudentHistoryUnlocked ? (
-            <div className='border-t border-border bg-muted/10 px-6 py-4 text-sm text-muted-foreground'>
-              {t('learningPath.gapAnalysis.historyLocked')}
+            <div className='overflow-x-auto'>
+              <table className='w-full border-collapse text-left'>
+                <thead>
+                  <tr className='border-b border-border bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+                    <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.skill')}</th>
+                    <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.status')}</th>
+                    <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.current')}</th>
+                    <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.required')}</th>
+                    <th className='px-6 py-4'>{t('learningPath.gapAnalysis.headers.priority')}</th>
+                    <th className='px-6 py-4'></th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y divide-border'>
+                  {skills.map((skill) => (
+                    <SkillRow
+                      key={skill.id}
+                      skill={skill}
+                      isExpanded={expandedSkill === skill.id}
+                      onToggle={toggleDetails}
+                    />
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ) : null}
-        </section>
+
+            {!isStudentHistoryUnlocked ? (
+              <div className='border-t border-border bg-muted/10 px-6 py-4 text-sm text-muted-foreground'>
+                {t('learningPath.gapAnalysis.historyLocked')}
+              </div>
+            ) : null}
+          </section>
         ) : null}
 
         {!hasData && !loading && !hasTriggered ? (
@@ -598,7 +594,9 @@ export function GapAnalysisPage() {
                 disabled={checkingRoadmap || creatingRoadmap || shouldContinuePolling(meta.status)}
                 className='gradient-primary cursor-pointer rounded-xl px-8 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50'
               >
-                {creatingRoadmap ? t('learningPath.roadmap.generating') : t('learningPath.gapAnalysis.createNewRoadmap')}
+                {creatingRoadmap
+                  ? t('learningPath.roadmap.generating')
+                  : t('learningPath.gapAnalysis.createNewRoadmap')}
               </button>
             )}
           </div>

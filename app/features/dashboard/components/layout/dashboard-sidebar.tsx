@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'sidebar.analysisHistory', icon: 'timeline', path: '/dashboard/analytics/analysis-history' },
   { key: 'sidebar.allRoadmaps', icon: 'account_tree', path: '/roadmaps' },
   { key: 'sidebar.careerTrack', icon: 'route', path: '/career-tracks' },
+  { key: 'sidebar.market', icon: 'monitoring', path: '/dashboard/market' },
   { key: 'sidebar.portfolio', icon: 'badge', path: '/dashboard/portfolio' },
   { key: 'sidebar.setting', icon: 'settings', path: '/settings' }
 ]

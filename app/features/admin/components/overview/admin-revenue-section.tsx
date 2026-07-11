@@ -34,10 +34,7 @@ export function AdminRevenueSection() {
     }
   }, [])
 
-  const paidOrders = useMemo(
-    () => orders.filter((item) => item.status.toLowerCase() === 'completed'),
-    [orders]
-  )
+  const paidOrders = useMemo(() => orders.filter((item) => item.status.toLowerCase() === 'completed'), [orders])
   const totalRevenue = useMemo(() => paidOrders.reduce((sum, item) => sum + item.amount, 0), [paidOrders])
   const monthlyRevenue = useMemo(() => {
     const now = new Date()

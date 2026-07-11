@@ -71,6 +71,10 @@ export function AdminSidebar() {
           <span className='material-symbols-outlined text-xl'>psychology</span>
           <span>{t('sidebar.skillsQueue')}</span>
         </NavLink>
+        <NavLink to='/admin/market-readiness' className={navLinkClass}>
+          <span className='material-symbols-outlined text-xl'>monitoring</span>
+          <span>{t('sidebar.marketReadiness')}</span>
+        </NavLink>
         <NavLink to='/admin/subscription-config' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>settings_applications</span>
           <span>{t('sidebar.subscriptions')}</span>

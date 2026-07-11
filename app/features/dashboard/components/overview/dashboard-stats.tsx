@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { loadCurrentUser, loadDashboardRoadmaps } from '../../lib/sprint2-api'
+import { loadUserReadiness } from '../../lib/market-intelligence'
 
 export function DashboardStats() {
   const { t } = useTranslation('dashboard')
@@ -13,14 +14,16 @@ export function DashboardStats() {
   useEffect(() => {
     let cancelled = false
 
-    Promise.all([loadCurrentUser(), loadDashboardRoadmaps('active')])
-      .then(([user, roadmaps]) => {
+    Promise.all([loadCurrentUser(), loadDashboardRoadmaps('active'), loadUserReadiness()])
+      .then(([user, roadmaps, readinessResult]) => {
         if (cancelled) return
 
         const tier = user?.subscription?.tierCode?.toLowerCase() ?? 'free'
         setCertificates(String(user?.portfolioUrlSlug ? 1 : 0))
         setStudyHours(tier === 'premium' ? '20+' : tier === 'pro' ? '10-20' : '5-10')
-        setReadiness(String(Math.min(100, Math.max(50, roadmaps.data?.[0]?.progress ?? 65))))
+        setReadiness(
+          String(readinessResult.data?.score ?? Math.min(100, Math.max(50, roadmaps.data?.[0]?.progress ?? 65)))
+        )
         setClassRank(tier === 'premium' ? 'A' : tier === 'pro' ? 'B' : 'C')
       })
       .catch(() => {

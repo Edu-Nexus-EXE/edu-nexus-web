@@ -46,12 +46,12 @@ export function AdminHeader() {
   }, [])
 
   return (
-    <header className='h-20 border-b border-border px-8 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-40'>
-      <div>
-        <h1 className='text-2xl font-bold text-foreground'>{t('header.title')}</h1>
+    <header className='sticky top-0 z-40 flex min-h-20 flex-wrap items-center justify-between gap-3 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-md md:px-8'>
+      <div className='min-w-0'>
+        <h1 className='truncate text-xl font-bold text-foreground md:text-2xl'>{t('header.title')}</h1>
         <p className='text-sm text-muted-foreground'>{t('header.subtitle')}</p>
       </div>
-      <div className='flex items-center gap-4'>
+      <div className='flex min-w-0 flex-wrap items-center justify-end gap-2 md:gap-4'>
         <div className='relative hidden sm:block'>
           <span className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg'>
             search
@@ -81,7 +81,7 @@ export function AdminHeader() {
         <ThemeToggle label={t('header.themeToggle')} />
         <LanguageSwitcher />
 
-        <div className='flex items-center gap-3 pl-4 border-l border-border'>
+        <div className='hidden items-center gap-3 border-l border-border pl-4 sm:flex'>
           <div className='text-right hidden sm:block'>
             <p className='text-sm font-semibold text-foreground'>{user?.fullName || t('header.defaultUser')}</p>
             <p className='text-xs text-muted-foreground'>{user?.role || t('header.defaultPlan')}</p>

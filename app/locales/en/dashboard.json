@@ -208,10 +208,22 @@
   "quickActions": {
     "title": "Quick actions",
     "go": "Open",
-    "submitJd": { "title": "Submit a JD", "desc": "Analyze a new job description." },
-    "roadmap": { "title": "Learning roadmap", "desc": "Continue your skill tree." },
-    "careerTrack": { "title": "Career tracks", "desc": "Organize JDs by goal." },
-    "portfolio": { "title": "Portfolio", "desc": "Showcase your achievements." }
+    "submitJd": {
+      "title": "Submit a JD",
+      "desc": "Analyze a new job description."
+    },
+    "roadmap": {
+      "title": "Learning roadmap",
+      "desc": "Continue your skill tree."
+    },
+    "careerTrack": {
+      "title": "Career tracks",
+      "desc": "Organize JDs by goal."
+    },
+    "portfolio": {
+      "title": "Portfolio",
+      "desc": "Showcase your achievements."
+    }
   },
   "quotaOverview": {
     "title": "Plan usage",
@@ -642,6 +654,87 @@
       "emptyTitle": "No projects yet",
       "emptySubtitle": "Build your signature projects in the portfolio editor to feature them here.",
       "addCta": "Add project"
+    }
+  },
+  "readinessPanel": {
+    "eyebrow": "Market readiness",
+    "title": "Career Readiness",
+    "subtitle": "Your progress compared with current Vietnamese IT hiring demand.",
+    "levels": {
+      "ready": "Ready",
+      "improving": "Improving",
+      "at_risk": "At risk",
+      "unknown": "Needs data"
+    },
+    "marketAlignment": "Market alignment",
+    "roadmapCompletion": "Roadmap completion",
+    "gapSkills": "Gap skills",
+    "prioritySkills": "Priority skills",
+    "noPriority": "No urgent priority",
+    "empty": "Readiness data is not available yet. Submit a JD and complete gap analysis to create your snapshot.",
+    "cta": "View market plan"
+  },
+  "marketIntelligence": {
+    "eyebrow": "Market Skill Intelligence",
+    "title": "Vietnam IT market baseline",
+    "subtitle": "Compare your learning progress with aggregated job requirements instead of pasting one JD at a time.",
+    "roleLabel": "Target role",
+    "roles": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "data": "Data",
+      "ai": "AI",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "qa": "QA",
+      "business-analyst": "Business Analyst"
+    },
+    "metrics": {
+      "marketJobs": "Market JDs",
+      "readinessScore": "Readiness score",
+      "marketAlignment": "Market alignment",
+      "lastUpdated": "Last updated",
+      "noDate": "No data"
+    },
+    "empty": {
+      "title": "No market data for this role yet",
+      "description": "Ask an admin to import demo JDs or run the crawler so this page can calculate a real market baseline.",
+      "adminCta": "Open admin import"
+    },
+    "topSkills": {
+      "title": "Top demanded skills",
+      "subtitle": "Demand is calculated from real market job rows currently stored in the backend database.",
+      "skill": "Skill",
+      "demand": "Demand",
+      "status": "Your status",
+      "flags": "Signals",
+      "jobCount": "{{count}} JDs mention this skill"
+    },
+    "status": {
+      "missing": "Missing",
+      "needs_upgrade": "Needs upgrade",
+      "upgrade": "Needs upgrade",
+      "have": "Have",
+      "completed": "Have",
+      "unknown": "No evidence"
+    },
+    "flags": {
+      "mandatory": "Mandatory",
+      "marketTop": "Market top"
+    },
+    "priority": {
+      "title": "Priority action plan",
+      "subtitle": "Skills that most affect your current employability score.",
+      "missing": "Missing",
+      "upgrade": "Upgrade",
+      "have": "Have",
+      "empty": "No priority skills yet",
+      "cta": "Review analysis history"
+    },
+    "trends": {
+      "title": "Skill demand trend",
+      "subtitle": "Recent demand distribution by skill for the selected role.",
+      "empty": "No trend rows yet. Import market JDs with posted dates to unlock trends."
     }
   }
 }

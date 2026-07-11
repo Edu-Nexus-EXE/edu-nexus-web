@@ -62,11 +62,12 @@ export function SignupForm() {
       toast.success(t('signup.success'))
 
       redirectAfterSignup(navigate, data.isSurveyCompleted)
-    } catch (err: any) {
-      if (err?.status === 409) {
+    } catch (err: unknown) {
+      const maybeError = err as { status?: number; message?: string }
+      if (maybeError.status === 409) {
         setError(t('signup.emailExists'))
       } else {
-        setError(err?.message || t('signup.errorInvalid'))
+        setError(maybeError.message || t('signup.errorInvalid'))
       }
     } finally {
       setLoading(false)

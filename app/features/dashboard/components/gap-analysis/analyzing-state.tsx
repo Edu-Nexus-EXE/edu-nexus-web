@@ -61,9 +61,7 @@ export function AnalyzingState({ version, className }: AnalyzingStateProps) {
               {t('learningPath.gapAnalysis.analyzingStatus', { version })}
             </span>
           </div>
-          <p className='text-sm leading-relaxed text-muted-foreground'>
-            {t('learningPath.gapAnalysis.analyzingHint')}
-          </p>
+          <p className='text-sm leading-relaxed text-muted-foreground'>{t('learningPath.gapAnalysis.analyzingHint')}</p>
 
           <div className='space-y-1.5 pt-1'>
             <div className='h-1.5 w-full overflow-hidden rounded-full bg-muted'>

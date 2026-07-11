@@ -56,7 +56,7 @@ export function AdminRevenuePage() {
   const pageSize = 10
 
   useEffect(() => {
-    setCurrentPage(1)
+    queueMicrotask(() => setCurrentPage(1))
   }, [statusFilter, providerFilter, searchEmail])
 
   useEffect(() => {
@@ -87,8 +87,10 @@ export function AdminRevenuePage() {
       let matchesStatus = false
       if (statusFilter === 'all') matchesStatus = true
       else if (statusFilter === 'completed') matchesStatus = normalizedStatus === 'completed'
-      else if (statusFilter === 'pending') matchesStatus = normalizedStatus === 'pending' || normalizedStatus === 'processing'
-      else if (statusFilter === 'failed') matchesStatus = normalizedStatus === 'failed' || normalizedStatus === 'cancelled'
+      else if (statusFilter === 'pending')
+        matchesStatus = normalizedStatus === 'pending' || normalizedStatus === 'processing'
+      else if (statusFilter === 'failed')
+        matchesStatus = normalizedStatus === 'failed' || normalizedStatus === 'cancelled'
 
       const matchesProvider = providerFilter === 'all' || order.provider.toLowerCase().includes(providerFilter)
       const matchesEmail = !searchEmail.trim() || order.user.toLowerCase().includes(searchEmail.trim().toLowerCase())
@@ -103,7 +105,7 @@ export function AdminRevenuePage() {
 
   const totalRevenue = successfulOrders.reduce((sum, order) => sum + order.amount, 0)
   const providers = Array.from(new Set(orders.map((order) => order.provider).filter(Boolean)))
-  
+
   const totalPages = Math.ceil(filteredOrders.length / pageSize)
   const paginatedOrders = useMemo(() => {
     return filteredOrders.slice((currentPage - 1) * pageSize, currentPage * pageSize)
@@ -301,7 +303,7 @@ export function AdminRevenuePage() {
         {totalPages > 1 && (
           <div className='flex items-center justify-between border-t border-border p-4 bg-muted/20'>
             <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
               className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-muted disabled:opacity-50'
             >
@@ -311,7 +313,7 @@ export function AdminRevenuePage() {
               Trang {currentPage} / {totalPages}
             </span>
             <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
               className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-bold text-foreground transition-colors hover:bg-muted disabled:opacity-50'
             >
