@@ -116,6 +116,9 @@ export function AdminMarketReadinessPage() {
 
   const lastCrawlResult = lastResult && 'status' in lastResult ? (lastResult as AdminMarketCrawlResultView) : null
   const lastImportResult = lastResult && !('status' in lastResult) ? (lastResult as AdminMarketOperationResult) : null
+  const sourceOptions =
+    sources.length > 0 ? sources : [{ sourceSite: 'topcv', displayName: 'TopCV', isEnabled: true, isDemoOnly: false }]
+  const selectedSource = sourceOptions.find((source) => source.sourceSite === crawler.sourceSite)
 
   const handleImport = async () => {
     let payload: MarketJobImportRequest
@@ -289,10 +292,7 @@ export function AdminMarketReadinessPage() {
                   onChange={(event) => setCrawler((current) => ({ ...current, sourceSite: event.target.value }))}
                   className='w-full rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
                 >
-                  {(sources.length > 0
-                    ? sources
-                    : [{ sourceSite: 'topcv', displayName: 'TopCV', isEnabled: true, isDemoOnly: false }]
-                  ).map((source) => (
+                  {sourceOptions.map((source) => (
                     <option key={source.sourceSite} value={source.sourceSite} disabled={!source.isEnabled}>
                       {source.displayName}
                       {source.isDemoOnly ? ` (${t('marketReadiness.crawler.demoOnly')})` : ''}
@@ -300,6 +300,18 @@ export function AdminMarketReadinessPage() {
                     </option>
                   ))}
                 </select>
+                <div className='flex min-w-0 items-start gap-2 rounded-xl border border-border bg-muted/20 p-3 text-xs text-muted-foreground'>
+                  <span className='shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-black text-primary'>
+                    {selectedSource?.isDemoOnly
+                      ? t('marketReadiness.crawler.sourceTypeDemo')
+                      : t('marketReadiness.crawler.sourceTypeReal')}
+                  </span>
+                  <span className='min-w-0 leading-5'>
+                    {selectedSource?.isDemoOnly
+                      ? t('marketReadiness.crawler.demoSourceHint')
+                      : t('marketReadiness.crawler.realSourceHint')}
+                  </span>
+                </div>
               </FormField>
               <FormField label={t('marketReadiness.crawler.role')}>
                 <input

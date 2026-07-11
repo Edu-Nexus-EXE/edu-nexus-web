@@ -566,7 +566,11 @@
       "noJobs": "Crawler finished with no imported jobs. Manual import is still available.",
       "failed": "Crawler failed.",
       "demoOnly": "demo",
-      "disabled": "disabled"
+      "disabled": "disabled",
+      "realSourceHint": "Real public source; may return blocked/no_items if the site prevents crawling.",
+      "demoSourceHint": "Demo fixture; imports deterministic market data through the real pipeline.",
+      "sourceTypeReal": "Real source",
+      "sourceTypeDemo": "Demo source"
     },
     "result": {
       "title": "Last operation result",

@@ -566,7 +566,11 @@
       "blocked": "Crawler bị nguồn chặn. Lần chạy đã được ghi lại để kiểm tra.",
       "unsupported": "Nguồn crawler này đang tắt hoặc không hỗ trợ.",
       "demoOnly": "demo",
-      "disabled": "đang tắt"
+      "disabled": "đang tắt",
+      "realSourceHint": "Nguồn công khai thật; có thể trả về blocked/no_items nếu website chặn crawler.",
+      "demoSourceHint": "Nguồn demo; import dữ liệu mẫu ổn định qua pipeline thật.",
+      "sourceTypeReal": "Nguồn thật",
+      "sourceTypeDemo": "Nguồn demo"
     },
     "result": {
       "title": "Kết quả thao tác gần nhất",

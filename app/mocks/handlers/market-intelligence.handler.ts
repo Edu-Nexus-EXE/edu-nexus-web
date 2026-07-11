@@ -124,21 +124,21 @@ export const marketIntelligenceHandlers = [
   http.post('*/admin/market/crawl', async ({ request }) => {
     await delay(350)
     const body = (await request.json().catch(() => ({}))) as { sourceSite?: string }
+    const isDemoSource = body.sourceSite === 'demo-fixture' || body.sourceSite?.endsWith('-demo')
+    const isRealSource = ['topcv', 'vietnamworks', 'itviec', 'careerviet'].includes(body.sourceSite ?? '')
     const run = {
       runId: crypto.randomUUID(),
       sourceSite: body.sourceSite ?? 'topcv',
-      status:
-        body.sourceSite === 'demo-fixture' ? 'succeeded' : body.sourceSite === 'topcv' ? 'blocked' : 'unsupported',
-      message:
-        body.sourceSite === 'demo-fixture'
-          ? 'Loaded 3 deterministic demo market jobs.'
-          : body.sourceSite === 'topcv'
-            ? 'TopCV returned 403 for search page.'
-            : 'Market crawler source is not enabled or not supported.',
-      fetchedUrls: body.sourceSite === 'demo-fixture' ? 3 : 1,
-      parsedJobs: body.sourceSite === 'demo-fixture' ? 3 : 0,
-      importedJobs: body.sourceSite === 'demo-fixture' ? 3 : 0,
-      importedSkills: body.sourceSite === 'demo-fixture' ? 12 : 0,
+      status: isDemoSource ? 'succeeded' : isRealSource ? 'blocked' : 'unsupported',
+      message: isDemoSource
+        ? `Loaded 3 deterministic ${body.sourceSite} market jobs.`
+        : isRealSource
+          ? `${body.sourceSite} returned 403 for search page.`
+          : 'Market crawler source is not enabled or not supported.',
+      fetchedUrls: isDemoSource ? 3 : 1,
+      parsedJobs: isDemoSource ? 3 : 0,
+      importedJobs: isDemoSource ? 3 : 0,
+      importedSkills: isDemoSource ? 12 : 0,
       skippedDuplicates: 0,
       startedAt: new Date().toISOString(),
       finishedAt: new Date().toISOString()
@@ -151,7 +151,13 @@ export const marketIntelligenceHandlers = [
     await delay(150)
     return ok([
       { sourceSite: 'topcv', displayName: 'TopCV', isEnabled: true, isDemoOnly: false },
-      { sourceSite: 'demo-fixture', displayName: 'Demo Fixture', isEnabled: true, isDemoOnly: true }
+      { sourceSite: 'vietnamworks', displayName: 'VietnamWorks', isEnabled: true, isDemoOnly: false },
+      { sourceSite: 'itviec', displayName: 'ITviec', isEnabled: true, isDemoOnly: false },
+      { sourceSite: 'careerviet', displayName: 'CareerViet (CareerBuilder VN)', isEnabled: true, isDemoOnly: false },
+      { sourceSite: 'demo-fixture', displayName: 'Demo Fixture', isEnabled: true, isDemoOnly: true },
+      { sourceSite: 'vietnamworks-demo', displayName: 'VietnamWorks Demo', isEnabled: true, isDemoOnly: true },
+      { sourceSite: 'itviec-demo', displayName: 'ITviec Demo', isEnabled: true, isDemoOnly: true },
+      { sourceSite: 'careerviet-demo', displayName: 'CareerViet Demo', isEnabled: true, isDemoOnly: true }
     ])
   }),
 
