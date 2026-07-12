@@ -2,6 +2,7 @@ import {
   getMarketRoleBaseline,
   getMarketSkillTrends,
   getUserReadiness,
+  getUserReadinessHistory,
   getUserSkillProgress,
   type MarketRoleCategory
 } from '~/shared/lib/market-intelligence-api'
@@ -61,6 +62,18 @@ export type UserSkillProgressView = {
   urgencyScore: number
   isMandatory: boolean
   isInMarketTopSkills: boolean
+}
+
+export type UserReadinessSnapshotView = {
+  score: number
+  level: string
+  totalGapSkills: number
+  missingSkills: number
+  needsUpgradeSkills: number
+  haveSkills: number
+  roadmapCompletionPercent: number
+  marketAlignmentPercent: number
+  calculatedAt: string
 }
 
 function unwrapData<T>(response: unknown): T | null {
@@ -148,6 +161,21 @@ function mapSkillProgress(item: unknown): UserSkillProgressView {
   }
 }
 
+function mapReadinessSnapshot(item: unknown): UserReadinessSnapshotView {
+  const raw = isObject(item) ? item : {}
+  return {
+    score: toNumberValue(raw.score, 0),
+    level: toStringValue(raw.level, 'unknown'),
+    totalGapSkills: toNumberValue(raw.totalGapSkills, 0),
+    missingSkills: toNumberValue(raw.missingSkills, 0),
+    needsUpgradeSkills: toNumberValue(raw.needsUpgradeSkills, 0),
+    haveSkills: toNumberValue(raw.haveSkills, 0),
+    roadmapCompletionPercent: toNumberValue(raw.roadmapCompletionPercent, 0),
+    marketAlignmentPercent: toNumberValue(raw.marketAlignmentPercent, 0),
+    calculatedAt: toStringValue(raw.calculatedAt, '')
+  }
+}
+
 export async function loadMarketBaseline(roleCategory: string, limit = 15): Promise<LoadState<MarketBaselineView>> {
   try {
     const res = await getMarketRoleBaseline(roleCategory, limit)
@@ -191,5 +219,15 @@ export async function loadUserSkillProgress(): Promise<LoadState<UserSkillProgre
     return { data: collection(data).map(mapSkillProgress), loading: false, error: null }
   } catch (error) {
     return { data: null, loading: false, error: (error as Error).message || 'Failed to load skill progress' }
+  }
+}
+
+export async function loadUserReadinessHistory(limit = 12): Promise<LoadState<UserReadinessSnapshotView[]>> {
+  try {
+    const res = await getUserReadinessHistory(limit)
+    const data = unwrapData<unknown>(res)
+    return { data: collection(data).map(mapReadinessSnapshot), loading: false, error: null }
+  } catch (error) {
+    return { data: null, loading: false, error: (error as Error).message || 'Failed to load readiness history' }
   }
 }

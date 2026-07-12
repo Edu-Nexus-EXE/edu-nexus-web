@@ -696,6 +696,15 @@
       "lastUpdated": "Cập nhật lần cuối",
       "noDate": "Chưa có dữ liệu"
     },
+    "history": {
+      "title": "Lịch sử sẵn sàng nghề nghiệp",
+      "subtitle": "Theo dõi điểm sẵn sàng thay đổi theo thời gian khi phân tích gap, tiến độ roadmap và độ khớp thị trường được cập nhật.",
+      "empty": "Chưa có snapshot sẵn sàng. Hãy hoàn tất phân tích gap và mở lại trang này để tạo snapshot đầu tiên.",
+      "score": "Điểm mới nhất",
+      "market": "Khớp thị trường",
+      "roadmap": "Tiến độ roadmap",
+      "gap": "Thiếu / Nâng cấp / Đã có"
+    },
     "empty": {
       "title": "Chưa có dữ liệu thị trường cho vai trò này",
       "description": "Admin cần import JD demo hoặc chạy crawler để trang này tính baseline thị trường thật.",

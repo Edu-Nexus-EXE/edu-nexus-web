@@ -431,6 +431,15 @@
         "status": "Trạng thái"
       },
       "empty": "Chưa có giao dịch nào được ghi nhận."
+    },
+    "readinessHistory": {
+      "title": "Lịch sử sẵn sàng của sinh viên",
+      "subtitle": "Xem các snapshot sẵn sàng nghề nghiệp của sinh viên theo thời gian để tư vấn và theo dõi KPI cấp trường.",
+      "empty": "Sinh viên này chưa có snapshot sẵn sàng.",
+      "score": "Điểm mới nhất",
+      "market": "Khớp thị trường",
+      "roadmap": "Tiến độ roadmap",
+      "gap": "Thiếu / Nâng cấp / Đã có"
     }
   },
   "adminCommon": {

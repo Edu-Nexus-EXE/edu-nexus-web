@@ -2,17 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { ReadinessHistoryTimeline } from '~/shared/components/readiness-history-timeline'
 import { cn } from '~/shared/lib/cn'
 
 import {
   loadMarketBaseline,
   loadMarketSkillTrends,
   loadUserReadiness,
+  loadUserReadinessHistory,
   loadUserSkillProgress,
   MARKET_ROLE_OPTIONS,
   type MarketBaselineView,
   type MarketRoleCategory,
   type MarketSkillTrendView,
+  type UserReadinessSnapshotView,
   type UserReadinessView,
   type UserSkillProgressView
 } from '../lib/market-intelligence'
@@ -44,6 +47,7 @@ export function MarketPage() {
   const [baseline, setBaseline] = useState<MarketBaselineView | null>(null)
   const [trends, setTrends] = useState<MarketSkillTrendView[]>([])
   const [readiness, setReadiness] = useState<UserReadinessView | null>(null)
+  const [history, setHistory] = useState<UserReadinessSnapshotView[]>([])
   const [skillProgress, setSkillProgress] = useState<UserSkillProgressView[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -61,15 +65,24 @@ export function MarketPage() {
       loadMarketBaseline(role, 15),
       loadMarketSkillTrends({ roleCategory: role, months: 6, limit: 20 }),
       loadUserReadiness(),
-      loadUserSkillProgress()
+      loadUserSkillProgress(),
+      loadUserReadinessHistory(12)
     ])
-      .then(([baselineResult, trendResult, readinessResult, progressResult]) => {
+      .then(([baselineResult, trendResult, readinessResult, progressResult, historyResult]) => {
         if (cancelled) return
         setBaseline(baselineResult.data)
         setTrends(trendResult.data ?? [])
         setReadiness(readinessResult.data)
         setSkillProgress(progressResult.data ?? [])
-        setError(baselineResult.error ?? trendResult.error ?? readinessResult.error ?? progressResult.error ?? '')
+        setHistory(historyResult.data ?? [])
+        setError(
+          baselineResult.error ??
+            trendResult.error ??
+            readinessResult.error ??
+            progressResult.error ??
+            historyResult.error ??
+            ''
+        )
       })
       .catch((e) => {
         if (cancelled) return
@@ -77,6 +90,7 @@ export function MarketPage() {
         setTrends([])
         setReadiness(null)
         setSkillProgress([])
+        setHistory([])
         setError((e as Error).message)
       })
       .finally(() => {
@@ -164,6 +178,21 @@ export function MarketPage() {
           value={loading ? '...' : (updatedDate ?? t('marketIntelligence.metrics.noDate'))}
         />
       </section>
+
+      <div className='mb-8'>
+        <ReadinessHistoryTimeline
+          snapshots={history}
+          loading={loading}
+          title={t('marketIntelligence.history.title')}
+          subtitle={t('marketIntelligence.history.subtitle')}
+          emptyText={t('marketIntelligence.history.empty')}
+          scoreLabel={t('marketIntelligence.history.score')}
+          marketLabel={t('marketIntelligence.history.market')}
+          roadmapLabel={t('marketIntelligence.history.roadmap')}
+          gapLabel={t('marketIntelligence.history.gap')}
+          locale={i18n.language ?? 'vi'}
+        />
+      </div>
 
       {!loading && !hasMarketData ? (
         <section className='mb-8 rounded-2xl border border-dashed border-border bg-card p-8 text-center'>

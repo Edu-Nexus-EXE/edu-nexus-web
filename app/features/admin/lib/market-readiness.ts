@@ -2,13 +2,16 @@ import {
   getAdminCareerReadinessKpi,
   getAdminMarketCrawlRunDetail,
   getAdminMarketCrawlRuns,
+  getAdminMarketScheduler,
   getAdminMarketSources,
+  getAdminUserReadinessHistory,
   postAdminMarketCrawl,
   postAdminMarketImport,
   type MarketCrawlItemEvidence,
   type MarketCrawlResult,
   type MarketCrawlerSource,
   type MarketCrawlerRequest,
+  type MarketSchedulerSettings,
   type MarketJobImportRequest
 } from '~/shared/lib/market-intelligence-api'
 
@@ -56,6 +59,20 @@ export type AdminMarketCrawlRunDetailView = {
   run: MarketCrawlResult
   items: MarketCrawlItemEvidence[]
 }
+
+export type AdminReadinessSnapshotView = {
+  score: number
+  level: string
+  totalGapSkills: number
+  missingSkills: number
+  needsUpgradeSkills: number
+  haveSkills: number
+  roadmapCompletionPercent: number
+  marketAlignmentPercent: number
+  calculatedAt: string
+}
+
+export type AdminMarketSchedulerSettingsView = MarketSchedulerSettings
 
 function unwrapData<T>(response: unknown): T | null {
   const data = (response as { data?: unknown })?.data
@@ -163,6 +180,40 @@ function mapCrawlItem(data: unknown): MarketCrawlItemEvidence {
   }
 }
 
+function toStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.map((item) => toStringValue(item)).filter(Boolean) : []
+}
+
+function mapReadinessSnapshot(data: unknown): AdminReadinessSnapshotView {
+  const raw = isObject(data) ? data : {}
+  return {
+    score: toNumberValue(raw.score, 0),
+    level: toStringValue(raw.level, 'unknown'),
+    totalGapSkills: toNumberValue(raw.totalGapSkills, 0),
+    missingSkills: toNumberValue(raw.missingSkills, 0),
+    needsUpgradeSkills: toNumberValue(raw.needsUpgradeSkills, 0),
+    haveSkills: toNumberValue(raw.haveSkills, 0),
+    roadmapCompletionPercent: toNumberValue(raw.roadmapCompletionPercent, 0),
+    marketAlignmentPercent: toNumberValue(raw.marketAlignmentPercent, 0),
+    calculatedAt: toStringValue(raw.calculatedAt, '')
+  }
+}
+
+function mapSchedulerSettings(data: unknown): AdminMarketSchedulerSettingsView {
+  const raw = isObject(data) ? data : {}
+  return {
+    enabled: raw.enabled === true,
+    cron: toStringValue(raw.cron, '0 */6 * * *'),
+    timeZoneId: toStringValue(raw.timeZoneId, 'SE Asia Standard Time'),
+    sources: toStringArray(raw.sources),
+    roleCategories: toStringArray(raw.roleCategories),
+    keywordTemplate: toStringValue(raw.keywordTemplate, '{role} developer'),
+    limitPerSource: toNumberValue(raw.limitPerSource, 5),
+    useDemoSources: raw.useDemoSources === true,
+    maxRunsPerExecution: toNumberValue(raw.maxRunsPerExecution, 8)
+  }
+}
+
 export async function loadAdminCareerReadinessKpi(): Promise<AdminCareerReadinessKpiView> {
   const res = await getAdminCareerReadinessKpi()
   return mapKpi(unwrapData(res))
@@ -196,6 +247,16 @@ export async function loadAdminMarketCrawlRunDetail(runId: string): Promise<Admi
     run: mapCrawlResult(raw.run),
     items: collection(raw.items).map(mapCrawlItem)
   }
+}
+
+export async function loadAdminUserReadinessHistory(userId: string, limit = 12): Promise<AdminReadinessSnapshotView[]> {
+  const res = await getAdminUserReadinessHistory(userId, limit)
+  return collection(unwrapData(res)).map(mapReadinessSnapshot)
+}
+
+export async function loadAdminMarketScheduler(): Promise<AdminMarketSchedulerSettingsView> {
+  const res = await getAdminMarketScheduler()
+  return mapSchedulerSettings(unwrapData(res))
 }
 
 export function makeListResult<T>(items: T[]): AdminListResult<T> {

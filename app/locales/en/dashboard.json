@@ -696,6 +696,15 @@
       "lastUpdated": "Last updated",
       "noDate": "No data"
     },
+    "history": {
+      "title": "Career readiness history",
+      "subtitle": "Track how your readiness score changes as your gap analysis, roadmap progress, and market alignment improve over time.",
+      "empty": "No readiness snapshots yet. Complete a gap analysis and open this page again to create your first snapshot.",
+      "score": "Latest score",
+      "market": "Market alignment",
+      "roadmap": "Roadmap progress",
+      "gap": "Missing / Upgrade / Have"
+    },
     "empty": {
       "title": "No market data for this role yet",
       "description": "Ask an admin to import demo JDs or run the crawler so this page can calculate a real market baseline.",

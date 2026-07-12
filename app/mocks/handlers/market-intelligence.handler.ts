@@ -30,6 +30,42 @@ const readiness = {
   calculatedAt: new Date().toISOString()
 }
 
+const readinessHistory = [
+  {
+    score: 42,
+    level: 'developing',
+    totalGapSkills: 10,
+    missingSkills: 4,
+    needsUpgradeSkills: 3,
+    haveSkills: 3,
+    roadmapCompletionPercent: 10,
+    marketAlignmentPercent: 25,
+    calculatedAt: '2026-05-01T00:00:00Z'
+  },
+  {
+    score: 55,
+    level: 'developing',
+    totalGapSkills: 10,
+    missingSkills: 3,
+    needsUpgradeSkills: 2,
+    haveSkills: 5,
+    roadmapCompletionPercent: 30,
+    marketAlignmentPercent: 45,
+    calculatedAt: '2026-06-01T00:00:00Z'
+  },
+  {
+    score: 68,
+    level: 'ready',
+    totalGapSkills: 10,
+    missingSkills: 2,
+    needsUpgradeSkills: 1,
+    haveSkills: 7,
+    roadmapCompletionPercent: 55,
+    marketAlignmentPercent: 65,
+    calculatedAt: '2026-07-01T00:00:00Z'
+  }
+]
+
 const crawlRuns = [
   {
     runId: '11111111-1111-1111-1111-111111111111',
@@ -71,6 +107,11 @@ export const marketIntelligenceHandlers = [
   http.get('*/users/me/readiness', async () => {
     await delay(200)
     return ok(readiness)
+  }),
+
+  http.get('*/users/me/readiness/history', async () => {
+    await delay(200)
+    return ok(readinessHistory)
   }),
 
   http.get('*/users/me/skill-progress', async () => {
@@ -116,6 +157,11 @@ export const marketIntelligenceHandlers = [
     })
   }),
 
+  http.get('*/admin/users/:userId/readiness/history', async () => {
+    await delay(200)
+    return ok(readinessHistory)
+  }),
+
   http.post('*/admin/market/import', async () => {
     await delay(350)
     return ok({ importedJobs: 2, importedSkills: 10, skippedDuplicates: 0, sourceMode: 'manual_demo' })
@@ -159,6 +205,21 @@ export const marketIntelligenceHandlers = [
       { sourceSite: 'itviec-demo', displayName: 'ITviec Demo', isEnabled: true, isDemoOnly: true },
       { sourceSite: 'careerviet-demo', displayName: 'CareerViet Demo', isEnabled: true, isDemoOnly: true }
     ])
+  }),
+
+  http.get('*/admin/market/scheduler', async () => {
+    await delay(150)
+    return ok({
+      enabled: true,
+      cron: '0 */6 * * *',
+      timeZoneId: 'SE Asia Standard Time',
+      sources: ['itviec', 'vietnamworks'],
+      roleCategories: ['backend', 'frontend', 'data', 'devops'],
+      keywordTemplate: '{role} developer',
+      limitPerSource: 5,
+      useDemoSources: false,
+      maxRunsPerExecution: 8
+    })
   }),
 
   http.get('*/admin/market/crawl-runs', async () => {

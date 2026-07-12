@@ -431,6 +431,15 @@
         "status": "Status"
       },
       "empty": "No transactions recorded."
+    },
+    "readinessHistory": {
+      "title": "Student readiness history",
+      "subtitle": "Review this student's career readiness snapshots over time for advising and school KPI tracking.",
+      "empty": "This student does not have readiness snapshots yet.",
+      "score": "Latest score",
+      "market": "Market alignment",
+      "roadmap": "Roadmap progress",
+      "gap": "Missing / Upgrade / Have"
     }
   },
   "adminCommon": {

@@ -70,6 +70,30 @@ export type MarketCrawlRunDetail = {
   items: MarketCrawlItemEvidence[]
 }
 
+export type ReadinessSnapshot = {
+  score: number
+  level: string
+  totalGapSkills: number
+  missingSkills: number
+  needsUpgradeSkills: number
+  haveSkills: number
+  roadmapCompletionPercent: number
+  marketAlignmentPercent: number
+  calculatedAt: string
+}
+
+export type MarketSchedulerSettings = {
+  enabled: boolean
+  cron: string
+  timeZoneId: string
+  sources: string[]
+  roleCategories: string[]
+  keywordTemplate: string
+  limitPerSource: number
+  useDemoSources: boolean
+  maxRunsPerExecution: number
+}
+
 export function getMarketRoleBaseline(roleCategory: string, limit = 15) {
   return customFetch<unknown>(`/market/roles/${encodeURIComponent(roleCategory)}/baseline`, {
     method: 'GET',
@@ -92,8 +116,19 @@ export function getUserReadiness() {
   return customFetch<unknown>('/users/me/readiness', { method: 'GET' })
 }
 
+export function getUserReadinessHistory(limit = 12) {
+  return customFetch<unknown>('/users/me/readiness/history', { method: 'GET', params: { limit } })
+}
+
 export function getUserSkillProgress() {
   return customFetch<unknown>('/users/me/skill-progress', { method: 'GET' })
+}
+
+export function getAdminUserReadinessHistory(userId: string, limit = 12) {
+  return customFetch<unknown>(`/admin/users/${encodeURIComponent(userId)}/readiness/history`, {
+    method: 'GET',
+    params: { limit }
+  })
 }
 
 export function getAdminCareerReadinessKpi() {
@@ -118,6 +153,10 @@ export function postAdminMarketCrawl(payload: MarketCrawlerRequest) {
 
 export function getAdminMarketSources() {
   return customFetch<unknown>('/admin/market/sources', { method: 'GET' })
+}
+
+export function getAdminMarketScheduler() {
+  return customFetch<unknown>('/admin/market/scheduler', { method: 'GET' })
 }
 
 export function getAdminMarketCrawlRuns(params: { sourceSite?: string; limit?: number }) {
