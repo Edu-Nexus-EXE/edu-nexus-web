@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 export type ReadinessHistoryPoint = {
   score: number
   level: string
@@ -7,6 +9,11 @@ export type ReadinessHistoryPoint = {
   needsUpgradeSkills: number
   haveSkills: number
   calculatedAt: string
+  jdSubmissionId?: string | null
+  jobTitle?: string | null
+  roleCategory?: string | null
+  eventType?: string
+  eventLabel?: string
 }
 
 type ReadinessHistoryTimelineProps = {
@@ -34,8 +41,13 @@ export function ReadinessHistoryTimeline({
   gapLabel,
   locale
 }: ReadinessHistoryTimelineProps) {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const matchedIndex = snapshots.findIndex((snapshot, index) => pointKey(snapshot, index) === selectedKey)
+  const selectedIndex = matchedIndex >= 0 ? matchedIndex : Math.max(0, snapshots.length - 1)
+
   const points = buildPoints(snapshots)
   const latest = snapshots[snapshots.length - 1]
+  const selected = snapshots[selectedIndex] ?? latest
   const pathPoints = points.map((point) => `${point.x},${point.y}`).join(' ')
 
   return (
@@ -72,9 +84,37 @@ export function ReadinessHistoryTimeline({
                 className='text-primary'
                 points={pathPoints}
               />
-              {points.map((point, index) => (
-                <circle key={`${point.x}-${index}`} cx={point.x} cy={point.y} r='4.5' className='fill-primary' />
-              ))}
+              {points.map((point, index) => {
+                const snapshot = snapshots[index]
+                const label = [
+                  snapshot.jobTitle,
+                  snapshot.eventLabel ?? snapshot.eventType,
+                  `${snapshot.score} ${scoreLabel}`,
+                  formatLongDate(snapshot.calculatedAt, locale)
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+
+                return (
+                  <circle
+                    key={`${snapshot.calculatedAt}-${index}`}
+                    cx={point.x}
+                    cy={point.y}
+                    r={selectedIndex === index ? '6' : '4.5'}
+                    className='cursor-pointer fill-primary outline-none focus:stroke-foreground focus:stroke-2'
+                    role='button'
+                    tabIndex={0}
+                    aria-label={label}
+                    onClick={() => setSelectedKey(pointKey(snapshot, index))}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        setSelectedKey(pointKey(snapshot, index))
+                      }
+                    }}
+                  />
+                )
+              })}
             </svg>
             <div className='mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3'>
               {snapshots.slice(-3).map((snapshot) => (
@@ -87,11 +127,28 @@ export function ReadinessHistoryTimeline({
           </div>
 
           <div className='grid gap-3'>
-            <TimelineMetric label={marketLabel} value={`${latest?.marketAlignmentPercent ?? 0}%`} />
-            <TimelineMetric label={roadmapLabel} value={`${latest?.roadmapCompletionPercent ?? 0}%`} />
+            {selected ? (
+              <div className='rounded-xl border border-border bg-muted/20 p-4' aria-live='polite'>
+                <p className='font-bold text-foreground'>
+                  {selected.jobTitle ?? selected.eventLabel ?? selected.level}
+                </p>
+                <p className='mt-1 text-sm text-muted-foreground'>
+                  {[
+                    selected.roleCategory,
+                    selected.eventLabel ?? selected.eventType,
+                    formatLongDate(selected.calculatedAt, locale)
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
+                <p className='mt-3 text-2xl font-black text-foreground'>{selected.score}/100</p>
+              </div>
+            ) : null}
+            <TimelineMetric label={marketLabel} value={`${selected?.marketAlignmentPercent ?? 0}%`} />
+            <TimelineMetric label={roadmapLabel} value={`${selected?.roadmapCompletionPercent ?? 0}%`} />
             <TimelineMetric
               label={gapLabel}
-              value={`${latest?.missingSkills ?? 0} / ${latest?.needsUpgradeSkills ?? 0} / ${latest?.haveSkills ?? 0}`}
+              value={`${selected?.missingSkills ?? 0} / ${selected?.needsUpgradeSkills ?? 0} / ${selected?.haveSkills ?? 0}`}
             />
           </div>
         </div>
@@ -116,12 +173,25 @@ function clampScore(score: number) {
   return Math.max(0, Math.min(100, score))
 }
 
+function pointKey(snapshot: ReadinessHistoryPoint, index: number) {
+  return `${snapshot.calculatedAt}-${snapshot.jdSubmissionId ?? 'legacy'}-${index}`
+}
+
 function formatShortDate(value: string, locale: string) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
   return new Intl.DateTimeFormat(locale.startsWith('vi') ? 'vi-VN' : 'en-US', {
     day: '2-digit',
     month: '2-digit'
+  }).format(date)
+}
+
+function formatLongDate(value: string, locale: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat(locale.startsWith('vi') ? 'vi-VN' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
   }).format(date)
 }
 

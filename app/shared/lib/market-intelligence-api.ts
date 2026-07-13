@@ -87,6 +87,11 @@ export type ReadinessSnapshot = {
   roadmapCompletionPercent: number
   marketAlignmentPercent: number
   calculatedAt: string
+  jdSubmissionId?: string | null
+  gapAnalysisId?: string | null
+  eventType?: string
+  jobTitle?: string | null
+  roleCategory?: string | null
 }
 
 export type MarketSchedulerSettings = {
@@ -123,8 +128,11 @@ export function getUserReadiness() {
   return customFetch<unknown>('/users/me/readiness', { method: 'GET' })
 }
 
-export function getUserReadinessHistory(limit = 12) {
-  return customFetch<unknown>('/users/me/readiness/history', { method: 'GET', params: { limit } })
+export function getUserReadinessHistory(limit = 12, jdId?: string | null) {
+  return customFetch<unknown>('/users/me/readiness/history', {
+    method: 'GET',
+    params: { limit, jdId: jdId || undefined }
+  })
 }
 
 export function getUserSkillProgress() {
@@ -138,8 +146,11 @@ export function getAdminUserReadinessHistory(userId: string, limit = 12) {
   })
 }
 
-export function getAdminCareerReadinessKpi() {
-  return customFetch<unknown>('/admin/dashboard/career-readiness', { method: 'GET' })
+export function getAdminCareerReadinessKpi(major?: string | null) {
+  return customFetch<unknown>('/admin/dashboard/career-readiness', {
+    method: 'GET',
+    params: { major: major || undefined }
+  })
 }
 
 export function postAdminMarketImport(payload: MarketJobImportRequest) {

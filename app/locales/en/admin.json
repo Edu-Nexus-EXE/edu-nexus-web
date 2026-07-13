@@ -524,6 +524,17 @@
     "subtitle": "Help advisors track how student readiness compares with hiring demand from collected job-market data.",
     "refresh": "Refresh",
     "empty": "No data yet",
+    "filters": {
+      "searchProgram": "Search programs",
+      "searchProgramPlaceholder": "Program name...",
+      "searchSkill": "Search skill gaps",
+      "searchSkillPlaceholder": "Skill name...",
+      "searchRole": "Search career goals",
+      "searchRolePlaceholder": "Role name...",
+      "program": "Program",
+      "allPrograms": "All programs",
+      "noMatches": "No matching results"
+    },
     "errors": {
       "load": "Failed to load career readiness KPI."
     },

@@ -6,6 +6,7 @@ import { Button } from '~/shared/ui'
 import type { MarketCrawlerRequest, MarketJobImportRequest } from '~/shared/lib/market-intelligence-api'
 
 import { AdminMarketJobDetailDrawer } from '../components/market/admin-market-job-detail-drawer'
+import { AdminInsightTable } from '../components/market/admin-insight-table'
 import {
   crawlAdminMarketJobs,
   importAdminMarketJobs,
@@ -57,12 +58,19 @@ const DEMO_IMPORT_JSON = JSON.stringify(
 
 const adminRoleOptions = ['backend', 'frontend', 'data', 'ai', 'devops', 'mobile', 'qa', 'business-analyst']
 
+const matchesQuery = (value: string, query: string) =>
+  value.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
+
 export function AdminMarketReadinessPage() {
   const { t } = useTranslation('admin')
   const toast = useToast()
   const [kpi, setKpi] = useState<AdminCareerReadinessKpiView | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [majorQuery, setMajorQuery] = useState('')
+  const [missingSkillQuery, setMissingSkillQuery] = useState('')
+  const [targetRoleQuery, setTargetRoleQuery] = useState('')
+  const [selectedMajor, setSelectedMajor] = useState('')
   const [importJson, setImportJson] = useState(DEMO_IMPORT_JSON)
   const [crawler, setCrawler] = useState<MarketCrawlerRequest>({
     sourceSite: 'topcv',
@@ -109,14 +117,14 @@ export function AdminMarketReadinessPage() {
   const refreshKpi = useCallback(() => {
     setLoading(true)
     setError('')
-    loadAdminCareerReadinessKpi()
+    loadAdminCareerReadinessKpi(selectedMajor || undefined)
       .then(setKpi)
       .catch((e) => {
         setKpi(null)
         setError((e as Error).message || t('marketReadiness.errors.load'))
       })
       .finally(() => setLoading(false))
-  }, [t])
+  }, [selectedMajor, t])
 
   const refreshCrawlerMeta = useCallback(() => {
     Promise.all([loadAdminMarketSources(), loadAdminMarketCrawlRuns()])
@@ -229,6 +237,26 @@ export function AdminMarketReadinessPage() {
     return Math.round((kpi.studentsWithReadinessSnapshot / kpi.totalStudents) * 100)
   }, [kpi])
 
+  const visibleMajors = useMemo(
+    () => (kpi?.byMajor ?? []).filter((row) => matchesQuery(row.major, majorQuery)),
+    [kpi, majorQuery]
+  )
+  const visibleMissingSkills = useMemo(
+    () => (kpi?.topMissingSkills ?? []).filter((row) => matchesQuery(row.skillName, missingSkillQuery)),
+    [kpi, missingSkillQuery]
+  )
+  const visibleTargetRoles = useMemo(
+    () => (kpi?.targetRoles ?? []).filter((row) => matchesQuery(row.roleCategory, targetRoleQuery)),
+    [kpi, targetRoleQuery]
+  )
+  const majorOptions = useMemo(
+    () => [
+      { value: '', label: t('marketReadiness.filters.allPrograms') },
+      ...(kpi?.byMajor ?? []).map((row) => ({ value: row.major, label: humanizeLabel(row.major) }))
+    ],
+    [kpi, t]
+  )
+
   const lastCrawlResult = lastResult && 'status' in lastResult ? (lastResult as AdminMarketCrawlResultView) : null
   const lastImportResult = lastResult && !('status' in lastResult) ? (lastResult as AdminMarketOperationResult) : null
   const sourceOptions =
@@ -333,13 +361,17 @@ export function AdminMarketReadinessPage() {
       <section className='grid min-w-0 gap-8 xl:grid-cols-3'>
         <AdminInsightTable
           title={t('marketReadiness.byMajor.title')}
-          empty={t('marketReadiness.empty')}
+          empty={t('marketReadiness.filters.noMatches')}
+          searchLabel={t('marketReadiness.filters.searchProgram')}
+          searchPlaceholder={t('marketReadiness.filters.searchProgramPlaceholder')}
+          query={majorQuery}
+          onQueryChange={setMajorQuery}
           headers={[
             t('marketReadiness.byMajor.major'),
             t('marketReadiness.byMajor.students'),
             t('marketReadiness.byMajor.score')
           ]}
-          rows={(kpi?.byMajor ?? []).map((row) => [
+          rows={visibleMajors.map((row) => [
             humanizeLabel(row.major),
             String(row.studentCount),
             `${row.averageReadinessScore}/100`
@@ -347,13 +379,23 @@ export function AdminMarketReadinessPage() {
         />
         <AdminInsightTable
           title={t('marketReadiness.missingSkills.title')}
-          empty={t('marketReadiness.empty')}
+          empty={t('marketReadiness.filters.noMatches')}
+          searchLabel={t('marketReadiness.filters.searchSkill')}
+          searchPlaceholder={t('marketReadiness.filters.searchSkillPlaceholder')}
+          query={missingSkillQuery}
+          onQueryChange={setMissingSkillQuery}
+          filter={{
+            label: t('marketReadiness.filters.program'),
+            value: selectedMajor,
+            options: majorOptions,
+            onChange: setSelectedMajor
+          }}
           headers={[
             t('marketReadiness.missingSkills.skill'),
             t('marketReadiness.missingSkills.missing'),
             t('marketReadiness.missingSkills.upgrade')
           ]}
-          rows={(kpi?.topMissingSkills ?? []).map((row) => [
+          rows={visibleMissingSkills.map((row) => [
             row.skillName,
             String(row.missingCount),
             String(row.needsUpgradeCount)
@@ -361,13 +403,17 @@ export function AdminMarketReadinessPage() {
         />
         <AdminInsightTable
           title={t('marketReadiness.targetRoles.title')}
-          empty={t('marketReadiness.empty')}
+          empty={t('marketReadiness.filters.noMatches')}
+          searchLabel={t('marketReadiness.filters.searchRole')}
+          searchPlaceholder={t('marketReadiness.filters.searchRolePlaceholder')}
+          query={targetRoleQuery}
+          onQueryChange={setTargetRoleQuery}
           headers={[
             t('marketReadiness.targetRoles.role'),
             t('marketReadiness.targetRoles.students'),
             t('marketReadiness.targetRoles.marketJobs')
           ]}
-          rows={(kpi?.targetRoles ?? []).map((row) => [
+          rows={visibleTargetRoles.map((row) => [
             humanizeLabel(row.roleCategory),
             String(row.studentCount),
             String(row.marketJobCount)
@@ -821,61 +867,6 @@ function KpiCard({ icon, label, value }: { icon: string; label: string; value: s
       </div>
       <p className='text-sm font-semibold text-muted-foreground'>{label}</p>
       <p className='mt-1 text-2xl font-black text-foreground'>{value}</p>
-    </div>
-  )
-}
-
-function AdminInsightTable({
-  title,
-  headers,
-  rows,
-  empty
-}: {
-  title: string
-  headers: string[]
-  rows: string[][]
-  empty: string
-}) {
-  return (
-    <div className='flex h-[420px] min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm sm:h-[440px]'>
-      <div className='border-b border-border p-5'>
-        <h2 className='text-lg font-bold text-foreground'>{title}</h2>
-      </div>
-      <div className='min-h-0 flex-1 overflow-auto'>
-        <table className='w-full min-w-[420px] table-fixed text-left text-sm'>
-          <thead className='sticky top-0 z-10'>
-            <tr className='border-b border-border bg-card text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-sm'>
-              {headers.map((header) => (
-                <th key={header} className='px-5 py-3'>
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className='divide-y divide-border'>
-            {rows.length > 0 ? (
-              rows.map((row) => (
-                <tr key={row.join('|')} className='align-top hover:bg-muted/20'>
-                  {row.map((cell, index) => (
-                    <td
-                      key={`${cell}-${index}`}
-                      className='break-words px-5 py-4 font-semibold leading-6 text-foreground'
-                    >
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={headers.length} className='px-5 py-6 text-center text-sm text-muted-foreground'>
-                  {empty}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
     </div>
   )
 }

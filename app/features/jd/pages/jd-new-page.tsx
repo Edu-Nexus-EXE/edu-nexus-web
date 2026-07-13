@@ -323,6 +323,14 @@ export function JdNewPage() {
               <div>
                 <h2 className='text-xl font-semibold text-foreground'>{t('jd.new.jobDescription')}</h2>
                 <p className='text-sm text-muted-foreground'>{t('jd.new.jobDescriptionDesc')}</p>
+                <button
+                  type='button'
+                  onClick={() => navigate('/dashboard/market?focus=jobs')}
+                  className='mt-3 inline-flex items-center gap-2 rounded-lg border border-primary/30 px-3 py-2 text-sm font-bold text-primary hover:bg-primary/5'
+                >
+                  <span className='material-symbols-outlined text-lg'>travel_explore</span>
+                  {t('jd.new.browseMarketJobs')}
+                </button>
               </div>
             </div>
 

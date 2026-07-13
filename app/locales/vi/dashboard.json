@@ -699,11 +699,22 @@
     "history": {
       "title": "Lịch sử sẵn sàng nghề nghiệp",
       "subtitle": "Theo dõi điểm sẵn sàng thay đổi theo thời gian khi phân tích gap, tiến độ roadmap và độ khớp thị trường được cập nhật.",
-      "empty": "Chưa có snapshot sẵn sàng. Hãy hoàn tất phân tích gap và mở lại trang này để tạo snapshot đầu tiên.",
+      "empty": "Chưa có sự kiện sẵn sàng. Hãy hoàn tất phân tích khoảng cách hoặc cập nhật một bước lộ trình để tạo sự kiện đầu tiên.",
       "score": "Điểm mới nhất",
       "market": "Khớp thị trường",
       "roadmap": "Tiến độ roadmap",
-      "gap": "Thiếu / Nâng cấp / Đã có"
+      "gap": "Thiếu / Nâng cấp / Đã có",
+      "journeyTitle": "Tiến độ học tập qua nhiều mục tiêu việc làm",
+      "contextNotice": "Mỗi điểm số đối chiếu năng lực của bạn với một JD cụ thể. Hành trình tổng hợp giúp bạn theo dõi tiến bộ qua mọi mục tiêu theo thời gian.",
+      "filterLabel": "Mô tả công việc",
+      "allJds": "Tất cả JD",
+      "legacy": "Dữ liệu trước đây",
+      "error": "Không thể tải lịch sử sẵn sàng. Vui lòng thử lại.",
+      "events": {
+        "gap_analysis_completed": "Đã hoàn tất phân tích khoảng cách",
+        "roadmap_progress_changed": "Đã cập nhật tiến độ lộ trình",
+        "legacy": "Bản ghi sẵn sàng trước đây"
+      }
     },
     "empty": {
       "title": "Chưa có dữ liệu thị trường cho vai trò này",

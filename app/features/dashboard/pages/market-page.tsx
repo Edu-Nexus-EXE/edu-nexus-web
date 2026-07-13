@@ -1,18 +1,19 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useRef } from 'react'
 import { Link, useNavigate } from 'react-router'
+import { useSearchParams } from 'react-router'
 
-import { ReadinessHistoryTimeline } from '~/shared/components/readiness-history-timeline'
 import { cn } from '~/shared/lib/cn'
 
 import { MarketJobDetailDrawer } from '../components/market/market-job-detail-drawer'
+import { ReadinessHistoryPanel } from '../components/readiness/readiness-history-panel'
 import {
   loadMarketBaseline,
   loadMarketJobDetail,
   loadMarketJobs,
   loadMarketSkillTrends,
   loadUserReadiness,
-  loadUserReadinessHistory,
   loadUserSkillProgress,
   MARKET_ROLE_OPTIONS,
   type MarketBaselineView,
@@ -20,7 +21,6 @@ import {
   type MarketJobListView,
   type MarketRoleCategory,
   type MarketSkillTrendView,
-  type UserReadinessSnapshotView,
   type UserReadinessView,
   type UserSkillProgressView
 } from '../lib/market-intelligence'
@@ -49,11 +49,13 @@ function formatDate(value: string | null, locale: string) {
 export function MarketPage() {
   const { t, i18n } = useTranslation('dashboard')
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const jobsSectionRef = useRef<HTMLElement>(null)
+  const jobsHeadingRef = useRef<HTMLHeadingElement>(null)
   const [role, setRole] = useState<MarketRoleCategory>('backend')
   const [baseline, setBaseline] = useState<MarketBaselineView | null>(null)
   const [trends, setTrends] = useState<MarketSkillTrendView[]>([])
   const [readiness, setReadiness] = useState<UserReadinessView | null>(null)
-  const [history, setHistory] = useState<UserReadinessSnapshotView[]>([])
   const [skillProgress, setSkillProgress] = useState<UserSkillProgressView[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -75,6 +77,15 @@ export function MarketPage() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle')
 
   useEffect(() => {
+    if (searchParams.get('focus') !== 'jobs' || jobsLoading) return
+    jobsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    jobsHeadingRef.current?.focus({ preventScroll: true })
+    const next = new URLSearchParams(searchParams)
+    next.delete('focus')
+    setSearchParams(next, { replace: true })
+  }, [jobsLoading, searchParams, setSearchParams])
+
+  useEffect(() => {
     let cancelled = false
     queueMicrotask(() => {
       if (!cancelled) {
@@ -87,24 +98,15 @@ export function MarketPage() {
       loadMarketBaseline(role, 15),
       loadMarketSkillTrends({ roleCategory: role, months: 6, limit: 20 }),
       loadUserReadiness(),
-      loadUserSkillProgress(),
-      loadUserReadinessHistory(12)
+      loadUserSkillProgress()
     ])
-      .then(([baselineResult, trendResult, readinessResult, progressResult, historyResult]) => {
+      .then(([baselineResult, trendResult, readinessResult, progressResult]) => {
         if (cancelled) return
         setBaseline(baselineResult.data)
         setTrends(trendResult.data ?? [])
         setReadiness(readinessResult.data)
         setSkillProgress(progressResult.data ?? [])
-        setHistory(historyResult.data ?? [])
-        setError(
-          baselineResult.error ??
-            trendResult.error ??
-            readinessResult.error ??
-            progressResult.error ??
-            historyResult.error ??
-            ''
-        )
+        setError(baselineResult.error ?? trendResult.error ?? readinessResult.error ?? progressResult.error ?? '')
       })
       .catch((e) => {
         if (cancelled) return
@@ -112,7 +114,6 @@ export function MarketPage() {
         setTrends([])
         setReadiness(null)
         setSkillProgress([])
-        setHistory([])
         setError((e as Error).message)
       })
       .finally(() => {
@@ -362,18 +363,7 @@ export function MarketPage() {
       </section>
 
       <div className='mb-8'>
-        <ReadinessHistoryTimeline
-          snapshots={history}
-          loading={loading}
-          title={t('marketIntelligence.history.title')}
-          subtitle={t('marketIntelligence.history.subtitle')}
-          emptyText={t('marketIntelligence.history.empty')}
-          scoreLabel={t('marketIntelligence.history.score')}
-          marketLabel={t('marketIntelligence.history.market')}
-          roadmapLabel={t('marketIntelligence.history.roadmap')}
-          gapLabel={t('marketIntelligence.history.gap')}
-          locale={i18n.language ?? 'vi'}
-        />
+        <ReadinessHistoryPanel />
       </div>
 
       {!loading && !hasMarketData ? (
@@ -395,13 +385,15 @@ export function MarketPage() {
         </section>
       ) : null}
 
-      <section className='mb-8 rounded-2xl border border-border bg-card shadow-sm'>
+      <section ref={jobsSectionRef} className='mb-8 scroll-mt-6 rounded-2xl border border-border bg-card shadow-sm'>
         <div className='flex flex-col gap-4 border-b border-border p-6 lg:flex-row lg:items-end lg:justify-between'>
           <div>
             <p className='text-xs font-bold uppercase tracking-widest text-primary'>
               {t('marketIntelligence.jobs.eyebrow')}
             </p>
-            <h2 className='mt-2 text-xl font-bold text-foreground'>{t('marketIntelligence.jobs.title')}</h2>
+            <h2 ref={jobsHeadingRef} tabIndex={-1} className='mt-2 text-xl font-bold text-foreground outline-none'>
+              {t('marketIntelligence.jobs.title')}
+            </h2>
             <p className='mt-1 max-w-3xl text-sm leading-6 text-muted-foreground'>
               {t('marketIntelligence.jobs.subtitle')}
             </p>

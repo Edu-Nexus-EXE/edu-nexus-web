@@ -524,6 +524,17 @@
     "subtitle": "Giúp nhà trường theo dõi mức sẵn sàng của sinh viên so với nhu cầu tuyển dụng được tổng hợp từ thị trường.",
     "refresh": "Làm mới",
     "empty": "Chưa có dữ liệu",
+    "filters": {
+      "searchProgram": "Tìm chương trình",
+      "searchProgramPlaceholder": "Tên chương trình...",
+      "searchSkill": "Tìm khoảng thiếu kỹ năng",
+      "searchSkillPlaceholder": "Tên kỹ năng...",
+      "searchRole": "Tìm mục tiêu nghề nghiệp",
+      "searchRolePlaceholder": "Tên vai trò...",
+      "program": "Chương trình",
+      "allPrograms": "Tất cả chương trình",
+      "noMatches": "Không có kết quả phù hợp"
+    },
     "errors": {
       "load": "Không thể tải KPI sẵn sàng nghề nghiệp."
     },

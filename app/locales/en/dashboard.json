@@ -699,11 +699,22 @@
     "history": {
       "title": "Career readiness history",
       "subtitle": "Track how your readiness score changes as your gap analysis, roadmap progress, and market alignment improve over time.",
-      "empty": "No readiness snapshots yet. Complete a gap analysis and open this page again to create your first snapshot.",
+      "empty": "No readiness events yet. Complete a gap analysis or update a roadmap step to create your first event.",
       "score": "Latest score",
       "market": "Market alignment",
       "roadmap": "Roadmap progress",
-      "gap": "Missing / Upgrade / Have"
+      "gap": "Missing / Upgrade / Have",
+      "journeyTitle": "Learning progress across job goals",
+      "contextNotice": "Each score compares your skills with a specific job description. Use the full journey to see progress across every goal over time.",
+      "filterLabel": "Job description",
+      "allJds": "All job descriptions",
+      "legacy": "Earlier records",
+      "error": "Readiness history could not be loaded. Please try again.",
+      "events": {
+        "gap_analysis_completed": "Gap analysis completed",
+        "roadmap_progress_changed": "Roadmap progress updated",
+        "legacy": "Earlier readiness record"
+      }
     },
     "empty": {
       "title": "No market data for this role yet",

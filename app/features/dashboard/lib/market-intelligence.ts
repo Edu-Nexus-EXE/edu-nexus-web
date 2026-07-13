@@ -78,6 +78,11 @@ export type UserReadinessSnapshotView = {
   roadmapCompletionPercent: number
   marketAlignmentPercent: number
   calculatedAt: string
+  jdSubmissionId: string | null
+  gapAnalysisId: string | null
+  eventType: string
+  jobTitle: string | null
+  roleCategory: string | null
 }
 
 function unwrapData<T>(response: unknown): T | null {
@@ -176,7 +181,12 @@ function mapReadinessSnapshot(item: unknown): UserReadinessSnapshotView {
     haveSkills: toNumberValue(raw.haveSkills, 0),
     roadmapCompletionPercent: toNumberValue(raw.roadmapCompletionPercent, 0),
     marketAlignmentPercent: toNumberValue(raw.marketAlignmentPercent, 0),
-    calculatedAt: toStringValue(raw.calculatedAt, '')
+    calculatedAt: toStringValue(raw.calculatedAt, ''),
+    jdSubmissionId: typeof raw.jdSubmissionId === 'string' ? raw.jdSubmissionId : null,
+    gapAnalysisId: typeof raw.gapAnalysisId === 'string' ? raw.gapAnalysisId : null,
+    eventType: toStringValue(raw.eventType, 'legacy'),
+    jobTitle: typeof raw.jobTitle === 'string' ? raw.jobTitle : null,
+    roleCategory: typeof raw.roleCategory === 'string' ? raw.roleCategory : null
   }
 }
 
@@ -226,9 +236,12 @@ export async function loadUserSkillProgress(): Promise<LoadState<UserSkillProgre
   }
 }
 
-export async function loadUserReadinessHistory(limit = 12): Promise<LoadState<UserReadinessSnapshotView[]>> {
+export async function loadUserReadinessHistory(
+  limit = 12,
+  jdId?: string | null
+): Promise<LoadState<UserReadinessSnapshotView[]>> {
   try {
-    const res = await getUserReadinessHistory(limit)
+    const res = await getUserReadinessHistory(limit, jdId)
     const data = unwrapData<unknown>(res)
     return { data: collection(data).map(mapReadinessSnapshot), loading: false, error: null }
   } catch (error) {

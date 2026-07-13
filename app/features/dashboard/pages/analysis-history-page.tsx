@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 
 import { AnalysisHistoryInsights } from '../components/analysis-history/analysis-history-insights'
 import { AnalysisHistoryTable } from '../components/analysis-history/analysis-history-table'
+import { ReadinessHistoryPanel } from '../components/readiness/readiness-history-panel'
 
 export function AnalysisHistoryPage() {
   const { t } = useTranslation('dashboard')
@@ -27,6 +28,9 @@ export function AnalysisHistoryPage() {
           </button>
         </div>
 
+        <div className='mb-8'>
+          <ReadinessHistoryPanel />
+        </div>
         <AnalysisHistoryTable />
         <AnalysisHistoryInsights />
       </div>

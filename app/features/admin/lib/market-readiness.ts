@@ -232,8 +232,8 @@ function mapSchedulerSettings(data: unknown): AdminMarketSchedulerSettingsView {
   }
 }
 
-export async function loadAdminCareerReadinessKpi(): Promise<AdminCareerReadinessKpiView> {
-  const res = await getAdminCareerReadinessKpi()
+export async function loadAdminCareerReadinessKpi(major?: string | null): Promise<AdminCareerReadinessKpiView> {
+  const res = await getAdminCareerReadinessKpi(major)
   return mapKpi(unwrapData(res))
 }
 
