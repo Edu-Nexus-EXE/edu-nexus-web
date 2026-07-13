@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 
 import { useTranslation } from 'react-i18next'
 
@@ -20,6 +20,55 @@ type JdSubmissionPayload =
   | { sourceType: 'url'; sourceUrl: string; rawContent: null }
   | { sourceType: 'text'; sourceUrl: null; rawContent: string }
 
+type MarketJobPrefill = {
+  id?: unknown
+  sourceSite?: unknown
+  sourceUrl?: unknown
+  jobTitle?: unknown
+  companyName?: unknown
+  location?: unknown
+  salaryText?: unknown
+  roleCategory?: unknown
+  rawContent?: unknown
+  skills?: unknown
+}
+
+type MarketJobPrefillState = {
+  marketJob?: MarketJobPrefill
+}
+
+function asString(value: unknown, fallback = ''): string {
+  return typeof value === 'string' ? value : fallback
+}
+
+function parseMarketJobPrefill(value: unknown): {
+  sourceSite: string
+  sourceUrl: string
+  jobTitle: string
+  companyName: string
+  location: string
+  salaryText: string
+  roleCategory: string
+  rawContent: string
+} | null {
+  if (!value || typeof value !== 'object') return null
+  const raw = value as MarketJobPrefill
+  const rawContent = asString(raw.rawContent)
+  const sourceUrl = asString(raw.sourceUrl)
+  const jobTitle = asString(raw.jobTitle)
+  if (!rawContent && !sourceUrl) return null
+  return {
+    sourceSite: asString(raw.sourceSite, 'market'),
+    sourceUrl,
+    jobTitle,
+    companyName: asString(raw.companyName),
+    location: asString(raw.location),
+    salaryText: asString(raw.salaryText),
+    roleCategory: asString(raw.roleCategory),
+    rawContent
+  }
+}
+
 function parseCreatedJdId(res: unknown): string {
   const data = (res as ResponseWithData<JdSubmissionCreatedData>)?.data
   return String(data?.id ?? data?.jdId ?? '')
@@ -28,10 +77,13 @@ function parseCreatedJdId(res: unknown): string {
 export function JdNewPage() {
   const { t } = useTranslation('jd')
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [sourceType, setSourceType] = useState<JdSubmissionPayload['sourceType']>('text')
   const [sourceUrl, setSourceUrl] = useState('')
   const [rawContent, setRawContent] = useState('')
+  const [prefillNotice, setPrefillNotice] = useState<string | null>(null)
+  const marketPrefillHandledRef = useRef(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -62,6 +114,32 @@ export function JdNewPage() {
         if (e instanceof QuotaExceededError) throw e
       })
   }, [t])
+
+  useEffect(() => {
+    if (marketPrefillHandledRef.current) return
+    const state = location.state as MarketJobPrefillState | null
+    const prefill = parseMarketJobPrefill(state?.marketJob)
+    if (!prefill) return
+    marketPrefillHandledRef.current = true
+    if (prefill.rawContent) {
+      queueMicrotask(() => {
+        setSourceType('text')
+        setRawContent(prefill.rawContent)
+        setSourceUrl('')
+      })
+    } else if (prefill.sourceUrl) {
+      queueMicrotask(() => {
+        setSourceType('url')
+        setSourceUrl(prefill.sourceUrl)
+        setRawContent('')
+      })
+    }
+    const jobTitle = prefill.jobTitle || 'market job'
+    queueMicrotask(() =>
+      setPrefillNotice(t('jd.new.marketPrefill', { title: jobTitle, source: prefill.sourceSite || 'market' }))
+    )
+    navigate(location.pathname, { replace: true, state: {} })
+  }, [location.state, location.pathname, navigate, t])
 
   const canSubmit = useMemo(() => {
     if (sourceType === 'url') return Boolean(sourceUrl.trim())
@@ -227,6 +305,13 @@ export function JdNewPage() {
           {error}
         </div>
       )}
+
+      {prefillNotice ? (
+        <div className='mb-6 max-w-3xl mx-auto p-3 rounded-lg bg-primary/10 border border-primary/20 text-primary text-sm flex items-center gap-2'>
+          <span className='material-symbols-outlined text-base'>auto_awesome</span>
+          <span>{prefillNotice}</span>
+        </div>
+      ) : null}
 
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.35fr)_380px]'>
         <div className='bg-card p-8 rounded-3xl shadow-sm border border-border transition-colors flex flex-col'>

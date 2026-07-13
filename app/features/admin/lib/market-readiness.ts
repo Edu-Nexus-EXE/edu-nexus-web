@@ -15,6 +15,18 @@ import {
   type MarketJobImportRequest
 } from '~/shared/lib/market-intelligence-api'
 
+import {
+  loadAdminMarketJobDetail as loadAdminMarketJobDetailData,
+  loadAdminMarketJobs as loadAdminMarketJobsData,
+  type AdminMarketJobDetailView,
+  type AdminMarketJobListView
+} from './admin-data'
+
+export type { AdminMarketJobDetailView, AdminMarketJobListView }
+
+export const loadAdminMarketJobs = loadAdminMarketJobsData
+export const loadAdminMarketJobDetail = loadAdminMarketJobDetailData
+
 import type { AdminListResult } from './admin-data'
 
 export type AdminReadinessMajorView = {
@@ -154,7 +166,13 @@ function mapCrawlResult(data: unknown): AdminMarketCrawlResultView {
     importedSkills: toNumberValue(raw.importedSkills, 0),
     skippedDuplicates: toNumberValue(raw.skippedDuplicates, 0),
     startedAt: toStringValue(raw.startedAt, ''),
-    finishedAt: toStringValue(raw.finishedAt, '')
+    finishedAt: toStringValue(raw.finishedAt, ''),
+    requestedLocation: toStringValue(raw.requestedLocation, '') || null,
+    searchPagesChecked: toNumberValue(raw.searchPagesChecked, 0),
+    candidateUrlsDiscovered: toNumberValue(raw.candidateUrlsDiscovered, 0),
+    detailPagesChecked: toNumberValue(raw.detailPagesChecked, 0),
+    wrongRegionPages: toNumberValue(raw.wrongRegionPages, 0),
+    rejectedPages: toNumberValue(raw.rejectedPages, 0)
   }
 }
 

@@ -8,7 +8,7 @@
     "certificates": "Chứng chỉ",
     "analysisHistory": "Lịch sử phân tích",
     "allRoadmaps": "Toàn bộ lộ trình",
-    "market": "Thị trường",
+    "market": "Thị trường việc làm",
     "learningPath": "Lộ trình học",
     "careerTrack": "Lộ trình nghề nghiệp",
     "portfolio": "Hồ sơ năng lực",
@@ -675,9 +675,9 @@
     "cta": "Xem kế hoạch thị trường"
   },
   "marketIntelligence": {
-    "eyebrow": "Market Skill Intelligence",
-    "title": "Baseline thị trường IT Việt Nam",
-    "subtitle": "Đối chiếu tiến độ học tập với yêu cầu việc làm được tổng hợp, thay vì dựa vào từng JD riêng lẻ.",
+    "eyebrow": "Tín hiệu thị trường việc làm",
+    "title": "Nhu cầu tuyển dụng IT Việt Nam",
+    "subtitle": "Đối chiếu tiến độ học tập với nhu cầu tuyển dụng đã được tổng hợp, thay vì chỉ dựa vào một JD riêng lẻ.",
     "roleLabel": "Vai trò mục tiêu",
     "roles": {
       "backend": "Backend",
@@ -690,7 +690,7 @@
       "business-analyst": "Business Analyst"
     },
     "metrics": {
-      "marketJobs": "JD thị trường",
+      "marketJobs": "Tin đã tổng hợp",
       "readinessScore": "Điểm sẵn sàng",
       "marketAlignment": "Khớp thị trường",
       "lastUpdated": "Cập nhật lần cuối",
@@ -710,10 +710,20 @@
       "description": "Admin cần import JD demo hoặc chạy crawler để trang này tính baseline thị trường thật.",
       "adminCta": "Mở trang import admin"
     },
+    "dataset": {
+      "eyebrow": "Dữ liệu thị trường đã tổng hợp",
+      "title": "Hệ thống đang học được gì từ thị trường việc làm",
+      "subtitle": "Phần này lấy từ các dòng việc làm và tín hiệu kỹ năng đang lưu trong database. Sinh viên có thể xem baseline tổng hợp, mở JD mẫu để sao chép nội dung và gửi sang phân tích JD.",
+      "jobs": "Tin đang lưu",
+      "updated": "Lần làm mới",
+      "source": "Kiểu dữ liệu",
+      "sourceValue": "Tín hiệu tổng hợp",
+      "skillSignal": "{{count}} tin nhắc đến nhóm này · nhu cầu {{percent}}%"
+    },
     "topSkills": {
-      "title": "Kỹ năng được yêu cầu nhiều nhất",
-      "subtitle": "Nhu cầu được tính từ các dòng JD thị trường thật đang lưu trong database backend.",
-      "skill": "Kỹ năng",
+      "title": "Nhóm kỹ năng nhà tuyển dụng nhắc nhiều",
+      "subtitle": "Nhu cầu được tính từ các dòng việc làm thị trường đang lưu trong database backend.",
+      "skill": "Nhóm kỹ năng",
       "demand": "Nhu cầu",
       "status": "Trạng thái của bạn",
       "flags": "Tín hiệu",
@@ -744,6 +754,38 @@
       "title": "Xu hướng nhu cầu kỹ năng",
       "subtitle": "Phân bố nhu cầu gần đây theo kỹ năng cho vai trò đã chọn.",
       "empty": "Chưa có dòng xu hướng. Hãy import JD thị trường có ngày đăng để mở khoá trend."
+    },
+    "jobs": {
+      "eyebrow": "Thị trường việc làm",
+      "title": "Tin tuyển dụng thị trường",
+      "subtitle": "Xem các JD mẫu được thu thập từ nguồn thị trường. Mở một JD để sao chép nội dung gốc hoặc gửi đi phân tích.",
+      "searchPlaceholder": "Tìm tiêu đề, công ty, địa điểm...",
+      "allRoles": "Tất cả vai trò",
+      "totalLabel": "{{total}} tin",
+      "empty": "Không có tin tuyển dụng nào khớp bộ lọc.",
+      "view": "Xem",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "copyFallback": "Trình duyệt không hỗ trợ clipboard. Vui lòng sao chép thủ công.",
+      "analyze": "Phân tích với JD",
+      "source": "Nguồn",
+      "skills": "Kỹ năng",
+      "preview": "Nội dung JD",
+      "originalContent": "Nội dung JD từ nguồn tuyển dụng",
+      "openSource": "Mở trang gốc",
+      "sourceUnavailable": "Chưa có link nguồn",
+      "close": "Đóng",
+      "prev": "Trước",
+      "next": "Sau",
+      "pageLabel": "Trang {{page}} / {{totalPages}}",
+      "table": {
+        "title": "Tiêu đề",
+        "company": "Công ty",
+        "location": "Địa điểm",
+        "role": "Vai trò",
+        "skills": "Kỹ năng",
+        "action": "Thao tác"
+      }
     }
   }
 }

@@ -4,6 +4,32 @@ function ok<T>(data: T, init?: ResponseInit) {
   return HttpResponse.json({ data }, init)
 }
 
+function notFound(message: string) {
+  return HttpResponse.json({ error: { code: 'market_job_not_found', message } }, { status: 404 })
+}
+
+function filterMockJobs(params: URLSearchParams) {
+  const roleCategory = params.get('roleCategory')
+  const keyword = params.get('keyword')
+  return mockJobs.filter((job) => {
+    if (roleCategory && job.roleCategory !== roleCategory) return false
+    if (keyword) {
+      const haystack = [job.jobTitle, job.companyName ?? '', job.location ?? '', job.rawContent].join(' ').toLowerCase()
+      if (!haystack.includes(keyword.toLowerCase())) return false
+    }
+    return true
+  })
+}
+
+function paginateMockJobs(items: typeof mockJobs, pageRaw: string | null, pageSizeRaw: string | null) {
+  const page = Math.max(1, Number.parseInt(pageRaw ?? '1', 10) || 1)
+  const pageSize = Math.max(1, Math.min(30, Number.parseInt(pageSizeRaw ?? '10', 10) || 10))
+  const total = items.length
+  const totalPages = total === 0 ? 0 : Math.ceil(total / pageSize)
+  const start = (page - 1) * pageSize
+  return { items: items.slice(start, start + pageSize), page, pageSize, total, totalPages }
+}
+
 const baseline = {
   roleCategory: 'backend',
   totalJobs: 42,
@@ -79,6 +105,66 @@ const crawlRuns = [
     skippedDuplicates: 0,
     startedAt: new Date().toISOString(),
     finishedAt: new Date().toISOString()
+  }
+]
+
+const mockJobs = [
+  {
+    id: 'aaaa1111-aaaa-1111-aaaa-111111111111',
+    sourceSite: 'demo-fixture',
+    sourceUrl: 'https://demo.local/market/backend-dotnet-01',
+    jobTitle: 'Senior Backend .NET Developer',
+    companyName: 'Edu Nexus Demo Co.',
+    location: 'Ho Chi Minh City',
+    salaryText: '20-35M VND',
+    roleCategory: 'backend',
+    postedAt: '2026-07-01T00:00:00Z',
+    collectedAt: '2026-07-04T00:00:00Z',
+    skills: ['.NET', 'PostgreSQL', 'Docker', 'REST API'],
+    rawContent: [
+      'Senior Backend .NET Developer',
+      'We are looking for a backend engineer to build REST APIs for learning analytics and career readiness workflows.',
+      'Responsibilities',
+      '- Design and maintain ASP.NET Core APIs',
+      '- Work with PostgreSQL, Docker, and cloud deployment pipelines',
+      '- Collaborate with frontend and product teams to improve student-facing features',
+      'Requirements',
+      '- 3+ years of backend development experience',
+      '- Strong knowledge of .NET, SQL, REST API, and clean architecture',
+      '- Comfortable reading logs, writing tests, and improving production reliability',
+      'Benefits',
+      '- Hybrid working model',
+      '- Learning budget and mentoring from senior engineers'
+    ].join('\n\n'),
+    originalContentQuality: 'detail_page',
+    rawContentHash: 'abc123def456'
+  },
+  {
+    id: 'bbbb2222-bbbb-2222-bbbb-222222222222',
+    sourceSite: 'demo-fixture',
+    sourceUrl: 'https://demo.local/market/frontend-react-01',
+    jobTitle: 'Frontend React Engineer',
+    companyName: 'Edu Nexus Demo Co.',
+    location: 'Ha Noi',
+    salaryText: '18-28M VND',
+    roleCategory: 'frontend',
+    postedAt: '2026-07-02T00:00:00Z',
+    collectedAt: '2026-07-05T00:00:00Z',
+    skills: ['React', 'TypeScript', 'Tailwind CSS'],
+    rawContent: [
+      'Frontend React Engineer',
+      'Join our product team to build dashboards for students, admins, and career mentors.',
+      'What you will do',
+      '- Build accessible React screens with TypeScript',
+      '- Integrate APIs for job analysis, career roadmap, and market readiness',
+      '- Polish responsive UI states for real users',
+      'What we expect',
+      '- Solid React and TypeScript experience',
+      '- Good understanding of component design, forms, and data fetching',
+      '- Familiarity with Tailwind CSS and product-oriented UX'
+    ].join('\n\n'),
+    originalContentQuality: 'detail_page',
+    rawContentHash: 'def456abc789'
   }
 ]
 
@@ -242,6 +328,128 @@ export const marketIntelligenceHandlers = [
           message: run.message
         }
       ]
+    })
+  }),
+
+  http.get('*/market/jobs', async ({ request }) => {
+    await delay(150)
+    const params = new URL(request.url).searchParams
+    const filtered = filterMockJobs(params)
+    const { items, page, pageSize, total, totalPages } = paginateMockJobs(
+      filtered,
+      params.get('page'),
+      params.get('pageSize')
+    )
+    return ok({
+      items: items.map((job) => ({
+        id: job.id,
+        sourceSite: job.sourceSite,
+        sourceUrl: job.sourceUrl,
+        jobTitle: job.jobTitle,
+        companyName: job.companyName,
+        location: job.location,
+        salaryText: job.salaryText,
+        roleCategory: job.roleCategory,
+        postedAt: job.postedAt,
+        collectedAt: job.collectedAt,
+        skills: job.skills,
+        rawContentPreview: job.rawContent.slice(0, 280),
+        originalContentQuality: job.originalContentQuality,
+        rawContentHash: null,
+        contentLength: null
+      })),
+      page,
+      pageSize,
+      total,
+      totalPages
+    })
+  }),
+
+  http.get('*/market/jobs/:id', async ({ params }) => {
+    await delay(120)
+    const job = mockJobs.find((item) => item.id === params.id)
+    if (!job) {
+      return notFound(`Market job '${String(params.id)}' was not found.`)
+    }
+    return ok({
+      id: job.id,
+      sourceSite: job.sourceSite,
+      sourceUrl: job.sourceUrl,
+      jobTitle: job.jobTitle,
+      companyName: job.companyName,
+      location: job.location,
+      salaryText: job.salaryText,
+      roleCategory: job.roleCategory,
+      postedAt: job.postedAt,
+      collectedAt: job.collectedAt,
+      skills: job.skills,
+      rawContent: job.rawContent,
+      originalContent: job.rawContent,
+      originalContentQuality: job.originalContentQuality,
+      rawContentPreview: job.rawContent.slice(0, 280),
+      rawContentHash: null,
+      contentLength: null
+    })
+  }),
+
+  http.get('*/admin/market/jobs', async ({ request }) => {
+    await delay(150)
+    const params = new URL(request.url).searchParams
+    const filtered = filterMockJobs(params)
+    const { items, page, pageSize, total, totalPages } = paginateMockJobs(
+      filtered,
+      params.get('page'),
+      params.get('pageSize')
+    )
+    return ok({
+      items: items.map((job) => ({
+        id: job.id,
+        sourceSite: job.sourceSite,
+        sourceUrl: job.sourceUrl,
+        jobTitle: job.jobTitle,
+        companyName: job.companyName,
+        location: job.location,
+        salaryText: job.salaryText,
+        roleCategory: job.roleCategory,
+        postedAt: job.postedAt,
+        collectedAt: job.collectedAt,
+        skills: job.skills,
+        rawContentPreview: job.rawContent.slice(0, 280),
+        originalContentQuality: job.originalContentQuality,
+        rawContentHash: job.rawContentHash,
+        contentLength: job.rawContent.length
+      })),
+      page,
+      pageSize,
+      total,
+      totalPages
+    })
+  }),
+
+  http.get('*/admin/market/jobs/:id', async ({ params }) => {
+    await delay(120)
+    const job = mockJobs.find((item) => item.id === params.id)
+    if (!job) {
+      return notFound(`Market job '${String(params.id)}' was not found.`)
+    }
+    return ok({
+      id: job.id,
+      sourceSite: job.sourceSite,
+      sourceUrl: job.sourceUrl,
+      jobTitle: job.jobTitle,
+      companyName: job.companyName,
+      location: job.location,
+      salaryText: job.salaryText,
+      roleCategory: job.roleCategory,
+      postedAt: job.postedAt,
+      collectedAt: job.collectedAt,
+      skills: job.skills,
+      rawContent: job.rawContent,
+      originalContent: job.rawContent,
+      originalContentQuality: job.originalContentQuality,
+      rawContentPreview: job.rawContent.slice(0, 280),
+      rawContentHash: job.rawContentHash,
+      contentLength: job.rawContent.length
     })
   })
 ]

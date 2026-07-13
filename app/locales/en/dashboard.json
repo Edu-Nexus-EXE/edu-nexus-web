@@ -8,7 +8,7 @@
     "certificates": "Certificates",
     "analysisHistory": "Analysis History",
     "allRoadmaps": "All Roadmaps",
-    "market": "Market",
+    "market": "Job market",
     "learningPath": "Learning Path",
     "careerTrack": "Career Track",
     "portfolio": "Portfolio",
@@ -675,9 +675,9 @@
     "cta": "View market plan"
   },
   "marketIntelligence": {
-    "eyebrow": "Market Skill Intelligence",
-    "title": "Vietnam IT market baseline",
-    "subtitle": "Compare your learning progress with aggregated job requirements instead of pasting one JD at a time.",
+    "eyebrow": "Job market insight",
+    "title": "Vietnam IT hiring baseline",
+    "subtitle": "Compare your learning progress with collected hiring demand, not only one pasted job description.",
     "roleLabel": "Target role",
     "roles": {
       "backend": "Backend",
@@ -690,7 +690,7 @@
       "business-analyst": "Business Analyst"
     },
     "metrics": {
-      "marketJobs": "Market JDs",
+      "marketJobs": "Collected jobs",
       "readinessScore": "Readiness score",
       "marketAlignment": "Market alignment",
       "lastUpdated": "Last updated",
@@ -710,10 +710,20 @@
       "description": "Ask an admin to import demo JDs or run the crawler so this page can calculate a real market baseline.",
       "adminCta": "Open admin import"
     },
+    "dataset": {
+      "eyebrow": "Collected market data",
+      "title": "What the system has learned from the job market",
+      "subtitle": "This summary comes from stored market job rows and skill signals. Students can review the aggregated baseline, open sample JDs, copy the content, and send a JD to analysis.",
+      "jobs": "Jobs stored",
+      "updated": "Last refresh",
+      "source": "Source type",
+      "sourceValue": "Aggregated signals",
+      "skillSignal": "{{count}} jobs mention this area · {{percent}}% demand"
+    },
     "topSkills": {
-      "title": "Top demanded skills",
-      "subtitle": "Demand is calculated from real market job rows currently stored in the backend database.",
-      "skill": "Skill",
+      "title": "Skills employers mention most",
+      "subtitle": "Demand is calculated from market job rows currently stored in the backend database.",
+      "skill": "Learning area",
       "demand": "Demand",
       "status": "Your status",
       "flags": "Signals",
@@ -744,6 +754,38 @@
       "title": "Skill demand trend",
       "subtitle": "Recent demand distribution by skill for the selected role.",
       "empty": "No trend rows yet. Import market JDs with posted dates to unlock trends."
+    },
+    "jobs": {
+      "eyebrow": "Job market",
+      "title": "Market job postings",
+      "subtitle": "Browse sample JDs collected from market sources. Open a job to copy its raw content or send it to analysis.",
+      "searchPlaceholder": "Search title, company, location...",
+      "allRoles": "All roles",
+      "totalLabel": "{{total}} jobs",
+      "empty": "No market jobs match your filters.",
+      "view": "View",
+      "copy": "Copy raw",
+      "copied": "Copied",
+      "copyFallback": "Clipboard unavailable. Please copy manually.",
+      "analyze": "Analyze with JD",
+      "source": "Source",
+      "skills": "Skills",
+      "preview": "JD content",
+      "originalContent": "JD content from the hiring source",
+      "openSource": "Open source page",
+      "sourceUnavailable": "Source link unavailable",
+      "close": "Close",
+      "prev": "Prev",
+      "next": "Next",
+      "pageLabel": "Page {{page}} of {{totalPages}}",
+      "table": {
+        "title": "Job title",
+        "company": "Company",
+        "location": "Location",
+        "role": "Role",
+        "skills": "Skills",
+        "action": "Action"
+      }
     }
   }
 }

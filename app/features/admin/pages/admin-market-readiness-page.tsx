@@ -1,19 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useToast } from '~/shared/components'
 import { Button } from '~/shared/ui'
 import type { MarketCrawlerRequest, MarketJobImportRequest } from '~/shared/lib/market-intelligence-api'
 
+import { AdminMarketJobDetailDrawer } from '../components/market/admin-market-job-detail-drawer'
 import {
   crawlAdminMarketJobs,
   importAdminMarketJobs,
   loadAdminCareerReadinessKpi,
   loadAdminMarketCrawlRuns,
+  loadAdminMarketJobDetail,
+  loadAdminMarketJobs,
   loadAdminMarketSources,
   type AdminCareerReadinessKpiView,
   type AdminMarketCrawlerSourceView,
   type AdminMarketCrawlResultView,
+  type AdminMarketJobDetailView,
+  type AdminMarketJobListView,
   type AdminMarketOperationResult
 } from '../lib/market-readiness'
 
@@ -50,6 +55,8 @@ const DEMO_IMPORT_JSON = JSON.stringify(
   2
 )
 
+const adminRoleOptions = ['backend', 'frontend', 'data', 'ai', 'devops', 'mobile', 'qa', 'business-analyst']
+
 export function AdminMarketReadinessPage() {
   const { t } = useTranslation('admin')
   const toast = useToast()
@@ -61,14 +68,43 @@ export function AdminMarketReadinessPage() {
     sourceSite: 'topcv',
     roleCategory: 'backend',
     keyword: 'backend developer',
+    location: 'all',
     limit: 5
   })
   const [submittingImport, setSubmittingImport] = useState(false)
   const [submittingCrawler, setSubmittingCrawler] = useState(false)
   const [sources, setSources] = useState<AdminMarketCrawlerSourceView[]>([])
   const [crawlRuns, setCrawlRuns] = useState<AdminMarketCrawlResultView[]>([])
+  const [crawlRunQuery, setCrawlRunQuery] = useState('')
   const [lastResult, setLastResult] = useState<AdminMarketOperationResult | AdminMarketCrawlResultView | null>(null)
   const [lastOperation, setLastOperation] = useState<'import' | 'crawl' | null>(null)
+
+  const [adminJobs, setAdminJobs] = useState<AdminMarketJobListView[]>([])
+  const [adminJobsLoading, setAdminJobsLoading] = useState(false)
+  const [adminJobsError, setAdminJobsError] = useState('')
+  const [adminJobsKeyword, setAdminJobsKeyword] = useState('')
+  const [adminJobsRoleFilter, setAdminJobsRoleFilter] = useState('')
+  const [adminJobsPage, setAdminJobsPage] = useState(1)
+  const [adminJobsTotal, setAdminJobsTotal] = useState(0)
+  const [adminJobsTotalPages, setAdminJobsTotalPages] = useState(0)
+  const adminJobsPageSize = 10
+
+  const [adminSelectedJobId, setAdminSelectedJobId] = useState<string | null>(null)
+  const [adminSelectedJob, setAdminSelectedJob] = useState<AdminMarketJobDetailView | null>(null)
+  const [adminSelectedJobLoading, setAdminSelectedJobLoading] = useState(false)
+  const [adminSelectedJobError, setAdminSelectedJobError] = useState('')
+  const [adminCopyState, setAdminCopyState] = useState<'idle' | 'copied' | 'failed'>('idle')
+
+  const filteredCrawlRuns = useMemo(() => {
+    const query = crawlRunQuery.trim().toLocaleLowerCase()
+    if (!query) return crawlRuns
+
+    return crawlRuns.filter((run) =>
+      [run.sourceSite, run.status, run.requestedLocation, run.message, run.runId]
+        .filter((value): value is string => Boolean(value))
+        .some((value) => value.toLocaleLowerCase().includes(query))
+    )
+  }, [crawlRunQuery, crawlRuns])
 
   const refreshKpi = useCallback(() => {
     setLoading(true)
@@ -109,6 +145,85 @@ export function AdminMarketReadinessPage() {
     queueMicrotask(() => refreshCrawlerMeta())
   }, [refreshCrawlerMeta])
 
+  const refreshAdminJobs = useCallback(() => {
+    setAdminJobsLoading(true)
+    setAdminJobsError('')
+    loadAdminMarketJobs({
+      roleCategory: adminJobsRoleFilter || null,
+      keyword: adminJobsKeyword.trim() || null,
+      page: adminJobsPage,
+      pageSize: adminJobsPageSize
+    })
+      .then((result) => {
+        setAdminJobs(result.items)
+        setAdminJobsTotal(result.total)
+        setAdminJobsTotalPages(result.totalPages)
+      })
+      .catch((err) => {
+        setAdminJobs([])
+        setAdminJobsTotal(0)
+        setAdminJobsTotalPages(0)
+        setAdminJobsError((err as Error).message)
+      })
+      .finally(() => setAdminJobsLoading(false))
+  }, [adminJobsRoleFilter, adminJobsKeyword, adminJobsPage])
+
+  useEffect(() => {
+    queueMicrotask(() => refreshAdminJobs())
+  }, [refreshAdminJobs])
+
+  useEffect(() => {
+    if (!adminSelectedJobId) {
+      queueMicrotask(() => {
+        setAdminSelectedJob(null)
+        setAdminSelectedJobError('')
+        setAdminCopyState('idle')
+      })
+      return
+    }
+    let cancelled = false
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setAdminSelectedJobLoading(true)
+        setAdminSelectedJobError('')
+        setAdminCopyState('idle')
+      }
+    })
+    loadAdminMarketJobDetail(adminSelectedJobId)
+      .then((detail) => {
+        if (cancelled) return
+        setAdminSelectedJob(detail)
+        setAdminSelectedJobError(detail ? '' : t('marketReadiness.jobs.detailMissing'))
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setAdminSelectedJob(null)
+        setAdminSelectedJobError((err as Error).message)
+      })
+      .finally(() => {
+        if (!cancelled) setAdminSelectedJobLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [adminSelectedJobId, t])
+
+  const handleAdminCopy = async (value: string) => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      window.prompt(t('marketReadiness.jobs.copyFallback'), value)
+      setAdminCopyState('failed')
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(value)
+      setAdminCopyState('copied')
+      window.setTimeout(() => setAdminCopyState('idle'), 2000)
+    } catch {
+      window.prompt(t('marketReadiness.jobs.copyFallback'), value)
+      setAdminCopyState('failed')
+    }
+  }
+
   const coveragePercent = useMemo(() => {
     if (!kpi?.totalStudents) return 0
     return Math.round((kpi.studentsWithReadinessSnapshot / kpi.totalStudents) * 100)
@@ -139,6 +254,7 @@ export function AdminMarketReadinessPage() {
       setLastOperation('import')
       toast.success(t('marketReadiness.import.success'))
       refreshKpi()
+      refreshAdminJobs()
     } catch (e) {
       toast.error((e as Error).message || t('marketReadiness.import.failed'))
     } finally {
@@ -163,6 +279,7 @@ export function AdminMarketReadinessPage() {
       }
       refreshKpi()
       refreshCrawlerMeta()
+      refreshAdminJobs()
     } catch (e) {
       toast.error((e as Error).message || t('marketReadiness.crawler.failed'))
     } finally {
@@ -223,7 +340,7 @@ export function AdminMarketReadinessPage() {
             t('marketReadiness.byMajor.score')
           ]}
           rows={(kpi?.byMajor ?? []).map((row) => [
-            row.major,
+            humanizeLabel(row.major),
             String(row.studentCount),
             `${row.averageReadinessScore}/100`
           ])}
@@ -251,35 +368,256 @@ export function AdminMarketReadinessPage() {
             t('marketReadiness.targetRoles.marketJobs')
           ]}
           rows={(kpi?.targetRoles ?? []).map((row) => [
-            row.roleCategory,
+            humanizeLabel(row.roleCategory),
             String(row.studentCount),
             String(row.marketJobCount)
           ])}
         />
       </section>
 
-      <section className='grid min-w-0 gap-8 xl:grid-cols-[1.2fr_0.8fr]'>
-        <div className='min-w-0 rounded-2xl border border-border bg-card p-6 shadow-sm'>
-          <div className='mb-5 flex flex-col gap-3 md:flex-row md:items-start md:justify-between'>
-            <div>
-              <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.import.title')}</h2>
-              <p className='mt-1 text-sm text-muted-foreground'>{t('marketReadiness.import.subtitle')}</p>
-            </div>
-            <Button type='button' onClick={() => void handleImport()} disabled={submittingImport}>
-              <span className='material-symbols-outlined text-lg'>
-                {submittingImport ? 'progress_activity' : 'upload_file'}
+      <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
+        <div className='mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between'>
+          <div>
+            <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.crawlRuns.title')}</h2>
+            <p className='mt-1 text-sm text-muted-foreground'>{t('marketReadiness.crawlRuns.subtitle')}</p>
+          </div>
+          <div className='flex flex-col gap-2 sm:flex-row sm:items-center'>
+            <div className='relative min-w-0 sm:w-80'>
+              <span className='material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-muted-foreground'>
+                search
               </span>
-              {submittingImport ? t('marketReadiness.import.running') : t('marketReadiness.import.submit')}
+              <input
+                type='search'
+                value={crawlRunQuery}
+                onChange={(event) => setCrawlRunQuery(event.target.value)}
+                aria-label={t('marketReadiness.crawlRuns.searchLabel')}
+                placeholder={t('marketReadiness.crawlRuns.searchPlaceholder')}
+                className='w-full rounded-xl border border-border bg-muted/20 py-2 pl-10 pr-4 text-sm font-semibold text-foreground outline-none transition focus:ring-2 focus:ring-primary/40'
+              />
+            </div>
+            <Button type='button' variant='outline' onClick={refreshCrawlerMeta}>
+              <span className='material-symbols-outlined text-lg'>history</span>
+              {t('marketReadiness.crawlRuns.refresh')}
             </Button>
           </div>
-          <textarea
-            value={importJson}
-            onChange={(event) => setImportJson(event.target.value)}
-            spellCheck={false}
-            className='min-h-[360px] w-full resize-y rounded-xl border border-border bg-muted/20 p-4 font-mono text-sm leading-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
-          />
+        </div>
+        {crawlRuns.length > 0 ? (
+          <>
+            <p className='mb-3 text-sm font-semibold text-muted-foreground'>
+              {t('marketReadiness.crawlRuns.resultsCount', { count: filteredCrawlRuns.length })}
+            </p>
+            {filteredCrawlRuns.length > 0 ? (
+              <div className='grid max-h-[420px] gap-3 overflow-y-auto pr-1 md:grid-cols-2 xl:grid-cols-3'>
+                {filteredCrawlRuns.map((run) => (
+                  <div key={run.runId} className='rounded-xl border border-border bg-muted/20 p-4'>
+                    <div className='flex items-start justify-between gap-3'>
+                      <div className='min-w-0'>
+                        <p className='truncate text-sm font-black text-foreground'>{humanizeLabel(run.sourceSite)}</p>
+                        <p className='mt-1 text-xs font-semibold text-muted-foreground'>
+                          {run.message || run.runId || '-'}
+                        </p>
+                      </div>
+                      <span className={statusBadgeClass(run.status)}>{formatStatus(run.status, t)}</span>
+                    </div>
+                    <div className='mt-4 grid grid-cols-3 gap-2 text-center'>
+                      <RunMetric label={t('marketReadiness.crawlRuns.parsedLabel')} value={String(run.parsedJobs)} />
+                      <RunMetric
+                        label={t('marketReadiness.crawlRuns.importedLabel')}
+                        value={String(run.importedJobs)}
+                      />
+                      <RunMetric label={t('marketReadiness.crawlRuns.fetchedLabel')} value={String(run.fetchedUrls)} />
+                    </div>
+                    {run.message ? (
+                      <p className='mt-3 line-clamp-2 text-xs leading-5 text-muted-foreground'>{run.message}</p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className='rounded-xl border border-dashed border-border bg-muted/20 p-5 text-sm text-muted-foreground'>
+                {t('marketReadiness.crawlRuns.noMatch')}
+              </p>
+            )}
+          </>
+        ) : (
+          <p className='rounded-xl border border-dashed border-border bg-muted/20 p-5 text-sm text-muted-foreground'>
+            {t('marketReadiness.crawlRuns.empty')}
+          </p>
+        )}
+      </section>
+
+      <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
+        <div className='flex flex-col gap-4 border-b border-border pb-5 lg:flex-row lg:items-end lg:justify-between'>
+          <div>
+            <p className='text-xs font-bold uppercase tracking-widest text-primary'>
+              {t('marketReadiness.jobs.eyebrow')}
+            </p>
+            <h2 className='mt-2 text-xl font-bold text-foreground'>{t('marketReadiness.jobs.title')}</h2>
+            <p className='mt-1 max-w-3xl text-sm leading-6 text-muted-foreground'>
+              {t('marketReadiness.jobs.subtitle')}
+            </p>
+          </div>
+          <div className='grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]'>
+            <input
+              type='search'
+              value={adminJobsKeyword}
+              onChange={(event) => {
+                setAdminJobsPage(1)
+                setAdminJobsKeyword(event.target.value)
+              }}
+              placeholder={t('marketReadiness.jobs.searchPlaceholder')}
+              className='rounded-xl border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
+            />
+            <select
+              value={adminJobsRoleFilter}
+              onChange={(event) => {
+                setAdminJobsPage(1)
+                setAdminJobsRoleFilter(event.target.value)
+              }}
+              className='rounded-xl border border-border bg-muted/20 px-4 py-2 text-sm font-semibold text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
+            >
+              <option value=''>{t('marketReadiness.jobs.allRoles')}</option>
+              {adminRoleOptions.map((role) => (
+                <option key={role} value={role}>
+                  {humanizeLabel(role)}
+                </option>
+              ))}
+            </select>
+            <Button type='button' variant='outline' onClick={refreshAdminJobs}>
+              <span className='material-symbols-outlined text-lg'>refresh</span>
+              {t('marketReadiness.jobs.refresh')}
+            </Button>
+          </div>
         </div>
 
+        {adminJobsError ? (
+          <div className='mt-5 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>
+            {adminJobsError}
+          </div>
+        ) : null}
+
+        <div className='mt-5 max-h-[560px] overflow-auto'>
+          <table className='w-full min-w-[980px] table-fixed border-collapse text-left'>
+            <thead className='sticky top-0 z-10'>
+              <tr className='border-b border-border bg-card text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-sm'>
+                <th className='w-[29%] px-5 py-3'>{t('marketReadiness.jobs.table.title')}</th>
+                <th className='w-[22%] px-5 py-3'>{t('marketReadiness.jobs.table.company')}</th>
+                <th className='w-[15%] px-5 py-3'>{t('marketReadiness.jobs.table.role')}</th>
+                <th className='w-[10%] px-5 py-3'>{t('marketReadiness.jobs.table.length')}</th>
+                <th className='w-[14%] px-5 py-3'>{t('marketReadiness.jobs.table.hash')}</th>
+                <th className='w-[10%] px-5 py-3 text-right'>{t('marketReadiness.jobs.table.action')}</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y divide-border'>
+              {adminJobsLoading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <tr key={index} className='animate-pulse'>
+                    {Array.from({ length: 6 }).map((__, cell) => (
+                      <td key={cell} className='px-5 py-4'>
+                        <div className='h-4 rounded bg-muted' />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : adminJobs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className='px-5 py-12 text-center text-sm text-muted-foreground'>
+                    {t('marketReadiness.jobs.empty')}
+                  </td>
+                </tr>
+              ) : (
+                adminJobs.map((job) => (
+                  <tr key={job.id} className='align-top hover:bg-muted/20'>
+                    <td className='break-words px-5 py-4'>
+                      <p className='font-bold leading-6 text-foreground'>{job.jobTitle}</p>
+                      <p className='mt-1 text-xs text-muted-foreground'>{job.sourceSite}</p>
+                    </td>
+                    <td className='break-words px-5 py-4 text-sm leading-6 text-foreground'>
+                      {job.companyName ?? '-'}
+                    </td>
+                    <td className='break-words px-5 py-4 text-sm leading-6 text-foreground'>
+                      {humanizeLabel(job.roleCategory)}
+                    </td>
+                    <td className='px-5 py-4 text-sm text-foreground'>{job.contentLength ?? '-'}</td>
+                    <td className='px-5 py-4 font-mono text-xs text-muted-foreground'>
+                      {job.rawContentHash ? `${job.rawContentHash.slice(0, 10)}...` : '-'}
+                    </td>
+                    <td className='px-5 py-4 text-right'>
+                      <button
+                        type='button'
+                        onClick={() => setAdminSelectedJobId(job.id)}
+                        className='inline-flex items-center gap-2 rounded-lg border border-primary/30 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5'
+                      >
+                        <span className='material-symbols-outlined text-base'>visibility</span>
+                        {t('marketReadiness.jobs.view')}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className='mt-4 flex items-center justify-between text-sm text-muted-foreground'>
+          <span>
+            {t('marketReadiness.jobs.pageLabel', {
+              page: adminJobsPage,
+              totalPages: adminJobsTotalPages || 1,
+              total: adminJobsTotal
+            })}
+          </span>
+          <div className='flex items-center gap-2'>
+            <button
+              type='button'
+              onClick={() => setAdminJobsPage((current) => Math.max(1, current - 1))}
+              disabled={adminJobsPage <= 1 || adminJobsLoading}
+              className='rounded-lg border border-border px-3 py-1 text-xs font-bold text-foreground disabled:opacity-40'
+            >
+              {t('marketReadiness.jobs.prev')}
+            </button>
+            <button
+              type='button'
+              onClick={() =>
+                setAdminJobsPage((current) =>
+                  adminJobsTotalPages && current < adminJobsTotalPages ? current + 1 : current
+                )
+              }
+              disabled={!adminJobsTotalPages || adminJobsPage >= adminJobsTotalPages || adminJobsLoading}
+              className='rounded-lg border border-border px-3 py-1 text-xs font-bold text-foreground disabled:opacity-40'
+            >
+              {t('marketReadiness.jobs.next')}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <AdminMarketJobDetailDrawer
+        open={Boolean(adminSelectedJobId)}
+        loading={adminSelectedJobLoading}
+        error={adminSelectedJobError}
+        job={adminSelectedJob}
+        copyState={adminCopyState}
+        onClose={() => setAdminSelectedJobId(null)}
+        onCopy={handleAdminCopy}
+        labels={{
+          close: t('marketReadiness.jobs.close'),
+          copied: t('marketReadiness.jobs.copied'),
+          copy: t('marketReadiness.jobs.copy'),
+          copyFallback: t('marketReadiness.jobs.copyFallback'),
+          source: t('marketReadiness.jobs.source'),
+          skills: t('marketReadiness.jobs.skills'),
+          originalContent: t('marketReadiness.jobs.originalContent'),
+          openSource: t('marketReadiness.jobs.openSource'),
+          sourceUnavailable: t('marketReadiness.jobs.sourceUnavailable'),
+          technical: t('marketReadiness.jobs.technical'),
+          hash: t('marketReadiness.jobs.hash'),
+          length: t('marketReadiness.jobs.length'),
+          quality: t('marketReadiness.jobs.quality')
+        }}
+      />
+
+      <section className='grid min-w-0 gap-8 xl:grid-cols-[1.2fr_0.8fr]'>
         <div className='min-w-0 space-y-8'>
           <div className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
             <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.crawler.title')}</h2>
@@ -327,6 +665,19 @@ export function AdminMarketReadinessPage() {
                   className='w-full rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
                 />
               </FormField>
+              <FormField label={t('marketReadiness.crawler.location')}>
+                <select
+                  value={crawler.location ?? 'all'}
+                  onChange={(event) => setCrawler((current) => ({ ...current, location: event.target.value }))}
+                  className='w-full rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
+                >
+                  {['all', 'ho-chi-minh', 'ha-noi', 'da-nang', 'can-tho', 'hai-phong', 'remote'].map((location) => (
+                    <option key={location} value={location}>
+                      {t(`marketReadiness.crawler.locations.${location}`)}
+                    </option>
+                  ))}
+                </select>
+              </FormField>
               <FormField label={t('marketReadiness.crawler.limit')}>
                 <input
                   type='number'
@@ -352,7 +703,34 @@ export function AdminMarketReadinessPage() {
               </Button>
             </div>
           </div>
+          <details className='group rounded-2xl border border-border bg-card p-6 shadow-sm'>
+            <summary className='flex cursor-pointer list-none items-start justify-between gap-4'>
+              <div>
+                <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.import.title')}</h2>
+                <p className='mt-1 text-sm text-muted-foreground'>{t('marketReadiness.import.subtitle')}</p>
+              </div>
+              <span className='material-symbols-outlined shrink-0 text-primary transition-transform group-open:rotate-180'>
+                expand_more
+              </span>
+            </summary>
+            <div className='mt-5 space-y-4'>
+              <textarea
+                value={importJson}
+                onChange={(event) => setImportJson(event.target.value)}
+                spellCheck={false}
+                className='min-h-[260px] w-full resize-y rounded-xl border border-border bg-muted/20 p-4 font-mono text-sm leading-6 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40'
+              />
+              <Button type='button' onClick={() => void handleImport()} disabled={submittingImport}>
+                <span className='material-symbols-outlined text-lg'>
+                  {submittingImport ? 'progress_activity' : 'upload_file'}
+                </span>
+                {submittingImport ? t('marketReadiness.import.running') : t('marketReadiness.import.submit')}
+              </Button>
+            </div>
+          </details>
+        </div>
 
+        <div className='min-w-0'>
           <div className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
             <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.result.title')}</h2>
             {lastResult ? (
@@ -369,7 +747,7 @@ export function AdminMarketReadinessPage() {
                   <>
                     <ResultItem
                       label={t('marketReadiness.result.status')}
-                      value={formatStatus(lastCrawlResult.status)}
+                      value={formatStatus(lastCrawlResult.status, t)}
                     />
                     <ResultItem
                       label={t('marketReadiness.result.parsedJobs')}
@@ -378,6 +756,32 @@ export function AdminMarketReadinessPage() {
                     <ResultItem
                       label={t('marketReadiness.result.fetchedUrls')}
                       value={String(lastCrawlResult.fetchedUrls)}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.requestedLocation')}
+                      value={t(`marketReadiness.crawler.locations.${lastCrawlResult.requestedLocation ?? 'all'}`, {
+                        defaultValue: lastCrawlResult.requestedLocation ?? 'all'
+                      })}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.searchPagesChecked')}
+                      value={String(lastCrawlResult.searchPagesChecked ?? 0)}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.candidateUrlsDiscovered')}
+                      value={String(lastCrawlResult.candidateUrlsDiscovered ?? 0)}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.detailPagesChecked')}
+                      value={String(lastCrawlResult.detailPagesChecked ?? 0)}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.wrongRegionPages')}
+                      value={String(lastCrawlResult.wrongRegionPages ?? 0)}
+                    />
+                    <ResultItem
+                      label={t('marketReadiness.result.rejectedPages')}
+                      value={String(lastCrawlResult.rejectedPages ?? 0)}
                     />
                     <ResultItem label={t('marketReadiness.result.runId')} value={lastCrawlResult.runId || '-'} />
                   </>
@@ -400,40 +804,6 @@ export function AdminMarketReadinessPage() {
             ) : (
               <p className='mt-3 rounded-xl border border-dashed border-border bg-muted/20 p-5 text-sm text-muted-foreground'>
                 {t('marketReadiness.result.empty')}
-              </p>
-            )}
-          </div>
-
-          <div className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
-            <div className='mb-4 flex items-center justify-between gap-3'>
-              <h2 className='text-xl font-bold text-foreground'>{t('marketReadiness.crawlRuns.title')}</h2>
-              <Button type='button' variant='outline' onClick={refreshCrawlerMeta}>
-                <span className='material-symbols-outlined text-lg'>history</span>
-                {t('marketReadiness.crawlRuns.refresh')}
-              </Button>
-            </div>
-            {crawlRuns.length > 0 ? (
-              <div className='space-y-3'>
-                {crawlRuns.slice(0, 5).map((run) => (
-                  <div key={run.runId} className='rounded-xl border border-border bg-muted/20 p-4'>
-                    <div className='flex items-start justify-between gap-3'>
-                      <div className='min-w-0'>
-                        <p className='truncate text-sm font-black text-foreground'>{run.sourceSite}</p>
-                        <p className='mt-1 line-clamp-2 text-xs text-muted-foreground'>{run.message || run.runId}</p>
-                      </div>
-                      <span className={statusBadgeClass(run.status)}>{formatStatus(run.status)}</span>
-                    </div>
-                    <div className='mt-3 grid grid-cols-3 gap-2 text-xs font-semibold text-muted-foreground'>
-                      <span>{t('marketReadiness.crawlRuns.parsed', { count: run.parsedJobs })}</span>
-                      <span>{t('marketReadiness.crawlRuns.imported', { count: run.importedJobs })}</span>
-                      <span>{t('marketReadiness.crawlRuns.fetched', { count: run.fetchedUrls })}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className='rounded-xl border border-dashed border-border bg-muted/20 p-5 text-sm text-muted-foreground'>
-                {t('marketReadiness.crawlRuns.empty')}
               </p>
             )}
           </div>
@@ -467,14 +837,14 @@ function AdminInsightTable({
   empty: string
 }) {
   return (
-    <div className='min-w-0 rounded-2xl border border-border bg-card shadow-sm'>
+    <div className='flex h-[420px] min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm sm:h-[440px]'>
       <div className='border-b border-border p-5'>
         <h2 className='text-lg font-bold text-foreground'>{title}</h2>
       </div>
-      <div className='overflow-x-auto'>
-        <table className='w-full text-left text-sm'>
-          <thead>
-            <tr className='border-b border-border bg-muted/40 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
+      <div className='min-h-0 flex-1 overflow-auto'>
+        <table className='w-full min-w-[420px] table-fixed text-left text-sm'>
+          <thead className='sticky top-0 z-10'>
+            <tr className='border-b border-border bg-card text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-sm'>
               {headers.map((header) => (
                 <th key={header} className='px-5 py-3'>
                   {header}
@@ -485,9 +855,12 @@ function AdminInsightTable({
           <tbody className='divide-y divide-border'>
             {rows.length > 0 ? (
               rows.map((row) => (
-                <tr key={row.join('|')} className='hover:bg-muted/20'>
+                <tr key={row.join('|')} className='align-top hover:bg-muted/20'>
                   {row.map((cell, index) => (
-                    <td key={`${cell}-${index}`} className='px-5 py-4 font-semibold text-foreground'>
+                    <td
+                      key={`${cell}-${index}`}
+                      className='break-words px-5 py-4 font-semibold leading-6 text-foreground'
+                    >
                       {cell}
                     </td>
                   ))}
@@ -525,8 +898,25 @@ function ResultItem({ label, value }: { label: string; value: string }) {
   )
 }
 
-function formatStatus(status: string) {
-  return status.replaceAll('_', ' ')
+function RunMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className='rounded-lg border border-border bg-card px-3 py-2'>
+      <p className='text-base font-black text-foreground'>{value}</p>
+      <p className='mt-0.5 text-[11px] font-semibold text-muted-foreground'>{label}</p>
+    </div>
+  )
+}
+
+function humanizeLabel(value: string) {
+  return value
+    .replaceAll('_', ' ')
+    .replaceAll('-', ' ')
+    .replaceAll('|', ' / ')
+    .replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
+function formatStatus(status: string, t: (key: string, options?: { defaultValue?: string }) => string) {
+  return t(`marketReadiness.runStatus.${status}`, { defaultValue: humanizeLabel(status) })
 }
 
 function statusBadgeClass(status: string) {

@@ -73,7 +73,7 @@ export function AdminSidebar() {
         </NavLink>
         <NavLink to='/admin/market-readiness' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>monitoring</span>
-          <span>{t('sidebar.marketReadiness')}</span>
+          <span className='whitespace-nowrap'>{t('sidebar.marketReadiness')}</span>
         </NavLink>
         <NavLink to='/admin/subscription-config' className={navLinkClass}>
           <span className='material-symbols-outlined text-xl'>settings_applications</span>

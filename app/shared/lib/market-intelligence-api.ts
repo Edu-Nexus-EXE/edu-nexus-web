@@ -33,6 +33,7 @@ export type MarketCrawlerRequest = {
   roleCategory: string
   keyword?: string | null
   limit?: number | null
+  location?: string | null
 }
 
 export type MarketCrawlerSource = {
@@ -54,6 +55,12 @@ export type MarketCrawlResult = {
   skippedDuplicates: number
   startedAt: string
   finishedAt?: string | null
+  requestedLocation?: string | null
+  searchPagesChecked?: number
+  candidateUrlsDiscovered?: number
+  detailPagesChecked?: number
+  wrongRegionPages?: number
+  rejectedPages?: number
 }
 
 export type MarketCrawlItemEvidence = {
@@ -171,4 +178,85 @@ export function getAdminMarketCrawlRuns(params: { sourceSite?: string; limit?: n
 
 export function getAdminMarketCrawlRunDetail(runId: string) {
   return customFetch<unknown>(`/admin/market/crawl-runs/${encodeURIComponent(runId)}`, { method: 'GET' })
+}
+
+export type MarketJobListItem = {
+  id: string
+  sourceSite: string
+  sourceUrl?: string | null
+  jobTitle: string
+  companyName?: string | null
+  location?: string | null
+  salaryText?: string | null
+  roleCategory: string
+  postedAt?: string | null
+  collectedAt: string
+  skills: string[]
+  rawContentPreview: string
+  originalContentQuality?: string | null
+  rawContentHash?: string | null
+  contentLength?: number | null
+}
+
+export type MarketJobDetail = MarketJobListItem & {
+  rawContent: string
+  originalContent?: string | null
+  originalContentQuality?: string | null
+  parsedDescription?: string | null
+  parsedRequirements?: string | null
+  parsedResponsibilities?: string | null
+  parsedBenefits?: string | null
+  parsedCompanyOverview?: string | null
+  parsedSeniority?: string | null
+  parsedConfidence?: number | null
+}
+
+export type MarketJobPage = {
+  items: MarketJobListItem[]
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+}
+
+export function getMarketJobs(params: {
+  roleCategory?: string | null
+  keyword?: string | null
+  page?: number
+  pageSize?: number
+}) {
+  return customFetch<unknown>('/market/jobs', {
+    method: 'GET',
+    params: {
+      roleCategory: params.roleCategory || undefined,
+      keyword: params.keyword || undefined,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 10
+    }
+  })
+}
+
+export function getMarketJobDetail(id: string) {
+  return customFetch<unknown>(`/market/jobs/${encodeURIComponent(id)}`, { method: 'GET' })
+}
+
+export function getAdminMarketJobs(params: {
+  roleCategory?: string | null
+  keyword?: string | null
+  page?: number
+  pageSize?: number
+}) {
+  return customFetch<unknown>('/admin/market/jobs', {
+    method: 'GET',
+    params: {
+      roleCategory: params.roleCategory || undefined,
+      keyword: params.keyword || undefined,
+      page: params.page ?? 1,
+      pageSize: params.pageSize ?? 10
+    }
+  })
+}
+
+export function getAdminMarketJobDetail(id: string) {
+  return customFetch<unknown>(`/admin/market/jobs/${encodeURIComponent(id)}`, { method: 'GET' })
 }

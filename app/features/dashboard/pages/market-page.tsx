@@ -1,18 +1,23 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 import { ReadinessHistoryTimeline } from '~/shared/components/readiness-history-timeline'
 import { cn } from '~/shared/lib/cn'
 
+import { MarketJobDetailDrawer } from '../components/market/market-job-detail-drawer'
 import {
   loadMarketBaseline,
+  loadMarketJobDetail,
+  loadMarketJobs,
   loadMarketSkillTrends,
   loadUserReadiness,
   loadUserReadinessHistory,
   loadUserSkillProgress,
   MARKET_ROLE_OPTIONS,
   type MarketBaselineView,
+  type MarketJobDetailView,
+  type MarketJobListView,
   type MarketRoleCategory,
   type MarketSkillTrendView,
   type UserReadinessSnapshotView,
@@ -43,6 +48,7 @@ function formatDate(value: string | null, locale: string) {
 
 export function MarketPage() {
   const { t, i18n } = useTranslation('dashboard')
+  const navigate = useNavigate()
   const [role, setRole] = useState<MarketRoleCategory>('backend')
   const [baseline, setBaseline] = useState<MarketBaselineView | null>(null)
   const [trends, setTrends] = useState<MarketSkillTrendView[]>([])
@@ -51,6 +57,22 @@ export function MarketPage() {
   const [skillProgress, setSkillProgress] = useState<UserSkillProgressView[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const [jobs, setJobs] = useState<MarketJobListView[]>([])
+  const [jobsLoading, setJobsLoading] = useState(false)
+  const [jobsError, setJobsError] = useState('')
+  const [jobsKeyword, setJobsKeyword] = useState('')
+  const [jobsRoleFilter, setJobsRoleFilter] = useState<string>('backend')
+  const [jobsPage, setJobsPage] = useState(1)
+  const [jobsTotal, setJobsTotal] = useState(0)
+  const [jobsTotalPages, setJobsTotalPages] = useState(0)
+  const jobsPageSize = 10
+
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
+  const [selectedJob, setSelectedJob] = useState<MarketJobDetailView | null>(null)
+  const [selectedJobLoading, setSelectedJobLoading] = useState(false)
+  const [selectedJobError, setSelectedJobError] = useState('')
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle')
 
   useEffect(() => {
     let cancelled = false
@@ -102,6 +124,114 @@ export function MarketPage() {
     }
   }, [role])
 
+  useEffect(() => {
+    let cancelled = false
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setJobsLoading(true)
+        setJobsError('')
+      }
+    })
+    loadMarketJobs({
+      roleCategory: jobsRoleFilter || null,
+      keyword: jobsKeyword.trim() || null,
+      page: jobsPage,
+      pageSize: jobsPageSize
+    })
+      .then((result) => {
+        if (cancelled) return
+        setJobs(result.data?.items ?? [])
+        setJobsTotal(result.data?.total ?? 0)
+        setJobsTotalPages(result.data?.totalPages ?? 0)
+        setJobsError(result.error ?? '')
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setJobs([])
+        setJobsTotal(0)
+        setJobsTotalPages(0)
+        setJobsError((err as Error).message)
+      })
+      .finally(() => {
+        if (!cancelled) setJobsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [jobsRoleFilter, jobsKeyword, jobsPage])
+
+  useEffect(() => {
+    if (!selectedJobId) {
+      queueMicrotask(() => {
+        setSelectedJob(null)
+        setSelectedJobError('')
+        setCopyState('idle')
+      })
+      return
+    }
+    let cancelled = false
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setSelectedJobLoading(true)
+        setSelectedJobError('')
+        setCopyState('idle')
+      }
+    })
+    loadMarketJobDetail(selectedJobId)
+      .then((result) => {
+        if (cancelled) return
+        setSelectedJob(result.data)
+        setSelectedJobError(result.error ?? '')
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setSelectedJob(null)
+        setSelectedJobError((err as Error).message)
+      })
+      .finally(() => {
+        if (!cancelled) setSelectedJobLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [selectedJobId])
+
+  const handleCopyRawContent = async (value: string) => {
+    if (typeof navigator === 'undefined' || !navigator.clipboard) {
+      window.prompt(t('marketIntelligence.jobs.copyFallback'), value)
+      setCopyState('failed')
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(value)
+      setCopyState('copied')
+      window.setTimeout(() => setCopyState('idle'), 2000)
+    } catch {
+      window.prompt(t('marketIntelligence.jobs.copyFallback'), value)
+      setCopyState('failed')
+    }
+  }
+
+  const handleAnalyze = (job: MarketJobDetailView) => {
+    if (!job) return
+    navigate('/dashboard/jd/new', {
+      state: {
+        marketJob: {
+          id: job.id,
+          sourceSite: job.sourceSite,
+          sourceUrl: job.sourceUrl ?? '',
+          jobTitle: job.jobTitle,
+          companyName: job.companyName ?? '',
+          location: job.location ?? '',
+          salaryText: job.salaryText ?? '',
+          roleCategory: job.roleCategory,
+          rawContent: job.originalContent || job.rawContent,
+          skills: job.skills
+        }
+      }
+    })
+  }
+
   const progressBySkill = useMemo(() => {
     return new Map(skillProgress.map((item) => [item.skillName.toLowerCase(), item]))
   }, [skillProgress])
@@ -138,7 +268,12 @@ export function MarketPage() {
           {t('marketIntelligence.roleLabel')}
           <select
             value={role}
-            onChange={(event) => setRole(event.target.value as MarketRoleCategory)}
+            onChange={(event) => {
+              const nextRole = event.target.value as MarketRoleCategory
+              setRole(nextRole)
+              setJobsRoleFilter(nextRole)
+              setJobsPage(1)
+            }}
             className='min-w-64 rounded-xl border border-border bg-card px-4 py-3 text-sm font-bold text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40'
           >
             {MARKET_ROLE_OPTIONS.map((item) => (
@@ -179,6 +314,53 @@ export function MarketPage() {
         />
       </section>
 
+      <section className='mb-8 rounded-2xl border border-border bg-card p-6 shadow-sm'>
+        <div className='flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between'>
+          <div>
+            <p className='text-xs font-bold uppercase tracking-widest text-primary'>
+              {t('marketIntelligence.dataset.eyebrow')}
+            </p>
+            <h2 className='mt-2 text-xl font-bold text-foreground'>{t('marketIntelligence.dataset.title')}</h2>
+            <p className='mt-1 max-w-3xl text-sm leading-6 text-muted-foreground'>
+              {t('marketIntelligence.dataset.subtitle')}
+            </p>
+          </div>
+          <div className='rounded-xl border border-border bg-muted/20 px-4 py-3 text-sm font-semibold text-foreground'>
+            {t(`marketIntelligence.roles.${role}`)}
+          </div>
+        </div>
+        <div className='mt-5 grid gap-4 md:grid-cols-3'>
+          <DatasetFact
+            icon='work'
+            label={t('marketIntelligence.dataset.jobs')}
+            value={loading ? '...' : String(baseline?.totalJobs ?? 0)}
+          />
+          <DatasetFact
+            icon='update'
+            label={t('marketIntelligence.dataset.updated')}
+            value={loading ? '...' : (updatedDate ?? t('marketIntelligence.metrics.noDate'))}
+          />
+          <DatasetFact
+            icon='verified'
+            label={t('marketIntelligence.dataset.source')}
+            value={t('marketIntelligence.dataset.sourceValue')}
+          />
+        </div>
+        <div className='mt-5 grid gap-3 md:grid-cols-3'>
+          {(baseline?.topSkills ?? []).slice(0, 3).map((skill) => (
+            <div key={skill.skillName} className='rounded-xl border border-border bg-muted/20 p-4'>
+              <p className='text-sm font-black text-foreground'>{skill.skillName}</p>
+              <p className='mt-1 text-xs leading-5 text-muted-foreground'>
+                {t('marketIntelligence.dataset.skillSignal', {
+                  count: skill.jobCount,
+                  percent: skill.demandPercent
+                })}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div className='mb-8'>
         <ReadinessHistoryTimeline
           snapshots={history}
@@ -213,15 +395,166 @@ export function MarketPage() {
         </section>
       ) : null}
 
+      <section className='mb-8 rounded-2xl border border-border bg-card shadow-sm'>
+        <div className='flex flex-col gap-4 border-b border-border p-6 lg:flex-row lg:items-end lg:justify-between'>
+          <div>
+            <p className='text-xs font-bold uppercase tracking-widest text-primary'>
+              {t('marketIntelligence.jobs.eyebrow')}
+            </p>
+            <h2 className='mt-2 text-xl font-bold text-foreground'>{t('marketIntelligence.jobs.title')}</h2>
+            <p className='mt-1 max-w-3xl text-sm leading-6 text-muted-foreground'>
+              {t('marketIntelligence.jobs.subtitle')}
+            </p>
+          </div>
+          <div className='grid gap-3 sm:grid-cols-[1fr_1fr_auto]'>
+            <input
+              type='search'
+              value={jobsKeyword}
+              onChange={(event) => {
+                setJobsPage(1)
+                setJobsKeyword(event.target.value)
+              }}
+              placeholder={t('marketIntelligence.jobs.searchPlaceholder')}
+              className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40'
+            />
+            <select
+              value={jobsRoleFilter}
+              onChange={(event) => {
+                setJobsPage(1)
+                setJobsRoleFilter(event.target.value)
+              }}
+              className='rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40'
+            >
+              <option value=''>{t('marketIntelligence.jobs.allRoles')}</option>
+              {MARKET_ROLE_OPTIONS.map((item) => (
+                <option key={item} value={item}>
+                  {t(`marketIntelligence.roles.${item}`)}
+                </option>
+              ))}
+            </select>
+            <span className='inline-flex items-center justify-center rounded-xl border border-border bg-muted/20 px-3 text-xs font-bold text-muted-foreground'>
+              {t('marketIntelligence.jobs.totalLabel', { total: jobsTotal })}
+            </span>
+          </div>
+        </div>
+
+        {jobsError ? (
+          <div className='m-6 rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive'>
+            {jobsError}
+          </div>
+        ) : null}
+
+        <div className='max-h-[520px] overflow-auto'>
+          <table className='w-full min-w-[1080px] table-fixed border-collapse text-left'>
+            <thead className='sticky top-0 z-10'>
+              <tr className='border-b border-border bg-card text-xs font-bold uppercase tracking-widest text-muted-foreground shadow-sm'>
+                <th className='w-[25%] px-6 py-4'>{t('marketIntelligence.jobs.table.title')}</th>
+                <th className='w-[18%] px-6 py-4'>{t('marketIntelligence.jobs.table.company')}</th>
+                <th className='w-[16%] px-6 py-4'>{t('marketIntelligence.jobs.table.location')}</th>
+                <th className='w-[14%] px-6 py-4'>{t('marketIntelligence.jobs.table.role')}</th>
+                <th className='w-[18%] px-6 py-4'>{t('marketIntelligence.jobs.table.skills')}</th>
+                <th className='w-[9%] px-6 py-4 text-right'>{t('marketIntelligence.jobs.table.action')}</th>
+              </tr>
+            </thead>
+            <tbody className='divide-y divide-border'>
+              {jobsLoading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <tr key={index} className='animate-pulse'>
+                    {Array.from({ length: 6 }).map((__, cell) => (
+                      <td key={cell} className='px-6 py-5'>
+                        <div className='h-4 rounded bg-muted' />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : jobs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className='px-6 py-12 text-center text-sm text-muted-foreground'>
+                    {t('marketIntelligence.jobs.empty')}
+                  </td>
+                </tr>
+              ) : (
+                jobs.map((job) => (
+                  <tr key={job.id} className='align-top hover:bg-muted/20'>
+                    <td className='break-words px-6 py-5'>
+                      <p className='font-bold leading-6 text-foreground'>{job.jobTitle}</p>
+                      <p className='mt-1 text-xs text-muted-foreground'>{job.sourceSite}</p>
+                    </td>
+                    <td className='break-words px-6 py-5 text-sm leading-6 text-foreground'>
+                      {job.companyName ?? '-'}
+                    </td>
+                    <td className='break-words px-6 py-5 text-sm leading-6 text-foreground'>{job.location ?? '-'}</td>
+                    <td className='break-words px-6 py-5 text-sm leading-6 text-foreground'>
+                      {t(`marketIntelligence.roles.${job.roleCategory}`, { defaultValue: job.roleCategory })}
+                    </td>
+                    <td className='px-6 py-5'>
+                      <div className='flex flex-wrap gap-1'>
+                        {job.skills.slice(0, 3).map((skill) => (
+                          <span
+                            key={`${job.id}-${skill}`}
+                            className='rounded-full bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary'
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                        {job.skills.length > 3 ? (
+                          <span className='rounded-full bg-muted px-2 py-1 text-[11px] font-bold text-muted-foreground'>
+                            +{job.skills.length - 3}
+                          </span>
+                        ) : null}
+                      </div>
+                    </td>
+                    <td className='px-6 py-5 text-right'>
+                      <button
+                        type='button'
+                        onClick={() => setSelectedJobId(job.id)}
+                        className='inline-flex items-center gap-2 rounded-lg border border-primary/30 px-3 py-2 text-xs font-bold text-primary hover:bg-primary/5'
+                      >
+                        <span className='material-symbols-outlined text-base'>visibility</span>
+                        {t('marketIntelligence.jobs.view')}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className='flex items-center justify-between border-t border-border px-6 py-4 text-sm text-muted-foreground'>
+          <span>{t('marketIntelligence.jobs.pageLabel', { page: jobsPage, totalPages: jobsTotalPages || 1 })}</span>
+          <div className='flex items-center gap-2'>
+            <button
+              type='button'
+              onClick={() => setJobsPage((current) => Math.max(1, current - 1))}
+              disabled={jobsPage <= 1 || jobsLoading}
+              className='rounded-lg border border-border px-3 py-1 text-xs font-bold text-foreground disabled:opacity-40'
+            >
+              {t('marketIntelligence.jobs.prev')}
+            </button>
+            <button
+              type='button'
+              onClick={() =>
+                setJobsPage((current) => (jobsTotalPages && current < jobsTotalPages ? current + 1 : current))
+              }
+              disabled={!jobsTotalPages || jobsPage >= jobsTotalPages || jobsLoading}
+              className='rounded-lg border border-border px-3 py-1 text-xs font-bold text-foreground disabled:opacity-40'
+            >
+              {t('marketIntelligence.jobs.next')}
+            </button>
+          </div>
+        </div>
+      </section>
+
       <div className='grid gap-8 xl:grid-cols-[1.5fr_1fr]'>
         <section className='rounded-2xl border border-border bg-card shadow-sm'>
           <div className='border-b border-border p-6'>
             <h2 className='text-xl font-bold text-foreground'>{t('marketIntelligence.topSkills.title')}</h2>
             <p className='mt-1 text-sm text-muted-foreground'>{t('marketIntelligence.topSkills.subtitle')}</p>
           </div>
-          <div className='overflow-x-auto'>
+          <div className='max-h-[620px] overflow-auto'>
             <table className='w-full border-collapse text-left'>
-              <thead>
+              <thead className='sticky top-0 z-10'>
                 <tr className='border-b border-border bg-muted/40 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
                   <th className='px-6 py-4'>{t('marketIntelligence.topSkills.skill')}</th>
                   <th className='px-6 py-4'>{t('marketIntelligence.topSkills.demand')}</th>
@@ -311,7 +644,7 @@ export function MarketPage() {
           <section className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
             <h2 className='text-xl font-bold text-foreground'>{t('marketIntelligence.priority.title')}</h2>
             <p className='mt-1 text-sm text-muted-foreground'>{t('marketIntelligence.priority.subtitle')}</p>
-            <div className='mt-5 space-y-3'>
+            <div className='mt-5 max-h-[320px] space-y-3 overflow-y-auto pr-1'>
               {(readiness?.prioritySkills.length
                 ? readiness.prioritySkills.slice(0, 6)
                 : [t('marketIntelligence.priority.empty')]
@@ -375,6 +708,29 @@ export function MarketPage() {
           </section>
         </aside>
       </div>
+
+      <MarketJobDetailDrawer
+        open={Boolean(selectedJobId)}
+        loading={selectedJobLoading}
+        error={selectedJobError}
+        job={selectedJob}
+        copyState={copyState}
+        onClose={() => setSelectedJobId(null)}
+        onCopy={handleCopyRawContent}
+        onAnalyze={handleAnalyze}
+        labels={{
+          close: t('marketIntelligence.jobs.close'),
+          copied: t('marketIntelligence.jobs.copied'),
+          copy: t('marketIntelligence.jobs.copy'),
+          copyFallback: t('marketIntelligence.jobs.copyFallback'),
+          analyze: t('marketIntelligence.jobs.analyze'),
+          source: t('marketIntelligence.jobs.source'),
+          skills: t('marketIntelligence.jobs.skills'),
+          originalContent: t('marketIntelligence.jobs.originalContent'),
+          openSource: t('marketIntelligence.jobs.openSource'),
+          sourceUnavailable: t('marketIntelligence.jobs.sourceUnavailable')
+        }}
+      />
     </div>
   )
 }
@@ -387,6 +743,20 @@ function MarketMetric({ icon, label, value }: { icon: string; label: string; val
       </div>
       <p className='text-sm font-semibold text-muted-foreground'>{label}</p>
       <p className='mt-1 text-2xl font-black text-foreground'>{value}</p>
+    </div>
+  )
+}
+
+function DatasetFact({ icon, label, value }: { icon: string; label: string; value: string }) {
+  return (
+    <div className='flex items-center gap-3 rounded-xl border border-border bg-muted/20 p-4'>
+      <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary'>
+        <span className='material-symbols-outlined text-xl'>{icon}</span>
+      </div>
+      <div className='min-w-0'>
+        <p className='text-xs font-bold uppercase tracking-widest text-muted-foreground'>{label}</p>
+        <p className='mt-1 truncate text-sm font-black text-foreground'>{value}</p>
+      </div>
     </div>
   )
 }
