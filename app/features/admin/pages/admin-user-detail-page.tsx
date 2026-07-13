@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 
+import { ReadinessHistoryTimeline } from '~/shared/components/readiness-history-timeline'
+
 import {
   activateAdminUserSubscription,
   loadAdminUserDetail,
@@ -9,6 +11,7 @@ import {
   setAdminUserBan,
   type AdminUserDetailView
 } from '../lib/admin-data'
+import { loadAdminUserReadinessHistory, type AdminReadinessSnapshotView } from '../lib/market-readiness'
 
 const fallbackUser: AdminUserDetailView = {
   id: 'fallback-user',
@@ -73,6 +76,7 @@ export function AdminUserDetailPage() {
   const [submitting, setSubmitting] = useState(false)
   const [showActivateModal, setShowActivateModal] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState(1)
+  const [readinessHistory, setReadinessHistory] = useState<AdminReadinessSnapshotView[]>([])
 
   useEffect(() => {
     let cancelled = false
@@ -94,6 +98,14 @@ export function AdminUserDetailPage() {
       })
       .finally(() => {
         if (!cancelled) setLoading(false)
+      })
+
+    loadAdminUserReadinessHistory(userId, 12)
+      .then((snapshots) => {
+        if (!cancelled) setReadinessHistory(snapshots)
+      })
+      .catch(() => {
+        if (!cancelled) setReadinessHistory([])
       })
 
     return () => {
@@ -334,6 +346,19 @@ export function AdminUserDetailPage() {
               </div>
             </section>
           </div>
+
+          <ReadinessHistoryTimeline
+            snapshots={readinessHistory}
+            loading={loading}
+            title={t('userDetail.readinessHistory.title')}
+            subtitle={t('userDetail.readinessHistory.subtitle')}
+            emptyText={t('userDetail.readinessHistory.empty')}
+            scoreLabel={t('userDetail.readinessHistory.score')}
+            marketLabel={t('userDetail.readinessHistory.market')}
+            roadmapLabel={t('userDetail.readinessHistory.roadmap')}
+            gapLabel={t('userDetail.readinessHistory.gap')}
+            locale={i18n.language ?? 'vi'}
+          />
 
           <section className='bg-card rounded-2xl p-8 border border-border shadow-sm overflow-hidden relative group'>
             <div className='flex justify-between items-center mb-8 flex-wrap gap-4'>

@@ -1,4 +1,5 @@
 import { DashboardJdRecent } from '../components/overview/dashboard-jd-recent'
+import { DashboardCareerReadiness } from '../components/overview/dashboard-career-readiness'
 import { DashboardQuickActions } from '../components/overview/dashboard-quick-actions'
 import { DashboardQuotaBanner } from '../components/overview/dashboard-quota-banner'
 import { DashboardQuotaOverview } from '../components/overview/dashboard-quota-overview'
@@ -12,6 +13,8 @@ export function DashboardPage() {
       <DashboardQuickActions />
 
       <DashboardRoadmapBanner />
+
+      <DashboardCareerReadiness />
 
       <div className='grid grid-cols-1 xl:grid-cols-2 gap-8 items-start'>
         <DashboardJdRecent />

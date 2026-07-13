@@ -403,7 +403,7 @@ export function AdminSkillsQueuePage() {
   }
 
   function handleToggleActive(row: AdminSkillRowView) {
-    const nextActive = !Boolean(row.isActive)
+    const nextActive = !row.isActive
     openConfirm({
       title: nextActive ? label('Bật kỹ năng?', 'Activate skill?') : label('Tắt kỹ năng?', 'Deactivate skill?'),
       message: nextActive

@@ -69,6 +69,7 @@ function admin() {
       route('admin/subscriptions', 'routes/admin/subscriptions.tsx'),
       route('admin/jd-logs', 'routes/admin/jd-logs.tsx'),
       route('admin/jd-logs/:id', 'routes/admin/jd-log-detail.tsx'),
+      route('admin/market-readiness', 'routes/admin/market-readiness.tsx'),
 
       route('admin/payment-orders', 'routes/admin/revenue.tsx', { id: 'admin-payment-orders-spec-route' }),
       route('admin/subscription-config', 'routes/admin/subscriptions.tsx', {

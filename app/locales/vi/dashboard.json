@@ -8,7 +8,7 @@
     "certificates": "Chứng chỉ",
     "analysisHistory": "Lịch sử phân tích",
     "allRoadmaps": "Toàn bộ lộ trình",
-    "market": "Thị trường",
+    "market": "Thị trường việc làm",
     "learningPath": "Lộ trình học",
     "careerTrack": "Lộ trình nghề nghiệp",
     "portfolio": "Hồ sơ năng lực",
@@ -208,10 +208,22 @@
   "quickActions": {
     "title": "Hành động nhanh",
     "go": "Mở",
-    "submitJd": { "title": "Nộp JD", "desc": "Phân tích một JD mới." },
-    "roadmap": { "title": "Lộ trình học", "desc": "Tiếp tục cây kỹ năng của bạn." },
-    "careerTrack": { "title": "Lộ trình nghề nghiệp", "desc": "Tổ chức JD theo mục tiêu." },
-    "portfolio": { "title": "Hồ sơ năng lực", "desc": "Thể hiện thành tích của bạn." }
+    "submitJd": {
+      "title": "Nộp JD",
+      "desc": "Phân tích một JD mới."
+    },
+    "roadmap": {
+      "title": "Lộ trình học",
+      "desc": "Tiếp tục cây kỹ năng của bạn."
+    },
+    "careerTrack": {
+      "title": "Lộ trình nghề nghiệp",
+      "desc": "Tổ chức JD theo mục tiêu."
+    },
+    "portfolio": {
+      "title": "Hồ sơ năng lực",
+      "desc": "Thể hiện thành tích của bạn."
+    }
   },
   "quotaOverview": {
     "title": "Mức sử dụng gói",
@@ -642,6 +654,149 @@
       "emptyTitle": "Chưa có dự án nào",
       "emptySubtitle": "Tạo các dự án tiêu biểu trong trình chỉnh sửa hồ sơ để trưng bày chúng ở đây.",
       "addCta": "Thêm dự án"
+    }
+  },
+  "readinessPanel": {
+    "eyebrow": "Mức sẵn sàng thị trường",
+    "title": "Sẵn sàng nghề nghiệp",
+    "subtitle": "Tiến độ của bạn so với nhu cầu tuyển dụng IT Việt Nam hiện tại.",
+    "levels": {
+      "ready": "Sẵn sàng",
+      "improving": "Đang cải thiện",
+      "at_risk": "Cần ưu tiên",
+      "unknown": "Thiếu dữ liệu"
+    },
+    "marketAlignment": "Khớp thị trường",
+    "roadmapCompletion": "Hoàn thành lộ trình",
+    "gapSkills": "Kỹ năng còn thiếu",
+    "prioritySkills": "Kỹ năng ưu tiên",
+    "noPriority": "Chưa có ưu tiên gấp",
+    "empty": "Chưa có dữ liệu sẵn sàng. Hãy nộp JD và chạy phân tích gap để tạo snapshot.",
+    "cta": "Xem kế hoạch thị trường"
+  },
+  "marketIntelligence": {
+    "eyebrow": "Tín hiệu thị trường việc làm",
+    "title": "Nhu cầu tuyển dụng IT Việt Nam",
+    "subtitle": "Đối chiếu tiến độ học tập với nhu cầu tuyển dụng đã được tổng hợp, thay vì chỉ dựa vào một JD riêng lẻ.",
+    "roleLabel": "Vai trò mục tiêu",
+    "roles": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "data": "Data",
+      "ai": "AI",
+      "devops": "DevOps",
+      "mobile": "Mobile",
+      "qa": "QA",
+      "business-analyst": "Business Analyst"
+    },
+    "metrics": {
+      "marketJobs": "Tin đã tổng hợp",
+      "readinessScore": "Điểm sẵn sàng",
+      "marketAlignment": "Khớp thị trường",
+      "lastUpdated": "Cập nhật lần cuối",
+      "noDate": "Chưa có dữ liệu"
+    },
+    "history": {
+      "title": "Lịch sử sẵn sàng nghề nghiệp",
+      "subtitle": "Theo dõi điểm sẵn sàng thay đổi theo thời gian khi phân tích gap, tiến độ roadmap và độ khớp thị trường được cập nhật.",
+      "empty": "Chưa có sự kiện sẵn sàng. Hãy hoàn tất phân tích khoảng cách hoặc cập nhật một bước lộ trình để tạo sự kiện đầu tiên.",
+      "score": "Điểm mới nhất",
+      "market": "Khớp thị trường",
+      "roadmap": "Tiến độ roadmap",
+      "gap": "Thiếu / Nâng cấp / Đã có",
+      "journeyTitle": "Tiến độ học tập qua nhiều mục tiêu việc làm",
+      "contextNotice": "Mỗi điểm số đối chiếu năng lực của bạn với một JD cụ thể. Hành trình tổng hợp giúp bạn theo dõi tiến bộ qua mọi mục tiêu theo thời gian.",
+      "filterLabel": "Mô tả công việc",
+      "allJds": "Tất cả JD",
+      "legacy": "Dữ liệu trước đây",
+      "error": "Không thể tải lịch sử sẵn sàng. Vui lòng thử lại.",
+      "events": {
+        "gap_analysis_completed": "Đã hoàn tất phân tích khoảng cách",
+        "roadmap_progress_changed": "Đã cập nhật tiến độ lộ trình",
+        "legacy": "Bản ghi sẵn sàng trước đây"
+      }
+    },
+    "empty": {
+      "title": "Chưa có dữ liệu thị trường cho vai trò này",
+      "description": "Admin cần import JD demo hoặc chạy crawler để trang này tính baseline thị trường thật.",
+      "adminCta": "Mở trang import admin"
+    },
+    "dataset": {
+      "eyebrow": "Dữ liệu thị trường đã tổng hợp",
+      "title": "Hệ thống đang học được gì từ thị trường việc làm",
+      "subtitle": "Phần này lấy từ các dòng việc làm và tín hiệu kỹ năng đang lưu trong database. Sinh viên có thể xem baseline tổng hợp, mở JD mẫu để sao chép nội dung và gửi sang phân tích JD.",
+      "jobs": "Tin đang lưu",
+      "updated": "Lần làm mới",
+      "source": "Kiểu dữ liệu",
+      "sourceValue": "Tín hiệu tổng hợp",
+      "skillSignal": "{{count}} tin nhắc đến nhóm này · nhu cầu {{percent}}%"
+    },
+    "topSkills": {
+      "title": "Nhóm kỹ năng nhà tuyển dụng nhắc nhiều",
+      "subtitle": "Nhu cầu được tính từ các dòng việc làm thị trường đang lưu trong database backend.",
+      "skill": "Nhóm kỹ năng",
+      "demand": "Nhu cầu",
+      "status": "Trạng thái của bạn",
+      "flags": "Tín hiệu",
+      "jobCount": "{{count}} JD nhắc đến kỹ năng này"
+    },
+    "status": {
+      "missing": "Còn thiếu",
+      "needs_upgrade": "Cần nâng cấp",
+      "upgrade": "Cần nâng cấp",
+      "have": "Đã có",
+      "completed": "Đã có",
+      "unknown": "Chưa có minh chứng"
+    },
+    "flags": {
+      "mandatory": "Bắt buộc",
+      "marketTop": "Top thị trường"
+    },
+    "priority": {
+      "title": "Kế hoạch ưu tiên",
+      "subtitle": "Các kỹ năng ảnh hưởng mạnh nhất tới điểm sẵn sàng hiện tại.",
+      "missing": "Thiếu",
+      "upgrade": "Nâng cấp",
+      "have": "Đã có",
+      "empty": "Chưa có kỹ năng ưu tiên",
+      "cta": "Xem lịch sử phân tích"
+    },
+    "trends": {
+      "title": "Xu hướng nhu cầu kỹ năng",
+      "subtitle": "Phân bố nhu cầu gần đây theo kỹ năng cho vai trò đã chọn.",
+      "empty": "Chưa có dòng xu hướng. Hãy import JD thị trường có ngày đăng để mở khoá trend."
+    },
+    "jobs": {
+      "eyebrow": "Thị trường việc làm",
+      "title": "Tin tuyển dụng thị trường",
+      "subtitle": "Xem các JD mẫu được thu thập từ nguồn thị trường. Mở một JD để sao chép nội dung gốc hoặc gửi đi phân tích.",
+      "searchPlaceholder": "Tìm tiêu đề, công ty, địa điểm...",
+      "allRoles": "Tất cả vai trò",
+      "totalLabel": "{{total}} tin",
+      "empty": "Không có tin tuyển dụng nào khớp bộ lọc.",
+      "view": "Xem",
+      "copy": "Sao chép",
+      "copied": "Đã sao chép",
+      "copyFallback": "Trình duyệt không hỗ trợ clipboard. Vui lòng sao chép thủ công.",
+      "analyze": "Phân tích với JD",
+      "source": "Nguồn",
+      "skills": "Kỹ năng",
+      "preview": "Nội dung JD",
+      "originalContent": "Nội dung JD từ nguồn tuyển dụng",
+      "openSource": "Mở trang gốc",
+      "sourceUnavailable": "Chưa có link nguồn",
+      "close": "Đóng",
+      "prev": "Trước",
+      "next": "Sau",
+      "pageLabel": "Trang {{page}} / {{totalPages}}",
+      "table": {
+        "title": "Tiêu đề",
+        "company": "Công ty",
+        "location": "Địa điểm",
+        "role": "Vai trò",
+        "skills": "Kỹ năng",
+        "action": "Thao tác"
+      }
     }
   }
 }

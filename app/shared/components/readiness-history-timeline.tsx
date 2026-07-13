@@ -1,0 +1,205 @@
+import { useState } from 'react'
+
+export type ReadinessHistoryPoint = {
+  score: number
+  level: string
+  roadmapCompletionPercent: number
+  marketAlignmentPercent: number
+  missingSkills: number
+  needsUpgradeSkills: number
+  haveSkills: number
+  calculatedAt: string
+  jdSubmissionId?: string | null
+  jobTitle?: string | null
+  roleCategory?: string | null
+  eventType?: string
+  eventLabel?: string
+}
+
+type ReadinessHistoryTimelineProps = {
+  snapshots: ReadinessHistoryPoint[]
+  loading?: boolean
+  title: string
+  subtitle: string
+  emptyText: string
+  scoreLabel: string
+  marketLabel: string
+  roadmapLabel: string
+  gapLabel: string
+  locale: string
+}
+
+export function ReadinessHistoryTimeline({
+  snapshots,
+  loading,
+  title,
+  subtitle,
+  emptyText,
+  scoreLabel,
+  marketLabel,
+  roadmapLabel,
+  gapLabel,
+  locale
+}: ReadinessHistoryTimelineProps) {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const matchedIndex = snapshots.findIndex((snapshot, index) => pointKey(snapshot, index) === selectedKey)
+  const selectedIndex = matchedIndex >= 0 ? matchedIndex : Math.max(0, snapshots.length - 1)
+
+  const points = buildPoints(snapshots)
+  const latest = snapshots[snapshots.length - 1]
+  const selected = snapshots[selectedIndex] ?? latest
+  const pathPoints = points.map((point) => `${point.x},${point.y}`).join(' ')
+
+  return (
+    <section className='rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6'>
+      <div className='flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between'>
+        <div className='min-w-0'>
+          <h2 className='text-xl font-bold text-foreground'>{title}</h2>
+          <p className='mt-1 max-w-2xl text-sm leading-6 text-muted-foreground'>{subtitle}</p>
+        </div>
+        {latest ? (
+          <div className='w-full rounded-xl border border-border bg-muted/20 px-4 py-3 text-left sm:w-auto sm:min-w-36 sm:text-right'>
+            <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{scoreLabel}</p>
+            <p className='mt-1 text-3xl font-black text-foreground'>{latest.score}/100</p>
+          </div>
+        ) : null}
+      </div>
+
+      {loading ? (
+        <div className='mt-6 h-56 animate-pulse rounded-xl bg-muted' />
+      ) : snapshots.length === 0 ? (
+        <div className='mt-6 rounded-xl border border-dashed border-border bg-muted/20 p-6 text-sm text-muted-foreground'>
+          {emptyText}
+        </div>
+      ) : (
+        <div className='mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(260px,0.8fr)]'>
+          <div className='min-w-0 rounded-xl border border-border bg-background p-4'>
+            <svg viewBox='0 0 320 140' className='h-52 w-full overflow-visible' role='img' aria-label={title}>
+              <line x1='20' y1='120' x2='300' y2='120' className='stroke-border' strokeWidth='1' />
+              <line x1='20' y1='20' x2='20' y2='120' className='stroke-border' strokeWidth='1' />
+              <polyline
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='3'
+                className='text-primary'
+                points={pathPoints}
+              />
+              {points.map((point, index) => {
+                const snapshot = snapshots[index]
+                const label = [
+                  snapshot.jobTitle,
+                  snapshot.eventLabel ?? snapshot.eventType,
+                  `${snapshot.score} ${scoreLabel}`,
+                  formatLongDate(snapshot.calculatedAt, locale)
+                ]
+                  .filter(Boolean)
+                  .join(', ')
+
+                return (
+                  <circle
+                    key={`${snapshot.calculatedAt}-${index}`}
+                    cx={point.x}
+                    cy={point.y}
+                    r={selectedIndex === index ? '6' : '4.5'}
+                    className='cursor-pointer fill-primary outline-none focus:stroke-foreground focus:stroke-2'
+                    role='button'
+                    tabIndex={0}
+                    aria-label={label}
+                    onClick={() => setSelectedKey(pointKey(snapshot, index))}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        setSelectedKey(pointKey(snapshot, index))
+                      }
+                    }}
+                  />
+                )
+              })}
+            </svg>
+            <div className='mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3'>
+              {snapshots.slice(-3).map((snapshot) => (
+                <div key={snapshot.calculatedAt} className='min-w-0 rounded-lg bg-muted/30 px-3 py-2'>
+                  <span className='font-bold text-foreground'>{snapshot.score}/100</span>
+                  <span className='ml-2'>{formatShortDate(snapshot.calculatedAt, locale)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className='grid gap-3'>
+            {selected ? (
+              <div className='rounded-xl border border-border bg-muted/20 p-4' aria-live='polite'>
+                <p className='font-bold text-foreground'>
+                  {selected.jobTitle ?? selected.eventLabel ?? selected.level}
+                </p>
+                <p className='mt-1 text-sm text-muted-foreground'>
+                  {[
+                    selected.roleCategory,
+                    selected.eventLabel ?? selected.eventType,
+                    formatLongDate(selected.calculatedAt, locale)
+                  ]
+                    .filter(Boolean)
+                    .join(' · ')}
+                </p>
+                <p className='mt-3 text-2xl font-black text-foreground'>{selected.score}/100</p>
+              </div>
+            ) : null}
+            <TimelineMetric label={marketLabel} value={`${selected?.marketAlignmentPercent ?? 0}%`} />
+            <TimelineMetric label={roadmapLabel} value={`${selected?.roadmapCompletionPercent ?? 0}%`} />
+            <TimelineMetric
+              label={gapLabel}
+              value={`${selected?.missingSkills ?? 0} / ${selected?.needsUpgradeSkills ?? 0} / ${selected?.haveSkills ?? 0}`}
+            />
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
+
+function buildPoints(snapshots: ReadinessHistoryPoint[]) {
+  if (snapshots.length === 1) {
+    return [{ x: 160, y: 120 - clampScore(snapshots[0].score) }]
+  }
+
+  return snapshots.map((snapshot, index) => {
+    const x = 20 + (index * 280) / Math.max(1, snapshots.length - 1)
+    const y = 120 - clampScore(snapshot.score)
+    return { x, y }
+  })
+}
+
+function clampScore(score: number) {
+  return Math.max(0, Math.min(100, score))
+}
+
+function pointKey(snapshot: ReadinessHistoryPoint, index: number) {
+  return `${snapshot.calculatedAt}-${snapshot.jdSubmissionId ?? 'legacy'}-${index}`
+}
+
+function formatShortDate(value: string, locale: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat(locale.startsWith('vi') ? 'vi-VN' : 'en-US', {
+    day: '2-digit',
+    month: '2-digit'
+  }).format(date)
+}
+
+function formatLongDate(value: string, locale: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat(locale.startsWith('vi') ? 'vi-VN' : 'en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  }).format(date)
+}
+
+function TimelineMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className='rounded-xl border border-border bg-muted/20 p-4'>
+      <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>{label}</p>
+      <p className='mt-2 text-2xl font-black text-foreground'>{value}</p>
+    </div>
+  )
+}

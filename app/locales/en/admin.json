@@ -14,7 +14,8 @@
     "jdLogs": "JD Logs",
     "generateReport": "Generate Report",
     "support": "Support",
-    "logout": "Logout"
+    "logout": "Logout",
+    "marketReadiness": "Career insights"
   },
   "header": {
     "title": "System Overview",
@@ -430,6 +431,15 @@
         "status": "Status"
       },
       "empty": "No transactions recorded."
+    },
+    "readinessHistory": {
+      "title": "Student readiness history",
+      "subtitle": "Review this student's career readiness snapshots over time for advising and school KPI tracking.",
+      "empty": "This student does not have readiness snapshots yet.",
+      "score": "Latest score",
+      "market": "Market alignment",
+      "roadmap": "Roadmap progress",
+      "gap": "Missing / Upgrade / Have"
     }
   },
   "adminCommon": {
@@ -507,5 +517,173 @@
     "support": "Support",
     "privacy": "Privacy",
     "terms": "Terms"
+  },
+  "marketReadiness": {
+    "eyebrow": "Career outcomes",
+    "title": "Employment readiness overview",
+    "subtitle": "Help advisors track how student readiness compares with hiring demand from collected job-market data.",
+    "refresh": "Refresh",
+    "empty": "No data yet",
+    "filters": {
+      "searchProgram": "Search programs",
+      "searchProgramPlaceholder": "Program name...",
+      "searchSkill": "Search skill gaps",
+      "searchSkillPlaceholder": "Skill name...",
+      "searchRole": "Search career goals",
+      "searchRolePlaceholder": "Role name...",
+      "program": "Program",
+      "allPrograms": "All programs",
+      "noMatches": "No matching results"
+    },
+    "errors": {
+      "load": "Failed to load career readiness KPI."
+    },
+    "kpi": {
+      "totalStudents": "Total students",
+      "snapshots": "Students tracked",
+      "averageScore": "Average readiness",
+      "coverage": "Tracking coverage"
+    },
+    "byMajor": {
+      "title": "Readiness by program",
+      "major": "Program",
+      "students": "Students",
+      "score": "Avg readiness"
+    },
+    "missingSkills": {
+      "title": "Largest learning gaps",
+      "skill": "Learning area",
+      "missing": "Missing",
+      "upgrade": "Needs practice"
+    },
+    "targetRoles": {
+      "title": "Career goals",
+      "role": "Goal",
+      "students": "Students",
+      "marketJobs": "Market signals"
+    },
+    "import": {
+      "title": "Backup data entry",
+      "subtitle": "Use this only when public sources are unavailable. The update form above is the main demo flow.",
+      "submit": "Import jobs",
+      "running": "Importing",
+      "success": "Market jobs imported.",
+      "failed": "Failed to import market jobs.",
+      "invalidJson": "Payload must be valid JSON with sourceSite and jobs[]."
+    },
+    "crawler": {
+      "title": "Update market data",
+      "subtitle": "Collect recent hiring signals from public sources, then review what was added below.",
+      "sourceSite": "Job source",
+      "role": "Career group",
+      "keyword": "Search phrase",
+      "location": "Hiring location",
+      "locations": {
+        "all": "All Vietnam",
+        "ho-chi-minh": "Ho Chi Minh City",
+        "ha-noi": "Hanoi",
+        "da-nang": "Da Nang",
+        "can-tho": "Can Tho",
+        "hai-phong": "Hai Phong",
+        "remote": "Remote / hybrid"
+      },
+      "limit": "Max items",
+      "submit": "Update data",
+      "running": "Updating",
+      "success": "Market data updated.",
+      "blocked": "The job source blocked this update. The attempt was saved for review.",
+      "unsupported": "This crawler source is disabled or unsupported.",
+      "noJobs": "No matching JD was added. Review the result to see whether the source was blocked, detail pages changed, locations did not match, or all jobs already existed.",
+      "failed": "Market update failed.",
+      "demoOnly": "demo",
+      "disabled": "disabled",
+      "realSourceHint": "Public source; some websites may block automated collection.",
+      "demoSourceHint": "Demo source; adds stable sample market data through the same backend pipeline.",
+      "sourceTypeReal": "Real source",
+      "sourceTypeDemo": "Demo source"
+    },
+    "result": {
+      "title": "Latest update result",
+      "empty": "Run a market update to see what changed.",
+      "operation": "Update type",
+      "import": "Manual import",
+      "crawl": "Crawler",
+      "sourceMode": "Source",
+      "status": "Status",
+      "parsedJobs": "Jobs read",
+      "fetchedUrls": "Pages checked",
+      "requestedLocation": "Selected region",
+      "searchPagesChecked": "Search pages",
+      "candidateUrlsDiscovered": "Jobs discovered",
+      "detailPagesChecked": "Job pages read",
+      "wrongRegionPages": "Outside region",
+      "rejectedPages": "Rejected pages",
+      "runId": "Audit ID",
+      "message": "Note",
+      "importedJobs": "New jobs",
+      "importedSkills": "Skill signals",
+      "skipped": "Already existed"
+    },
+    "crawlRuns": {
+      "title": "Recently collected data",
+      "subtitle": "Each card is a real backend run, so admins can see whether a source added jobs, returned no items, or was blocked.",
+      "refresh": "Reload",
+      "searchLabel": "Search market data updates",
+      "searchPlaceholder": "Search source, status, location, or note...",
+      "resultsCount": "{{count}} updates",
+      "noMatch": "No update runs match this search.",
+      "empty": "No market collection runs yet.",
+      "parsed": "{{count}} read",
+      "imported": "{{count}} new",
+      "fetched": "{{count}} checked",
+      "parsedLabel": "Read",
+      "importedLabel": "New",
+      "fetchedLabel": "Checked"
+    },
+    "runStatus": {
+      "succeeded": "Updated",
+      "partial": "Partly updated",
+      "no_items": "No new jobs",
+      "blocked": "Blocked",
+      "failed": "Failed",
+      "unsupported": "Disabled",
+      "running": "Running"
+    },
+    "jobs": {
+      "eyebrow": "Market jobs",
+      "title": "Market job records",
+      "subtitle": "Inspect every job collected from market sources. Use the drawer to inspect raw content, source metadata, and copy it to the clipboard.",
+      "searchPlaceholder": "Search title, company, location, content...",
+      "allRoles": "All roles",
+      "refresh": "Reload",
+      "empty": "No market jobs match the current filter.",
+      "view": "Open",
+      "copy": "Copy raw",
+      "copied": "Copied",
+      "copyFallback": "Clipboard unavailable. Copy manually.",
+      "source": "Source",
+      "skills": "Skills",
+      "hash": "Content hash",
+      "length": "Content length",
+      "preview": "Raw JD content",
+      "originalContent": "JD content from the hiring source",
+      "openSource": "Open source page",
+      "sourceUnavailable": "Source link unavailable",
+      "technical": "Technical details",
+      "quality": "Content quality",
+      "close": "Close",
+      "prev": "Prev",
+      "next": "Next",
+      "pageLabel": "Page {{page}} / {{totalPages}} · {{total}} jobs",
+      "detailMissing": "Job could not be loaded.",
+      "table": {
+        "title": "Job title",
+        "company": "Company",
+        "role": "Role",
+        "length": "Length",
+        "hash": "Hash",
+        "action": "Action"
+      }
+    }
   }
 }

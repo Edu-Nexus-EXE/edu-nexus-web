@@ -218,7 +218,7 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
   try {
     const res = await getAdminDashboardStats()
     const data = unwrapData<unknown>(res)
-    
+
     // Manually calculate revenue to fix backend bug (includes cancelled/pending orders)
     const ordersRes = await getAdminPaymentOrders({ page: 1, pageSize: 1000 }).catch(() => null)
     let calculatedRevenue = 0
@@ -236,7 +236,11 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
           const amount = toNumberValue(raw.amount, 0)
           calculatedRevenue += amount
           const createdAt = new Date(toStringValue(raw.createdAt, ''))
-          if (!Number.isNaN(createdAt.getTime()) && createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear()) {
+          if (
+            !Number.isNaN(createdAt.getTime()) &&
+            createdAt.getMonth() === now.getMonth() &&
+            createdAt.getFullYear() === now.getFullYear()
+          ) {
             calculatedMonthly += amount
           }
           const provider = toStringValue(raw.provider, 'Trực tuyến')
@@ -261,8 +265,8 @@ export async function loadAdminDashboardStats(): Promise<AdminDashboardStatsView
       totalJdSubmitted: toNumberValue(root.totalJdSubmitted, 0),
       revenue: ordersRes ? calculatedRevenue : toNumberValue(root.totalRevenue ?? subscriptionRevenue?.allTime, 0),
       monthlyRevenue: ordersRes ? calculatedMonthly : toNumberValue(subscriptionRevenue?.currentMonth, 0),
-      revenueByProvider: ordersRes 
-        ? calculatedProvider 
+      revenueByProvider: ordersRes
+        ? calculatedProvider
         : Object.fromEntries(Object.entries(byProvider).map(([key, value]) => [key, toNumberValue(value, 0)])),
       aiCost: toNumberValue(totalAiCost?.allTime ?? root.totalAiCost ?? root.aiCostEstimate, 0),
       monthlyAiCost: toNumberValue(totalAiCost?.currentMonth, 0),
@@ -338,9 +342,10 @@ export async function loadAdminUsersList(params?: {
           plan,
           jdCount: toNumberValue(raw.jdCount, 0),
           createdAt: toStringValue(raw.createdAt, new Date().toISOString()),
-          status: Boolean(raw.isBanned ?? raw.is_banned)
-            ? 'banned'
-            : toStringValue(raw.status || raw.accountStatus || raw.subscriptionStatus, 'active')
+          status:
+            (raw.isBanned ?? raw.is_banned)
+              ? 'banned'
+              : toStringValue(raw.status || raw.accountStatus || raw.subscriptionStatus, 'active')
         }
       }),
       total: parseTotal(data, items.length),
@@ -864,4 +869,110 @@ export async function deleteAdminRagDocument(id: string) {
   const res = await deleteAdminRagDocumentsId({ id })
   emitAdminRagUpdated()
   return res
+}
+
+import {
+  getAdminMarketJobDetail,
+  getAdminMarketJobs,
+  type MarketJobDetail,
+  type MarketJobListItem
+} from '~/shared/lib/market-intelligence-api'
+
+export type AdminMarketJobListView = MarketJobListItem
+export type AdminMarketJobDetailView = MarketJobDetail
+
+function toStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.map((item) => (typeof item === 'string' ? item : '')).filter(Boolean) : []
+}
+
+function mapMarketJobListItem(item: unknown, index: number): AdminMarketJobListView {
+  const raw = isObject(item) ? item : {}
+  return {
+    id: toStringValue(raw.id, `job-${index + 1}`),
+    sourceSite: toStringValue(raw.sourceSite, 'unknown'),
+    sourceUrl: typeof raw.sourceUrl === 'string' ? raw.sourceUrl : null,
+    jobTitle: toStringValue(raw.jobTitle, 'Untitled job'),
+    companyName: typeof raw.companyName === 'string' ? raw.companyName : null,
+    location: typeof raw.location === 'string' ? raw.location : null,
+    salaryText: typeof raw.salaryText === 'string' ? raw.salaryText : null,
+    roleCategory: toStringValue(raw.roleCategory, 'unknown'),
+    postedAt: typeof raw.postedAt === 'string' ? raw.postedAt : null,
+    collectedAt: toStringValue(raw.collectedAt, ''),
+    skills: toStringArray(raw.skills),
+    rawContentPreview: toStringValue(raw.rawContentPreview ?? raw.preview, ''),
+    originalContentQuality: typeof raw.originalContentQuality === 'string' ? raw.originalContentQuality : null,
+    rawContentHash: typeof raw.rawContentHash === 'string' ? raw.rawContentHash : null,
+    contentLength: typeof raw.contentLength === 'number' ? raw.contentLength : null
+  }
+}
+
+function mapMarketJobDetail(data: unknown): AdminMarketJobDetailView | null {
+  if (!isObject(data)) return null
+  const base = mapMarketJobListItem(data, 0)
+  return {
+    ...base,
+    rawContent: toStringValue(data.rawContent, ''),
+    originalContent: toStringValue(data.originalContent ?? data.rawContent, ''),
+    originalContentQuality: typeof data.originalContentQuality === 'string' ? data.originalContentQuality : null,
+    parsedDescription: typeof data.parsedDescription === 'string' ? data.parsedDescription : null,
+    parsedRequirements: typeof data.parsedRequirements === 'string' ? data.parsedRequirements : null,
+    parsedResponsibilities: typeof data.parsedResponsibilities === 'string' ? data.parsedResponsibilities : null,
+    parsedBenefits: typeof data.parsedBenefits === 'string' ? data.parsedBenefits : null,
+    parsedCompanyOverview: typeof data.parsedCompanyOverview === 'string' ? data.parsedCompanyOverview : null,
+    parsedSeniority: typeof data.parsedSeniority === 'string' ? data.parsedSeniority : null,
+    parsedConfidence: typeof data.parsedConfidence === 'number' ? data.parsedConfidence : null
+  }
+}
+
+function parseMarketJobPage(
+  data: unknown,
+  fallbackPage: number,
+  fallbackPageSize: number
+): AdminListResult<AdminMarketJobListView> & { totalPages: number } {
+  if (!isObject(data)) {
+    return { items: [], total: 0, page: fallbackPage, pageSize: fallbackPageSize, totalPages: 0 }
+  }
+  const nestedData = isObject(data.data) ? data.data : null
+  const pagination = isObject(data.pagination) ? data.pagination : null
+  const pageSource = nestedData ?? data
+  const items = parseItems(data.data ?? pageSource.items).map(mapMarketJobListItem)
+  const total = toNumberValue(pageSource.total ?? pagination?.total, items.length)
+  const page = toNumberValue(pageSource.page ?? pagination?.page, fallbackPage)
+  const pageSize = toNumberValue(pageSource.pageSize ?? pagination?.pageSize, fallbackPageSize)
+  const totalPages = toNumberValue(
+    pageSource.totalPages ?? pagination?.totalPages,
+    pageSize > 0 ? Math.ceil(total / pageSize) : 0
+  )
+  return { items, total, page, pageSize, totalPages }
+}
+
+export async function loadAdminMarketJobs(params?: {
+  roleCategory?: string | null
+  keyword?: string | null
+  page?: number
+  pageSize?: number
+}): Promise<AdminListResult<AdminMarketJobListView> & { totalPages: number }> {
+  const page = params?.page ?? 1
+  const pageSize = params?.pageSize ?? 10
+  try {
+    const res = await getAdminMarketJobs({
+      roleCategory: params?.roleCategory,
+      keyword: params?.keyword,
+      page,
+      pageSize
+    })
+    return parseMarketJobPage(res, page, pageSize)
+  } catch {
+    return { items: [], total: 0, page, pageSize, totalPages: 0 }
+  }
+}
+
+export async function loadAdminMarketJobDetail(id: string): Promise<AdminMarketJobDetailView | null> {
+  try {
+    const res = await getAdminMarketJobDetail(id)
+    const data = unwrapData<unknown>(res)
+    return mapMarketJobDetail(data)
+  } catch {
+    return null
+  }
 }

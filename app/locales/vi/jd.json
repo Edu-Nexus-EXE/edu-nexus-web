@@ -6,6 +6,7 @@
       "subtitle": "Dán JD hoặc nhập URL để bắt đầu.",
       "jobDescription": "Mô tả công việc",
       "jobDescriptionDesc": "Nhập URL hoặc dán nội dung JD",
+      "browseMarketJobs": "Xem JD đang có trên thị trường",
       "tabText": "Dán văn bản",
       "recommendedBadge": "Khuyến nghị",
       "tabUrl": "Dùng URL",
@@ -55,7 +56,8 @@
         "failed": "Nộp JD thất bại",
         "quotaExceeded": "Bạn đã đạt hạn mức nộp JD ({{used}}/{{limit}}). Nâng cấp gói để nộp thêm JD."
       },
-      "quotaExceeded": "Bạn đã đạt hạn mức JD của gói Miễn phí. Nâng cấp để nộp thêm."
+      "quotaExceeded": "Bạn đã đạt hạn mức JD của gói Miễn phí. Nâng cấp để nộp thêm.",
+      "marketPrefill": "Đã điền sẵn từ JD thị trường: {{title}} (nguồn: {{source}})."
     },
     "detail": {
       "badge": "MÔ TẢ CÔNG VIỆC",

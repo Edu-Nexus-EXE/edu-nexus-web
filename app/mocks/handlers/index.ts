@@ -19,6 +19,7 @@ import { exampleHandlers } from './example.handler'
 
 // Domain mocks used by dashboard routes
 import { jdHandlers } from './jd.handler'
+import { marketIntelligenceHandlers } from './market-intelligence.handler'
 import { subscriptionHandlers } from './subscription.handler'
 
 // Orval generated handlers
@@ -44,6 +45,8 @@ export const handlers: RequestHandler[] = [
   // Subscription mocks (return spec-shaped bodies so the pricing flow can
   // create orders, simulate redirect URLs, and poll order history).
   ...subscriptionHandlers,
+
+  ...marketIntelligenceHandlers,
 
   ...getAuthMock(),
   ...getUsersMock(),

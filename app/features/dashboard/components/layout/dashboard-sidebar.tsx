@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'sidebar.analysisHistory', icon: 'timeline', path: '/dashboard/analytics/analysis-history' },
   { key: 'sidebar.allRoadmaps', icon: 'account_tree', path: '/roadmaps' },
   { key: 'sidebar.careerTrack', icon: 'route', path: '/career-tracks' },
+  { key: 'sidebar.market', icon: 'desktop_windows', path: '/dashboard/market' },
   { key: 'sidebar.portfolio', icon: 'badge', path: '/dashboard/portfolio' },
   { key: 'sidebar.setting', icon: 'settings', path: '/settings' }
 ]
@@ -106,8 +107,10 @@ export function DashboardSidebar({
               )}
               title={!open ? t(item.key) : undefined}
             >
-              <span className='material-icons'>{item.icon}</span>
-              {open ? t(item.key) : null}
+              <span className='material-icons h-6 w-6 shrink-0 text-center'>{item.icon}</span>
+              {open ? (
+                <span className='min-w-0 flex-1 whitespace-normal break-words leading-5'>{t(item.key)}</span>
+              ) : null}
             </Link>
           )
         )}

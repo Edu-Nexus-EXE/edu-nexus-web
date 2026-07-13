@@ -26,8 +26,8 @@ export function DashboardHeader({ user }: { user: AuthUser }) {
   }
 
   return (
-    <header className='h-20 border-b border-border px-8 flex items-center justify-between sticky top-0 bg-card/80 backdrop-blur-md z-10'>
-      <div className='flex items-center gap-3'>
+    <header className='sticky top-0 z-10 flex min-h-20 flex-col gap-3 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-md sm:px-6 lg:h-20 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-0'>
+      <div className='flex w-full min-w-0 flex-wrap items-center gap-2 sm:gap-3 lg:w-auto lg:flex-nowrap'>
         <Link
           to='/'
           className='inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors'
@@ -48,12 +48,12 @@ export function DashboardHeader({ user }: { user: AuthUser }) {
           </Link>
         ) : null}
 
-        <div>
-          <h1 className='text-2xl font-bold text-foreground'>{t('header.title')}</h1>
-          <p className='text-sm text-muted-foreground'>{t('header.welcome', { name: user.fullName })}</p>
+        <div className='min-w-0 basis-full lg:basis-auto'>
+          <h1 className='text-xl font-bold text-foreground sm:text-2xl'>{t('header.title')}</h1>
+          <p className='text-xs text-muted-foreground sm:text-sm'>{t('header.welcome', { name: user.fullName })}</p>
         </div>
       </div>
-      <div className='flex items-center gap-4'>
+      <div className='flex w-full items-center justify-between gap-2 lg:w-auto lg:justify-end lg:gap-4'>
         <ThemeToggle />
         <LanguageSwitcher />
         <button

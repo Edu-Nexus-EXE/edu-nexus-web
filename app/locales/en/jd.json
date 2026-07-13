@@ -6,6 +6,7 @@
       "subtitle": "Paste the JD or enter a URL to start.",
       "jobDescription": "Job Description",
       "jobDescriptionDesc": "Enter URL or paste JD content",
+      "browseMarketJobs": "Browse current market jobs",
       "tabText": "Paste text",
       "recommendedBadge": "Recommended",
       "tabUrl": "Use URL",
@@ -55,7 +56,8 @@
         "failed": "Submit JD failed",
         "quotaExceeded": "You have reached your JD submission limit ({{used}}/{{limit}}). Upgrade your plan to submit more JDs."
       },
-      "quotaExceeded": "You have reached your JD quota for the Free plan. Upgrade to submit more."
+      "quotaExceeded": "You have reached your JD quota for the Free plan. Upgrade to submit more.",
+      "marketPrefill": "Prefilled from market job: {{title}} (source: {{source}})."
     },
     "detail": {
       "badge": "JOB DESCRIPTION",

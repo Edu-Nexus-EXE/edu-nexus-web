@@ -47,18 +47,6 @@ function normalizedEntries(record: Record<string, number>) {
     .sort((a, b) => b.value - a.value)
 }
 
-function providerFromOrders(orders: AdminPaymentOrderView[]) {
-  const totals = new Map<string, number>()
-  for (const order of orders) {
-    const status = order.status.toLowerCase()
-    if (status !== 'completed' && status !== 'paid' && status !== 'success') continue
-    totals.set(order.provider, (totals.get(order.provider) ?? 0) + order.amount)
-  }
-  return Array.from(totals.entries())
-    .map(([key, value]) => ({ key, value }))
-    .sort((a, b) => b.value - a.value)
-}
-
 function recentMonths(orders: AdminPaymentOrderView[], monthCount = 6) {
   const now = new Date()
   const months = Array.from({ length: monthCount }).map((_, index) => {
@@ -156,7 +144,10 @@ export function AdminOverviewCharts() {
     totalTier > 0
       ? Math.round(((tierItems.find((item) => item.key.toLowerCase() === 'student')?.value ?? 0) / totalTier) * 100)
       : 0
-  const jdSuccessRate = stats.totalJdSubmitted > 0 ? Math.round(((stats.totalJdSubmitted - jdFailedTotal) / stats.totalJdSubmitted) * 100) : 0
+  const jdSuccessRate =
+    stats.totalJdSubmitted > 0
+      ? Math.round(((stats.totalJdSubmitted - jdFailedTotal) / stats.totalJdSubmitted) * 100)
+      : 0
 
   if (loading) {
     return (
@@ -337,10 +328,7 @@ export function AdminOverviewCharts() {
             <span>{jdSuccessRate}%</span>
           </div>
           <div className='h-3 overflow-hidden rounded-full bg-destructive/20'>
-            <div 
-              className='h-full rounded-full bg-success' 
-              style={{ width: `${jdSuccessRate}%` }}
-            />
+            <div className='h-full rounded-full bg-success' style={{ width: `${jdSuccessRate}%` }} />
           </div>
           <div className='mt-4 flex gap-6 text-sm'>
             <div>
@@ -361,7 +349,10 @@ export function AdminOverviewCharts() {
             </h3>
             <div className='space-y-3'>
               {jdFailed.slice(0, 3).map((jd) => (
-                <div key={jd.id} className='flex items-center justify-between rounded-xl border border-border bg-muted/20 p-3'>
+                <div
+                  key={jd.id}
+                  className='flex items-center justify-between rounded-xl border border-border bg-muted/20 p-3'
+                >
                   <div className='min-w-0 flex-1 pr-4'>
                     <p className='truncate text-sm font-bold text-foreground'>{jd.title}</p>
                     <p className='truncate text-xs text-muted-foreground mt-0.5'>{jd.errorReason}</p>
@@ -379,9 +370,7 @@ export function AdminOverviewCharts() {
       <article className='rounded-2xl border border-border bg-card p-6 shadow-sm xl:col-span-5'>
         <div className='flex items-start justify-between gap-4'>
           <div>
-            <p className='text-xs font-bold uppercase tracking-widest text-info'>
-              {label('Xét duyệt', 'Approvals')}
-            </p>
+            <p className='text-xs font-bold uppercase tracking-widest text-info'>{label('Xét duyệt', 'Approvals')}</p>
             <h2 className='mt-1 text-2xl font-black text-foreground'>
               {label('Yêu cầu chờ xử lý', 'Pending Requests')}
             </h2>
@@ -402,7 +391,10 @@ export function AdminOverviewCharts() {
             </div>
             <div className='flex items-center gap-4'>
               <span className='text-2xl font-black text-foreground'>{skillsPending}</span>
-              <Link to='/admin/skills-queue' className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center'>
+              <Link
+                to='/admin/skills-queue'
+                className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors flex items-center justify-center'
+              >
                 <span className='material-symbols-outlined text-sm'>arrow_forward</span>
               </Link>
             </div>
@@ -420,7 +412,10 @@ export function AdminOverviewCharts() {
             </div>
             <div className='flex items-center gap-4'>
               <span className='text-2xl font-black text-foreground'>{resourcesPending}</span>
-              <Link to='/admin/resources?tab=queue' className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-info/10 hover:text-info transition-colors flex items-center justify-center'>
+              <Link
+                to='/admin/resources?tab=queue'
+                className='rounded-full bg-muted p-2 text-muted-foreground hover:bg-info/10 hover:text-info transition-colors flex items-center justify-center'
+              >
                 <span className='material-symbols-outlined text-sm'>arrow_forward</span>
               </Link>
             </div>

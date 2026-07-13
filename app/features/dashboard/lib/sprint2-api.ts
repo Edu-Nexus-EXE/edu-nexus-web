@@ -482,9 +482,7 @@ export async function loadRecentJds(options?: {
     const rows = getCollection((res as { data?: unknown })?.data)
 
     return {
-      data: rows
-        .map(mapJdRecentItem)
-        .filter((item) => Boolean(item.id)),
+      data: rows.map(mapJdRecentItem).filter((item) => Boolean(item.id)),
       loading: false,
       error: null
     }

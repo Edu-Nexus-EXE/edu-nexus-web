@@ -14,7 +14,8 @@
     "jdLogs": "Nhật ký JD",
     "generateReport": "Tạo báo cáo",
     "support": "Hỗ trợ",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "marketReadiness": "Sẵn sàng nghề"
   },
   "header": {
     "title": "Tổng quan hệ thống",
@@ -430,6 +431,15 @@
         "status": "Trạng thái"
       },
       "empty": "Chưa có giao dịch nào được ghi nhận."
+    },
+    "readinessHistory": {
+      "title": "Lịch sử sẵn sàng của sinh viên",
+      "subtitle": "Xem các snapshot sẵn sàng nghề nghiệp của sinh viên theo thời gian để tư vấn và theo dõi KPI cấp trường.",
+      "empty": "Sinh viên này chưa có snapshot sẵn sàng.",
+      "score": "Điểm mới nhất",
+      "market": "Khớp thị trường",
+      "roadmap": "Tiến độ roadmap",
+      "gap": "Thiếu / Nâng cấp / Đã có"
     }
   },
   "adminCommon": {
@@ -507,5 +517,173 @@
     "support": "Hỗ trợ",
     "privacy": "Bảo mật",
     "terms": "Điều khoản"
+  },
+  "marketReadiness": {
+    "eyebrow": "Theo dõi việc làm",
+    "title": "Tổng quan sẵn sàng nghề nghiệp",
+    "subtitle": "Giúp nhà trường theo dõi mức sẵn sàng của sinh viên so với nhu cầu tuyển dụng được tổng hợp từ thị trường.",
+    "refresh": "Làm mới",
+    "empty": "Chưa có dữ liệu",
+    "filters": {
+      "searchProgram": "Tìm chương trình",
+      "searchProgramPlaceholder": "Tên chương trình...",
+      "searchSkill": "Tìm khoảng thiếu kỹ năng",
+      "searchSkillPlaceholder": "Tên kỹ năng...",
+      "searchRole": "Tìm mục tiêu nghề nghiệp",
+      "searchRolePlaceholder": "Tên vai trò...",
+      "program": "Chương trình",
+      "allPrograms": "Tất cả chương trình",
+      "noMatches": "Không có kết quả phù hợp"
+    },
+    "errors": {
+      "load": "Không thể tải KPI sẵn sàng nghề nghiệp."
+    },
+    "kpi": {
+      "totalStudents": "Tổng sinh viên",
+      "snapshots": "Sinh viên đã theo dõi",
+      "averageScore": "Điểm sẵn sàng TB",
+      "coverage": "Độ bao phủ theo dõi"
+    },
+    "byMajor": {
+      "title": "Sẵn sàng theo chương trình",
+      "major": "Chương trình",
+      "students": "Sinh viên",
+      "score": "Điểm TB"
+    },
+    "missingSkills": {
+      "title": "Khoảng thiếu nổi bật",
+      "skill": "Nhóm kỹ năng",
+      "missing": "Thiếu",
+      "upgrade": "Cần luyện thêm"
+    },
+    "targetRoles": {
+      "title": "Mục tiêu nghề nghiệp",
+      "role": "Mục tiêu",
+      "students": "Sinh viên",
+      "marketJobs": "Tín hiệu thị trường"
+    },
+    "import": {
+      "title": "Nhập dữ liệu dự phòng",
+      "subtitle": "Chỉ dùng khi nguồn công khai tạm thời không lấy được dữ liệu. Luồng demo chính là form cập nhật thị trường ở phía trên.",
+      "submit": "Import JD",
+      "running": "Đang import",
+      "success": "Đã import JD thị trường.",
+      "failed": "Import JD thị trường thất bại.",
+      "invalidJson": "Payload phải là JSON hợp lệ với sourceSite và jobs[]."
+    },
+    "crawler": {
+      "title": "Cập nhật dữ liệu thị trường",
+      "subtitle": "Thu thập tín hiệu tuyển dụng mới từ các nguồn công khai, sau đó xem dữ liệu được thêm ở bên dưới.",
+      "sourceSite": "Nguồn tuyển dụng",
+      "role": "Nhóm nghề",
+      "keyword": "Từ khóa tìm kiếm",
+      "location": "Khu vực tuyển dụng",
+      "locations": {
+        "all": "Toàn Việt Nam",
+        "ho-chi-minh": "TP. Hồ Chí Minh",
+        "ha-noi": "Hà Nội",
+        "da-nang": "Đà Nẵng",
+        "can-tho": "Cần Thơ",
+        "hai-phong": "Hải Phòng",
+        "remote": "Làm việc từ xa / hybrid"
+      },
+      "limit": "Số tin tối đa",
+      "submit": "Cập nhật dữ liệu",
+      "running": "Đang cập nhật",
+      "success": "Đã cập nhật dữ liệu thị trường.",
+      "noJobs": "Không có JD phù hợp được thêm. Xem kết quả bên cạnh để biết nguồn bị chặn, không đọc được trang chi tiết, sai khu vực hay các tin đã tồn tại.",
+      "failed": "Cập nhật dữ liệu thất bại.",
+      "blocked": "Nguồn tuyển dụng đã chặn lần cập nhật này. Hệ thống đã lưu lại để kiểm tra.",
+      "unsupported": "Nguồn crawler này đang tắt hoặc không hỗ trợ.",
+      "demoOnly": "demo",
+      "disabled": "đang tắt",
+      "realSourceHint": "Nguồn công khai; một số website có thể chặn thu thập tự động.",
+      "demoSourceHint": "Nguồn demo; thêm dữ liệu mẫu ổn định qua cùng pipeline backend.",
+      "sourceTypeReal": "Nguồn thật",
+      "sourceTypeDemo": "Nguồn demo"
+    },
+    "result": {
+      "title": "Kết quả cập nhật mới nhất",
+      "empty": "Chạy cập nhật thị trường để xem dữ liệu thay đổi.",
+      "operation": "Kiểu cập nhật",
+      "import": "Import thủ công",
+      "crawl": "Crawler",
+      "sourceMode": "Nguồn",
+      "importedJobs": "Tin mới",
+      "importedSkills": "Tín hiệu kỹ năng",
+      "skipped": "Đã có sẵn",
+      "status": "Trạng thái",
+      "parsedJobs": "Tin đọc được",
+      "fetchedUrls": "Trang đã kiểm tra",
+      "requestedLocation": "Khu vực đã chọn",
+      "searchPagesChecked": "Trang tìm kiếm",
+      "candidateUrlsDiscovered": "Tin tìm thấy",
+      "detailPagesChecked": "Trang tin đã đọc",
+      "wrongRegionPages": "Không đúng khu vực",
+      "rejectedPages": "Trang không đạt",
+      "runId": "Mã kiểm tra",
+      "message": "Ghi chú"
+    },
+    "crawlRuns": {
+      "title": "Dữ liệu vừa thu thập",
+      "subtitle": "Mỗi thẻ là một lần chạy thật ở backend, giúp admin biết nguồn nào thêm được tin mới, không có tin mới hoặc bị chặn.",
+      "refresh": "Tải lại",
+      "searchLabel": "Tìm lần cập nhật dữ liệu thị trường",
+      "searchPlaceholder": "Tìm nguồn, trạng thái, khu vực hoặc ghi chú...",
+      "resultsCount": "{{count}} lần cập nhật",
+      "noMatch": "Không tìm thấy lần cập nhật nào phù hợp.",
+      "empty": "Chưa có lần thu thập dữ liệu thị trường.",
+      "parsed": "{{count}} tin đọc",
+      "imported": "{{count}} tin mới",
+      "fetched": "{{count}} trang kiểm tra",
+      "parsedLabel": "Đọc được",
+      "importedLabel": "Tin mới",
+      "fetchedLabel": "Đã kiểm tra"
+    },
+    "runStatus": {
+      "succeeded": "Đã cập nhật",
+      "partial": "Cập nhật một phần",
+      "no_items": "Không có tin mới",
+      "blocked": "Bị chặn",
+      "failed": "Lỗi",
+      "unsupported": "Đang tắt",
+      "running": "Đang chạy"
+    },
+    "jobs": {
+      "eyebrow": "Tin tuyển dụng",
+      "title": "Bản ghi JD thị trường",
+      "subtitle": "Xem từng JD đã thu thập từ nguồn thị trường. Mở drawer để xem nội dung gốc, metadata nguồn và sao chép vào clipboard.",
+      "searchPlaceholder": "Tìm tiêu đề, công ty, địa điểm, nội dung...",
+      "allRoles": "Tất cả vai trò",
+      "refresh": "Tải lại",
+      "empty": "Không có JD nào khớp bộ lọc.",
+      "view": "Mở",
+      "copy": "Sao chép raw",
+      "copied": "Đã sao chép",
+      "copyFallback": "Trình duyệt không hỗ trợ clipboard. Vui lòng sao chép thủ công.",
+      "source": "Nguồn",
+      "skills": "Kỹ năng",
+      "hash": "Hash nội dung",
+      "length": "Độ dài nội dung",
+      "preview": "Nội dung JD gốc",
+      "originalContent": "Nội dung JD từ nguồn tuyển dụng",
+      "openSource": "Mở trang gốc",
+      "sourceUnavailable": "Chưa có link nguồn",
+      "technical": "Thông tin kỹ thuật",
+      "quality": "Chất lượng nội dung",
+      "close": "Đóng",
+      "prev": "Trước",
+      "next": "Sau",
+      "pageLabel": "Trang {{page}} / {{totalPages}} · {{total}} tin",
+      "detailMissing": "Không thể tải JD.",
+      "table": {
+        "title": "Tiêu đề",
+        "company": "Công ty",
+        "role": "Vai trò",
+        "length": "Độ dài",
+        "hash": "Hash",
+        "action": "Thao tác"
+      }
+    }
   }
 }

@@ -611,7 +611,7 @@ export function JdDetailPage() {
         href: hasActiveRoadmap ? roadmapHref : hasGapAnalysis ? gapHref : undefined
       }
     ]
-  }, [activeRoadmapId, canChoosePath, hasActiveRoadmap, hasGapAnalysis, id, path, pathAction, t])
+  }, [activeRoadmapId, canChoosePath, hasActiveRoadmap, hasGapAnalysis, id, jd, path, pathAction, t])
 
   if (!session) return <Navigate to='/login' replace />
 
