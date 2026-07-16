@@ -23,13 +23,17 @@
       "status": {
         "failed": "Thất bại",
         "completed": "Hoàn thành",
-        "processing": "Đang xử lý"
+        "processing": "Đang xử lý",
+        "retrying": "Đang chờ thử lại"
       },
       "errors": {
         "uploadFailed": "Tải lên thất bại",
         "invalidFileType": "Vui lòng chọn tệp PDF hợp lệ.",
         "fileTooLarge": "Tệp vượt quá giới hạn 5MB. Vui lòng chọn tệp nhỏ hơn.",
-        "scannedPdf": "❌ Không thể đọc nội dung CV. File có thể là bản scan hoặc ảnh. Vui lòng xuất CV từ Word/Canva dưới dạng PDF rồi upload lại."
+        "scannedPdf": "❌ Không thể đọc nội dung CV. File có thể là bản scan hoặc ảnh. Vui lòng xuất CV từ Word/Canva dưới dạng PDF rồi upload lại.",
+        "aiTemporary": "Dịch vụ AI đang bận. CV của bạn đã được lưu và hệ thống sẽ tự động thử lại. Bạn không cần tải CV lên lại.",
+        "aiProcessingFailed": "Dịch vụ AI chưa thể xử lý CV này. Vui lòng thử lại sau.",
+        "processingFailed": "Hệ thống chưa thể hoàn tất phân tích CV. Vui lòng thử lại sau."
       },
       "viewAnalysis": "Xem phân tích"
     }

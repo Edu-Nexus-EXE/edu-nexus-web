@@ -23,13 +23,17 @@
       "status": {
         "failed": "Failed",
         "completed": "Completed",
-        "processing": "Processing"
+        "processing": "Processing",
+        "retrying": "Waiting to retry"
       },
       "errors": {
         "uploadFailed": "Upload failed",
         "invalidFileType": "Please choose a valid PDF file.",
         "fileTooLarge": "The file exceeds the 5MB limit. Please choose a smaller file.",
-        "scannedPdf": "❌ Could not read the CV content. The file may be a scanned copy or an image. Please export your CV from Word/Canva as a PDF and upload it again."
+        "scannedPdf": "❌ Could not read the CV content. The file may be a scanned copy or an image. Please export your CV from Word/Canva as a PDF and upload it again.",
+        "aiTemporary": "The AI service is busy. Your CV has been saved and the system will retry automatically. You do not need to upload it again.",
+        "aiProcessingFailed": "The AI service could not process this CV. Please try again later.",
+        "processingFailed": "We could not finish analyzing this CV. Please try again later."
       },
       "viewAnalysis": "View Analysis"
     }

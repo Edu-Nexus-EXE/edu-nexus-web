@@ -73,6 +73,10 @@ function parseCvInfo(res: unknown): CvInfo | null {
   }
 }
 
+function isTemporaryAiError(parseError?: string) {
+  return parseError === 'AI_TEMPORARILY_UNAVAILABLE'
+}
+
 export function AssessmentCvPage() {
   const session = getAuthSession()
   const { t } = useTranslation('cv')
@@ -108,7 +112,10 @@ export function AssessmentCvPage() {
         setInfo(parsed)
 
         // Keep polling until completed or failed
-        if (parsed && (parsed.status === 'pending' || parsed.status === 'processing')) {
+        if (
+          parsed &&
+          (parsed.status === 'pending' || parsed.status === 'processing' || isTemporaryAiError(parsed.parseError))
+        ) {
           timer = window.setTimeout(loadOnce, 3000)
         }
       } catch {
@@ -136,13 +143,23 @@ export function AssessmentCvPage() {
     if (uploading) return { variant: 'warning' as const, label: t('cv.page.uploading') }
 
     const s = info?.status
+    if (s === 'failed' && isTemporaryAiError(info?.parseError))
+      return { variant: 'warning' as const, label: t('cv.page.status.retrying') }
     if (s === 'failed') return { variant: 'destructive' as const, label: t('cv.page.status.failed') }
     if (s === 'completed') return { variant: 'success' as const, label: t('cv.page.status.completed') }
     if (s === 'processing' || s === 'pending')
       return { variant: 'warning' as const, label: t('cv.page.status.processing') }
 
     return { variant: 'outline' as const, label: t('cv.page.badge') }
-  }, [info?.status, t, uploading])
+  }, [info?.parseError, info?.status, t, uploading])
+
+  const parseErrorMessage = useMemo(() => {
+    if (!info?.parseError) return ''
+    if (isTemporaryAiError(info.parseError)) return t('cv.page.errors.aiTemporary')
+    if (info.parseError === 'AI_PROCESSING_FAILED') return t('cv.page.errors.aiProcessingFailed')
+    if (info.parseError.includes('Không thể đọc nội dung CV')) return t('cv.page.errors.scannedPdf')
+    return t('cv.page.errors.processingFailed')
+  }, [info?.parseError, t])
 
   if (!session) return <Navigate to='/login' replace />
 
@@ -195,7 +212,13 @@ export function AssessmentCvPage() {
         const res = await getAssessmentPathsPathIdCv({ pathId: pId })
         const parsed = parseCvInfo(res)
         setInfo(parsed)
-        if (parsed && parsed.status !== 'pending' && parsed.status !== 'processing') break
+        if (
+          parsed &&
+          parsed.status !== 'pending' &&
+          parsed.status !== 'processing' &&
+          !isTemporaryAiError(parsed.parseError)
+        )
+          break
       } catch {
         // keep polling
       }
@@ -316,11 +339,21 @@ export function AssessmentCvPage() {
                   </p>
                 ) : null}
 
-                {info.parseError ? (
-                  <div className='mt-3 rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-destructive text-sm'>
-                    {info.parseError.includes('Không thể đọc nội dung CV')
-                      ? t('cv.page.errors.scannedPdf')
-                      : info.parseError}
+                {parseErrorMessage ? (
+                  <div
+                    className={cn(
+                      'mt-3 rounded-lg border p-3 text-sm',
+                      isTemporaryAiError(info.parseError)
+                        ? 'border-primary/20 bg-primary/10 text-foreground'
+                        : 'border-destructive/20 bg-destructive/10 text-destructive'
+                    )}
+                  >
+                    <div className='flex items-start gap-2'>
+                      <span className='material-icons text-lg' aria-hidden='true'>
+                        {isTemporaryAiError(info.parseError) ? 'schedule' : 'error_outline'}
+                      </span>
+                      <span>{parseErrorMessage}</span>
+                    </div>
                   </div>
                 ) : null}
               </div>
