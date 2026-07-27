@@ -348,7 +348,7 @@ export async function loadAdminUsersList(params?: {
               : toStringValue(raw.status || raw.accountStatus || raw.subscriptionStatus, 'active')
         }
       }),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
@@ -379,7 +379,7 @@ export async function loadAdminResourcesQueue(params?: {
           url: typeof raw.url === 'string' ? raw.url : undefined
         }
       }),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
@@ -481,7 +481,7 @@ export async function loadAdminResourcesList(params?: {
     const items = parseItems(data)
     return {
       items: items.map(mapAdminResource),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
@@ -577,7 +577,7 @@ export async function loadAdminSkillsQueue(params?: {
     const items = parseItems(data)
     return {
       items: items.map((item, index) => ({ ...mapAdminSkill(item, index), status: 'pending' })),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
@@ -650,7 +650,7 @@ export async function loadAdminSkillsList(params?: {
     const items = parseItems(data)
     return {
       items: items.map(mapAdminSkill),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
@@ -820,7 +820,7 @@ export async function loadAdminJdFailed(params?: {
           status: toStringValue(raw.parseStatus || raw.status, 'failed')
         }
       }),
-      total: parseTotal(data, items.length),
+      total: parseTotal(res, items.length),
       page,
       pageSize
     }
