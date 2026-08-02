@@ -98,6 +98,15 @@ function isRefreshTokenError(payload: unknown): boolean {
   return typeof code === 'string' && code.toUpperCase().includes('INVALID_REFRESH')
 }
 
+let isRedirecting = false
+
+function redirectToLogin() {
+  if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login') && !isRedirecting) {
+    isRedirecting = true
+    window.location.assign('/login')
+  }
+}
+
 let refreshInFlight: Promise<{ accessToken: string; refreshToken: string } | null> | null = null
 
 async function tryRefreshTokens(): Promise<{ accessToken: string; refreshToken: string } | null> {
@@ -134,17 +143,13 @@ async function tryRefreshTokens(): Promise<{ accessToken: string; refreshToken: 
           const errPayload = (await resp.json().catch(() => ({}))) as RefreshErrorPayload
           if (isRefreshTokenError(errPayload)) {
             clearAuthSession()
-            if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-              window.location.assign('/login')
-            }
+            redirectToLogin()
             return null
           }
         }
         if (resp.status === 401) {
           clearAuthSession()
-          if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-            window.location.assign('/login')
-          }
+          redirectToLogin()
         }
         return null
       }
@@ -262,9 +267,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
 
     if (response.status === 401 && isInvalidCredentials(payload)) {
       clearAuthSession()
-      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-        window.location.assign('/login')
-      }
+      redirectToLogin()
       throw new InvalidCredentialsError('INVALID_CREDENTIALS', {
         status: response.status,
         raw: payload
@@ -273,9 +276,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
 
     if (response.status === 401) {
       clearAuthSession()
-      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-        window.location.assign('/login')
-      }
+      redirectToLogin()
     }
 
     throw Object.assign(new Error(payload.message ?? payload.error?.message ?? 'API error'), {
