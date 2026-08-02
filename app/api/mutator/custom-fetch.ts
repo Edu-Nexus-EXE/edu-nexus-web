@@ -134,11 +134,17 @@ async function tryRefreshTokens(): Promise<{ accessToken: string; refreshToken: 
           const errPayload = (await resp.json().catch(() => ({}))) as RefreshErrorPayload
           if (isRefreshTokenError(errPayload)) {
             clearAuthSession()
+            if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+              window.location.assign('/login')
+            }
             return null
           }
         }
         if (resp.status === 401) {
           clearAuthSession()
+          if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+            window.location.assign('/login')
+          }
         }
         return null
       }
@@ -265,7 +271,7 @@ export async function customFetch<T>(url: string, options: CustomFetchOptions): 
       })
     }
 
-    if (response.status === 401 && token) {
+    if (response.status === 401) {
       clearAuthSession()
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
         window.location.assign('/login')
